@@ -1,0 +1,233 @@
+@using IMSB.Admin.Resources
+@using System.Globalization
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    // Same shared resources as the header/sidebar (Resources/SharedResource.<culture>.resx)
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["Sales"].Value;
+    var s = (IMSB.Dto.Models.SalesSummary)ViewBag.Summary;
+    var inr = CultureInfo.GetCultureInfo("en-IN");
+    string Money(decimal v) => "₹" + v.ToString("#,##0.##", inr);
+    string Change(decimal? pct) => pct == null ? "" : (pct >= 0 ? "+" : "") + pct.Value.ToString("0.0", CultureInfo.InvariantCulture) + "%";
+
+    // Strings used by sales.js (tables, cards, charts, toasts, client-side validation)
+    var jsKeys = new[] {
+        "Success", "Error", "Edit", "Delete", "View", "CouldNotReachServer", "CheckForm", "DiscardChanges",
+        "SelectProductOption", "StockAvailable", "ProductRemoved", "NoSalesEntries", "NoSalesForFilters", "NoDeductions",
+        "SalesSaved", "SalesUpdated", "SalesDeleted", "SalesEntryCleared", "ConfirmDeleteSale", "SaleNotFound",
+        "EditingEntry", "SaveSalesEntry", "UpdateSalesEntry", "VsYesterday", "VsLastMonth", "AvgPerTxn", "PercentOfTotal",
+        "NoComparison", "TodaysTotalSales", "TotalSalesForDay", "SalesByCategoryToday", "SalesByCategoryOn", "HourlySalesTrend",
+        "SalesAmount", "Deducted", "Restored", "UnitsSold", "UnitsRestored", "BeforeAfter", "PercentRemaining", "EntryNo",
+        "ItemsCount", "ProductsCount", "InStock", "LowStock", "OutOfStock", "Total", "NothingToSubmit",
+        "ValSelectProduct", "ValQuantityPositive", "ValUnitPrice", "ValDate", "ValDateFuture", "ValTimeFuture", "ValDateRange",
+        "ValInsufficientStock", "ValDuplicateProduct", "ValSalesItemsRequired", "ValRemarks"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+    <main class="page-body">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <div class="page-title">@L["SalesManagement"]</div>
+          <div class="page-subtitle">@L["SalesSubtitle"]</div>
+        </div>
+        <div class="page-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="salesExportBtn" title="@L["ExportSalesHint"]"><i class="fa-solid fa-download"></i> @L["Export"]</button>
+          <button type="button" class="btn btn-primary btn-sm" id="submitTodayBtn"><i class="fa-solid fa-cash-register"></i> @L["SubmitTodaysSales"]</button>
+        </div>
+      </div>
+
+      <!-- Summary Bar (selected date) -->
+      <div class="sales-summary-bar">
+        <div class="ssb-item"><div class="ssb-value" id="todayTotal">@Money(s.TotalSales)</div><div class="ssb-label" id="todayTotalLabel">@L["TodaysTotalSales"]</div></div>
+        <div class="ssb-divider"></div>
+        <div class="ssb-item"><div class="ssb-value" id="todayItems">@s.ItemsSold</div><div class="ssb-label">@L["ItemsSold"]</div></div>
+        <div class="ssb-divider"></div>
+        <div class="ssb-item"><div class="ssb-value" id="todayTxns">@s.Transactions</div><div class="ssb-label">@L["Transactions"]</div></div>
+        <div class="ssb-divider"></div>
+        <div class="ssb-item"><div class="ssb-value" id="todayStalls">@s.ActiveStalls</div><div class="ssb-label">@L["ActiveStalls"]</div></div>
+        <div class="ssb-divider"></div>
+        <div class="ssb-item"><div class="ssb-value" id="todayDate">@s.Date.ToString("yyyy-MM-dd")</div><div class="ssb-label">@L["Date"]</div></div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          <div class="stat-value" id="statDaySales">@Money(s.TotalSales)</div><div class="stat-label">@L["TodaysSales"]</div>
+          <div class="stat-change @(s.ChangeVsPreviousDay < 0 ? "down" : "up")" id="statDayChange">@(s.ChangeVsPreviousDay == null ? L["NoComparison"].Value : string.Format(L["VsYesterday"].Value, Change(s.ChangeVsPreviousDay)))</div></div>
+        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="stat-value" id="statMonthSales">@Money(s.MonthSales)</div><div class="stat-label">@L["MonthlySales"]</div>
+          <div class="stat-change @(s.ChangeVsPreviousMonth < 0 ? "down" : "up")" id="statMonthChange">@(s.ChangeVsPreviousMonth == null ? L["NoComparison"].Value : string.Format(L["VsLastMonth"].Value, Change(s.ChangeVsPreviousMonth)))</div></div>
+        <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+          <div class="stat-value" id="statTxns">@s.Transactions</div><div class="stat-label">@L["TransactionsToday"]</div>
+          <div class="stat-change up" id="statAvgTxn">@string.Format(L["AvgPerTxn"].Value, Money(s.AverageTransaction))</div></div>
+        <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-store"></i></div>
+          <div class="stat-value" id="statActiveStalls">@s.ActiveStalls</div><div class="stat-label">@L["StallsActiveToday"]</div>
+          <div class="stat-change up" id="statStallsPct">@string.Format(L["PercentOfTotal"].Value, s.TotalStalls == 0 ? 0 : (int)Math.Round(s.ActiveStalls * 100.0 / s.TotalStalls))</div></div>
+      </div>
+
+      <!-- TABS -->
+      <div data-tabs id="salesTabs">
+        <div class="tab-bar">
+          <div class="tab-item active" data-tab="daily">@L["DailySalesEntry"]</div>
+          <div class="tab-item" data-tab="product">@L["ProductWiseSales"]</div>
+          <div class="tab-item" data-tab="chart">@L["SalesChart"]</div>
+          <div class="tab-item" data-tab="deduct">@L["AutoStockDeduction"]</div>
+        </div>
+
+        <!-- ── Daily Sales Entry ── -->
+        <div class="tab-panel active" data-panel="daily">
+          <div class="card" style="margin-bottom:18px">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-cash-register"></i> <span id="entryFormTitle">@L["DailySalesEntry"]</span></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <input type="date" class="form-control" id="salesDate" style="width:160px" aria-label="@L["Date"]">
+                <input type="time" class="form-control" id="salesTime" style="width:120px" aria-label="@L["Time"]" title="@L["Time"]">
+                <select class="form-control" style="width:160px" id="salesStall" aria-label="@L["Stall"]">
+                  <option value="">@L["AllStalls"]</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body">
+              <form id="salesEntryForm" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="form-error" id="err_date"></div>
+                <div class="form-error" id="err_time"></div>
+                <!-- Entry Grid Header -->
+                <div class="sales-entry-head">
+                  <div>@L["ProductName"]</div><div>@L["QtySold"]</div><div>@L["UnitPrice"]</div><div>@L["Total"]</div><div></div>
+                </div>
+                <div id="salesEntryRows"></div>
+                <div class="form-error" id="err_items"></div>
+                <button type="button" class="btn btn-outline btn-sm" style="margin-top:14px" id="addRowBtn">
+                  <i class="fa-solid fa-plus"></i> @L["AddProductRow"]
+                </button>
+                <div class="form-group" style="margin-top:14px">
+                  <label class="form-label" for="salesRemarks">@L["Remarks"]</label>
+                  <input id="salesRemarks" class="form-control" maxlength="500" placeholder="@L["SalesRemarksPlaceholder"]">
+                  <div class="form-error" id="err_remarks"></div>
+                </div>
+                <!-- Totals -->
+                <div class="entry-total-bar">
+                  <div style="font-size:.85rem;font-weight:600;color:var(--primary)">@L["EntryTotal"]</div>
+                  <div style="font-size:1.3rem;font-weight:800;color:var(--primary)" id="entryTotal">₹0.00</div>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <button type="button" class="btn btn-outline" id="clearRowsBtn"><i class="fa-solid fa-rotate-left"></i> @L["Clear"]</button>
+              <button type="button" class="btn btn-outline" id="cancelEditBtn" style="display:none"><i class="fa-solid fa-xmark"></i> @L["CancelEdit"]</button>
+              <button type="button" class="btn btn-success" id="saveSalesBtn"><i class="fa-solid fa-floppy-disk"></i> <span id="saveSalesText">@L["SaveSalesEntry"]</span></button>
+            </div>
+          </div>
+
+          <!-- Entries recorded on the selected date -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-list"></i> @L["SalesEntries"] <span class="tab-count" id="entriesCount">0</span></div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table" id="salesEntriesTable">
+                  <thead><tr><th>@L["EntryNo"]</th><th>@L["Time"]</th><th>@L["Products"]</th><th>@L["QtySold"]</th><th>@L["Total"]</th><th>@L["UpdatedBy"]</th><th>@L["Actions"]</th></tr></thead>
+                  <tbody id="salesEntriesBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Product-wise Sales ── -->
+        <div class="tab-panel" data-panel="product">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-box"></i> @L["ProductWiseSalesReport"]</div>
+              <div style="font-size:.78rem;color:var(--text-muted)" id="reportTotals"></div>
+            </div>
+            <div class="card-body">
+              <div class="toolbar" style="flex-wrap:wrap">
+                <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="reportSearch" placeholder="@L["SearchProducts"]" aria-label="@L["SearchProducts"]"></div>
+                <select class="form-control" style="width:auto;min-width:150px" id="reportCategory" aria-label="@L["Category"]"><option value="">@L["AllCategories"]</option></select>
+                <select class="form-control" style="width:auto;min-width:130px" id="reportStall" aria-label="@L["Stall"]"><option value="">@L["AllStalls"]</option></select>
+                <label style="font-size:.75rem;color:var(--text-muted)" for="reportFrom">@L["FromDate"]</label>
+                <input type="date" class="form-control" style="width:150px" id="reportFrom">
+                <label style="font-size:.75rem;color:var(--text-muted)" for="reportTo">@L["ToDate"]</label>
+                <input type="date" class="form-control" style="width:150px" id="reportTo">
+                <button type="button" class="btn btn-outline btn-sm" id="reportResetBtn">@L["Reset"]</button>
+                <button type="button" class="btn btn-outline btn-sm" id="reportExportBtn" title="@L["Export"]" aria-label="@L["Export"]"><i class="fa-solid fa-download"></i></button>
+              </div>
+              <div class="form-error" id="report_err"></div>
+              <div class="table-container">
+                <table class="data-table" id="productSalesTable">
+                  <thead>
+                    <tr><th>#</th><th>@L["Product"]</th><th>@L["Category"]</th><th>@L["Stall"]</th><th>@L["QtySold"]</th><th>@L["UnitPrice"]</th><th>@L["Revenue"]</th><th>@L["StockLeft"]</th><th>@L["Date"]</th></tr>
+                  </thead>
+                  <tbody id="productSalesBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Sales Chart ── -->
+        <div class="tab-panel" data-panel="chart">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px">
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-bar"></i> <span id="catChartTitle">@L["SalesByCategoryToday"]</span></div></div>
+              <div class="card-body"><div style="height:280px"><canvas id="salesCatChart"></canvas></div></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-line"></i> @L["HourlySalesTrend"]</div></div>
+              <div class="card-body"><div style="height:280px"><canvas id="hourlySalesChart"></canvas></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Auto Stock Deduction ── -->
+        <div class="tab-panel" data-panel="deduct">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-arrows-rotate"></i> @L["AutoStockDeductionLog"]</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> @L["AutoDeductOn"]</span>
+                <select class="form-control" id="deductScope" style="width:auto" aria-label="@L["Date"]">
+                  <option value="day">@L["SelectedDateOnly"]</option>
+                  <option value="all">@L["AllDates"]</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="alert alert-info" style="margin-bottom:16px">
+                <i class="fa-solid fa-circle-info"></i>
+                <div>@L["AutoDeductInfo"]</div>
+              </div>
+              <div id="stockDeductList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+<!-- Entry details -->
+<div class="modal-overlay" id="saleViewModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="saleViewTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="saleViewTitle">@L["SalesEntry"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="saleViewBody"></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Close"]</button>
+    </div>
+  </div>
+</div>
+
+@section Styles {
+    <link href="~/css/sales.css" rel="stylesheet" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script>window.SalesI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+    <script src="~/js/sales.js" asp-append-version="true"></script>
+}

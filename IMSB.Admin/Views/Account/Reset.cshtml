@@ -1,0 +1,62 @@
+@model IMSB.Dto.Models.ResetPasswordViewModel
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    Layout = null;
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+}
+<!doctype html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@L["ResetPassword"]</title>
+    <link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-right">
+                <div class="login-form-header">
+                    <h1>@L["ResetPassword"]</h1>
+                    <p>@L["SetNewPasswordHint"]</p>
+                </div>
+
+                @if(ViewBag.Error != null){
+                    <div class="login-error" style="display:block;margin-top:12px">@ViewBag.Error</div>
+                    <div style="margin-top:12px"><a href="@Url.Action("Forgot","Account")">@L["RequestNewResetLink"]</a></div>
+                }
+                else
+                {
+                <form asp-action="Reset" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="field-validation"></div>
+                    <input type="hidden" asp-for="Token" />
+                    <input type="hidden" asp-for="Username" />
+                    <div class="form-group">
+                        <label>@L["User"]</label>
+                        <input class="form-control" value="@Model?.Username" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label>@L["NewPassword"]</label>
+                        <input asp-for="NewPassword" class="form-control" type="password" />
+                        <span asp-validation-for="NewPassword" class="field-validation"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>@L["ConfirmPassword"]</label>
+                        <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                        <span asp-validation-for="ConfirmPassword" class="field-validation"></span>
+                    </div>
+                    <button type="submit" class="btn-login">@L["SetPassword"]</button>
+                </form>
+                }
+
+                <div style="margin-top:12px"><a href="@Url.Action("Login","Account")">@L["BackToLogin"]</a></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

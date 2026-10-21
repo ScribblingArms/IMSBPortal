@@ -1,0 +1,20 @@
+@model ErrorViewModel
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["Error"].Value;
+}
+
+<main class="page-body">
+    <div class="card" style="max-width:640px;margin:40px auto">
+        <div class="card-body" style="padding:32px">
+            <div class="page-title" style="color:var(--danger)"><i class="fa-solid fa-circle-exclamation"></i> @L["Error"]</div>
+            <p style="margin-top:8px">@L["ErrorProcessingRequest"]</p>
+            @if (Model.ShowRequestId)
+            {
+                <p style="margin-top:8px;font-size:.8rem;color:var(--text-muted)"><strong>@L["RequestId"]:</strong> <code>@Model.RequestId</code></p>
+            }
+        </div>
+    </div>
+</main>

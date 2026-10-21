@@ -1,0 +1,227 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    // Same shared resources as the header/sidebar (Resources/SharedResource.<culture>.resx)
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["Attendance"].Value;
+    var departments = (List<KeyValuePair<string, string>>)ViewBag.Departments;
+
+    // Strings used by attendance.js (sheet, cards, history, modals, toasts, client-side validation)
+    var jsKeys = new[] {
+        "Success", "Error", "CouldNotReachServer", "CheckForm", "DiscardChanges", "View", "Edit", "Delete",
+        "Present", "Absent", "Leave", "HalfDay", "NotMarked", "NotMarkedOption", "NotMarkedCount", "WeekOf",
+        "AttendanceSaved", "AttendanceSavedMsg", "AttendanceUpdated", "AttendanceDeleted", "ConfirmDeleteAttendance", "AttendanceNotFound",
+        "NothingToSave", "NoStaffForAttendance", "NoStaffInDepartment", "NoAttendanceRecords", "HistoryTotals", "MonthToDate",
+        "AttendanceRatio", "AttendancePercent", "OpenInEntry", "AttendanceDetails", "EmployeeID", "Department", "Designation", "Shift",
+        "Date", "InTime", "OutTime", "Hours", "OTHours", "Status", "Remarks", "UpdatedBy",
+        "ValInTimeRequired", "ValOutBeforeIn", "ValAttendanceStatus", "ValTime", "ValDateFuture", "ValRemarks"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+    <main class="page-body">
+      <div class="page-header">
+        <div>
+          <div class="page-title">@L["AttendanceManagement"]</div>
+          <div class="page-subtitle">@L["AttendanceSubtitle"]</div>
+        </div>
+        <div class="page-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="attExportBtn" title="@L["ExportDayHint"]"><i class="fa-solid fa-download"></i> @L["Export"]</button>
+          <button type="button" class="btn btn-primary btn-sm" id="saveAttendanceBtn"><i class="fa-solid fa-floppy-disk"></i> @L["SaveAttendance"]</button>
+        </div>
+      </div>
+
+      <!-- Stat Cards (selected day, all departments) -->
+      <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+          <div class="stat-value" id="statTotal">0</div><div class="stat-label">@L["TotalStaff"]</div>
+          <div class="stat-change up" id="statNotMarked"></div></div>
+        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+          <div class="stat-value" id="statPresent">0</div><div class="stat-label">@L["Present"]</div>
+          <div class="stat-change up" id="statPercent"></div></div>
+        <div class="stat-card red"><div class="stat-icon"><i class="fa-solid fa-user-xmark"></i></div>
+          <div class="stat-value" id="statAbsent">0</div><div class="stat-label">@L["Absent"]</div></div>
+        <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
+          <div class="stat-value" id="statLeave">0</div><div class="stat-label">@L["OnLeave"]</div></div>
+        <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-circle-half-stroke"></i></div>
+          <div class="stat-value" id="statHalfDay">0</div><div class="stat-label">@L["HalfDay"]</div></div>
+        <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-value" id="statOvertime">0</div><div class="stat-label">@L["WithOvertime"]</div></div>
+      </div>
+
+      <!-- Week Calendar Strip -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-body" style="padding:16px 20px">
+          <div class="att-week-head">
+            <div style="font-size:.82rem;font-weight:700;color:var(--text)" id="weekLabel"></div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <button type="button" class="btn btn-ghost btn-sm btn-icon" id="weekPrev" title="@L["PreviousWeek"]" aria-label="@L["PreviousWeek"]"><i class="fa-solid fa-chevron-left"></i></button>
+              <input type="date" class="form-control" id="attDate" style="width:160px" aria-label="@L["Date"]">
+              <button type="button" class="btn btn-ghost btn-sm btn-icon" id="weekNext" title="@L["NextWeek"]" aria-label="@L["NextWeek"]"><i class="fa-solid fa-chevron-right"></i></button>
+              <button type="button" class="btn btn-outline btn-sm" id="todayBtn">@L["Today"]</button>
+            </div>
+          </div>
+          <div class="week-calendar" id="weekCalendar"></div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div data-tabs id="attendanceTabs">
+        <div class="tab-bar">
+          <div class="tab-item active" data-tab="entry">@L["AttendanceEntry"]</div>
+          <div class="tab-item" data-tab="dept">@L["DepartmentWise"]</div>
+          <div class="tab-item" data-tab="history">@L["History"]</div>
+        </div>
+
+        <!-- ── Attendance Entry ── -->
+        <div class="tab-panel active" data-panel="entry">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-fingerprint"></i> @L["MarkAttendance"] – <span id="entryDateLabel"></span></div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="entrySearch" placeholder="@L["SearchStaff"]" aria-label="@L["SearchStaff"]"></div>
+                <select class="form-control" style="width:180px" id="entryDept" aria-label="@L["Department"]">
+                  <option value="">@L["AllDepartments"]</option>
+                  @foreach (var d in departments) { <option value="@d.Key">@d.Value</option> }
+                </select>
+                <button type="button" class="btn btn-outline btn-sm" id="markAllPresentBtn"><i class="fa-solid fa-user-check"></i> @L["MarkAllPresent"]</button>
+              </div>
+            </div>
+            <div class="card-body" style="padding-top:14px">
+              <div class="alert alert-warning" id="futureNote" style="display:none;margin-bottom:14px"><i class="fa-solid fa-triangle-exclamation"></i><div>@L["FutureDateNote"]</div></div>
+              <form id="attendanceForm" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="form-error" id="err_date"></div>
+                <div class="form-error" id="err_entries"></div>
+                <div class="att-sheet">
+                  <div class="att-entry-grid att-header-grid">
+                    <div></div><div>@L["StaffName"]</div><div>@L["Department"]</div>
+                    <div>@L["InTime"]</div><div>@L["OutTime"]</div>
+                    <div>@L["Hours"]</div><div>@L["OT"]</div><div>@L["Status"]</div><div></div>
+                  </div>
+                  <div id="attendanceRows"></div>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <span class="att-unsaved" id="unsavedNote" style="display:none"><i class="fa-solid fa-circle"></i> @L["UnsavedChanges"]</span>
+              <button type="button" class="btn btn-outline" id="resetSheetBtn"><i class="fa-solid fa-rotate-left"></i> @L["Reset"]</button>
+              <button type="button" class="btn btn-success" id="saveSheetBtn"><i class="fa-solid fa-floppy-disk"></i> @L["SaveAttendance"]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Department-wise ── -->
+        <div class="tab-panel" data-panel="dept">
+          <div id="deptAttCards" class="att-dept-grid"></div>
+        </div>
+
+        <!-- ── History ── -->
+        <div class="tab-panel" data-panel="history">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> @L["AttendanceHistory"]</div>
+              <div style="font-size:.78rem;color:var(--text-muted)" id="histTotals"></div>
+            </div>
+            <div class="card-body">
+              <div class="toolbar" style="flex-wrap:wrap">
+                <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="histSearch" placeholder="@L["SearchStaff"]" aria-label="@L["SearchStaff"]" data-url-search></div>
+                <input type="month" class="form-control" style="width:170px" id="histMonth" aria-label="@L["Month"]">
+                <select class="form-control" style="width:auto;min-width:160px" id="histDept" aria-label="@L["Department"]">
+                  <option value="">@L["AllDepartments"]</option>
+                  @foreach (var d in departments) { <option value="@d.Key">@d.Value</option> }
+                </select>
+                <select class="form-control" style="width:auto;min-width:140px" id="histStatus" aria-label="@L["Status"]">
+                  <option value="">@L["AllStatuses"]</option>
+                  <option value="PRESENT">@L["Present"]</option>
+                  <option value="ABSENT">@L["Absent"]</option>
+                  <option value="LEAVE">@L["Leave"]</option>
+                  <option value="HALF_DAY">@L["HalfDay"]</option>
+                </select>
+                <button type="button" class="btn btn-outline btn-sm" id="histResetBtn">@L["Reset"]</button>
+                <button type="button" class="btn btn-outline btn-sm" id="histExportBtn" title="@L["Export"]" aria-label="@L["Export"]"><i class="fa-solid fa-download"></i></button>
+              </div>
+              <div class="form-error" id="hist_err"></div>
+              <div class="table-container">
+                <table class="data-table" id="historyTable">
+                  <thead><tr><th>@L["StaffTitle"]</th><th>@L["Department"]</th><th>@L["Date"]</th><th>@L["InTime"]</th><th>@L["OutTime"]</th><th>@L["Hours"]</th><th>@L["OTHours"]</th><th>@L["Status"]</th><th>@L["Actions"]</th></tr></thead>
+                  <tbody id="historyBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+<!-- Record details -->
+<div class="modal-overlay" id="attViewModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="attViewTitle" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title" id="attViewTitle">@L["AttendanceDetails"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="attViewBody"></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Close"]</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit one record -->
+<div class="modal-overlay" id="attEditModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="attEditTitle" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title" id="attEditTitle">@L["EditAttendance"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="attEditForm" novalidate>
+        <div style="font-weight:700" id="editStaff"></div>
+        <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:14px" id="editDate"></div>
+        <div class="form-grid col-2">
+          <div class="form-group">
+            <label class="form-label" for="editStatus">@L["Status"]</label>
+            <select class="form-control" id="editStatus">
+              <option value="PRESENT">@L["Present"]</option>
+              <option value="ABSENT">@L["Absent"]</option>
+              <option value="LEAVE">@L["Leave"]</option>
+              <option value="HALF_DAY">@L["HalfDay"]</option>
+            </select>
+            <div class="form-error" id="err_edit_status"></div>
+          </div>
+          <div></div>
+          <div class="form-group">
+            <label class="form-label" for="editIn">@L["InTime"]</label>
+            <input type="time" class="form-control" id="editIn">
+            <div class="form-error" id="err_edit_in_time"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editOut">@L["OutTime"]</label>
+            <input type="time" class="form-control" id="editOut">
+            <div class="form-error" id="err_edit_out_time"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editRemarks">@L["Remarks"]</label>
+          <input class="form-control" id="editRemarks" maxlength="500">
+          <div class="form-error" id="err_edit_remarks"></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Cancel"]</button>
+      <button type="button" class="btn btn-primary" id="editSaveBtn"><i class="fa-solid fa-floppy-disk"></i> @L["SaveChanges"]</button>
+    </div>
+  </div>
+</div>
+
+@section Styles {
+    <link href="~/css/applications.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/attendance.css" rel="stylesheet" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script>window.AttendanceI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+    <script src="~/js/attendance.js" asp-append-version="true"></script>
+}

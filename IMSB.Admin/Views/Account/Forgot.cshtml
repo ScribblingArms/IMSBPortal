@@ -1,0 +1,47 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    Layout = null;
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+}
+
+<!doctype html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@L["ForgotPassword"]</title>
+    <link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-right">
+                <div class="login-form-header">
+                    <h1>@L["ForgotPassword"]</h1>
+                    <p>@L["ForgotPasswordHint"]</p>
+                </div>
+
+                <form asp-action="Forgot" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="field-validation"></div>
+                    <div class="form-group">
+                        <label for="usernameOrEmail">@L["UserIdOrEmail"]</label>
+                        <input id="usernameOrEmail" name="usernameOrEmail" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn-login">@L["SendResetLink"]</button>
+                </form>
+
+                @if(ViewBag.Message != null){
+                    <div class="login-error" style="display:block;margin-top:12px">@ViewBag.Message</div>
+                }
+                @if(ViewBag.ResetUrl != null){
+                    <div style="margin-top:8px;padding:8px;background:#f5f5f5;border-radius:4px">@L["DevResetLink"] <a href="@ViewBag.ResetUrl">@ViewBag.ResetUrl</a></div>
+                }
+
+                <div style="margin-top:12px"><a href="@Url.Action("Login","Account")">@L["BackToLogin"]</a></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

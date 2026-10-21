@@ -1,0 +1,73 @@
+﻿@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@inject Microsoft.Extensions.Options.IOptions<IMSB.Dto.Models.UserSessionOptions> SessionSettings
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    // Strings shared by main.js and the prototype page scripts (IMSBT in main.js)
+    var commonKeys = new[] {
+        "Success", "Error", "RecordSaved", "ValidationError", "FillRequiredFields", "ExportUnavailable", "ExportUnavailableMsg",
+        "Present", "Absent", "Leave", "Active", "Occupied", "Vacant", "Edit", "EditModeOpened", "Revenue", "AvgAttendancePct",
+        "DaysOfMonth", "ExportPdf", "AttendanceSaved", "AttendanceSavedMsg", "CertificateGenerated", "Certificate",
+        "RptStallOccupancy", "RptStallOccupancyDesc", "RptInventory", "RptInventoryDesc", "RptArtisan", "RptArtisanDesc",
+        "RptAttendance", "RptAttendanceDesc", "RptSales", "RptSalesDesc", "RptProcurement", "RptProcurementDesc",
+        "EditModeFor", "OnLeave", "RenewalPending", "RenewalDue", "ArtisanOfCategory", "StallLabel", "SinceDate",
+        "ApplicationSubmitted", "ApplicationSentForReview", "AttendanceRatio", "DaysCount", "Review", "Process", "PendingLabel",
+        "Delete", "View", "Cancel", "Close", "CouldNotReachServer", "CheckForm", "SessionExpiredTitle", "SessionExpiredMsg"
+    };
+    var commonStrings = commonKeys.ToDictionary(k => k, k => L[k].Value);
+    // idle timer for main.js; "Remember me" sessions are not ended by inactivity
+    var persistent = User.FindFirst(IMSB.Admin.Services.SessionService.PersistentClaimType)?.Value == "1";
+    var idleSeconds = persistent ? 0 : SessionSettings.Value.IdleTimeoutMinutes * 60;
+}
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @L["IMSBPortal"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    @* Same stylesheets as the prototype (IMSB_ADMIN_PANEL). Bootstrap is deliberately not loaded:
+       its .modal/.btn/.card/.form-control rules override the prototype design. *@
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body data-session-idle="@idleSeconds" data-session-warn="@SessionSettings.Value.WarningSeconds">
+    @await Html.PartialAsync("_GovtStrip")
+
+    <div class="app-wrapper">
+        @await Html.PartialAsync("_Sidebar")
+
+        <div class="main-content">
+            @await Html.PartialAsync("_Header")
+            @RenderBody()
+            @await Html.PartialAsync("_Footer")
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <!-- Idle warning (main.js initSession) -->
+    <div class="modal-overlay" id="sessionWarningModal" aria-hidden="true">
+      <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="sessionWarningTitle" style="max-width:420px">
+        <div class="modal-header"><div class="modal-title" id="sessionWarningTitle"><i class="fa-solid fa-clock" style="color:var(--warning)"></i> @L["SessionExpiringTitle"]</div></div>
+        <div class="modal-body"><p>@L["SessionExpiringMsg"] <strong id="sessionCountdown"></strong></p></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="sessionSignOutBtn">@L["SignOut"]</button>
+          <button type="button" class="btn btn-primary" id="sessionStayBtn">@L["StaySignedIn"]</button>
+        </div>
+      </div>
+    </div>
+    <form id="sessionLogoutForm" action="/Account/Logout" method="post" style="display:none">@Html.AntiForgeryToken()</form>
+
+    <script>window.IMSBI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(commonStrings));</script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="~/js/main.js" asp-append-version="true"></script>
+    <script src="~/js/header.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

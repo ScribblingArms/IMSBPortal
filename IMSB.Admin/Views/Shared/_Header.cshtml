@@ -1,0 +1,115 @@
+﻿@using System.Globalization
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    // a page can leave out the search box and the notification bell (the Artisans page has its own directory search)
+    var showTools = ViewData["HideHeaderTools"] as bool? != true;
+    // strings for header.js (search results and notifications)
+    var headerKeys = new[] {
+        "SearchPlaceholder", "SearchMinChars", "SearchNoResults", "Searching", "SearchGroupPages", "SearchGroupArtisans",
+        "SearchGroupApplications", "SearchGroupStalls", "SearchGroupStaff", "SearchGroupProducts", "NoNotifications",
+        "NotifAppsPending", "NotifAppsReview", "NotifReallocationsPending", "NotifAgreementsExpired", "NotifAgreementsExpiring",
+        "NotifArtisanRenewals", "NotifOutOfStock", "NotifLowStock", "NotifContractsExpiring", "CouldNotReachServer"
+    };
+    var headerStrings = headerKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<header class="top-header">
+  <button class="header-toggle" id="sidebarToggle" title="@L["ToggleSidebar"]" aria-label="@L["ToggleSidebar"]">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+    <div class="header-breadcrumb">
+    <i class="fa-solid fa-house"></i>
+    <i class="fa-solid fa-chevron-right"></i>
+    @* render the value itself: some views store a LocalizedHtmlString, whose ToString() is its type name *@
+    <span class="crumb-current">@(ViewData["Title"] ?? L["Dashboard"].Value)</span>
+  </div>
+  <div class="header-actions">
+        @{
+            var current = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            var returnUrl = Context.Request.Path + Context.Request.QueryString;
+        }
+
+        <form asp-controller="Language"
+              asp-action="SetLanguage"
+              method="post"
+              class="language-form" style="display:inline-block;margin-right:8px">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+            <select name="culture"
+                    id="languageSelect"
+                    aria-label="@L["Language"]"
+                    onchange="this.form.submit()"
+                    class="form-control" style="padding:6px 10px;font-size:.78rem;width:auto">
+
+                <option value="en-US" selected="@(current == "en")">
+                    English
+                </option>
+
+                <option value="ta-IN" selected="@(current == "ta")">
+                    தமிழ்
+                </option>
+
+                <option value="te-IN" selected="@(current == "te")">
+                    తెలుగు
+                </option>
+
+                <option value="hi-IN" selected="@(current == "hi")">
+                    हिन्दी
+                </option>
+
+            </select>
+        </form>
+    @if (showTools)
+    {
+    <div class="header-pop-wrap" id="headerSearchWrap">
+      <button type="button" class="header-btn" id="headerSearchBtn" title="@L["Search"] (Ctrl+K)" aria-label="@L["Search"]" aria-expanded="false" aria-controls="headerSearchPanel"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <div class="header-pop header-search-pop" id="headerSearchPanel" role="dialog" aria-label="@L["Search"]" hidden>
+        <div class="search-box header-search-box"><i class="fa-solid fa-search"></i>
+          <input type="search" id="headerSearchInput" autocomplete="off" placeholder="@L["SearchPlaceholder"]" aria-label="@L["Search"]"></div>
+        <div class="header-pop-body" id="headerSearchResults" aria-live="polite"><div class="header-pop-empty">@L["SearchMinChars"]</div></div>
+      </div>
+    </div>
+    <div class="header-pop-wrap" id="headerNotifWrap">
+      <button type="button" class="header-btn" id="headerNotifBtn" title="@L["Notifications"]" aria-label="@L["Notifications"]" aria-expanded="false" aria-controls="headerNotifPanel">
+        <i class="fa-solid fa-bell"></i>
+        <span class="notif-dot" id="headerNotifDot" hidden></span>
+      </button>
+      <div class="header-pop header-notif-pop" id="headerNotifPanel" role="dialog" aria-label="@L["Notifications"]" hidden>
+        <div class="header-pop-head">
+          <strong>@L["Notifications"]</strong>
+          <button type="button" class="btn btn-ghost btn-sm" id="headerNotifMarkRead">@L["MarkAllRead"]</button>
+        </div>
+        <div class="header-pop-body" id="headerNotifList"><div class="header-pop-empty">@L["NoNotifications"]</div></div>
+      </div>
+    </div>
+    <script>window.IMSBHeaderI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(headerStrings));</script>
+    }
+    <button class="header-btn" id="darkModeToggle" title="@L["ToggleDarkMode"]" aria-label="@L["ToggleDarkMode"]">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+    <div class="header-divider"></div>
+    @{
+        var userName = User.Identity?.Name ?? L["AdminUser"].Value;
+        var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+        var initials = userName.Length >= 2 ? userName.Substring(0, 2).ToUpperInvariant() : userName.ToUpperInvariant();
+    }
+    <div class="header-user">
+      <div class="header-user-avatar">@initials</div>
+      <div>
+        <div class="header-user-name">@userName</div>
+        <div class="header-user-role">@(userRole switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, _ => L["StateLevelAdmin"].Value })</div>
+      </div>
+    </div>
+    <a class="header-btn" href="/Account/Sessions" title="@L["ActiveSessions"]" aria-label="@L["ActiveSessions"]"><i class="fa-solid fa-shield-halved"></i></a>
+    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline-block">
+      @Html.AntiForgeryToken()
+      <button type="submit" class="header-btn" title="@L["SignOut"]" aria-label="@L["SignOut"]"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </form>
+  </div>
+</header>

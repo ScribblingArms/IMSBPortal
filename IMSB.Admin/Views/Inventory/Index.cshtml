@@ -1,0 +1,219 @@
+﻿@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    // Same shared resources as the header/sidebar (Resources/SharedResource.<culture>.resx)
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["Inventory"].Value;
+    var stats = (IMSB.Dto.Models.InventoryStats)ViewBag.Stats;
+
+    // Strings used by inventory.js (tables, cards, toasts, client-side validation)
+    var jsKeys = new[] {
+        "InStock", "LowStock", "OutOfStock", "Quantity", "MinStock", "Critical", "Moderate", "Restock", "Edit", "Delete", "Success", "Error",
+        "ProductsLabel", "LowStockCount", "AllStocked", "ViewProducts", "TotalUnits", "StockValue", "CurrentStock", "MinRequired",
+        "NoProductsFound", "NoLowStock", "NoStockUpdates", "InitialStock", "AddStock", "ReduceStock", "Correction", "SaleDeduction", "SaleReversal",
+        "ProductRemoved", "AvailableQty", "NewQuantityPreview", "CorrectionHint", "ProductAdded", "ProductUpdated",
+        "ProductDeletedMsg", "ProductNotFound", "ConfirmDeleteProduct", "StockUpdatedSuccessfully", "DiscardChanges",
+        "CouldNotReachServer", "CheckForm", "SelectPlaceholder", "SearchSelect", "AllCategories", "ItemsCount",
+        "ValProductName", "ValCategory", "ValStall", "ValQuantity", "ValQuantityPositive", "ValMinStock", "ValUnitPrice",
+        "ValSelectProduct", "ValUpdateType", "ValDate", "ValDateFuture", "ValRemarks", "ValInsufficientStock"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+    <main class="page-body">
+      <div class="page-header">
+        <div><div class="page-title">@L["InventoryManagement"]</div><div class="page-subtitle">@L["InventorySubtitle"]</div></div>
+        <div class="page-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="inventoryExportBtn"><i class="fa-solid fa-download"></i> @L["Export"]</button>
+          <button type="button" class="btn btn-primary btn-sm" id="addProductBtn"><i class="fa-solid fa-plus"></i> @L["AddProduct"]</button>
+        </div>
+      </div>
+
+      <!-- Alert (hidden when nothing is below its minimum) -->
+      <div class="alert alert-danger" id="belowMinAlert" style="@(stats.BelowMinimum == 0 ? "display:none" : "")">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div><strong id="belowMinCount">@string.Format(L["ItemsCount"].Value, stats.BelowMinimum)</strong> @L["BelowMinStock"]</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-grid" style="grid-template-columns:repeat(5,1fr)">
+        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div><div class="stat-value" id="statTotalProducts">@stats.Total</div><div class="stat-label">@L["TotalProducts"]</div></div>
+        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-value" id="statInStock">@stats.InStock</div><div class="stat-label">@L["InStock"]</div></div>
+        <div class="stat-card red"><div class="stat-icon"><i class="fa-solid fa-box-open"></i></div><div class="stat-value" id="statLowStock">@stats.BelowMinimum</div><div class="stat-label">@L["LowStock"]</div></div>
+        <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-tags"></i></div><div class="stat-value" id="statCategories">@stats.Categories</div><div class="stat-label">@L["Categories"]</div></div>
+        <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-store"></i></div><div class="stat-value" id="statStalls">@stats.StallsTracked</div><div class="stat-label">@L["StallsTracked"]</div></div>
+      </div>
+
+      <!-- Chart + low stock list -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:20px">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-bar"></i> @L["StockLevelByCategory"]</div></div>
+          <div class="card-body"><div style="height:220px"><canvas id="stockLevelChart" data-label-current="@L["CurrentStock"]" data-label-min="@L["MinRequired"]"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title" style="color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> @L["LowStockItems"]</div></div>
+          <div class="card-body" style="padding-top:8px;max-height:260px;overflow:auto" id="lowStockCardList"></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div data-tabs id="inventoryTabs">
+        <div class="tab-bar">
+          <div class="tab-item active" data-tab="all">@L["AllProducts"] <span class="tab-count" id="tabCountAll">@stats.Total</span></div>
+          <div class="tab-item" data-tab="bycat">@L["ByCategory"]</div>
+          <div class="tab-item" data-tab="update">@L["StockUpdate"]</div>
+          <div class="tab-item" data-tab="alerts">@L["LowStockAlerts"] <span class="tab-count" id="tabCountAlerts" style="background:var(--danger-light);color:var(--danger)">@stats.BelowMinimum</span></div>
+        </div>
+
+        <!-- All Products -->
+        <div class="tab-panel active" data-panel="all">
+          <div class="card">
+            <div class="card-body">
+              <div class="toolbar">
+                <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="productSearch" data-url-search placeholder="@L["SearchProducts"]" aria-label="@L["SearchProducts"]"></div>
+                <select id="productFilterCategory" class="form-control" style="width:auto;min-width:160px" aria-label="@L["Category"]"><option value="">@L["AllCategories"]</option></select>
+                <select id="productFilterStatus" class="form-control" style="width:auto;min-width:130px" aria-label="@L["Status"]">
+                  <option value="">@L["AllStatus"]</option>
+                  <option value="IN_STOCK">@L["InStock"]</option>
+                  <option value="LOW_STOCK">@L["LowStock"]</option>
+                  <option value="OUT_OF_STOCK">@L["OutOfStock"]</option>
+                </select>
+              </div>
+              <div class="table-container">
+                <table class="data-table" id="inventoryTable">
+                  <thead><tr><th>#</th><th>@L["ProductName"]</th><th>@L["Category"]</th><th>@L["Stall"]</th><th>@L["Quantity"]</th><th>@L["MinStock"]</th><th>@L["UnitPrice"]</th><th>@L["Status"]</th><th>@L["Actions"]</th></tr></thead>
+                  <tbody id="inventoryBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- By Category -->
+        <div class="tab-panel" data-panel="bycat">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px" id="catCards"></div>
+        </div>
+
+        <!-- Stock Update -->
+        <div class="tab-panel" data-panel="update">
+          <div class="card" style="margin-bottom:18px">
+            <div class="card-header"><div class="card-title"><i class="fa-solid fa-arrows-rotate"></i> @L["UpdateStock"]</div></div>
+            <div class="card-body">
+              <form id="stockUpdateForm" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="form-grid col-2">
+                  <div class="form-group"><label class="form-label" for="suProduct">@L["SelectProduct"] <span class="req">*</span></label>
+                    <select id="suProduct" class="form-control" required><option value="">-- @L["SearchSelect"] --</option></select>
+                    <div class="form-hint" id="suAvailable" style="font-size:.7rem;color:var(--text-muted)"></div>
+                    <div class="form-error" id="su_err_product_code"></div></div>
+                  <div class="form-group"><label class="form-label" for="suType">@L["UpdateType"] <span class="req">*</span></label>
+                    <select id="suType" class="form-control" required>
+                      <option value="">-- @L["Select"] --</option>
+                      <option value="ADD">@L["AddStock"]</option>
+                      <option value="REDUCE">@L["ReduceStock"]</option>
+                      <option value="CORRECTION">@L["Correction"]</option>
+                    </select>
+                    <div class="form-error" id="su_err_update_type"></div></div>
+                  <div class="form-group"><label class="form-label" for="suQuantity">@L["Quantity"] <span class="req">*</span></label>
+                    <input type="number" id="suQuantity" class="form-control" min="0" step="1" placeholder="@L["EnterQuantity"]" required>
+                    <div class="form-hint" id="suPreview" style="font-size:.7rem;color:var(--text-muted)"></div>
+                    <div class="form-error" id="su_err_quantity"></div></div>
+                  <div class="form-group"><label class="form-label" for="suDate">@L["Date"] <span class="req">*</span></label>
+                    <input type="date" id="suDate" class="form-control" required>
+                    <div class="form-error" id="su_err_date"></div></div>
+                  <div class="form-group form-full"><label class="form-label" for="suRemarks">@L["Remarks"]</label>
+                    <textarea id="suRemarks" class="form-control" rows="2" maxlength="500" placeholder="@L["ReasonForStockUpdate"]"></textarea>
+                    <div class="form-error" id="su_err_remarks"></div></div>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:4px">
+                  <button type="submit" class="btn btn-primary" id="suSubmitBtn"><i class="fa-solid fa-floppy-disk"></i> @L["UpdateStock"]</button>
+                  <button type="button" class="btn btn-outline" id="suResetBtn">@L["Reset"]</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> @L["RecentStockUpdates"]</div></div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table" id="movementsTable">
+                  <thead><tr><th>@L["Date"]</th><th>@L["ProductName"]</th><th>@L["UpdateType"]</th><th>@L["Quantity"]</th><th>@L["Before"]</th><th>@L["After"]</th><th>@L["Remarks"]</th><th>@L["UpdatedBy"]</th></tr></thead>
+                  <tbody id="movementsBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Low Stock Alerts -->
+        <div class="tab-panel" data-panel="alerts">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table" id="alertsTable">
+                  <thead><tr><th>@L["ProductName"]</th><th>@L["Category"]</th><th>@L["Stall"]</th><th>@L["CurrentQty"]</th><th>@L["MinRequired"]</th><th>@L["Urgency"]</th><th>@L["Actions"]</th></tr></thead>
+                  <tbody id="alertsBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+<!-- Add / Edit Product Modal (markup mirrors IMSB_ADMIN_PANEL/pages/inventory.html) -->
+<div class="modal-overlay" id="addProductModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle"
+       data-add-title="@L["AddNewProduct"]" data-edit-title="@L["EditProduct"]"
+       data-add-text="@L["AddProduct"]" data-edit-text="@L["SaveChanges"]">
+    <div class="modal-header">
+      <div class="modal-title" id="productModalTitle">@L["AddNewProduct"]</div>
+      <button type="button" class="modal-close" id="productModalClose" aria-label="@L["Cancel"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="productForm" novalidate>
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="productCode" />
+        <div class="form-grid col-2">
+          <div class="form-group form-full"><label class="form-label" for="productName">@L["ProductName"] <span class="req">*</span></label>
+            <input id="productName" class="form-control" maxlength="200" placeholder="@L["ProductName"]" required>
+            <div class="form-error" id="err_name"></div></div>
+          <div class="form-group"><label class="form-label" for="productCategory">@L["Category"] <span class="req">*</span></label>
+            <select id="productCategory" class="form-control" required><option value="">@L["SelectPlaceholder"]</option></select>
+            <div class="form-error" id="err_category_id"></div></div>
+          <div class="form-group"><label class="form-label" for="productStall">@L["AssignedStall"] <span class="req">*</span></label>
+            <input id="productStall" class="form-control" list="stallOptions" maxlength="20" placeholder="@L["StallPlaceholder"]" style="text-transform:uppercase" required>
+            <datalist id="stallOptions"></datalist>
+            <div class="form-error" id="err_stall_code"></div></div>
+          <div class="form-group"><label class="form-label" for="productQuantity"><span id="productQuantityLabel" data-add="@L["InitialQuantity"]" data-edit="@L["CurrentQuantity"]">@L["InitialQuantity"]</span> <span class="req" id="productQuantityReq">*</span></label>
+            <input id="productQuantity" type="number" class="form-control" min="0" step="1" required>
+            <div class="form-hint" id="productQuantityHint" style="font-size:.7rem;color:var(--text-muted);display:none">@L["QuantityViaStockUpdate"]</div>
+            <div class="form-error" id="err_quantity"></div></div>
+          <div class="form-group"><label class="form-label" for="productMinStock">@L["MinStock"]</label>
+            <input id="productMinStock" type="number" class="form-control" min="0" step="1" placeholder="@L["MinStockPlaceholder"]">
+            <div class="form-error" id="err_min_stock"></div></div>
+          <div class="form-group"><label class="form-label" for="productPrice">@L["UnitPrice"]</label>
+            <input id="productPrice" type="number" class="form-control" step="0.01" min="0">
+            <div class="form-error" id="err_unit_price"></div></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" id="productCancelBtn">@L["Cancel"]</button>
+      <button type="button" class="btn btn-primary" id="productSubmitBtn"><i class="fa-solid fa-plus"></i> <span id="productSubmitText">@L["AddProduct"]</span></button>
+    </div>
+  </div>
+</div>
+
+@section Styles {
+    <style>
+      /* stall codes are typed upper-case, but the "e.g. A-01" hint should read normally */
+      #productStall::placeholder { text-transform: none; }
+    </style>
+}
+
+@section Scripts {
+    <script>window.InventoryI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+    <script src="~/js/charts.js" asp-append-version="true"></script>
+    <script src="~/js/inventory.js" asp-append-version="true"></script>
+}

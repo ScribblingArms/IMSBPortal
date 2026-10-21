@@ -1,0 +1,306 @@
+﻿@using IMSB.Admin.Resources
+@using IMSB.Dto.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["StallManagement"].Value;
+    var stats = (StallStats)ViewBag.Stats;
+
+    // Strings used by stalls.js (map, tables, modals, toasts, client-side validation)
+    var jsKeys = new[] {
+        "Occupied", "Vacant", "Reserved", "UnderMaintenance", "Success", "Error", "Edit", "Delete", "View", "CouldNotReachServer", "CheckForm",
+        "DiscardChanges", "StallLabel", "NoStallsFound", "NoStallsRegistered", "NoReallocations", "PendingLabel", "ApprovedLabel", "RejectedLabel",
+        "StallCreated", "StallUpdated", "StallDeleted", "StallAllocated", "StallVacated", "ReallocationRequested", "ReallocationApproved",
+        "ReallocationRejected", "ConfirmDeleteStall", "ConfirmVacateStall", "ConfirmApproveReallocation", "DecisionRemarksPrompt",
+        "CreateNewStall", "EditStall", "Create", "SaveChanges", "SelectPlaceholder", "VacateStallOption", "BlockLabel", "ProductsAtStall",
+        "AllocateStall", "RequestReallocation", "VacateStall", "Approve", "Reject", "NoFreeArtisans", "NoVacantStalls", "NoOccupiedStalls",
+        "ReasonClosure", "ReasonCategoryChange", "ReasonArtisanRequest", "ReasonNonPerformance", "ReasonAgreementExpired", "ReasonOther",
+        "StallNotFound", "PendingReallocationBadge", "AllottedOn", "AgreementUntil", "MonthlyRent", "Category", "Artisan", "Location", "Remarks", "Status",
+        "ValStallCode", "ValStallName", "ValBlock", "ValSelectStall", "ValSelectArtisan", "ValDate", "ValDateFuture", "ValAgreementEnd",
+        "ValReason", "ValRent", "ValRemarks"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <div class="page-title">@L["StallManagement"]</div>
+      <div class="page-subtitle">@L["StallSubtitle"]</div>
+    </div>
+    <div class="page-actions">
+      <button type="button" class="btn btn-outline btn-sm" id="stallsExportBtn"><i class="fa-solid fa-download"></i> @L["Export"]</button>
+      <button type="button" class="btn btn-primary btn-sm" id="createStallBtn"><i class="fa-solid fa-plus"></i> @L["CreateStall"]</button>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:20px">
+    <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-store"></i></div><div class="stat-value" id="statTotal">@stats.Total</div><div class="stat-label">@L["TotalStalls"]</div></div>
+    <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div><div class="stat-value" id="statOccupied">@stats.Occupied</div><div class="stat-label">@L["Occupied"]</div></div>
+    <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-door-open"></i></div><div class="stat-value" id="statVacant">@stats.Vacant</div><div class="stat-label">@L["Vacant"]</div></div>
+    <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-rotate"></i></div><div class="stat-value" id="statPending">@stats.PendingReallocation</div><div class="stat-label">@L["PendingReallocation"]</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div data-tabs id="stallTabs">
+    <div class="tab-bar">
+      <div class="tab-item active" data-tab="map">@L["StallMap"] <span class="tab-count" id="tabCountMap">@stats.Total</span></div>
+      <div class="tab-item" data-tab="list">@L["StallList"] <span class="tab-count" id="tabCountList">@stats.Total</span></div>
+      <div class="tab-item" data-tab="allocate">@L["AllocateStall"] <span class="tab-count" id="tabCountVacant">@stats.Vacant</span></div>
+      <div class="tab-item" data-tab="reallocate">@L["Reallocation"] <span class="tab-count" id="tabCountPending">@stats.PendingReallocation</span></div>
+    </div>
+
+    <!-- Map Tab -->
+    <div class="tab-panel active" data-panel="map">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-map"></i> @L["StallLayoutMap"]</div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div class="map-legend">
+              <div class="legend-item"><div class="legend-dot occupied"></div> @L["Occupied"] (<span id="legendOccupied">@stats.Occupied</span>)</div>
+              <div class="legend-item"><div class="legend-dot vacant"></div> @L["Vacant"] (<span id="legendVacant">@stats.Vacant</span>)</div>
+              <div class="legend-item"><div class="legend-dot reserved"></div> @L["Reserved"] (<span id="legendReserved">@stats.Reserved</span>)</div>
+              <div class="legend-item"><div class="legend-dot maintenance"></div> @L["UnderMaintenance"] (<span id="legendMaintenance">@stats.Maintenance</span>)</div>
+            </div>
+            <select class="form-control" id="mapBlock" style="width:auto;min-width:130px" aria-label="@L["BlockZone"]"><option value="">@L["AllBlocks"]</option></select>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="stallMap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List Tab -->
+    <div class="tab-panel" data-panel="list">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-list"></i> @L["AllStalls"]</div>
+        </div>
+        <div class="card-body" style="padding-top:14px">
+          <div class="toolbar" style="flex-wrap:wrap">
+            <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="stallSearch" data-url-search placeholder="@L["SearchStalls"]" aria-label="@L["SearchStalls"]"></div>
+            <select class="form-control" style="width:auto;min-width:140px" id="filterStatus" aria-label="@L["Status"]">
+              <option value="">@L["AllStatus"]</option>
+              <option value="OCCUPIED">@L["Occupied"]</option>
+              <option value="VACANT">@L["Vacant"]</option>
+              <option value="RESERVED">@L["Reserved"]</option>
+              <option value="MAINTENANCE">@L["UnderMaintenance"]</option>
+            </select>
+            <select class="form-control" style="width:auto;min-width:150px" id="filterCategory" aria-label="@L["Category"]"><option value="">@L["AllCategories"]</option></select>
+            <select class="form-control" style="width:auto;min-width:120px" id="filterBlock" aria-label="@L["BlockZone"]"><option value="">@L["AllBlocks"]</option></select>
+            <button type="button" class="btn btn-outline btn-sm" id="filterResetBtn">@L["Reset"]</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table" id="stallsTable">
+              <thead><tr>
+                <th>@L["StallID"]</th><th>@L["Name"]</th><th>@L["Location"]</th><th>@L["Artisan"]</th>
+                <th>@L["Category"]</th><th>@L["AllottedDate"]</th><th>@L["Status"]</th><th>@L["Actions"]</th>
+              </tr></thead>
+              <tbody id="stallsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allocate Tab -->
+    <div class="tab-panel" data-panel="allocate">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fa-solid fa-store-slash"></i> @L["AllocateStallToArtisan"]</div></div>
+        <div class="card-body">
+          <form id="allocateForm" novalidate>
+            @Html.AntiForgeryToken()
+            <div class="form-grid col-2" style="margin-bottom:18px">
+              <div class="form-group">
+                <label class="form-label" for="alStall">@L["SelectVacantStall"] <span class="req">*</span></label>
+                <select class="form-control" id="alStall" required><option value="">@L["SelectPlaceholder"]</option></select>
+                <div class="form-error" id="al_err_stall_code"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="alArtisan">@L["SelectArtisan"] <span class="req">*</span></label>
+                <select class="form-control" id="alArtisan" required><option value="">@L["SelectPlaceholder"]</option></select>
+                <div class="form-hint" style="font-size:.7rem;color:var(--text-muted)">@L["FreeArtisansHint"]</div>
+                <div class="form-error" id="al_err_artisan_code"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="alCategory">@L["ProductCategory"]</label>
+                <select class="form-control" id="alCategory"><option value="">@L["ArtisansCraftCategory"]</option></select>
+                <div class="form-error" id="al_err_category_id"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="alDate">@L["AllotmentDate"] <span class="req">*</span></label>
+                <input type="date" class="form-control" id="alDate" required>
+                <div class="form-error" id="al_err_allotted_date"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="alRent">@L["MonthlyRent"]</label>
+                <input type="number" class="form-control" id="alRent" min="0" step="0.01" placeholder="0.00">
+                <div class="form-error" id="al_err_monthly_rent"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="alEnd">@L["AgreementEndDate"]</label>
+                <input type="date" class="form-control" id="alEnd">
+                <div class="form-error" id="al_err_agreement_end_date"></div>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="alRemarks">@L["Remarks"]</label>
+                <textarea class="form-control" id="alRemarks" maxlength="500" placeholder="@L["AdditionalNotes"]" rows="2"></textarea>
+                <div class="form-error" id="al_err_remarks"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button type="submit" class="btn btn-primary" id="allocateBtn"><i class="fa-solid fa-check"></i> @L["AllocateStall"]</button>
+              <button type="button" class="btn btn-outline" id="allocateResetBtn">@L["Reset"]</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reallocation Tab -->
+    <div class="tab-panel" data-panel="reallocate">
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-header"><div class="card-title"><i class="fa-solid fa-code-pull-request"></i> @L["RequestReallocation"]</div></div>
+        <div class="card-body">
+          <form id="reallocForm" novalidate>
+            <div class="form-grid col-2" style="margin-bottom:14px">
+              <div class="form-group">
+                <label class="form-label" for="reStall">@L["OccupiedStall"] <span class="req">*</span></label>
+                <select class="form-control" id="reStall" required><option value="">@L["SelectPlaceholder"]</option></select>
+                <div class="form-error" id="re_err_stall_code"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reReason">@L["Reason"] <span class="req">*</span></label>
+                <select class="form-control" id="reReason" required>
+                  <option value="">@L["SelectPlaceholder"]</option>
+                  <option value="CLOSURE">@L["ReasonClosure"]</option>
+                  <option value="CATEGORY_CHANGE">@L["ReasonCategoryChange"]</option>
+                  <option value="ARTISAN_REQUEST">@L["ReasonArtisanRequest"]</option>
+                  <option value="NON_PERFORMANCE">@L["ReasonNonPerformance"]</option>
+                  <option value="AGREEMENT_EXPIRED">@L["ReasonAgreementExpired"]</option>
+                  <option value="OTHER">@L["ReasonOther"]</option>
+                </select>
+                <div class="form-error" id="re_err_reason"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reArtisan">@L["NewArtisan"]</label>
+                <select class="form-control" id="reArtisan"><option value="">@L["VacateStallOption"]</option></select>
+                <div class="form-error" id="re_err_new_artisan_code"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="reDate">@L["RequestedDate"] <span class="req">*</span></label>
+                <input type="date" class="form-control" id="reDate" required>
+                <div class="form-error" id="re_err_requested_date"></div>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="reRemarks">@L["Remarks"]</label>
+                <textarea class="form-control" id="reRemarks" maxlength="500" rows="2"></textarea>
+                <div class="form-error" id="re_err_remarks"></div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="reallocBtn"><i class="fa-solid fa-paper-plane"></i> @L["SubmitRequest"]</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fa-solid fa-rotate"></i> @L["StallReallocation"]</div></div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="data-table" id="reallocTable">
+              <thead><tr><th>@L["RequestNo"]</th><th>@L["StallID"]</th><th>@L["CurrentArtisan"]</th><th>@L["NewArtisan"]</th><th>@L["Reason"]</th><th>@L["RequestedDate"]</th><th>@L["Status"]</th><th>@L["Actions"]</th></tr></thead>
+              <tbody id="reallocBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tabs -->
+
+</div>
+
+<!-- Create / Edit Stall Modal -->
+<div class="modal-overlay" id="stallModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="stallModalTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="stallModalTitle">@L["CreateNewStall"]</div>
+      <button type="button" class="modal-close" id="stallModalClose" aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="stallForm" novalidate>
+        <input type="hidden" id="stEditing">
+        <div class="form-grid col-2">
+          <div class="form-group"><label class="form-label" for="stCode">@L["StallID"] <span class="req">*</span></label>
+            <input class="form-control" id="stCode" maxlength="20" placeholder="@L["StallIdPlaceholder"]" style="text-transform:uppercase" required>
+            <div class="form-error" id="st_err_stall_code"></div></div>
+          <div class="form-group"><label class="form-label" for="stName">@L["StallName"] <span class="req">*</span></label>
+            <input class="form-control" id="stName" maxlength="100" placeholder="@L["DisplayName"]" required>
+            <div class="form-error" id="st_err_name"></div></div>
+          <div class="form-group"><label class="form-label" for="stBlock">@L["BlockZone"] <span class="req">*</span></label>
+            <input class="form-control" id="stBlock" maxlength="20" list="blockOptions" placeholder="A" style="text-transform:uppercase" required>
+            <datalist id="blockOptions"></datalist>
+            <div class="form-error" id="st_err_block"></div></div>
+          <div class="form-group"><label class="form-label" for="stRow">@L["Row"]</label>
+            <input class="form-control" id="stRow" maxlength="20" placeholder="@L["RowPlaceholder"]">
+            <div class="form-error" id="st_err_row_label"></div></div>
+          <div class="form-group"><label class="form-label" for="stStatus">@L["Status"]</label>
+            <select class="form-control" id="stStatus">
+              <option value="VACANT">@L["Vacant"]</option>
+              <option value="RESERVED">@L["Reserved"]</option>
+              <option value="MAINTENANCE">@L["UnderMaintenance"]</option>
+              <option value="OCCUPIED" disabled>@L["Occupied"]</option>
+            </select>
+            <div class="form-hint" id="stStatusHint" style="font-size:.7rem;color:var(--text-muted);display:none">@L["OccupiedStatusHint"]</div>
+            <div class="form-error" id="st_err_status"></div></div>
+          <div class="form-group"><label class="form-label" for="stCategory">@L["Category"]</label>
+            <select class="form-control" id="stCategory"><option value="">@L["SelectPlaceholder"]</option></select>
+            <div class="form-error" id="st_err_category_id"></div></div>
+          <div class="form-group"><label class="form-label" for="stRent">@L["MonthlyRent"]</label>
+            <input type="number" class="form-control" id="stRent" min="0" step="0.01" placeholder="0.00">
+            <div class="form-error" id="st_err_monthly_rent"></div></div>
+          <div class="form-group form-full"><label class="form-label" for="stLocation">@L["LocationDescription"]</label>
+            <textarea class="form-control" id="stLocation" rows="2" maxlength="500" placeholder="@L["LocationDetailsPlaceholder"]"></textarea>
+            <div class="form-error" id="st_err_location"></div></div>
+          <div class="form-group form-full"><label class="form-label" for="stRemarks">@L["Remarks"]</label>
+            <textarea class="form-control" id="stRemarks" rows="2" maxlength="500"></textarea>
+            <div class="form-error" id="st_err_remarks"></div></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" id="stallCancelBtn">@L["Cancel"]</button>
+      <button type="button" class="btn btn-primary" id="stallSaveBtn"><i class="fa-solid fa-floppy-disk"></i> <span id="stallSaveText">@L["Create"]</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Stall details -->
+<div class="modal-overlay" id="stallViewModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="stallViewTitle" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title" id="stallViewTitle"></div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="stallViewBody"></div>
+    <div class="modal-footer" id="stallViewActions" style="flex-wrap:wrap"></div>
+  </div>
+</div>
+
+@section Styles {
+  <style>
+    .legend-dot.maintenance { background: var(--text-muted); }
+    .stall-cell.maintenance { background: var(--bg); border-color: var(--text-muted); }
+    .stall-cell.has-request { box-shadow: 0 0 0 2px var(--accent) inset; }
+    .block-title { font-size: .75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin: 14px 0 8px; }
+    .block-title:first-child { margin-top: 0; }
+    .empty-state { text-align: center; padding: 24px 12px; color: var(--text-muted); font-size: .8rem; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #stCode::placeholder, #stBlock::placeholder { text-transform: none; }
+  </style>
+}
+
+@section Scripts {
+  <script>window.StallsI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+  <script src="~/js/stalls.js" asp-append-version="true"></script>
+}

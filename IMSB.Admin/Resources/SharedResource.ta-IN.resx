@@ -1,0 +1,2592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OperationsDashboard" xml:space="preserve">
+    <value>ஒபரேஷன்ஸ் டாஷ்போர்டு</value>
+  </data>
+  <data name="GovernmentStrip" xml:space="preserve">
+    <value>🏛️ Government of Telangana | Indhira Mahila Sakthi Bazar (IMSB) | நிர்வாக மேலாண்மை போர்டல் | இரகசியம் – அதிகாரப்பூர்வ அணுகல் மட்டுமே</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>டாஷ்போர்ட்</value>
+  </data>
+  <data name="AdminDashboard" xml:space="preserve">
+    <value>நிர்வாக டாஷ்போர்ட்</value>
+  </data>
+  <data name="Sales" xml:space="preserve">
+    <value>விற்பனை</value>
+  </data>
+  <data name="ArtisanApplications" xml:space="preserve">
+    <value>கைவினைக் விண்ணப்பங்கள்</value>
+  </data>
+  <data name="ApplicationsSubtitle" xml:space="preserve">
+    <value>விண்ணப்பங்களை பரிசீலிக்கவும், அங்கீகரிக்கவும் மற்றும் நிர்வகிக்கவும்</value>
+  </data>
+  <data name="NewApplication" xml:space="preserve">
+    <value>புதிய விண்ணப்பம்</value>
+  </data>
+  <data name="TotalApplications" xml:space="preserve">
+    <value>மொத்த விண்ணப்பங்கள்</value>
+  </data>
+  <data name="ApprovedLabel" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்டது</value>
+  </data>
+  <data name="UnderReviewLabel" xml:space="preserve">
+    <value>பரிசீலனையில்</value>
+  </data>
+  <data name="PendingLabel" xml:space="preserve">
+    <value>நிலுவையில்</value>
+  </data>
+  <data name="PendingTab" xml:space="preserve">
+    <value>பரிசீலனை / புதியவை</value>
+  </data>
+  <data name="SearchApproved" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்டவற்றை தேடவும்…</value>
+  </data>
+  <data name="AppID" xml:space="preserve">
+    <value>விண் ஐடி</value>
+  </data>
+  <data name="Applicant" xml:space="preserve">
+    <value>விண்ணப்பதாரர்</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>வகை</value>
+  </data>
+  <data name="District" xml:space="preserve">
+    <value>மாவட்டம்</value>
+  </data>
+  <data name="StallAssigned" xml:space="preserve">
+    <value>ஒதுக்கப்பட்ட ஸ்டால்</value>
+  </data>
+  <data name="ApprovedDate" xml:space="preserve">
+    <value>அங்கீகாரம் தேதி</value>
+  </data>
+  <data name="ApprovedBy" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்டவர்</value>
+  </data>
+  <data name="Submitted" xml:space="preserve">
+    <value>சமர்ப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="DaysPending" xml:space="preserve">
+    <value>நாட்கள் நிலுவையில்</value>
+  </data>
+  <data name="Reviewer" xml:space="preserve">
+    <value>பரிசீலனையாளர்</value>
+  </data>
+  <data name="DaysWaiting" xml:space="preserve">
+    <value>எதிர்கால நாட்கள்</value>
+  </data>
+  <data name="ApplicationReview" xml:space="preserve">
+    <value>விண்ணப்ப ஆய்வு</value>
+  </data>
+  <data name="ApplicantName" xml:space="preserve">
+    <value>விண்ணப்பதாரரின் பெயர்</value>
+  </data>
+  <data name="AssignStall" xml:space="preserve">
+    <value>ஸ்டால் ஒதுக்கவும்</value>
+  </data>
+  <data name="SelectAvailableStall" xml:space="preserve">
+    <value>கிடைக்கும் ஸ்டால்களைத் தேர்வு செய்யவும்</value>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>கருத்துகள்</value>
+  </data>
+  <data name="ApprovalRejectionRemarks" xml:space="preserve">
+    <value>அங்கீகாரம்/நிராகரிப்பு கருத்துக்கள்…</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>ரத்து செய்</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>நிராகரி</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>அங்கீகரி</value>
+  </data>
+  <data name="ApplicationRejected" xml:space="preserve">
+    <value>விண்ணப்பம் நிராகரிக்கப்பட்டது</value>
+  </data>
+  <data name="ApplicationHasBeenRejected" xml:space="preserve">
+    <value>விண்ணப்பம் நிராகரிக்கப்பட்டது</value>
+  </data>
+  <data name="ApplicationApproved" xml:space="preserve">
+    <value>விண்ணப்பம் அங்கீகாரம்</value>
+  </data>
+  <data name="ApplicantApprovedAndAssigned" xml:space="preserve">
+    <value>விண்ணப்பதாரர் அங்கீகரிக்கப்பட்டு ஸ்டால் ஒதுக்கப்பட்டது</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>மொபைல்</value>
+  </data>
+  <data name="ArtisanManagement" xml:space="preserve">
+    <value>கலைஞர் மேலாண்மை</value>
+  </data>
+  <data name="ArtisanManagementSubtitle" xml:space="preserve">
+    <value>கலைஞர் சுயவிவரங்கள், விண்ணப்பங்கள் மற்றும் ஸ்டால் ஒதுக்கீடுகளை நிர்வகிக்கவும்</value>
+  </data>
+  <data name="TotalArtisans" xml:space="preserve">
+    <value>மொத்த கலைஞர்கள்</value>
+  </data>
+  <data name="OnLeave" xml:space="preserve">
+    <value>விடுப்பில்</value>
+  </data>
+  <data name="RenewalPending" xml:space="preserve">
+    <value>புதுப்பிப்பு நிலுவையில்</value>
+  </data>
+  <data name="StatusOverview" xml:space="preserve">
+    <value>நிலையின் மேற்பார்வை</value>
+  </data>
+  <data name="ArtisanDirectory" xml:space="preserve">
+    <value>கலைஞர் அடைவு</value>
+  </data>
+  <data name="SearchArtisans" xml:space="preserve">
+    <value>கலைஞர்களை தேடு…</value>
+  </data>
+  <data name="AllStatus" xml:space="preserve">
+    <value>அனைத்து நிலைகள்</value>
+  </data>
+  <data name="RenewalDue" xml:space="preserve">
+    <value>புதுப்பிப்பு தேவை</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>எல்லா பிரிவுகள்</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ஐடி</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>பெயர்</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>போன்</value>
+  </data>
+  <data name="Joined" xml:space="preserve">
+    <value>சேர்ந்த தேதி</value>
+  </data>
+  <data name="AttendanceManagement" xml:space="preserve">
+    <value>வருகை மேலாண்மை</value>
+  </data>
+  <data name="AttendanceSubtitle" xml:space="preserve">
+    <value>வருகையை குறி, வருகை/புறப்பட நேரத்தை பதிவுசெய் மற்றும் ஓவர்டைம் கணக்கெடு</value>
+  </data>
+  <data name="SaveAttendance" xml:space="preserve">
+    <value>வருகையை சேமி</value>
+  </data>
+  <data name="TotalStaff" xml:space="preserve">
+    <value>மொத்த ஊழியர்கள்</value>
+  </data>
+  <data name="PresentToday" xml:space="preserve">
+    <value>இன்று பங்கேற்றவர்கள்</value>
+  </data>
+  <data name="AbsentToday" xml:space="preserve">
+    <value>இன்று अनुपस्थित</value>
+  </data>
+  <data name="OvertimeToday" xml:space="preserve">
+    <value>இன்றைய ஓவர்டைம்</value>
+  </data>
+  <data name="WeekOfDates" xml:space="preserve">
+    <value>மக்கள் வாரம் 5 – 11 மே 2025</value>
+  </data>
+  <data name="AttendanceEntry" xml:space="preserve">
+    <value>வருகை பதிவு</value>
+  </data>
+  <data name="DepartmentWise" xml:space="preserve">
+    <value>துறைவாரியாக</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>வரலாறு</value>
+  </data>
+  <data name="MarkAttendance" xml:space="preserve">
+    <value>வருகையை குறி</value>
+  </data>
+  <data name="AllDepartments" xml:space="preserve">
+    <value>அனைத்து துறைகள்</value>
+  </data>
+  <data name="StaffName" xml:space="preserve">
+    <value>ஊழியர் பெயர்</value>
+  </data>
+  <data name="InTime" xml:space="preserve">
+    <value>உள்ளே நேரம்</value>
+  </data>
+  <data name="OutTime" xml:space="preserve">
+    <value>வெளியே நேரம்</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>மணிநேரம்</value>
+  </data>
+  <data name="OT" xml:space="preserve">
+    <value>மிகைநேரம்</value>
+  </data>
+  <data name="SearchStaff" xml:space="preserve">
+    <value>ஊழியர்களை தேடு…</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>முக்கியம்</value>
+  </data>
+  <data name="Operations" xml:space="preserve">
+    <value>ஒபரேஷன்ஸ்</value>
+  </data>
+  <data name="StallManagement" xml:space="preserve">
+    <value>ஸ்டால் மேலாண்மை</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>சரக்கு இருப்பு</value>
+  </data>
+  <data name="People" xml:space="preserve">
+    <value>மக்கள்</value>
+  </data>
+  <data name="Artisans" xml:space="preserve">
+    <value>கலைஞர்கள்</value>
+  </data>
+  <data name="Applications" xml:space="preserve">
+    <value>விண்ணப்பங்கள்</value>
+  </data>
+  <data name="SearchProducts" xml:space="preserve">
+    <value>பொருட்களைத் தேடு…</value>
+  </data>
+  <data name="InventoryManagement" xml:space="preserve">
+    <value>சரக்கு இருப்பு மேலாண்மை</value>
+  </data>
+  <data name="InventorySubtitle" xml:space="preserve">
+    <value>பொருட்கள், இருப்பு நிலைகள் மற்றும் குறைந்த இருப்பு எச்சரிக்கைகளைக் கண்காணிக்கவும்</value>
+  </data>
+  <data name="AddProduct" xml:space="preserve">
+    <value>பொருள் சேர்க்கவும்</value>
+  </data>
+  <data name="BelowMinStock" xml:space="preserve">
+    <value>குறைந்தபட்ச இருப்பு வரம்புக்குக் கீழே உள்ளன, உடனடியாக மீண்டும் நிரப்ப வேண்டும்.</value>
+  </data>
+  <data name="TotalProducts" xml:space="preserve">
+    <value>மொத்த பொருட்கள்</value>
+  </data>
+  <data name="InStock" xml:space="preserve">
+    <value>இருப்பில் உள்ளது</value>
+  </data>
+  <data name="LowStock" xml:space="preserve">
+    <value>குறைந்த இருப்பு</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>வகைகள்</value>
+  </data>
+  <data name="StallsTracked" xml:space="preserve">
+    <value>ஸ்டால்கள் கண்காணிக்கப்படுகிறது</value>
+  </data>
+  <data name="StockLevelByCategory" xml:space="preserve">
+    <value>வகை வாரியான இருப்பு நிலை</value>
+  </data>
+  <data name="LowStockItems" xml:space="preserve">
+    <value>குறைந்த இருப்பு பொருட்கள்</value>
+  </data>
+  <data name="AllProducts" xml:space="preserve">
+    <value>அனைத்து பொருட்கள்</value>
+  </data>
+  <data name="ByCategory" xml:space="preserve">
+    <value>வகையின்படி</value>
+  </data>
+  <data name="StockUpdate" xml:space="preserve">
+    <value>இருப்பு புதுப்பிப்பு</value>
+  </data>
+  <data name="LowStockAlerts" xml:space="preserve">
+    <value>குறைந்த இருப்பு எச்சரிக்கைகள்</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>பொருள் பெயர்</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>அளவு</value>
+  </data>
+  <data name="MinStock" xml:space="preserve">
+    <value>குறைந்தபட்ச இருப்பு</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>அலகு விலை (₹)</value>
+  </data>
+  <data name="UpdateStock" xml:space="preserve">
+    <value>இருப்பைப் புதுப்பி</value>
+  </data>
+  <data name="StockUpdatedSuccessfully" xml:space="preserve">
+    <value>இருப்பு வெற்றிகரமாக புதுப்பிக்கப்பட்டது!</value>
+  </data>
+  <data name="SelectProduct" xml:space="preserve">
+    <value>பொருளை தேர்ந்தெடு</value>
+  </data>
+  <data name="SearchSelect" xml:space="preserve">
+    <value>தேடு / தேர்வு</value>
+  </data>
+  <data name="UpdateType" xml:space="preserve">
+    <value>புதுப்பிப்பு வகை</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>தேர்வு</value>
+  </data>
+  <data name="AddStock" xml:space="preserve">
+    <value>இருப்பைச் சேர் (மீண்டும் நிரப்பு)</value>
+  </data>
+  <data name="ReduceStock" xml:space="preserve">
+    <value>இருப்பைக் குறை (விற்பனை)</value>
+  </data>
+  <data name="Correction" xml:space="preserve">
+    <value>திருத்தம்</value>
+  </data>
+  <data name="EnterQuantity" xml:space="preserve">
+    <value>அளவை உள்ளிடவும்</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>தேதி</value>
+  </data>
+  <data name="ReasonForStockUpdate" xml:space="preserve">
+    <value>இருப்பு புதுப்பிப்புக்கான காரணம்…</value>
+  </data>
+  <data name="StaffHR" xml:space="preserve">
+    <value>பணியாளர் / HR</value>
+  </data>
+  <data name="Attendance" xml:space="preserve">
+    <value>வருகைப் பதிவு</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>அறிக்கைகள்</value>
+  </data>
+  <data name="AdminUser" xml:space="preserve">
+    <value>நிர்வாகப் பயனர்</value>
+  </data>
+  <data name="StateLevelAdmin" xml:space="preserve">
+    <value>மாநில நிலை நிர்வாகி</value>
+  </data>
+  <data name="IMSBPortal" xml:space="preserve">
+    <value>IMSB போர்டல்</value>
+  </data>
+  <data name="StaffTitle" xml:space="preserve">
+    <value>பணியாளர்கள்</value>
+  </data>
+  <data name="StaffHRManagement" xml:space="preserve">
+    <value>பணியாளர் / HR மேலாண்மை</value>
+  </data>
+  <data name="StaffHRSubtitle" xml:space="preserve">
+    <value>பணியாளர் பதிவுகள், துறைகள் மற்றும் HR செயல்பாடுகளை நிர்வகிக்கவும்</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>ஏற்றுமதி</value>
+  </data>
+  <data name="AddStaff" xml:space="preserve">
+    <value>பணியாளரைச் சேர்</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>செயலில்</value>
+  </data>
+  <data name="Inactive" xml:space="preserve">
+    <value>செயலற்றது</value>
+  </data>
+  <data name="Departments" xml:space="preserve">
+    <value>துறைகள்</value>
+  </data>
+  <data name="ContractExpiring" xml:space="preserve">
+    <value>ஒப்பந்தம் முடிவடைகிறது</value>
+  </data>
+  <data name="DeptDistribution" xml:space="preserve">
+    <value>துறை வாரியான பகிர்வு</value>
+  </data>
+  <data name="StaffDirectory" xml:space="preserve">
+    <value>பணியாளர் பட்டியல்</value>
+  </data>
+  <data name="FilterByDepartment" xml:space="preserve">
+    <value>துறை வாரியாக வடிகட்டு</value>
+  </data>
+  <data name="FilterByStatus" xml:space="preserve">
+    <value>நிலை வாரியாக வடிகட்டு</value>
+  </data>
+  <data name="StaffID" xml:space="preserve">
+    <value>பணியாளர் எண்</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>துறை</value>
+  </data>
+  <data name="Designation" xml:space="preserve">
+    <value>பதவி</value>
+  </data>
+  <data name="JoinDate" xml:space="preserve">
+    <value>சேர்ந்த தேதி</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>நிலை</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>செயல்கள்</value>
+  </data>
+  <data name="DeptWiseStaffCount" xml:space="preserve">
+    <value>துறை வாரியான பணியாளர் எண்ணிக்கை</value>
+  </data>
+  <data name="AddNewStaffMember" xml:space="preserve">
+    <value>புதிய பணியாளரைச் சேர்</value>
+  </data>
+  <data name="EditStaffMember" xml:space="preserve">
+    <value>பணியாளர் விவரங்களைத் திருத்து</value>
+  </data>
+  <data name="RegisterStaff" xml:space="preserve">
+    <value>பணியாளரைப் பதிவு செய்</value>
+  </data>
+  <data name="UpdateStaff" xml:space="preserve">
+    <value>பணியாளரைப் புதுப்பி</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>தனிப்பட்ட விவரங்கள்</value>
+  </data>
+  <data name="EmploymentDetails" xml:space="preserve">
+    <value>பணி விவரங்கள்</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>முழு பெயர்</value>
+  </data>
+  <data name="EmployeeID" xml:space="preserve">
+    <value>ஊழியர் எண்</value>
+  </data>
+  <data name="AutoGenerated" xml:space="preserve">
+    <value>தானாக உருவாக்கப்படும்</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>மின்னஞ்சல்</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>பிறந்த தேதி</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>பெண்</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>ஆண்</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>மற்றவை</value>
+  </data>
+  <data name="Shift" xml:space="preserve">
+    <value>பணி நேரம்</value>
+  </data>
+  <data name="DesignationPlaceholder" xml:space="preserve">
+    <value>எ.கா. விற்பனை நிர்வாகி</value>
+  </data>
+  <data name="SelectPlaceholder" xml:space="preserve">
+    <value>-- தேர்ந்தெடு --</value>
+  </data>
+  <data name="NoDepartmentsConfigured" xml:space="preserve">
+    <value>துறைகள் எதுவும் அமைக்கப்படவில்லை</value>
+  </data>
+  <data name="NoStaffFound" xml:space="preserve">
+    <value>பணியாளர்கள் இல்லை</value>
+  </data>
+  <data name="PercentOfTotal" xml:space="preserve">
+    <value>மொத்தத்தில் {0}%</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>பார்</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>திருத்து</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>நீக்கு</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>வெற்றி</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>பிழை</value>
+  </data>
+  <data name="StaffRegistered" xml:space="preserve">
+    <value>பணியாளர் பதிவு செய்யப்பட்டார்</value>
+  </data>
+  <data name="StaffUpdated" xml:space="preserve">
+    <value>பணியாளர் விவரங்கள் புதுப்பிக்கப்பட்டன</value>
+  </data>
+  <data name="StaffDeleted" xml:space="preserve">
+    <value>பணியாளர் நீக்கப்பட்டார்</value>
+  </data>
+  <data name="StaffNotFound" xml:space="preserve">
+    <value>பணியாளர் கிடைக்கவில்லை</value>
+  </data>
+  <data name="ConfirmDeleteStaff" xml:space="preserve">
+    <value>{0} ({1}) ஐ நீக்கவா? இதைத் திரும்பப் பெற முடியாது.</value>
+  </data>
+  <data name="DiscardChanges" xml:space="preserve">
+    <value>மாற்றங்களை நிராகரிக்கவா?</value>
+  </data>
+  <data name="CouldNotSave" xml:space="preserve">
+    <value>பணியாளர் விவரங்களைச் சேமிக்க முடியவில்லை</value>
+  </data>
+  <data name="CouldNotDelete" xml:space="preserve">
+    <value>பணியாளரை நீக்க முடியவில்லை</value>
+  </data>
+  <data name="CouldNotReachServer" xml:space="preserve">
+    <value>சேவையகத்தை அணுக முடியவில்லை</value>
+  </data>
+  <data name="CheckForm" xml:space="preserve">
+    <value>படிவத்தைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்</value>
+  </data>
+  <data name="ViewingProfile" xml:space="preserve">
+    <value>{0} சுயவிவரத்தைப் பார்க்கிறீர்கள்</value>
+  </data>
+  <data name="ValFullName" xml:space="preserve">
+    <value>முழு பெயர் தேவை (2-100 எழுத்துகள்)</value>
+  </data>
+  <data name="ValMobile" xml:space="preserve">
+    <value>மொபைல் எண் 9-12 இலக்கங்கள் இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValEmail" xml:space="preserve">
+    <value>தவறான மின்னஞ்சல்</value>
+  </data>
+  <data name="ValDobRequired" xml:space="preserve">
+    <value>பிறந்த தேதி தேவை</value>
+  </data>
+  <data name="ValDobInvalid" xml:space="preserve">
+    <value>தவறான பிறந்த தேதி</value>
+  </data>
+  <data name="ValDobFuture" xml:space="preserve">
+    <value>பிறந்த தேதி எதிர்காலத்தில் இருக்க முடியாது</value>
+  </data>
+  <data name="ValMinAge" xml:space="preserve">
+    <value>பணியாளருக்கு குறைந்தது 18 வயது இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValDepartment" xml:space="preserve">
+    <value>துறை தேவை</value>
+  </data>
+  <data name="ValDesignation" xml:space="preserve">
+    <value>பதவி தேவை</value>
+  </data>
+  <data name="ValJoinRequired" xml:space="preserve">
+    <value>சேர்ந்த தேதி தேவை</value>
+  </data>
+  <data name="ValJoinInvalid" xml:space="preserve">
+    <value>தவறான சேர்ந்த தேதி</value>
+  </data>
+  <data name="ValJoinFuture" xml:space="preserve">
+    <value>சேர்ந்த தேதி எதிர்காலத்தில் இருக்க முடியாது</value>
+  </data>
+  <data name="ValJoinAfterDob" xml:space="preserve">
+    <value>சேர்ந்த தேதி பிறந்த தேதியிலிருந்து குறைந்தது 18 ஆண்டுகளுக்குப் பிறகு இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValMobileExists" xml:space="preserve">
+    <value>இந்த மொபைல் எண் ஏற்கனவே பதிவு செய்யப்பட்டுள்ளது</value>
+  </data>
+  <data name="ValEmailExists" xml:space="preserve">
+    <value>இந்த மின்னஞ்சல் ஏற்கனவே பதிவு செய்யப்பட்டுள்ளது</value>
+  </data>
+  <data name="ValShift" xml:space="preserve">
+    <value>தவறான பணி நேரம்</value>
+  </data>
+  <data name="ValStatus" xml:space="preserve">
+    <value>தவறான நிலை</value>
+  </data>
+  <data name="OutOfStock" xml:space="preserve">
+    <value>இருப்பு இல்லை</value>
+  </data>
+  <data name="Stall" xml:space="preserve">
+    <value>ஸ்டால்</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>மீட்டமை</value>
+  </data>
+  <data name="ItemsCount" xml:space="preserve">
+    <value>{0} பொருட்கள்</value>
+  </data>
+  <data name="AddNewProduct" xml:space="preserve">
+    <value>புதிய பொருளைச் சேர்</value>
+  </data>
+  <data name="EditProduct" xml:space="preserve">
+    <value>பொருளைத் திருத்து</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>மாற்றங்களைச் சேமி</value>
+  </data>
+  <data name="ProductCode" xml:space="preserve">
+    <value>பொருள் குறியீடு</value>
+  </data>
+  <data name="AssignedStall" xml:space="preserve">
+    <value>ஒதுக்கப்பட்ட ஸ்டால்</value>
+  </data>
+  <data name="StallPlaceholder" xml:space="preserve">
+    <value>எ.கா. A-01</value>
+  </data>
+  <data name="InitialQuantity" xml:space="preserve">
+    <value>தொடக்க அளவு</value>
+  </data>
+  <data name="CurrentQuantity" xml:space="preserve">
+    <value>தற்போதைய அளவு</value>
+  </data>
+  <data name="QuantityViaStockUpdate" xml:space="preserve">
+    <value>அளவை "இருப்பு புதுப்பிப்பு" தாவலில் மாற்றவும்</value>
+  </data>
+  <data name="MinStockPlaceholder" xml:space="preserve">
+    <value>எச்சரிக்கை வரம்பு</value>
+  </data>
+  <data name="CurrentQty" xml:space="preserve">
+    <value>தற்போதைய அளவு</value>
+  </data>
+  <data name="MinRequired" xml:space="preserve">
+    <value>தேவையான குறைந்தபட்சம்</value>
+  </data>
+  <data name="Urgency" xml:space="preserve">
+    <value>அவசரம்</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>மிக அவசரம்</value>
+  </data>
+  <data name="Moderate" xml:space="preserve">
+    <value>மிதமானது</value>
+  </data>
+  <data name="Restock" xml:space="preserve">
+    <value>மீண்டும் நிரப்பு</value>
+  </data>
+  <data name="ProductsLabel" xml:space="preserve">
+    <value>பொருட்கள்</value>
+  </data>
+  <data name="LowStockCount" xml:space="preserve">
+    <value>{0} குறைந்த இருப்பு</value>
+  </data>
+  <data name="AllStocked" xml:space="preserve">
+    <value>அனைத்தும் இருப்பில் உள்ளன</value>
+  </data>
+  <data name="ViewProducts" xml:space="preserve">
+    <value>பொருட்களைப் பார்</value>
+  </data>
+  <data name="TotalUnits" xml:space="preserve">
+    <value>மொத்த அலகுகள்</value>
+  </data>
+  <data name="StockValue" xml:space="preserve">
+    <value>இருப்பு மதிப்பு</value>
+  </data>
+  <data name="CurrentStock" xml:space="preserve">
+    <value>தற்போதைய இருப்பு</value>
+  </data>
+  <data name="NoProductsFound" xml:space="preserve">
+    <value>பொருட்கள் இல்லை</value>
+  </data>
+  <data name="NoLowStock" xml:space="preserve">
+    <value>அனைத்து பொருட்களும் குறைந்தபட்ச இருப்புக்கு மேல் உள்ளன</value>
+  </data>
+  <data name="RecentStockUpdates" xml:space="preserve">
+    <value>சமீபத்திய இருப்பு புதுப்பிப்புகள்</value>
+  </data>
+  <data name="NoStockUpdates" xml:space="preserve">
+    <value>இதுவரை இருப்பு புதுப்பிப்புகள் இல்லை</value>
+  </data>
+  <data name="Before" xml:space="preserve">
+    <value>முன்</value>
+  </data>
+  <data name="After" xml:space="preserve">
+    <value>பின்</value>
+  </data>
+  <data name="UpdatedBy" xml:space="preserve">
+    <value>செய்தவர்</value>
+  </data>
+  <data name="InitialStock" xml:space="preserve">
+    <value>தொடக்க இருப்பு</value>
+  </data>
+  <data name="ProductRemoved" xml:space="preserve">
+    <value>நீக்கப்பட்டது</value>
+  </data>
+  <data name="AvailableQty" xml:space="preserve">
+    <value>கிடைப்பது: {0}</value>
+  </data>
+  <data name="NewQuantityPreview" xml:space="preserve">
+    <value>புதிய அளவு: {0}</value>
+  </data>
+  <data name="CorrectionHint" xml:space="preserve">
+    <value>எண்ணிய அளவை உள்ளிடவும்; இருப்பு இந்த மதிப்பாக அமைக்கப்படும்</value>
+  </data>
+  <data name="ProductAdded" xml:space="preserve">
+    <value>பொருள் சரக்கு இருப்பில் சேர்க்கப்பட்டது</value>
+  </data>
+  <data name="ProductUpdated" xml:space="preserve">
+    <value>பொருள் புதுப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="ProductDeletedMsg" xml:space="preserve">
+    <value>பொருள் நீக்கப்பட்டது</value>
+  </data>
+  <data name="ProductNotFound" xml:space="preserve">
+    <value>பொருள் கிடைக்கவில்லை</value>
+  </data>
+  <data name="ConfirmDeleteProduct" xml:space="preserve">
+    <value>{0} ({1}) ஐ நீக்கவா? அதன் இருப்பு வரலாறு வைக்கப்படும்.</value>
+  </data>
+  <data name="ValProductName" xml:space="preserve">
+    <value>பொருள் பெயர் தேவை (2-200 எழுத்துகள்)</value>
+  </data>
+  <data name="ValCategory" xml:space="preserve">
+    <value>வகை தேவை</value>
+  </data>
+  <data name="ValStall" xml:space="preserve">
+    <value>ஸ்டால் தேவை (எழுத்துகள், எண்கள், -)</value>
+  </data>
+  <data name="ValQuantity" xml:space="preserve">
+    <value>0 அல்லது அதற்கு மேற்பட்ட அளவை உள்ளிடவும்</value>
+  </data>
+  <data name="ValQuantityPositive" xml:space="preserve">
+    <value>அளவு குறைந்தது 1 ஆக இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValMinStock" xml:space="preserve">
+    <value>குறைந்தபட்ச இருப்பு 0 அல்லது அதற்கு மேல் இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValUnitPrice" xml:space="preserve">
+    <value>சரியான விலையை உள்ளிடவும்</value>
+  </data>
+  <data name="ValSelectProduct" xml:space="preserve">
+    <value>ஒரு பொருளைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValUpdateType" xml:space="preserve">
+    <value>புதுப்பிப்பு வகையைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValDate" xml:space="preserve">
+    <value>தேதி தேவை</value>
+  </data>
+  <data name="ValDateInvalid" xml:space="preserve">
+    <value>தவறான தேதி</value>
+  </data>
+  <data name="ValDateFuture" xml:space="preserve">
+    <value>தேதி எதிர்காலத்தில் இருக்க முடியாது</value>
+  </data>
+  <data name="ValRemarks" xml:space="preserve">
+    <value>கருத்துகள் அதிகபட்சம் 500 எழுத்துகள்</value>
+  </data>
+  <data name="ValProductExists" xml:space="preserve">
+    <value>இந்தப் பொருள் இந்த ஸ்டாலில் ஏற்கனவே உள்ளது</value>
+  </data>
+  <data name="ValInsufficientStock" xml:space="preserve">
+    <value>போதுமான இருப்பு இல்லை: {0} மட்டுமே உள்ளது</value>
+  </data>
+  <data name="AadhaarNumber" xml:space="preserve">
+    <value>ஆதார் எண்</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>வரவில்லை</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>அணுகல் மறுக்கப்பட்டது</value>
+  </data>
+  <data name="AccessDeniedMsg" xml:space="preserve">
+    <value>இந்தப் பக்கத்தைப் பார்க்க உங்கள் பங்கிற்கு அனுமதி இல்லை.</value>
+  </data>
+  <data name="AccountDisabled" xml:space="preserve">
+    <value>கணக்கு முடக்கப்பட்டுள்ளது.</value>
+  </data>
+  <data name="AccountNotFound" xml:space="preserve">
+    <value>கணக்கு கிடைக்கவில்லை.</value>
+  </data>
+  <data name="ActiveArtisans" xml:space="preserve">
+    <value>செயலில் உள்ள கலைஞர்கள்</value>
+  </data>
+  <data name="ActiveStalls" xml:space="preserve">
+    <value>செயலில் உள்ள ஸ்டால்கள்</value>
+  </data>
+  <data name="ActSale" xml:space="preserve">
+    <value>விற்பனை பதிவு செய்யப்பட்டது</value>
+  </data>
+  <data name="ActSaleDesc" xml:space="preserve">
+    <value>{0}: {1} ({2} அலகுகள்)</value>
+  </data>
+  <data name="ActStaffAdded" xml:space="preserve">
+    <value>பணியாளர் பதிவு செய்யப்பட்டார்</value>
+  </data>
+  <data name="ActStaffDesc" xml:space="preserve">
+    <value>{0} சேர்ந்தார் ({1})</value>
+  </data>
+  <data name="ActStockAdd" xml:space="preserve">
+    <value>இருப்பு சேர்க்கப்பட்டது</value>
+  </data>
+  <data name="ActStockCorrection" xml:space="preserve">
+    <value>இருப்பு திருத்தப்பட்டது</value>
+  </data>
+  <data name="ActStockDesc" xml:space="preserve">
+    <value>{0} — {1} அலகுகள்</value>
+  </data>
+  <data name="ActStockInitial" xml:space="preserve">
+    <value>பொருள் சேர்க்கப்பட்டது</value>
+  </data>
+  <data name="ActStockReduce" xml:space="preserve">
+    <value>இருப்பு குறைக்கப்பட்டது</value>
+  </data>
+  <data name="AdditionalNotes" xml:space="preserve">
+    <value>கூடுதல் குறிப்புகள்…</value>
+  </data>
+  <data name="AddProductRow" xml:space="preserve">
+    <value>பொருள் வரிசையைச் சேர்</value>
+  </data>
+  <data name="AgreementEndDate" xml:space="preserve">
+    <value>ஒப்பந்த முடிவு தேதி</value>
+  </data>
+  <data name="AllDates" xml:space="preserve">
+    <value>எல்லா தேதிகளும்</value>
+  </data>
+  <data name="AllocateStall" xml:space="preserve">
+    <value>ஸ்டாலை ஒதுக்கு</value>
+  </data>
+  <data name="AllocateStallToArtisan" xml:space="preserve">
+    <value>கலைஞருக்கு ஸ்டாலை ஒதுக்கு</value>
+  </data>
+  <data name="AllotmentDate" xml:space="preserve">
+    <value>ஒதுக்கீட்டுத் தேதி</value>
+  </data>
+  <data name="AllottedDate" xml:space="preserve">
+    <value>ஒதுக்கப்பட்ட தேதி</value>
+  </data>
+  <data name="AllStalls" xml:space="preserve">
+    <value>எல்லா ஸ்டால்களும்</value>
+  </data>
+  <data name="ApplicationsApproved" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்ட விண்ணப்பங்கள்</value>
+  </data>
+  <data name="ApplicationSentForReview" xml:space="preserve">
+    <value>விண்ணப்பம் நிர்வாகப் பரிசீலனைக்கு அனுப்பப்பட்டது</value>
+  </data>
+  <data name="ApplicationsNotConnected" xml:space="preserve">
+    <value>கலைஞர் விண்ணப்பங்கள் அமைப்பில் பதிவு செய்யப்பட்டதும் விண்ணப்ப எண்ணிக்கைகள் இங்கே தோன்றும்.</value>
+  </data>
+  <data name="ApplicationSubmitted" xml:space="preserve">
+    <value>விண்ணப்பம் சமர்ப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="ApplicationSubmittedMsg" xml:space="preserve">
+    <value>விண்ணப்பம் பரிசீலனைக்குச் சமர்ப்பிக்கப்பட்டது!</value>
+  </data>
+  <data name="ApprovedThisMonth" xml:space="preserve">
+    <value>இந்த மாதம் அங்கீகரிக்கப்பட்ட விண்ணப்பங்கள்</value>
+  </data>
+  <data name="Artisan" xml:space="preserve">
+    <value>கலைஞர்</value>
+  </data>
+  <data name="ArtisanApplicationsOverview" xml:space="preserve">
+    <value>கலைஞர் விண்ணப்பங்கள் – கண்ணோட்டம்</value>
+  </data>
+  <data name="ArtisanID" xml:space="preserve">
+    <value>கலைஞர் அடையாள எண்</value>
+  </data>
+  <data name="ArtisanOfCategory" xml:space="preserve">
+    <value>{0} கலைஞர்</value>
+  </data>
+  <data name="ArtisanPerformanceReport" xml:space="preserve">
+    <value>கலைஞர் செயல்திறன் அறிக்கை</value>
+  </data>
+  <data name="ArtisanProfile" xml:space="preserve">
+    <value>கலைஞர் சுயவிவரம்</value>
+  </data>
+  <data name="ArtisanReport" xml:space="preserve">
+    <value>கலைஞர் அறிக்கை</value>
+  </data>
+  <data name="AsPerAadhaar" xml:space="preserve">
+    <value>ஆதாரில் உள்ளபடி</value>
+  </data>
+  <data name="AttendanceHistory" xml:space="preserve">
+    <value>வருகை வரலாறு</value>
+  </data>
+  <data name="AttendanceNotConnected" xml:space="preserve">
+    <value>தினசரி வருகை அமைப்பில் பதிவு செய்யப்பட்டதும் வருகைத் தரவு இங்கே தோன்றும்.</value>
+  </data>
+  <data name="AttendancePercent" xml:space="preserve">
+    <value>வருகை %</value>
+  </data>
+  <data name="AttendanceRatio" xml:space="preserve">
+    <value>வருகை: {0}/{1}</value>
+  </data>
+  <data name="AttendanceSaved" xml:space="preserve">
+    <value>வருகை சேமிக்கப்பட்டது</value>
+  </data>
+  <data name="AttendanceSavedMsg" xml:space="preserve">
+    <value>{0} க்கான அனைத்துப் பதிவுகளும் சேமிக்கப்பட்டன</value>
+  </data>
+  <data name="AutoDeductInfo" xml:space="preserve">
+    <value>விற்பனை பதிவு செய்யப்படும்போது இருப்பிலிருந்து தானாகக் கழிக்கப்படும்; விற்பனை திருத்தப்பட்டால் அல்லது நீக்கப்பட்டால் மீண்டும் சேர்க்கப்படும்.</value>
+  </data>
+  <data name="AutoDeductOn" xml:space="preserve">
+    <value>தானியங்கு கழிவு இயக்கத்தில்</value>
+  </data>
+  <data name="AutoStockDeduction" xml:space="preserve">
+    <value>தானியங்கு இருப்புக் கழிவு</value>
+  </data>
+  <data name="AutoStockDeductionLog" xml:space="preserve">
+    <value>தானியங்கு இருப்புக் கழிவுப் பதிவேடு</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>கிடைக்கிறது</value>
+  </data>
+  <data name="AvgAttendancePct" xml:space="preserve">
+    <value>சராசரி வருகை %</value>
+  </data>
+  <data name="AvgPerTxn" xml:space="preserve">
+    <value>சராசரி {0}/பரிவர்த்தனை</value>
+  </data>
+  <data name="AwaitingReview" xml:space="preserve">
+    <value>பரிசீலனைக்குக் காத்திருக்கிறது</value>
+  </data>
+  <data name="BackToLogin" xml:space="preserve">
+    <value>உள்நுழைவுக்குத் திரும்பு</value>
+  </data>
+  <data name="BeforeAfter" xml:space="preserve">
+    <value>முன் → பின்</value>
+  </data>
+  <data name="BeingProcessed" xml:space="preserve">
+    <value>நிர்வாகியால் செயலாக்கப்படுகிறது</value>
+  </data>
+  <data name="BestPerformingStalls" xml:space="preserve">
+    <value>சிறப்பாகச் செயல்படும் ஸ்டால்கள்</value>
+  </data>
+  <data name="BlockZone" xml:space="preserve">
+    <value>தொகுதி / மண்டலம்</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>திருத்தத்தை ரத்து செய்</value>
+  </data>
+  <data name="CategoryMonthSubtitle" xml:space="preserve">
+    <value>{0} – அனைத்து ஸ்டால்களும்</value>
+  </data>
+  <data name="CategorySkills" xml:space="preserve">
+    <value>வகை &amp; திறன்கள்</value>
+  </data>
+  <data name="CategoryWiseRevenue" xml:space="preserve">
+    <value>வகை வாரியான வருவாய்</value>
+  </data>
+  <data name="CategoryWiseSales" xml:space="preserve">
+    <value>வகை வாரியான விற்பனை</value>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>சான்றிதழ்</value>
+  </data>
+  <data name="CertificateGenerated" xml:space="preserve">
+    <value>சான்றிதழ் உருவாக்கப்பட்டது</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>அழி</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>மூடு</value>
+  </data>
+  <data name="ConfirmDeleteSale" xml:space="preserve">
+    <value>விற்பனைப் பதிவு {0} ({1}) ஐ நீக்கவா? விற்ற அளவுகள் மீண்டும் இருப்பில் சேர்க்கப்படும்.</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>கடவுச்சொல்லை உறுதிப்படுத்து</value>
+  </data>
+  <data name="CraftCategory" xml:space="preserve">
+    <value>கைவினை வகை</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>உருவாக்கு</value>
+  </data>
+  <data name="CreateNewStall" xml:space="preserve">
+    <value>புதிய ஸ்டாலை உருவாக்கு</value>
+  </data>
+  <data name="CreateStall" xml:space="preserve">
+    <value>ஸ்டாலை உருவாக்கு</value>
+  </data>
+  <data name="CurrentArtisan" xml:space="preserve">
+    <value>தற்போதைய கலைஞர்</value>
+  </data>
+  <data name="CurrentStatus" xml:space="preserve">
+    <value>தற்போதைய நிலை</value>
+  </data>
+  <data name="CurrentWeek" xml:space="preserve">
+    <value>நடப்பு வாரம்</value>
+  </data>
+  <data name="DailySales" xml:space="preserve">
+    <value>தினசரி விற்பனை</value>
+  </data>
+  <data name="DailySalesEntry" xml:space="preserve">
+    <value>தினசரி விற்பனைப் பதிவு</value>
+  </data>
+  <data name="DailySalesOverDays" xml:space="preserve">
+    <value>கடந்த {0} நாட்களின் தினசரி விற்பனை</value>
+  </data>
+  <data name="DashboardSubtitle" xml:space="preserve">
+    <value>இந்திரா மகிளா சக்தி பஜார் — நிகழ்நேரக் கண்ணோட்டம்</value>
+  </data>
+  <data name="DaysCount" xml:space="preserve">
+    <value>{0} நாட்கள்</value>
+  </data>
+  <data name="DaysOfMonth" xml:space="preserve">
+    <value>{0}/{1} நாட்கள்</value>
+  </data>
+  <data name="Deducted" xml:space="preserve">
+    <value>கழிக்கப்பட்டது</value>
+  </data>
+  <data name="DemoCredentials" xml:space="preserve">
+    <value>டெமோ சான்றுகள் (நிரப்ப கிளிக் செய்யவும்)</value>
+  </data>
+  <data name="DeptWiseAttendance" xml:space="preserve">
+    <value>துறை வாரியான வருகை</value>
+  </data>
+  <data name="DescribeSkills" xml:space="preserve">
+    <value>உங்கள் கைவினை மற்றும் திறன்களை விவரிக்கவும்…</value>
+  </data>
+  <data name="DevResetLink" xml:space="preserve">
+    <value>டெவலப்பர் மீட்டமைப்பு இணைப்பு (டெவலப்மென்ட் மட்டும்):</value>
+  </data>
+  <data name="DisplayName" xml:space="preserve">
+    <value>காட்சிப் பெயர்</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>ஆவணங்கள்</value>
+  </data>
+  <data name="DropFilesOrBrowse" xml:space="preserve">
+    <value>கோப்புகளை இங்கே இழுத்துவிடவும் அல்லது உலாவவும்</value>
+  </data>
+  <data name="EditingEntry" xml:space="preserve">
+    <value>விற்பனைப் பதிவு {0} ஐத் திருத்துகிறது</value>
+  </data>
+  <data name="EditModeFor" xml:space="preserve">
+    <value>{0} க்கான திருத்தும் முறை</value>
+  </data>
+  <data name="EditModeOpened" xml:space="preserve">
+    <value>திருத்தும் முறை திறக்கப்பட்டது</value>
+  </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>சுயவிவரத்தைத் திருத்து</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>மின்னஞ்சல் முகவரி</value>
+  </data>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>உங்கள் கடவுச்சொல்லை உள்ளிடவும்</value>
+  </data>
+  <data name="EnterSales" xml:space="preserve">
+    <value>விற்பனையைப் பதிவு செய்</value>
+  </data>
+  <data name="EnterUserId" xml:space="preserve">
+    <value>உங்கள் பயனர் ஐடியை உள்ளிடவும்</value>
+  </data>
+  <data name="EntryNo" xml:space="preserve">
+    <value>பதிவு எண்</value>
+  </data>
+  <data name="EntryTotal" xml:space="preserve">
+    <value>பதிவின் மொத்தம்</value>
+  </data>
+  <data name="ErrorProcessingRequest" xml:space="preserve">
+    <value>உங்கள் கோரிக்கையைச் செயலாக்கும்போது பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.</value>
+  </data>
+  <data name="ExportAll" xml:space="preserve">
+    <value>அனைத்தையும் ஏற்றுமதி செய்</value>
+  </data>
+  <data name="ExportCsv" xml:space="preserve">
+    <value>CSV ஏற்றுமதி</value>
+  </data>
+  <data name="ExportKPIs" xml:space="preserve">
+    <value>KPI-களை ஏற்றுமதி செய்</value>
+  </data>
+  <data name="ExportPdf" xml:space="preserve">
+    <value>PDF ஏற்றுமதி</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>அறிக்கையை ஏற்றுமதி செய்</value>
+  </data>
+  <data name="ExportSalesHint" xml:space="preserve">
+    <value>தேர்ந்தெடுத்த தேதியின் விற்பனைப் பதிவுகளை CSV ஆகப் பதிவிறக்கவும்</value>
+  </data>
+  <data name="ExportUnavailable" xml:space="preserve">
+    <value>ஏற்றுமதி இன்னும் கிடைக்கவில்லை</value>
+  </data>
+  <data name="ExportUnavailableMsg" xml:space="preserve">
+    <value>இந்தத் தொகுதி இன்னும் தரவைச் சேமிக்கவில்லை, எனவே ஏற்றுமதி செய்ய எதுவும் இல்லை.</value>
+  </data>
+  <data name="FillRequiredFields" xml:space="preserve">
+    <value>தேவையான அனைத்துப் புலங்களையும் நிரப்பவும்.</value>
+  </data>
+  <data name="FooterCopyright" xml:space="preserve">
+    <value>IMSB — இந்திரா மகிளா சக்தி பஜார்</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>கடவுச்சொல் மறந்துவிட்டதா</value>
+  </data>
+  <data name="ForgotPasswordHint" xml:space="preserve">
+    <value>கடவுச்சொல் மீட்டமைப்பு இணைப்பைப் பெற உங்கள் பயனர்பெயர் அல்லது மின்னஞ்சலை உள்ளிடவும்.</value>
+  </data>
+  <data name="ForgotPasswordQ" xml:space="preserve">
+    <value>கடவுச்சொல் மறந்துவிட்டதா?</value>
+  </data>
+  <data name="FromDate" xml:space="preserve">
+    <value>முதல்</value>
+  </data>
+  <data name="GovernmentOfTelangana" xml:space="preserve">
+    <value>தெலங்கானா அரசு</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>முகப்பு</value>
+  </data>
+  <data name="HourlySalesTrend" xml:space="preserve">
+    <value>மணிநேர விற்பனைப் போக்கு</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>தவறான பயனர்பெயர் அல்லது கடவுச்சொல்.</value>
+  </data>
+  <data name="InvalidOrExpiredToken" xml:space="preserve">
+    <value>தவறான அல்லது காலாவதியான மீட்டமைப்பு இணைப்பு.</value>
+  </data>
+  <data name="InvalidRoleSelected" xml:space="preserve">
+    <value>தவறான பங்கு தேர்ந்தெடுக்கப்பட்டது.</value>
+  </data>
+  <data name="ItemsSold" xml:space="preserve">
+    <value>விற்ற பொருட்கள்</value>
+  </data>
+  <data name="JustNow" xml:space="preserve">
+    <value>இப்போது</value>
+  </data>
+  <data name="KeyPerformanceIndicators" xml:space="preserve">
+    <value>முக்கியச் செயல்திறன் குறிகாட்டிகள்</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>மொழி</value>
+  </data>
+  <data name="Last3Months" xml:space="preserve">
+    <value>கடந்த 3 மாதங்கள்</value>
+  </data>
+  <data name="Last6Months" xml:space="preserve">
+    <value>கடந்த 6 மாதங்கள்</value>
+  </data>
+  <data name="LastNDays" xml:space="preserve">
+    <value>கடந்த {0} நாட்கள்</value>
+  </data>
+  <data name="Leave" xml:space="preserve">
+    <value>விடுப்பு</value>
+  </data>
+  <data name="LineTotal" xml:space="preserve">
+    <value>வரி மொத்தம்</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>இடம்</value>
+  </data>
+  <data name="LocationDescription" xml:space="preserve">
+    <value>இட விவரம்</value>
+  </data>
+  <data name="LocationDetailsPlaceholder" xml:space="preserve">
+    <value>இருப்பிட விவரங்கள்…</value>
+  </data>
+  <data name="LoginFooter" xml:space="preserve">
+    <value>© 2026 தெலங்கானா அரசு | IMSB மையப்படுத்தப்பட்ட மேலாண்மை அமைப்பு | பதிப்பு 1.0.0 | அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை</value>
+  </data>
+  <data name="LoginGovtStrip" xml:space="preserve">
+    <value>🏛️ தெலங்கானா அரசு | இந்திரா மகிளா சக்தி பஜார் (IMSB) – மையப்படுத்தப்பட்ட மேலாண்மை தளம் | அலுவல் பயன்பாட்டிற்கு மட்டும்</value>
+  </data>
+  <data name="LoginHeadline" xml:space="preserve">
+    <value>டிஜிட்டல் மேலாண்மை மூலம் {0} அதிகாரமளித்தல்</value>
+  </data>
+  <data name="LoginHeadlineHighlight" xml:space="preserve">
+    <value>பெண் கலைஞர்களுக்கு</value>
+  </data>
+  <data name="LoginTagline" xml:space="preserve">
+    <value>அனைத்து IMSB இடங்களிலும் ஸ்டால்கள், இருப்பு, கலைஞர் சுயவிவரங்கள், மனிதவளம் மற்றும் விற்பனையை நிர்வகிக்கும் மையப்படுத்தப்பட்ட தளம்.</value>
+  </data>
+  <data name="LowPerformingStalls" xml:space="preserve">
+    <value>குறைவாகச் செயல்படும் ஸ்டால்கள்</value>
+  </data>
+  <data name="LowStockAlertLabel" xml:space="preserve">
+    <value>குறைந்த இருப்பு எச்சரிக்கை:</value>
+  </data>
+  <data name="LowStockBanner" xml:space="preserve">
+    <value>{0} பொருட்கள் குறைந்தபட்ச இருப்பு வரம்பிற்குக் கீழே உள்ளன.</value>
+  </data>
+  <data name="Metric" xml:space="preserve">
+    <value>அளவீடு</value>
+  </data>
+  <data name="MobileNumber" xml:space="preserve">
+    <value>கைபேசி எண்</value>
+  </data>
+  <data name="ModuleNotConnected" xml:space="preserve">
+    <value>இன்னும் தரவு இல்லை</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>மாதம்</value>
+  </data>
+  <data name="MonthlyAttendanceRate" xml:space="preserve">
+    <value>மாதாந்திர வருகை விகிதம்</value>
+  </data>
+  <data name="MonthlyRent" xml:space="preserve">
+    <value>மாத வாடகை (₹)</value>
+  </data>
+  <data name="MonthlyRevenue" xml:space="preserve">
+    <value>மாத வருவாய்</value>
+  </data>
+  <data name="MonthlySales" xml:space="preserve">
+    <value>மாதாந்திர விற்பனை</value>
+  </data>
+  <data name="MonthlySalesTrend" xml:space="preserve">
+    <value>மாதாந்திர விற்பனைப் போக்கு</value>
+  </data>
+  <data name="NeedsRestock" xml:space="preserve">
+    <value>மீண்டும் இருப்பு தேவை</value>
+  </data>
+  <data name="NewArtisan" xml:space="preserve">
+    <value>புதிய கலைஞர்</value>
+  </data>
+  <data name="NewArtisanApplication" xml:space="preserve">
+    <value>புதிய கலைஞர் விண்ணப்பம்</value>
+  </data>
+  <data name="NewlySubmitted" xml:space="preserve">
+    <value>புதிதாகச் சமர்ப்பிக்கப்பட்டது, பரிசீலனைக்குக் காத்திருக்கிறது</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>புதிய கடவுச்சொல்</value>
+  </data>
+  <data name="NewSalesEntry" xml:space="preserve">
+    <value>புதிய விற்பனைப் பதிவு</value>
+  </data>
+  <data name="NoActivity" xml:space="preserve">
+    <value>சமீபத்திய செயல்பாடு இல்லை</value>
+  </data>
+  <data name="NoComparison" xml:space="preserve">
+    <value>ஒப்பிட முந்தைய நாளில் விற்பனை இல்லை</value>
+  </data>
+  <data name="NoDeductions" xml:space="preserve">
+    <value>இருப்புக் கழிவுகள் எதுவும் பதிவு செய்யப்படவில்லை</value>
+  </data>
+  <data name="NoSalesEntries" xml:space="preserve">
+    <value>இந்தத் தேதிக்கு விற்பனைப் பதிவுகள் இல்லை</value>
+  </data>
+  <data name="NoSalesForFilters" xml:space="preserve">
+    <value>இந்த வடிகட்டிகளுக்குப் பொருந்தும் விற்பனை இல்லை</value>
+  </data>
+  <data name="NoSalesYet" xml:space="preserve">
+    <value>இந்த மாதம் விற்பனை பதிவு செய்யப்படவில்லை</value>
+  </data>
+  <data name="NoStallsYet" xml:space="preserve">
+    <value>ஒப்பிட வேறு ஸ்டால்கள் இல்லை</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>கிடைக்கவில்லை</value>
+  </data>
+  <data name="NothingToSubmit" xml:space="preserve">
+    <value>சேமிப்பதற்கு முன் குறைந்தது ஒரு பொருளைச் சேர்க்கவும்</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>அறிவிப்புகள்</value>
+  </data>
+  <data name="OccupancyDays" xml:space="preserve">
+    <value>குடியிருப்பு நாட்கள்</value>
+  </data>
+  <data name="OccupancyRate" xml:space="preserve">
+    <value>ஆக்கிரமிப்பு விகிதம்</value>
+  </data>
+  <data name="Occupied" xml:space="preserve">
+    <value>ஆக்கிரமிக்கப்பட்டது</value>
+  </data>
+  <data name="OccupiedBy" xml:space="preserve">
+    <value>{0} ஆக்கிரமித்துள்ளார் – {1}</value>
+  </data>
+  <data name="OccupiedPct" xml:space="preserve">
+    <value>{0}% ஆக்கிரமிக்கப்பட்டது</value>
+  </data>
+  <data name="OccupiedStalls" xml:space="preserve">
+    <value>ஆக்கிரமிக்கப்பட்ட ஸ்டால்கள்</value>
+  </data>
+  <data name="OnlyLeft" xml:space="preserve">
+    <value>{0} மட்டுமே உள்ளது (குறைந்தபட்சம்: {1})</value>
+  </data>
+  <data name="OpenedStallDetails" xml:space="preserve">
+    <value>ஸ்டால் விவரங்கள் திறக்கப்பட்டன</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>விருப்பத்தேர்வு</value>
+  </data>
+  <data name="OTHours" xml:space="preserve">
+    <value>மிகைநேர மணி</value>
+  </data>
+  <data name="OverviewCharts" xml:space="preserve">
+    <value>கண்ணோட்ட வரைபடங்கள்</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>கடவுச்சொல்</value>
+  </data>
+  <data name="PasswordResetDone" xml:space="preserve">
+    <value>கடவுச்சொல் மீட்டமைக்கப்பட்டது. இப்போது உள்நுழையலாம்.</value>
+  </data>
+  <data name="PendingApplications" xml:space="preserve">
+    <value>நிலுவையிலுள்ள விண்ணப்பங்கள்</value>
+  </data>
+  <data name="PendingReallocation" xml:space="preserve">
+    <value>நிலுவையிலுள்ள மறுஒதுக்கீடு</value>
+  </data>
+  <data name="PercentRemaining" xml:space="preserve">
+    <value>{0}% மீதமுள்ளது</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>தனிப்பட்ட தகவல்</value>
+  </data>
+  <data name="PersonalInformation" xml:space="preserve">
+    <value>தனிப்பட்ட விவரங்கள்</value>
+  </data>
+  <data name="PoweredBy" xml:space="preserve">
+    <value>IMSB நிர்வாகத் தளத்தால் இயக்கப்படுகிறது</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>வருகை</value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>தனியுரிமைக் கொள்கை</value>
+  </data>
+  <data name="PrivacyPolicyText" xml:space="preserve">
+    <value>இந்தத் தளத்திலுள்ள தரவு அங்கீகரிக்கப்பட்ட IMSB பணியாளர்களின் அலுவல் பயன்பாட்டிற்கு மட்டுமே.</value>
+  </data>
+  <data name="Process" xml:space="preserve">
+    <value>செயலாக்கு</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>பொருள்</value>
+  </data>
+  <data name="ProductCategories" xml:space="preserve">
+    <value>பொருள் வகைகள்</value>
+  </data>
+  <data name="ProductCategory" xml:space="preserve">
+    <value>பொருள் வகை</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>பொருட்கள்</value>
+  </data>
+  <data name="ProductsCount" xml:space="preserve">
+    <value>{0} பொருட்கள்</value>
+  </data>
+  <data name="ProductsListed" xml:space="preserve">
+    <value>பட்டியலிடப்பட்ட பொருட்கள்</value>
+  </data>
+  <data name="ProductWiseSales" xml:space="preserve">
+    <value>பொருள் வாரியான விற்பனை</value>
+  </data>
+  <data name="ProductWiseSalesReport" xml:space="preserve">
+    <value>பொருள் வாரியான விற்பனை அறிக்கை</value>
+  </data>
+  <data name="QtySold" xml:space="preserve">
+    <value>விற்ற அளவு</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>விரைவுச் செயல்கள்</value>
+  </data>
+  <data name="Rating" xml:space="preserve">
+    <value>மதிப்பீடு</value>
+  </data>
+  <data name="Reallocation" xml:space="preserve">
+    <value>மறுஒதுக்கீடு</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>காரணம்</value>
+  </data>
+  <data name="RecentActivity" xml:space="preserve">
+    <value>சமீபத்திய செயல்பாடு</value>
+  </data>
+  <data name="RecordSaved" xml:space="preserve">
+    <value>பதிவு வெற்றிகரமாகச் சேமிக்கப்பட்டது.</value>
+  </data>
+  <data name="Registered" xml:space="preserve">
+    <value>பதிவு செய்யப்பட்டவர்கள்</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>என்னை நினைவில் கொள்</value>
+  </data>
+  <data name="ReportLibrary" xml:space="preserve">
+    <value>அறிக்கை நூலகம்</value>
+  </data>
+  <data name="ReportsAnalytics" xml:space="preserve">
+    <value>அறிக்கைகள் &amp; பகுப்பாய்வு</value>
+  </data>
+  <data name="ReportsSubtitle" xml:space="preserve">
+    <value>அனைத்துத் தொகுதிகளிலும் அறிக்கைகளை உருவாக்கி ஏற்றுமதி செய்யவும்</value>
+  </data>
+  <data name="RequestedDate" xml:space="preserve">
+    <value>கோரிய தேதி</value>
+  </data>
+  <data name="RequestId" xml:space="preserve">
+    <value>கோரிக்கை எண்</value>
+  </data>
+  <data name="RequestNewResetLink" xml:space="preserve">
+    <value>புதிய மீட்டமைப்பு இணைப்பைக் கோரவும்</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>தேவை</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>ஒதுக்கப்பட்டது</value>
+  </data>
+  <data name="ResetLinkSentMsg" xml:space="preserve">
+    <value>வழங்கிய அடையாளத்திற்குக் கணக்கு இருந்தால், கடவுச்சொல் மீட்டமைப்பு இணைப்பு அனுப்பப்பட்டுள்ளது.</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>கடவுச்சொல்லை மீட்டமை</value>
+  </data>
+  <data name="ResidentialAddress" xml:space="preserve">
+    <value>வசிப்பிட முகவரி</value>
+  </data>
+  <data name="Restored" xml:space="preserve">
+    <value>மீட்டமைக்கப்பட்டது</value>
+  </data>
+  <data name="Revenue" xml:space="preserve">
+    <value>வருவாய் (₹)</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>பரிசீலி</value>
+  </data>
+  <data name="RoleNotAuthorized" xml:space="preserve">
+    <value>தேர்ந்தெடுத்த பங்குடன் உள்நுழைய உங்களுக்கு அனுமதி இல்லை.</value>
+  </data>
+  <data name="Row" xml:space="preserve">
+    <value>வரிசை</value>
+  </data>
+  <data name="RowPlaceholder" xml:space="preserve">
+    <value>எ.கா. வரிசை 3</value>
+  </data>
+  <data name="RptArtisan" xml:space="preserve">
+    <value>கலைஞர் ஒதுக்கீட்டு அறிக்கை</value>
+  </data>
+  <data name="RptArtisanDesc" xml:space="preserve">
+    <value>அனைத்துக் கலைஞர் சுயவிவரங்கள், ஸ்டால் ஒதுக்கீடுகள் மற்றும் செயல்திறன் அளவீடுகள்.</value>
+  </data>
+  <data name="RptAttendance" xml:space="preserve">
+    <value>மனிதவள வருகை அறிக்கை</value>
+  </data>
+  <data name="RptAttendanceDesc" xml:space="preserve">
+    <value>துறை வாரியான வருகை, மிகைநேரம் மற்றும் விடுப்புச் சுருக்கம்.</value>
+  </data>
+  <data name="RptInventory" xml:space="preserve">
+    <value>இருப்பு அறிக்கை</value>
+  </data>
+  <data name="RptInventoryDesc" xml:space="preserve">
+    <value>வகை வாரியான இருப்பு நிலைகள், குறைந்த இருப்பு எச்சரிக்கைகள் மற்றும் மறு இருப்புச் சுருக்கம்.</value>
+  </data>
+  <data name="RptProcurement" xml:space="preserve">
+    <value>கொள்முதல் &amp; லாபம்</value>
+  </data>
+  <data name="RptProcurementDesc" xml:space="preserve">
+    <value>கொள்முதல் செலவுகள், விற்பனை விலை வரம்புகள் மற்றும் நிகர லாபக் கணக்கீடு.</value>
+  </data>
+  <data name="RptSales" xml:space="preserve">
+    <value>விற்பனை அறிக்கை</value>
+  </data>
+  <data name="RptSalesDesc" xml:space="preserve">
+    <value>தினசரி, ஸ்டால் வாரியான மற்றும் வகை வாரியான விற்பனைப் பகுப்பாய்வு.</value>
+  </data>
+  <data name="RptStallOccupancy" xml:space="preserve">
+    <value>ஸ்டால் ஆக்கிரமிப்பு அறிக்கை</value>
+  </data>
+  <data name="RptStallOccupancyDesc" xml:space="preserve">
+    <value>ஸ்டால் வாரியான ஆக்கிரமிப்பு, கலைஞர் விவரங்கள் மற்றும் ஒவ்வொரு ஸ்டாலின் வருவாயைக் கண்காணிக்கவும்.</value>
+  </data>
+  <data name="SaleDeduction" xml:space="preserve">
+    <value>விற்பனை (தானியங்கு கழிவு)</value>
+  </data>
+  <data name="SaleNotFound" xml:space="preserve">
+    <value>விற்பனைப் பதிவு கிடைக்கவில்லை</value>
+  </data>
+  <data name="SaleReversal" xml:space="preserve">
+    <value>விற்பனை திரும்பப்பெறப்பட்டது (மீட்டமைக்கப்பட்டது)</value>
+  </data>
+  <data name="SalesAmount" xml:space="preserve">
+    <value>விற்பனை (₹)</value>
+  </data>
+  <data name="SalesByCategoryOn" xml:space="preserve">
+    <value>வகை வாரியான விற்பனை – {0}</value>
+  </data>
+  <data name="SalesByCategoryToday" xml:space="preserve">
+    <value>வகை வாரியான விற்பனை – இன்று</value>
+  </data>
+  <data name="SalesChart" xml:space="preserve">
+    <value>விற்பனை வரைபடம்</value>
+  </data>
+  <data name="SalesDeleted" xml:space="preserve">
+    <value>விற்பனைப் பதிவு {0} நீக்கப்பட்டது; இருப்பு மீட்டமைக்கப்பட்டது</value>
+  </data>
+  <data name="SalesEntries" xml:space="preserve">
+    <value>விற்பனைப் பதிவுகள்</value>
+  </data>
+  <data name="SalesEntry" xml:space="preserve">
+    <value>விற்பனைப் பதிவு</value>
+  </data>
+  <data name="SalesEntryCleared" xml:space="preserve">
+    <value>விற்பனைப் பதிவு அழிக்கப்பட்டது</value>
+  </data>
+  <data name="SalesManagement" xml:space="preserve">
+    <value>விற்பனை மேலாண்மை</value>
+  </data>
+  <data name="SalesRemarksPlaceholder" xml:space="preserve">
+    <value>விருப்பக் குறிப்பு (எ.கா. பண்டிகைத் தள்ளுபடி)</value>
+  </data>
+  <data name="SalesSaved" xml:space="preserve">
+    <value>விற்பனைப் பதிவு {0} சேமிக்கப்பட்டது ({1}). இருப்பு தானாகக் கழிக்கப்பட்டது.</value>
+  </data>
+  <data name="SalesSubtitle" xml:space="preserve">
+    <value>தினசரிப் பதிவு, பொருள் வாரியான கண்காணிப்பு மற்றும் தானியங்கு இருப்புக் கழிவு</value>
+  </data>
+  <data name="SalesTrend" xml:space="preserve">
+    <value>விற்பனைப் போக்கு</value>
+  </data>
+  <data name="SalesUpdated" xml:space="preserve">
+    <value>விற்பனைப் பதிவு {0} புதுப்பிக்கப்பட்டது ({1}). இருப்பு சரிசெய்யப்பட்டது.</value>
+  </data>
+  <data name="SaveSalesEntry" xml:space="preserve">
+    <value>விற்பனைப் பதிவைச் சேமி</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>தேடு</value>
+  </data>
+  <data name="SearchStalls" xml:space="preserve">
+    <value>ஸ்டால்களைத் தேடு…</value>
+  </data>
+  <data name="SelectArtisan" xml:space="preserve">
+    <value>கலைஞரைத் தேர்ந்தெடு</value>
+  </data>
+  <data name="SelectDistrict" xml:space="preserve">
+    <value>மாவட்டத்தைத் தேர்ந்தெடு</value>
+  </data>
+  <data name="SelectedDateOnly" xml:space="preserve">
+    <value>தேர்ந்தெடுத்த தேதி</value>
+  </data>
+  <data name="SelectProductOption" xml:space="preserve">
+    <value>-- பொருளைத் தேர்ந்தெடு --</value>
+  </data>
+  <data name="SelectVacantStall" xml:space="preserve">
+    <value>காலியான ஸ்டாலைத் தேர்ந்தெடு</value>
+  </data>
+  <data name="SendResetLink" xml:space="preserve">
+    <value>மீட்டமைப்பு இணைப்பை அனுப்பு</value>
+  </data>
+  <data name="SetNewPasswordHint" xml:space="preserve">
+    <value>உங்கள் கணக்கிற்குப் புதிய கடவுச்சொல்லை அமைக்கவும்.</value>
+  </data>
+  <data name="SetPassword" xml:space="preserve">
+    <value>கடவுச்சொல்லை அமை</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>கடவுச்சொல்லைக் காட்டு</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>உள்நுழை</value>
+  </data>
+  <data name="SignInDifferentUser" xml:space="preserve">
+    <value>வேறு பயனராக உள்நுழை</value>
+  </data>
+  <data name="SignInToContinue" xml:space="preserve">
+    <value>IMSB நிர்வாகத் தளத்தைத் தொடர உள்நுழையவும்</value>
+  </data>
+  <data name="SignInToPortal" xml:space="preserve">
+    <value>தளத்தில் உள்நுழை</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>வெளியேறு</value>
+  </data>
+  <data name="SinceDate" xml:space="preserve">
+    <value>{0} முதல்</value>
+  </data>
+  <data name="SkillsDescription" xml:space="preserve">
+    <value>திறன் விவரம்</value>
+  </data>
+  <data name="StaffAttendancePct" xml:space="preserve">
+    <value>பணியாளர் வருகை %</value>
+  </data>
+  <data name="StaffCount" xml:space="preserve">
+    <value>பணியாளர் எண்ணிக்கை</value>
+  </data>
+  <data name="StallAllocated" xml:space="preserve">
+    <value>ஸ்டால் வெற்றிகரமாக ஒதுக்கப்பட்டது!</value>
+  </data>
+  <data name="StallCreated" xml:space="preserve">
+    <value>ஸ்டால் வெற்றிகரமாக உருவாக்கப்பட்டது!</value>
+  </data>
+  <data name="StallID" xml:space="preserve">
+    <value>ஸ்டால் எண்</value>
+  </data>
+  <data name="StallIdPlaceholder" xml:space="preserve">
+    <value>எ.கா. A-21</value>
+  </data>
+  <data name="StallIsVacant" xml:space="preserve">
+    <value>இந்த ஸ்டால் காலியாகவும் கிடைக்கக்கூடியதாகவும் உள்ளது.</value>
+  </data>
+  <data name="StallLabel" xml:space="preserve">
+    <value>ஸ்டால் {0}</value>
+  </data>
+  <data name="StallLayoutMap" xml:space="preserve">
+    <value>ஸ்டால் அமைப்பு – காட்சி வரைபடம்</value>
+  </data>
+  <data name="StallList" xml:space="preserve">
+    <value>ஸ்டால் பட்டியல்</value>
+  </data>
+  <data name="StallMap" xml:space="preserve">
+    <value>ஸ்டால் வரைபடம்</value>
+  </data>
+  <data name="StallName" xml:space="preserve">
+    <value>ஸ்டால் பெயர்</value>
+  </data>
+  <data name="StallOccupancy" xml:space="preserve">
+    <value>ஸ்டால் ஆக்கிரமிப்பு</value>
+  </data>
+  <data name="StallOccupancyOverTime" xml:space="preserve">
+    <value>காலப்போக்கில் ஸ்டால் ஆக்கிரமிப்பு</value>
+  </data>
+  <data name="StallReallocated" xml:space="preserve">
+    <value>ஸ்டால் வெற்றிகரமாக மறுஒதுக்கீடு செய்யப்பட்டது</value>
+  </data>
+  <data name="StallReallocation" xml:space="preserve">
+    <value>ஸ்டால் மறுஒதுக்கீடு</value>
+  </data>
+  <data name="StallReport" xml:space="preserve">
+    <value>ஸ்டால் அறிக்கை</value>
+  </data>
+  <data name="StallsActiveToday" xml:space="preserve">
+    <value>இன்று செயலில் உள்ள ஸ்டால்கள்</value>
+  </data>
+  <data name="StallSubtitle" xml:space="preserve">
+    <value>சந்தை ஸ்டால்களை உருவாக்கி, ஒதுக்கி, கண்காணித்து மறுஒதுக்கீடு செய்யவும்</value>
+  </data>
+  <data name="StateAdmin" xml:space="preserve">
+    <value>மாநில நிர்வாகி</value>
+  </data>
+  <data name="StockAvailable" xml:space="preserve">
+    <value>இருப்பில் உள்ளது: {0}</value>
+  </data>
+  <data name="StockItems" xml:space="preserve">
+    <value>இருப்புப் பொருட்கள்</value>
+  </data>
+  <data name="StockLeft" xml:space="preserve">
+    <value>மீதமுள்ள இருப்பு</value>
+  </data>
+  <data name="SubmitApplication" xml:space="preserve">
+    <value>விண்ணப்பத்தைச் சமர்ப்பி</value>
+  </data>
+  <data name="SubmitTodaysSales" xml:space="preserve">
+    <value>இன்றைய விற்பனையைச் சமர்ப்பி</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>சுருக்கம்</value>
+  </data>
+  <data name="ThisMonth" xml:space="preserve">
+    <value>இந்த மாதம்</value>
+  </data>
+  <data name="ThisWeekAverage" xml:space="preserve">
+    <value>இந்த வாரச் சராசரி %</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>நேரம்</value>
+  </data>
+  <data name="ToBeProcessed" xml:space="preserve">
+    <value>செயலாக்க வேண்டியவை</value>
+  </data>
+  <data name="ToDate" xml:space="preserve">
+    <value>வரை</value>
+  </data>
+  <data name="TodaysSales" xml:space="preserve">
+    <value>இன்றைய விற்பனை</value>
+  </data>
+  <data name="TodaysTotalSales" xml:space="preserve">
+    <value>இன்றைய மொத்த விற்பனை</value>
+  </data>
+  <data name="ToggleDarkMode" xml:space="preserve">
+    <value>இருண்ட பயன்முறையை மாற்று</value>
+  </data>
+  <data name="ToggleSidebar" xml:space="preserve">
+    <value>பக்கப்பட்டியை மாற்று</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>மொத்தம்</value>
+  </data>
+  <data name="TotalMonthlySales" xml:space="preserve">
+    <value>மொத்த மாதாந்திர விற்பனை</value>
+  </data>
+  <data name="TotalSalesForDay" xml:space="preserve">
+    <value>மொத்த விற்பனை</value>
+  </data>
+  <data name="TotalStalls" xml:space="preserve">
+    <value>மொத்த ஸ்டால்கள்</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>பரிவர்த்தனைகள்</value>
+  </data>
+  <data name="TransactionsToday" xml:space="preserve">
+    <value>இன்றைய பரிவர்த்தனைகள்</value>
+  </data>
+  <data name="UnitsRestored" xml:space="preserve">
+    <value>மீட்டமைக்கப்பட்டது: {0} அலகுகள்</value>
+  </data>
+  <data name="UnitsSold" xml:space="preserve">
+    <value>விற்றது: {0} அலகுகள்</value>
+  </data>
+  <data name="UpdateSalesEntry" xml:space="preserve">
+    <value>விற்பனைப் பதிவைப் புதுப்பி</value>
+  </data>
+  <data name="UploadHint" xml:space="preserve">
+    <value>ஆதார், வங்கிப் புத்தகம், புகைப்படங்கள் (PDF/JPG – ஒவ்வொன்றும் அதிகபட்சம் 5MB)</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>பயனர்</value>
+  </data>
+  <data name="UserIdOrEmail" xml:space="preserve">
+    <value>பயனர் ஐடி / மின்னஞ்சல்</value>
+  </data>
+  <data name="Vacant" xml:space="preserve">
+    <value>காலி</value>
+  </data>
+  <data name="VacantStalls" xml:space="preserve">
+    <value>காலியான ஸ்டால்கள்</value>
+  </data>
+  <data name="ValDateRange" xml:space="preserve">
+    <value>முடிவுத் தேதி தொடக்கத் தேதிக்குப் பின் அல்லது அதே நாளாக இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValDuplicateProduct" xml:space="preserve">
+    <value>இந்தப் பொருள் ஏற்கனவே பதிவில் உள்ளது; அதன் அளவை மாற்றவும்</value>
+  </data>
+  <data name="ValidationError" xml:space="preserve">
+    <value>சரிபார்ப்புப் பிழை</value>
+  </data>
+  <data name="ValPasswordLength" xml:space="preserve">
+    <value>கடவுச்சொல் 8-100 எழுத்துகளாக இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValPasswordRequired" xml:space="preserve">
+    <value>கடவுச்சொல் தேவை</value>
+  </data>
+  <data name="ValPasswordsDoNotMatch" xml:space="preserve">
+    <value>கடவுச்சொற்கள் பொருந்தவில்லை</value>
+  </data>
+  <data name="ValSalesItemsMax" xml:space="preserve">
+    <value>ஒரு பதிவில் அதிகபட்சம் {0} பொருட்கள் இருக்கலாம்</value>
+  </data>
+  <data name="ValSalesItemsRequired" xml:space="preserve">
+    <value>குறைந்தது ஒரு பொருளைச் சேர்க்கவும்</value>
+  </data>
+  <data name="ValTime" xml:space="preserve">
+    <value>சரியான நேரத்தை உள்ளிடவும் (HH:mm)</value>
+  </data>
+  <data name="ValTimeFuture" xml:space="preserve">
+    <value>நேரம் எதிர்காலத்தில் இருக்கக்கூடாது</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>மதிப்பு</value>
+  </data>
+  <data name="ValUsernameOrEmail" xml:space="preserve">
+    <value>உங்கள் பயனர்பெயர் அல்லது மின்னஞ்சலை உள்ளிடவும்.</value>
+  </data>
+  <data name="ValUsernameRequired" xml:space="preserve">
+    <value>பயனர் ஐடி தேவை</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>அனைத்தையும் பார்</value>
+  </data>
+  <data name="ViewInventory" xml:space="preserve">
+    <value>இருப்பைப் பார்</value>
+  </data>
+  <data name="VsLastMonth" xml:space="preserve">
+    <value>கடந்த மாதத்துடன் {0}</value>
+  </data>
+  <data name="VsYesterday" xml:space="preserve">
+    <value>நேற்றுடன் {0}</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>வரவேற்கிறோம்</value>
+  </data>
+  <data name="WelcomeBack" xml:space="preserve">
+    <value>மீண்டும் வரவேற்கிறோம்</value>
+  </data>
+  <data name="YearsOfExperience" xml:space="preserve">
+    <value>அனுபவ ஆண்டுகள்</value>
+  </data>
+  <data name="ChangeVsYesterday" xml:space="preserve">
+    <value>நேற்றுடன் ஒப்பிடும் மாற்றம்</value>
+  </data>
+  <data name="AadhaarKeepHint" xml:space="preserve">
+    <value>பதிவு செய்யப்பட்டது: {0}. மாற்ற வேண்டாமெனில் காலியாக விடவும்.</value>
+  </data>
+  <data name="AadhaarStoredHint" xml:space="preserve">
+    <value>கடைசி 4 இலக்கங்கள் மட்டுமே பதிவில் வைக்கப்படும்.</value>
+  </data>
+  <data name="ActiveSessions" xml:space="preserve">
+    <value>செயலில் உள்ள அமர்வுகள்</value>
+  </data>
+  <data name="AgreementUntil" xml:space="preserve">
+    <value>ஒப்பந்தம் முடியும் தேதி</value>
+  </data>
+  <data name="AllActiveSessions" xml:space="preserve">
+    <value>அனைத்து செயலில் உள்ள அமர்வுகள்</value>
+  </data>
+  <data name="AllBlocks" xml:space="preserve">
+    <value>எல்லாத் தொகுதிகளும்</value>
+  </data>
+  <data name="AllDistricts" xml:space="preserve">
+    <value>எல்லா மாவட்டங்களும்</value>
+  </data>
+  <data name="AllottedOn" xml:space="preserve">
+    <value>ஒதுக்கப்பட்ட தேதி</value>
+  </data>
+  <data name="ArtisanDeleted" xml:space="preserve">
+    <value>கலைஞர் {0} நீக்கப்பட்டார்</value>
+  </data>
+  <data name="ArtisanNotFound" xml:space="preserve">
+    <value>கலைஞர் கிடைக்கவில்லை</value>
+  </data>
+  <data name="ArtisanRegistered" xml:space="preserve">
+    <value>விண்ணப்பம் சேமிக்கப்பட்டது. கலைஞர் {0} பதிவு செய்யப்பட்டார்.</value>
+  </data>
+  <data name="ArtisansCraftCategory" xml:space="preserve">
+    <value>-- கலைஞரின் கைவினை வகை --</value>
+  </data>
+  <data name="ArtisansWithStall" xml:space="preserve">
+    <value>தற்போது {0} கலைஞர்களிடம் ஸ்டால் உள்ளது</value>
+  </data>
+  <data name="ArtisanUpdated" xml:space="preserve">
+    <value>கலைஞர் {0} புதுப்பிக்கப்பட்டார்</value>
+  </data>
+  <data name="BlockLabel" xml:space="preserve">
+    <value>தொகுதி {0}</value>
+  </data>
+  <data name="ClosedArtisanDeleted" xml:space="preserve">
+    <value>மூடப்பட்டது: கலைஞர் நீக்கப்பட்டார்</value>
+  </data>
+  <data name="ClosedStallVacated" xml:space="preserve">
+    <value>மூடப்பட்டது: ஸ்டால் காலி செய்யப்பட்டது</value>
+  </data>
+  <data name="ConfirmApproveReallocation" xml:space="preserve">
+    <value>அங்கீகரிக்கவா: ஸ்டால் {0} {1} க்குச் செல்லும்?</value>
+  </data>
+  <data name="ConfirmDeleteArtisan" xml:space="preserve">
+    <value>{0} ({1}) ஐ நீக்கவா? இதைத் திரும்பப்பெற முடியாது.</value>
+  </data>
+  <data name="ConfirmDeleteStall" xml:space="preserve">
+    <value>ஸ்டால் {0} ஐ நீக்கவா? அதன் மறுஒதுக்கீட்டு வரலாறும் நீக்கப்படும்.</value>
+  </data>
+  <data name="ConfirmSignOutOthers" xml:space="preserve">
+    <value>மற்ற எல்லாச் சாதனங்களிலிருந்தும் வெளியேறவா?</value>
+  </data>
+  <data name="ConfirmVacateStall" xml:space="preserve">
+    <value>ஸ்டால் {0} ஐக் காலி செய்யவா? கலைஞரிடம் இனி அது இருக்காது.</value>
+  </data>
+  <data name="DecisionRemarksPrompt" xml:space="preserve">
+    <value>கருத்துகள் (விருப்பத்தேர்வு):</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>சாதனம்</value>
+  </data>
+  <data name="EditArtisan" xml:space="preserve">
+    <value>கலைஞரைத் திருத்து</value>
+  </data>
+  <data name="EditStall" xml:space="preserve">
+    <value>ஸ்டாலைத் திருத்து</value>
+  </data>
+  <data name="EndSession" xml:space="preserve">
+    <value>அமர்வை முடி</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>காலாவதி</value>
+  </data>
+  <data name="FreeArtisansHint" xml:space="preserve">
+    <value>ஸ்டால் இல்லாத கலைஞர்கள் மட்டுமே பட்டியலிடப்பட்டுள்ளனர்.</value>
+  </data>
+  <data name="IpAddress" xml:space="preserve">
+    <value>IP முகவரி</value>
+  </data>
+  <data name="LastActivity" xml:space="preserve">
+    <value>கடைசி செயல்பாடு</value>
+  </data>
+  <data name="MySessions" xml:space="preserve">
+    <value>எனது அமர்வுகள்</value>
+  </data>
+  <data name="NoArtisansFound" xml:space="preserve">
+    <value>கலைஞர்கள் இல்லை</value>
+  </data>
+  <data name="NoFreeArtisans" xml:space="preserve">
+    <value>ஸ்டால் இல்லாத கலைஞர்கள் இல்லை</value>
+  </data>
+  <data name="NoOccupiedStalls" xml:space="preserve">
+    <value>ஆக்கிரமிக்கப்பட்ட ஸ்டால்கள் இல்லை</value>
+  </data>
+  <data name="NoReallocations" xml:space="preserve">
+    <value>மறுஒதுக்கீட்டுக் கோரிக்கைகள் இல்லை</value>
+  </data>
+  <data name="NoStallAssigned" xml:space="preserve">
+    <value>ஸ்டால் ஒதுக்கப்படவில்லை</value>
+  </data>
+  <data name="NoStallsFound" xml:space="preserve">
+    <value>இந்த வடிகட்டிகளுக்குப் பொருந்தும் ஸ்டால்கள் இல்லை</value>
+  </data>
+  <data name="NoStallsRegistered" xml:space="preserve">
+    <value>இன்னும் ஸ்டால்கள் பதிவு செய்யப்படவில்லை. சேர்க்க "ஸ்டாலை உருவாக்கு" பயன்படுத்தவும்.</value>
+  </data>
+  <data name="NoVacantStalls" xml:space="preserve">
+    <value>காலியான ஸ்டால்கள் இல்லை</value>
+  </data>
+  <data name="OccupiedStall" xml:space="preserve">
+    <value>ஆக்கிரமிக்கப்பட்ட ஸ்டால்</value>
+  </data>
+  <data name="OccupiedStatusHint" xml:space="preserve">
+    <value>ஆக்கிரமிக்கப்பட்ட ஸ்டால்கள் காலி செய் அல்லது மறுஒதுக்கீடு மூலம் மாறும்.</value>
+  </data>
+  <data name="OtherSessionsRevokedMsg" xml:space="preserve">
+    <value>மற்ற {0} அமர்வுகளிலிருந்து வெளியேற்றப்பட்டது.</value>
+  </data>
+  <data name="PendingReallocationBadge" xml:space="preserve">
+    <value>மறுஒதுக்கீடு நிலுவையில்</value>
+  </data>
+  <data name="ProductsAtStall" xml:space="preserve">
+    <value>ஸ்டாலில் உள்ள பொருட்கள்</value>
+  </data>
+  <data name="ReallocationApproved" xml:space="preserve">
+    <value>கோரிக்கை {0} அங்கீகரிக்கப்பட்டது</value>
+  </data>
+  <data name="ReallocationRejected" xml:space="preserve">
+    <value>கோரிக்கை {0} நிராகரிக்கப்பட்டது</value>
+  </data>
+  <data name="ReallocationRequested" xml:space="preserve">
+    <value>மறுஒதுக்கீட்டுக் கோரிக்கை {0} சமர்ப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="ReasonAgreementExpired" xml:space="preserve">
+    <value>ஒப்பந்தம் காலாவதியானது</value>
+  </data>
+  <data name="ReasonArtisanRequest" xml:space="preserve">
+    <value>கலைஞரின் கோரிக்கை</value>
+  </data>
+  <data name="ReasonCategoryChange" xml:space="preserve">
+    <value>வகை மாற்றம்</value>
+  </data>
+  <data name="ReasonClosure" xml:space="preserve">
+    <value>மூடல்</value>
+  </data>
+  <data name="ReasonExpired" xml:space="preserve">
+    <value>காலாவதியானது</value>
+  </data>
+  <data name="ReasonIdleTimeout" xml:space="preserve">
+    <value>செயலற்றதால் காலாவதி</value>
+  </data>
+  <data name="ReasonNonPerformance" xml:space="preserve">
+    <value>குறைந்த செயல்திறன்</value>
+  </data>
+  <data name="ReasonOther" xml:space="preserve">
+    <value>மற்றவை</value>
+  </data>
+  <data name="ReasonPasswordReset" xml:space="preserve">
+    <value>கடவுச்சொல் மீட்டமைப்பு</value>
+  </data>
+  <data name="ReasonRevoked" xml:space="preserve">
+    <value>பயனரால் முடிக்கப்பட்டது</value>
+  </data>
+  <data name="ReasonSignedOut" xml:space="preserve">
+    <value>வெளியேறியது</value>
+  </data>
+  <data name="RejectedLabel" xml:space="preserve">
+    <value>நிராகரிக்கப்பட்டது</value>
+  </data>
+  <data name="RequestNo" xml:space="preserve">
+    <value>கோரிக்கை எண்</value>
+  </data>
+  <data name="RequestReallocation" xml:space="preserve">
+    <value>மறுஒதுக்கீடு கோரு</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>பங்கு</value>
+  </data>
+  <data name="SessionEndedMsg" xml:space="preserve">
+    <value>நீங்கள் வெளியேற்றப்பட்டீர்கள்.</value>
+  </data>
+  <data name="SessionExpiredMsg" xml:space="preserve">
+    <value>உங்கள் அமர்வு காலாவதியானது. மீண்டும் உள்நுழையவும்.</value>
+  </data>
+  <data name="SessionExpiredTitle" xml:space="preserve">
+    <value>அமர்வு காலாவதியானது</value>
+  </data>
+  <data name="SessionExpiringMsg" xml:space="preserve">
+    <value>செயலற்ற நிலையால் நீங்கள் வெளியேற்றப்படும் நேரம்:</value>
+  </data>
+  <data name="SessionExpiringTitle" xml:space="preserve">
+    <value>அமர்வு விரைவில் காலாவதியாகும்</value>
+  </data>
+  <data name="SessionRevokedMsg" xml:space="preserve">
+    <value>அமர்வு முடிக்கப்பட்டது.</value>
+  </data>
+  <data name="SessionsSubtitle" xml:space="preserve">
+    <value>உங்கள் கணக்கு உள்நுழைந்துள்ள இடங்கள். {0} நிமிடங்கள் செயலற்றிருந்தால் அமர்வு முடியும்.</value>
+  </data>
+  <data name="SignedIn" xml:space="preserve">
+    <value>உள்நுழைந்தது</value>
+  </data>
+  <data name="SignOutOtherSessions" xml:space="preserve">
+    <value>மற்ற அமர்வுகளிலிருந்து வெளியேறு</value>
+  </data>
+  <data name="StallDeleted" xml:space="preserve">
+    <value>ஸ்டால் {0} நீக்கப்பட்டது</value>
+  </data>
+  <data name="StallNotFound" xml:space="preserve">
+    <value>ஸ்டால் கிடைக்கவில்லை</value>
+  </data>
+  <data name="StallUpdated" xml:space="preserve">
+    <value>ஸ்டால் {0} புதுப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="StallVacated" xml:space="preserve">
+    <value>ஸ்டால் {0} இப்போது காலியாக உள்ளது</value>
+  </data>
+  <data name="StaySignedIn" xml:space="preserve">
+    <value>உள்நுழைந்தே இரு</value>
+  </data>
+  <data name="SubmitRequest" xml:space="preserve">
+    <value>கோரிக்கையைச் சமர்ப்பி</value>
+  </data>
+  <data name="ThisDevice" xml:space="preserve">
+    <value>இந்தச் சாதனம்</value>
+  </data>
+  <data name="UnderMaintenance" xml:space="preserve">
+    <value>பராமரிப்பு</value>
+  </data>
+  <data name="VacateStall" xml:space="preserve">
+    <value>ஸ்டாலைக் காலி செய்</value>
+  </data>
+  <data name="VacateStallOption" xml:space="preserve">
+    <value>— ஸ்டாலைக் காலி செய் —</value>
+  </data>
+  <data name="ValAadhaar" xml:space="preserve">
+    <value>சரியான 12 இலக்க ஆதார் எண்ணை உள்ளிடவும்</value>
+  </data>
+  <data name="ValAadhaarExists" xml:space="preserve">
+    <value>இந்த ஆதார் எண் ஏற்கனவே பதிவு செய்யப்பட்டுள்ளது</value>
+  </data>
+  <data name="ValAddress" xml:space="preserve">
+    <value>முகவரி தேவை (5-500 எழுத்துகள்)</value>
+  </data>
+  <data name="ValAgreementEnd" xml:space="preserve">
+    <value>ஒப்பந்த முடிவு ஒதுக்கீட்டுத் தேதிக்குப் பின் இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValArtisanDeleteHasStall" xml:space="preserve">
+    <value>இந்தக் கலைஞரிடம் ஸ்டால் {0} உள்ளது. முதலில் அதைக் காலி செய்யவும் அல்லது மறுஒதுக்கீடு செய்யவும்.</value>
+  </data>
+  <data name="ValArtisanHasStall" xml:space="preserve">
+    <value>இந்தக் கலைஞரிடம் ஏற்கனவே ஒரு ஸ்டால் உள்ளது</value>
+  </data>
+  <data name="ValArtisanInactive" xml:space="preserve">
+    <value>செயலற்ற கலைஞர்களுக்கு ஸ்டால் வழங்க முடியாது</value>
+  </data>
+  <data name="ValArtisanMinAge" xml:space="preserve">
+    <value>கலைஞருக்குக் குறைந்தது 18 வயது இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValArtisanMobile" xml:space="preserve">
+    <value>சரியான 10 இலக்கக் கைபேசி எண்ணை உள்ளிடவும்</value>
+  </data>
+  <data name="ValBlock" xml:space="preserve">
+    <value>தொகுதி தேவை (எழுத்துகள், இலக்கங்கள், இடைவெளி, -)</value>
+  </data>
+  <data name="ValCraftCategory" xml:space="preserve">
+    <value>கைவினை வகையைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValDistrict" xml:space="preserve">
+    <value>மாவட்டத்தைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValExperience" xml:space="preserve">
+    <value>அனுபவம் 0-80 ஆண்டுகளாக இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValGender" xml:space="preserve">
+    <value>பாலினத்தைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValInactiveWithStall" xml:space="preserve">
+    <value>செயலற்றவர் எனக் குறிக்கும் முன் கலைஞரின் ஸ்டாலைக் காலி செய்யவும்</value>
+  </data>
+  <data name="ValLocation" xml:space="preserve">
+    <value>இடம் அதிகபட்சம் 500 எழுத்துகள்</value>
+  </data>
+  <data name="ValReallocationDecided" xml:space="preserve">
+    <value>இந்தக் கோரிக்கை ஏற்கனவே முடிவு செய்யப்பட்டது</value>
+  </data>
+  <data name="ValReallocationPending" xml:space="preserve">
+    <value>இந்த ஸ்டாலுக்கு ஏற்கனவே நிலுவையில் உள்ள மறுஒதுக்கீட்டுக் கோரிக்கை உள்ளது</value>
+  </data>
+  <data name="ValReallocationStale" xml:space="preserve">
+    <value>இந்தக் கோரிக்கைக்குப் பின் ஸ்டால் கைமாறியுள்ளது; இதை நிராகரித்துப் புதியதை உருவாக்கவும்</value>
+  </data>
+  <data name="ValReallocationTargetUnavailable" xml:space="preserve">
+    <value>புதிய கலைஞர் இனி இந்த ஸ்டாலைப் பெற முடியாது</value>
+  </data>
+  <data name="ValReason" xml:space="preserve">
+    <value>காரணத்தைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValRent" xml:space="preserve">
+    <value>சரியான வாடகையை உள்ளிடவும்</value>
+  </data>
+  <data name="ValRow" xml:space="preserve">
+    <value>வரிசை அதிகபட்சம் 20 எழுத்துகள்</value>
+  </data>
+  <data name="ValSameArtisan" xml:space="preserve">
+    <value>இந்தக் கலைஞரிடமே ஏற்கனவே இந்த ஸ்டால் உள்ளது</value>
+  </data>
+  <data name="ValSelectArtisan" xml:space="preserve">
+    <value>கலைஞரைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValSelectStall" xml:space="preserve">
+    <value>ஸ்டாலைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValSkills" xml:space="preserve">
+    <value>திறன்கள் அதிகபட்சம் 1000 எழுத்துகள்</value>
+  </data>
+  <data name="ValStallCode" xml:space="preserve">
+    <value>ஸ்டால் எண் தேவை (எழுத்துகள், இலக்கங்கள், -)</value>
+  </data>
+  <data name="ValStallCodeExists" xml:space="preserve">
+    <value>இந்த எண்ணுடன் ஒரு ஸ்டால் ஏற்கனவே உள்ளது</value>
+  </data>
+  <data name="ValStallHasProducts" xml:space="preserve">
+    <value>இந்த ஸ்டாலுக்கு {0} பொருட்கள் ஒதுக்கப்பட்டுள்ளன. முதலில் இருப்பில் அவற்றை மாற்றவும்.</value>
+  </data>
+  <data name="ValStallName" xml:space="preserve">
+    <value>ஸ்டால் பெயர் தேவை (2-100 எழுத்துகள்)</value>
+  </data>
+  <data name="ValStallNotOccupied" xml:space="preserve">
+    <value>இந்த ஸ்டால் ஆக்கிரமிக்கப்படவில்லை</value>
+  </data>
+  <data name="ValStallNotVacant" xml:space="preserve">
+    <value>காலியான ஸ்டாலை மட்டுமே ஒதுக்க முடியும்</value>
+  </data>
+  <data name="ValStallOccupiedDelete" xml:space="preserve">
+    <value>ஆக்கிரமிக்கப்பட்ட ஸ்டாலை நீக்க முடியாது. முதலில் காலி செய்யவும்.</value>
+  </data>
+  <data name="ValStallOccupiedStatus" xml:space="preserve">
+    <value>ஆக்கிரமிக்கப்பட்ட ஸ்டால் அப்படியே இருக்கும்; காலி செய்யவும் அல்லது மறுஒதுக்கீடு செய்யவும்</value>
+  </data>
+  <data name="ValStallStatus" xml:space="preserve">
+    <value>காலி, ஒதுக்கப்பட்டது அல்லது பராமரிப்பு என்பதைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="WithoutStall" xml:space="preserve">
+    <value>ஸ்டால் இல்லாதவர்கள்</value>
+  </data>
+  <data name="WithStall" xml:space="preserve">
+    <value>ஸ்டால் உள்ளவர்கள்</value>
+  </data>
+  <data name="YearsCount" xml:space="preserve">
+    <value>{0} ஆண்டுகள்</value>
+  </data>
+  <data name="ExportApproved" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்டவற்றை ஏற்றுமதி செய்</value>
+  </data>
+  <data name="ExportUnderReview" xml:space="preserve">
+    <value>பரிசீலனையில் உள்ளவற்றை ஏற்றுமதி செய்</value>
+  </data>
+  <data name="ExportPending" xml:space="preserve">
+    <value>புதியவற்றை ஏற்றுமதி செய்</value>
+  </data>
+  <data name="ExportRejected" xml:space="preserve">
+    <value>நிராகரிக்கப்பட்டவற்றை ஏற்றுமதி செய்</value>
+  </data>
+  <data name="SearchUnderReview" xml:space="preserve">
+    <value>பரிசீலனையில் உள்ளவற்றைத் தேடு…</value>
+  </data>
+  <data name="SearchPending" xml:space="preserve">
+    <value>புதிய விண்ணப்பங்களைத் தேடு…</value>
+  </data>
+  <data name="SearchRejected" xml:space="preserve">
+    <value>நிராகரிக்கப்பட்டவற்றைத் தேடு…</value>
+  </data>
+  <data name="RejectedDate" xml:space="preserve">
+    <value>நிராகரித்த தேதி</value>
+  </data>
+  <data name="RejectedBy" xml:space="preserve">
+    <value>நிராகரித்தவர்</value>
+  </data>
+  <data name="DecisionRemarks" xml:space="preserve">
+    <value>முடிவுக் குறிப்புகள்</value>
+  </data>
+  <data name="SubmittedOn" xml:space="preserve">
+    <value>சமர்ப்பித்த தேதி</value>
+  </data>
+  <data name="DecidedOn" xml:space="preserve">
+    <value>முடிவு செய்த தேதி</value>
+  </data>
+  <data name="DecidedBy" xml:space="preserve">
+    <value>முடிவு செய்தவர்</value>
+  </data>
+  <data name="NoApplicationsFound" xml:space="preserve">
+    <value>விண்ணப்பங்கள் எதுவும் இல்லை</value>
+  </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>விண்ணப்பம் கிடைக்கவில்லை</value>
+  </data>
+  <data name="EditApplication" xml:space="preserve">
+    <value>விண்ணப்பத்தைத் திருத்து</value>
+  </data>
+  <data name="ApplicationCreated" xml:space="preserve">
+    <value>விண்ணப்பம் {0} சமர்ப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="ApplicationUpdated" xml:space="preserve">
+    <value>விண்ணப்பம் {0} புதுப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="ApplicationDeleted" xml:space="preserve">
+    <value>விண்ணப்பம் {0} நீக்கப்பட்டது</value>
+  </data>
+  <data name="ConfirmDeleteApplication" xml:space="preserve">
+    <value>விண்ணப்பம் {0}-ஐ நீக்கவா? இதை மீட்க முடியாது.</value>
+  </data>
+  <data name="ApplicationProcessed" xml:space="preserve">
+    <value>விண்ணப்பம் {0} பரிசீலனைக்கு மாற்றப்பட்டது</value>
+  </data>
+  <data name="ApplicationApprovedMsg" xml:space="preserve">
+    <value>{0} அங்கீகரிக்கப்பட்டது. கலைஞர் {1} பதிவு செய்யப்பட்டார்.</value>
+  </data>
+  <data name="ApplicationApprovedWithStall" xml:space="preserve">
+    <value>{0} அங்கீகரிக்கப்பட்டது. கலைஞர் {1} பதிவு செய்யப்பட்டு ஸ்டால் {2} ஒதுக்கப்பட்டது.</value>
+  </data>
+  <data name="ApplicationRejectedMsg" xml:space="preserve">
+    <value>விண்ணப்பம் {0} நிராகரிக்கப்பட்டது</value>
+  </data>
+  <data name="NoStallNow" xml:space="preserve">
+    <value>— இப்போது ஸ்டால் இல்லை (பின்னர் ஒதுக்கவும்) —</value>
+  </data>
+  <data name="ApplicationDetails" xml:space="preserve">
+    <value>விண்ணப்ப விவரங்கள்</value>
+  </data>
+  <data name="ValRejectRemarks" xml:space="preserve">
+    <value>நிராகரிப்பதற்கான காரணத்தை உள்ளிடவும்</value>
+  </data>
+  <data name="ValApplicationDecided" xml:space="preserve">
+    <value>இந்த விண்ணப்பத்தின் மீது ஏற்கனவே முடிவு எடுக்கப்பட்டுள்ளது</value>
+  </data>
+  <data name="ValApplicationApprovedDelete" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்ட விண்ணப்பம் கலைஞரின் பதிவுச் சான்றாக வைக்கப்படும்; அதை நீக்க முடியாது</value>
+  </data>
+  <data name="ValApplicationNotPending" xml:space="preserve">
+    <value>புதிய விண்ணப்பத்தை மட்டுமே செயல்படுத்த முடியும்</value>
+  </data>
+  <data name="ValApplicantAlreadyArtisan" xml:space="preserve">
+    <value>இந்த மொபைல் எண் அல்லது ஆதார் ஏற்கனவே ஒரு கலைஞருக்குப் பதிவு செய்யப்பட்டுள்ளது</value>
+  </data>
+  <data name="ValMobileApplicationExists" xml:space="preserve">
+    <value>இந்த மொபைல் எண் ஏற்கனவே மற்றொரு நிலுவை விண்ணப்பத்தில் உள்ளது</value>
+  </data>
+  <data name="ValAadhaarApplicationExists" xml:space="preserve">
+    <value>இந்த ஆதார் எண் ஏற்கனவே மற்றொரு நிலுவை விண்ணப்பத்தில் உள்ளது</value>
+  </data>
+  <data name="RegisteredFromApplication" xml:space="preserve">
+    <value>விண்ணப்பம் {0} மூலம் பதிவு செய்யப்பட்டது</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>கலைஞர்கள், ஸ்டால்கள், ஊழியர்கள், பொருட்களைத் தேடு…</value>
+  </data>
+  <data name="SearchMinChars" xml:space="preserve">
+    <value>குறைந்தது 2 எழுத்துகளை உள்ளிடவும்</value>
+  </data>
+  <data name="SearchNoResults" xml:space="preserve">
+    <value>பொருத்தங்கள் எதுவும் இல்லை</value>
+  </data>
+  <data name="Searching" xml:space="preserve">
+    <value>தேடுகிறது…</value>
+  </data>
+  <data name="SearchGroupPages" xml:space="preserve">
+    <value>பக்கங்கள்</value>
+  </data>
+  <data name="SearchGroupArtisans" xml:space="preserve">
+    <value>கலைஞர்கள்</value>
+  </data>
+  <data name="SearchGroupApplications" xml:space="preserve">
+    <value>விண்ணப்பங்கள்</value>
+  </data>
+  <data name="SearchGroupStalls" xml:space="preserve">
+    <value>ஸ்டால்கள்</value>
+  </data>
+  <data name="SearchGroupStaff" xml:space="preserve">
+    <value>ஊழியர்கள்</value>
+  </data>
+  <data name="SearchGroupProducts" xml:space="preserve">
+    <value>பொருட்கள்</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>புதிய அறிவிப்புகள் இல்லை</value>
+  </data>
+  <data name="MarkAllRead" xml:space="preserve">
+    <value>அனைத்தையும் படித்ததாகக் குறி</value>
+  </data>
+  <data name="NotifAppsPending" xml:space="preserve">
+    <value>{0} புதிய விண்ணப்பம்(கள்) செயலாக்கத்திற்குக் காத்திருக்கின்றன</value>
+  </data>
+  <data name="NotifAppsReview" xml:space="preserve">
+    <value>{0} விண்ணப்பம்(கள்) பரிசீலனையில்</value>
+  </data>
+  <data name="NotifReallocationsPending" xml:space="preserve">
+    <value>{0} ஸ்டால் மறுஒதுக்கீடு கோரிக்கை(கள்) நிலுவையில்</value>
+  </data>
+  <data name="NotifAgreementsExpired" xml:space="preserve">
+    <value>{0} ஸ்டால் ஒப்பந்தம்(கள்) காலாவதியாகிவிட்டன</value>
+  </data>
+  <data name="NotifAgreementsExpiring" xml:space="preserve">
+    <value>{0} ஸ்டால் ஒப்பந்தம்(கள்) 30 நாட்களுக்குள் காலாவதியாகும்</value>
+  </data>
+  <data name="NotifArtisanRenewals" xml:space="preserve">
+    <value>{0} கலைஞர்(கள்) புதுப்பிக்க வேண்டியுள்ளது</value>
+  </data>
+  <data name="NotifOutOfStock" xml:space="preserve">
+    <value>{0} பொருள்(கள்) இருப்பில் இல்லை</value>
+  </data>
+  <data name="NotifLowStock" xml:space="preserve">
+    <value>{0} பொருள்(கள்) குறைந்தபட்ச இருப்புக்குக் கீழே</value>
+  </data>
+  <data name="NotifContractsExpiring" xml:space="preserve">
+    <value>{0} ஊழியர் ஒப்பந்தம்(கள்) 30 நாட்களுக்குள் முடிவடையும்</value>
+  </data>
+  <data name="ExportAllPdf" xml:space="preserve">
+    <value>அனைத்தையும் ஏற்றுமதி (PDF)</value>
+  </data>
+  <data name="KpiTitleFor" xml:space="preserve">
+    <value>முக்கிய செயல்திறன் குறிகாட்டிகள் – {0}</value>
+  </data>
+  <data name="SalesThisYear" xml:space="preserve">
+    <value>இந்த ஆண்டு</value>
+  </data>
+  <data name="SalesPreviousYear" xml:space="preserve">
+    <value>முந்தைய ஆண்டு</value>
+  </data>
+  <data name="RatingOutOf" xml:space="preserve">
+    <value>மதிப்பீடு 5-இல் {0}</value>
+  </data>
+  <data name="OfTotal" xml:space="preserve">
+    <value>மொத்தம்: {0}</value>
+  </data>
+  <data name="RptApplications" xml:space="preserve">
+    <value>விண்ணப்ப அறிக்கை</value>
+  </data>
+  <data name="RptApplicationsDesc" xml:space="preserve">
+    <value>மாதத்தில் பெறப்பட்ட, அங்கீகரிக்கப்பட்ட மற்றும் நிராகரிக்கப்பட்ட விண்ணப்பங்கள்.</value>
+  </data>
+  <data name="ChangeVsLastMonth" xml:space="preserve">
+    <value>கடந்த மாதத்துடன் மாற்றம்</value>
+  </data>
+  <data name="NoComparisonMonth" xml:space="preserve">
+    <value>ஒப்பிட கடந்த மாதம் விற்பனை இல்லை</value>
+  </data>
+  <data name="OccupancyHistoryNote" xml:space="preserve">
+    <value>கடந்த மாதங்கள் தற்போதைய ஸ்டால் ஒதுக்கீடுகளின் அடிப்படையில் கணக்கிடப்படுகின்றன; முடிந்த குத்தகைகள் சேர்க்கப்படவில்லை.</value>
+  </data>
+  <data name="UnitsSoldLabel" xml:space="preserve">
+    <value>விற்ற அலகுகள்</value>
+  </data>
+  <data name="SalesShare" xml:space="preserve">
+    <value>விற்பனைப் பங்களிப்பு</value>
+  </data>
+  <data name="RatingNote" xml:space="preserve">
+    <value>மதிப்பீடு ஒவ்வொரு கலைஞரின் விற்பனையையும் மாதத்தின் சிறந்த விற்பனையாளருடன் ஒப்பிடுகிறது (5 = உயர்ந்தது).</value>
+  </data>
+  <data name="ApplicationsSummary" xml:space="preserve">
+    <value>விண்ணப்பச் சுருக்கம்</value>
+  </data>
+  <data name="SubmittedThisPeriod" xml:space="preserve">
+    <value>இந்தக் காலத்தில் சமர்ப்பிக்கப்பட்டவை</value>
+  </data>
+  <data name="StillOpen" xml:space="preserve">
+    <value>இன்னும் நிலுவையில் (புதியவை + பரிசீலனையில்)</value>
+  </data>
+  <data name="StallWiseSales" xml:space="preserve">
+    <value>ஸ்டால் வாரியான விற்பனை</value>
+  </data>
+  <data name="GeneratedOn" xml:space="preserve">
+    <value>உருவாக்கப்பட்டது</value>
+  </data>
+  <data name="NoDataForPeriod" xml:space="preserve">
+    <value>இந்தக் காலத்திற்குத் தரவு இல்லை</value>
+  </data>
+  <data name="PrintSavePdf" xml:space="preserve">
+    <value>அச்சிடு / PDF ஆகச் சேமி</value>
+  </data>
+  <data name="HalfDay" xml:space="preserve">
+    <value>அரை நாள்</value>
+  </data>
+  <data name="NotMarked" xml:space="preserve">
+    <value>குறிக்கப்படவில்லை</value>
+  </data>
+  <data name="NotMarkedOption" xml:space="preserve">
+    <value>— குறிக்கப்படவில்லை —</value>
+  </data>
+  <data name="NotMarkedCount" xml:space="preserve">
+    <value>{0} குறிக்கப்படவில்லை</value>
+  </data>
+  <data name="MarkAllPresent" xml:space="preserve">
+    <value>அனைவரையும் வருகை எனக் குறி</value>
+  </data>
+  <data name="WithOvertime" xml:space="preserve">
+    <value>மிகைநேரத்துடன்</value>
+  </data>
+  <data name="WeekOf" xml:space="preserve">
+    <value>{0} வாரம்</value>
+  </data>
+  <data name="PreviousWeek" xml:space="preserve">
+    <value>முந்தைய வாரம்</value>
+  </data>
+  <data name="NextWeek" xml:space="preserve">
+    <value>அடுத்த வாரம்</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>இன்று</value>
+  </data>
+  <data name="NothingToSave" xml:space="preserve">
+    <value>சேமிக்க எதுவும் இல்லை — முதலில் குறைந்தது ஒரு பணியாளரைக் குறிக்கவும் அல்லது மாற்றவும்.</value>
+  </data>
+  <data name="NoStaffForAttendance" xml:space="preserve">
+    <value>இந்தத் தேதிக்குக் குறிக்க பணியாளர்கள் இல்லை.</value>
+  </data>
+  <data name="NoStaffInDepartment" xml:space="preserve">
+    <value>இந்தத் துறையில் பணியாளர்கள் இல்லை.</value>
+  </data>
+  <data name="NoAttendanceRecords" xml:space="preserve">
+    <value>வடிப்பான்களுக்குப் பொருந்தும் வருகைப் பதிவுகள் இல்லை.</value>
+  </data>
+  <data name="AttendanceUpdated" xml:space="preserve">
+    <value>{0} – {1} வருகை புதுப்பிக்கப்பட்டது</value>
+  </data>
+  <data name="AttendanceDeleted" xml:space="preserve">
+    <value>{0} – {1} வருகைப் பதிவு நீக்கப்பட்டது</value>
+  </data>
+  <data name="ConfirmDeleteAttendance" xml:space="preserve">
+    <value>{0} அவர்களின் {1} வருகைப் பதிவை நீக்கவா?</value>
+  </data>
+  <data name="AttendanceNotFound" xml:space="preserve">
+    <value>இந்த வருகைப் பதிவு இனி இல்லை.</value>
+  </data>
+  <data name="EditAttendance" xml:space="preserve">
+    <value>வருகையைத் திருத்து</value>
+  </data>
+  <data name="AttendanceDetails" xml:space="preserve">
+    <value>வருகை விவரங்கள்</value>
+  </data>
+  <data name="HistoryTotals" xml:space="preserve">
+    <value>{0} பதிவுகள் · வருகை {1} · வரவில்லை {2} · விடுப்பு {3} · அரை நாள் {4} · {5} மணி வேலை · {6} மணி மிகைநேரம்</value>
+  </data>
+  <data name="MonthToDate" xml:space="preserve">
+    <value>இம்மாதம் இதுவரை: {0}</value>
+  </data>
+  <data name="OpenInEntry" xml:space="preserve">
+    <value>வருகை பதிவில் திற</value>
+  </data>
+  <data name="ExportDayHint" xml:space="preserve">
+    <value>தேர்ந்தெடுத்த நாளின் வருகையைப் பதிவிறக்கு (CSV)</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>எதிர்காலத் தேதிக்கு வருகையைக் குறிக்க முடியாது.</value>
+  </data>
+  <data name="AllStatuses" xml:space="preserve">
+    <value>அனைத்து நிலைகளும்</value>
+  </data>
+  <data name="UnsavedChanges" xml:space="preserve">
+    <value>சேமிக்கப்படாத மாற்றங்கள்</value>
+  </data>
+  <data name="ValAttendanceStatus" xml:space="preserve">
+    <value>வருகை, வரவில்லை, விடுப்பு அல்லது அரை நாள் என்பதைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValInTimeRequired" xml:space="preserve">
+    <value>உள்ளே நேரத்தை உள்ளிடவும்</value>
+  </data>
+  <data name="ValOutBeforeIn" xml:space="preserve">
+    <value>வெளியே நேரம் உள்ளே நேரத்திற்குப் பிறகு இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValStaffNotFound" xml:space="preserve">
+    <value>பணியாளர் கண்டறியப்படவில்லை</value>
+  </data>
+  <data name="ValDuplicateStaff" xml:space="preserve">
+    <value>இந்தப் பணியாளர் ஒன்றுக்கு மேற்பட்ட முறை உள்ளார்</value>
+  </data>
+  <data name="ValBeforeJoining" xml:space="preserve">
+    <value>இந்தத் தேதியில் இந்தப் பணியாளர் பணியில் சேரவில்லை</value>
+  </data>
+  <data name="ValTooManyEntries" xml:space="preserve">
+    <value>ஒரே நேரத்தில் அதிகபட்சம் {0} பதிவுகளைச் சேமிக்கலாம்</value>
+  </data>
+</root>

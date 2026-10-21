@@ -1,0 +1,113 @@
+<aside class="sidebar" id="sidebar">
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@inject IMSB.Dto.Models.IMSBContext Db
+
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    // Mirrors the [Authorize(Roles = ...)] attributes on the controllers, so users only see pages they can open
+    var isAdmin = User.IsInRole("Admin");
+    var isStaff = User.IsInRole("Staff");
+    var isInventory = User.IsInRole("Inventory");
+    var userName = User.Identity?.Name ?? L["AdminUser"].Value;
+    var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    var initials = userName.Length >= 2 ? userName.Substring(0, 2).ToUpperInvariant() : userName.ToUpperInvariant();
+    // products below their minimum (low + out of stock), same rule as StockStatuses.For
+    var belowMinimum = (isAdmin || isInventory) ? Db.Products.Count(p => p.Quantity <= 0 || p.Quantity < p.MinStock) : 0;
+    // applications waiting for a decision (new + under review)
+    var openApplications = isAdmin ? Db.ArtisanApplications.Count(a => a.Status == IMSB.Dto.Models.ApplicationStatuses.Pending
+        || a.Status == IMSB.Dto.Models.ApplicationStatuses.UnderReview) : 0;
+}
+
+    <div class="sidebar-brand">
+      <div class="brand-logo"><i class="fa-solid fa-store-alt"></i></div>
+      <div class="sidebar-title">
+        <span>@L["IMSBPortal"]</span>
+        <span>@L["AdminDashboard"]</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      @if (isAdmin)
+      {
+      <div class="nav-section-label">@L["Main"]</div>
+      <div class="nav-item" data-page="/Dashboard/Index" onclick="location.href='/Dashboard/Index'">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span class="nav-label">@L["Dashboard"]</span>
+      </div>
+      }
+
+      @if (isAdmin || isInventory)
+      {
+      <div class="nav-section-label">@L["Operations"]</div>
+      @if (isAdmin)
+      {
+      <div class="nav-item" data-page="/Stalls/Index" onclick="location.href='/Stalls/Index'">
+        <i class="fa-solid fa-store"></i>
+        <span class="nav-label">@L["StallManagement"]</span>
+      </div>
+      }
+      <div class="nav-item" data-page="/Inventory/Index" onclick="location.href='/Inventory/Index'">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <span class="nav-label">@L["Inventory"]</span>
+        @if (belowMinimum > 0)
+        {
+        <span class="nav-badge" id="navInventoryBadge" title="@L["LowStock"]">@belowMinimum</span>
+        }
+      </div>
+      @if (isAdmin)
+      {
+      <div class="nav-item" data-page="/Sales/Index" onclick="location.href='/Sales/Index'">
+        <i class="fa-solid fa-chart-line"></i>
+        <span class="nav-label">@L["Sales"]</span>
+      </div>
+      }
+      }
+
+      @if (isAdmin || isStaff)
+      {
+      <div class="nav-section-label">@L["People"]</div>
+      @if (isAdmin)
+      {
+      <div class="nav-item" data-page="/Artisans/Index" onclick="location.href='/Artisans/Index'">
+        <i class="fa-solid fa-palette"></i>
+        <span class="nav-label">@L["Artisans"]</span>
+      </div>
+      <div class="nav-item" data-page="/Applications/Index" onclick="location.href='/Applications/Index'">
+        <i class="fa-solid fa-file-circle-check"></i>
+        <span class="nav-label">@L["Applications"]</span>
+        @if (openApplications > 0)
+        {
+        <span class="nav-badge" title="@L["PendingApplications"]">@openApplications</span>
+        }
+      </div>
+      }
+      <div class="nav-item" data-page="/Staff/Index" onclick="location.href='/Staff/Index'">
+        <i class="fa-solid fa-users"></i>
+        <span class="nav-label">@L["StaffHR"]</span>
+      </div>
+      <div class="nav-item" data-page="/Attendance/Index" onclick="location.href='/Attendance/Index'">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span class="nav-label">@L["Attendance"]</span>
+      </div>
+      }
+
+      @if (isAdmin)
+      {
+      <div class="nav-section-label">@L["Reports"]</div>
+      <div class="nav-item" data-page="/Reports/Index" onclick="location.href='/Reports/Index'">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span class="nav-label">@L["Reports"]</span>
+      </div>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user-avatar">@initials</div>
+      <div class="sidebar-user-info">
+        <span>@userName</span>
+        <span>@(userRole switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, _ => L["StateLevelAdmin"].Value })</span>
+      </div>
+      <div class="sidebar-user-menu"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+    </div>
+  </aside>

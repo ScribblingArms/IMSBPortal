@@ -1,0 +1,184 @@
+﻿@using IMSB.Admin.Resources
+@using IMSB.Dto.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["Artisans"].Value;
+    // the directory below has its own search; no header search box or bell on this page
+    ViewData["HideHeaderTools"] = true;
+    var stats = (ArtisanStats)ViewBag.Stats;
+
+    // Strings used by artisans.js (table, chart, profile, toasts, client-side validation)
+    var jsKeys = new[] {
+        "Active", "OnLeave", "RenewalPending", "Inactive", "Success", "Error", "Edit", "Delete", "View", "CouldNotReachServer", "CheckForm",
+        "DiscardChanges", "NoArtisansFound", "ArtisanRegistered", "ArtisanUpdated", "ArtisanDeleted", "ConfirmDeleteArtisan", "ArtisanNotFound",
+        "NewArtisanApplication", "EditArtisan", "SubmitApplication", "SaveChanges", "ArtisanOfCategory", "StallLabel", "SinceDate", "NoStallAssigned",
+        "AadhaarKeepHint", "AadhaarStoredHint", "Artisans", "Female", "Male", "Other", "YearsCount",
+        "ValFullName", "ValDobRequired", "ValDobFuture", "ValArtisanMinAge", "ValArtisanMobile", "ValEmail", "ValAddress", "ValAadhaar",
+        "ValDistrict", "ValCraftCategory", "ValExperience", "ValJoinFuture"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<div class="page-body">
+  <div class="page-header">
+    <div><div class="page-title">@L["ArtisanManagement"]</div><div class="page-subtitle">@L["ArtisanManagementSubtitle"]</div></div>
+    <div class="page-actions">
+      <button type="button" class="btn btn-outline btn-sm" id="artisansExportBtn"><i class="fa-solid fa-download"></i> @L["Export"]</button>
+      <button type="button" class="btn btn-primary btn-sm" id="newArtisanBtn"><i class="fa-solid fa-user-plus"></i> @L["NewApplication"]</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-palette"></i></div><div class="stat-value" id="statTotal">@stats.Total</div><div class="stat-label">@L["TotalArtisans"]</div></div>
+    <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-value" id="statActive">@stats.Active</div><div class="stat-label">@L["Active"]</div></div>
+    <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div><div class="stat-value" id="statOnLeave">@stats.OnLeave</div><div class="stat-label">@L["OnLeave"]</div></div>
+    <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-rotate"></i></div><div class="stat-value" id="statRenewal">@stats.RenewalPending</div><div class="stat-label">@L["RenewalPending"]</div></div>
+  </div>
+
+  <!-- Chart + Directory -->
+  <div class="artisan-layout">
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-pie"></i> @L["StatusOverview"]</div></div>
+      <div class="card-body">
+        <div style="height:220px;position:relative"><canvas id="artisanStatusChart" aria-label="@L["StatusOverview"]"></canvas>
+          <div class="empty-state" id="chartEmpty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center">@L["NoArtisansFound"]</div></div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:10px;text-align:center" id="withStallNote" data-format="@L["ArtisansWithStall"]">@string.Format(L["ArtisansWithStall"].Value, stats.WithStall)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fa-solid fa-users"></i> @L["ArtisanDirectory"] <span class="tab-count" id="directoryCount">@stats.Total</span></div></div>
+      <div class="card-body">
+        <div class="toolbar" style="flex-wrap:wrap">
+          <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="artisanSearch" data-url-search placeholder="@L["SearchArtisans"]" aria-label="@L["SearchArtisans"]"></div>
+          <select class="form-control" style="width:auto;min-width:140px" id="filterStatus" aria-label="@L["Status"]">
+            <option value="">@L["AllStatus"]</option>
+            <option value="ACTIVE">@L["Active"]</option>
+            <option value="ON_LEAVE">@L["OnLeave"]</option>
+            <option value="RENEWAL_DUE">@L["RenewalPending"]</option>
+            <option value="INACTIVE">@L["Inactive"]</option>
+          </select>
+          <select class="form-control" style="width:auto;min-width:150px" id="filterCategory" aria-label="@L["Category"]"><option value="">@L["AllCategories"]</option></select>
+          <select class="form-control" style="width:auto;min-width:150px" id="filterDistrict" aria-label="@L["District"]"><option value="">@L["AllDistricts"]</option></select>
+          <select class="form-control" style="width:auto;min-width:140px" id="filterStall" aria-label="@L["Stall"]">
+            <option value="">@L["AllStalls"]</option>
+            <option value="assigned">@L["WithStall"]</option>
+            <option value="unassigned">@L["WithoutStall"]</option>
+          </select>
+          <button type="button" class="btn btn-outline btn-sm" id="filterResetBtn">@L["Reset"]</button>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="artisanTable"><thead><tr><th>@L["ID"]</th><th>@L["Name"]</th><th>@L["Category"]</th><th>@L["Stall"]</th><th>@L["Phone"]</th><th>@L["District"]</th><th>@L["Joined"]</th><th>@L["Status"]</th><th>@L["Actions"]</th></tr></thead>
+          <tbody id="artisanBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Application / Edit Modal -->
+<div class="modal-overlay" id="artisanModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="artisanModalTitle" style="max-width:720px">
+    <div class="modal-header"><div class="modal-title" id="artisanModalTitle"><i class="fa-solid fa-user-plus" style="color:var(--primary)"></i> &nbsp;<span id="artisanModalText">@L["NewArtisanApplication"]</span></div>
+      <button type="button" class="modal-close" id="artisanModalClose" aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <form id="artisanForm" novalidate>
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="arEditing">
+        <div class="form-section-title"><i class="fa-solid fa-user"></i> @L["PersonalInformation"]</div>
+        <div class="form-grid col-2">
+          <div class="form-group"><label class="form-label" for="arName">@L["FullName"] <span class="req">*</span></label>
+            <input class="form-control" id="arName" maxlength="100" placeholder="@L["AsPerAadhaar"]" required><div class="form-error" id="err_full_name"></div></div>
+          <div class="form-group"><label class="form-label" for="arDob">@L["DateOfBirth"] <span class="req">*</span></label>
+            <input type="date" class="form-control" id="arDob" required><div class="form-error" id="err_date_of_birth"></div></div>
+          <div class="form-group"><label class="form-label" for="arGender">@L["Gender"] <span class="req">*</span></label>
+            <select class="form-control" id="arGender"><option value="Female">@L["Female"]</option><option value="Male">@L["Male"]</option><option value="Other">@L["Other"]</option></select>
+            <div class="form-error" id="err_gender"></div></div>
+          <div class="form-group"><label class="form-label" for="arMobile">@L["MobileNumber"] <span class="req">*</span></label>
+            <input type="tel" class="form-control" id="arMobile" maxlength="15" placeholder="98765 43210" required><div class="form-error" id="err_mobile"></div></div>
+          <div class="form-group"><label class="form-label" for="arEmail">@L["EmailAddress"]</label>
+            <input type="email" class="form-control" id="arEmail" maxlength="200" placeholder="@L["Optional"]"><div class="form-error" id="err_email"></div></div>
+          <div class="form-group"><label class="form-label" for="arAadhaar">@L["AadhaarNumber"] <span class="req" id="arAadhaarReq">*</span></label>
+            <input class="form-control" id="arAadhaar" maxlength="14" inputmode="numeric" autocomplete="off" placeholder="XXXX XXXX XXXX">
+            <div class="form-hint" id="arAadhaarHint" style="font-size:.7rem;color:var(--text-muted)">@L["AadhaarStoredHint"]</div>
+            <div class="form-error" id="err_aadhaar"></div></div>
+          <div class="form-group form-full"><label class="form-label" for="arAddress">@L["ResidentialAddress"] <span class="req">*</span></label>
+            <textarea class="form-control" id="arAddress" rows="2" maxlength="500" required></textarea><div class="form-error" id="err_address"></div></div>
+          <div class="form-group"><label class="form-label" for="arDistrict">@L["District"] <span class="req">*</span></label>
+            <select class="form-control" id="arDistrict" required><option value="">@L["SelectDistrict"]</option></select><div class="form-error" id="err_district"></div></div>
+          <div class="form-group"><label class="form-label" for="arJoined">@L["Joined"]</label>
+            <input type="date" class="form-control" id="arJoined"><div class="form-error" id="err_joined_date"></div></div>
+        </div>
+        <div class="form-section-title" style="margin-top:20px"><i class="fa-solid fa-palette"></i> @L["CategorySkills"]</div>
+        <div class="form-grid col-2">
+          <div class="form-group"><label class="form-label" for="arCategory">@L["CraftCategory"] <span class="req">*</span></label>
+            <select class="form-control" id="arCategory" required><option value="">@L["SelectPlaceholder"]</option></select><div class="form-error" id="err_category_id"></div></div>
+          <div class="form-group"><label class="form-label" for="arYears">@L["YearsOfExperience"]</label>
+            <input type="number" class="form-control" id="arYears" min="0" max="80" step="1" value="0"><div class="form-error" id="err_years_of_experience"></div></div>
+          <div class="form-group form-full"><label class="form-label" for="arSkills">@L["SkillsDescription"]</label>
+            <textarea class="form-control" id="arSkills" rows="2" maxlength="1000" placeholder="@L["DescribeSkills"]"></textarea><div class="form-error" id="err_skills"></div></div>
+          <div class="form-group"><label class="form-label" for="arStatus">@L["Status"]</label>
+            <select class="form-control" id="arStatus">
+              <option value="ACTIVE">@L["Active"]</option><option value="ON_LEAVE">@L["OnLeave"]</option>
+              <option value="RENEWAL_DUE">@L["RenewalPending"]</option><option value="INACTIVE">@L["Inactive"]</option>
+            </select><div class="form-error" id="err_status"></div></div>
+          <div class="form-group"><label class="form-label" for="arRemarks">@L["Remarks"]</label>
+            <input class="form-control" id="arRemarks" maxlength="500"><div class="form-error" id="err_remarks"></div></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" id="artisanCancelBtn">@L["Cancel"]</button>
+      <button type="button" class="btn btn-primary" id="artisanSaveBtn"><i class="fa-solid fa-paper-plane"></i> <span id="artisanSaveText">@L["SubmitApplication"]</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="artisanProfileModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profileName" style="max-width:520px">
+    <div class="modal-header"><div class="modal-title">@L["ArtisanProfile"]</div><button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body" style="padding:0">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar"></div>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-role" id="profileRole"></div>
+        <div class="profile-meta">
+          <div class="profile-meta-item"><i class="fa-solid fa-store"></i> <span id="profileStall"></span></div>
+          <div class="profile-meta-item"><i class="fa-solid fa-calendar"></i> <span id="profileSince"></span></div>
+        </div>
+      </div>
+      <div class="profile-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="profile-field"><div class="profile-field-label">@L["ArtisanID"]</div><div class="profile-field-value" id="profileId"></div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["Status"]</div><div class="profile-field-value" id="profileStatus"></div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["Mobile"]</div><div class="profile-field-value" id="profileMobile"></div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["District"]</div><div class="profile-field-value" id="profileDistrict"></div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["AadhaarNumber"]</div><div class="profile-field-value" id="profileAadhaar"></div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["YearsOfExperience"]</div><div class="profile-field-value" id="profileYears"></div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["MonthlySales"]</div><div class="profile-field-value" id="profileSales"></div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["ProductsListed"]</div><div class="profile-field-value" id="profileProducts"></div></div>
+        </div>
+        <div class="profile-field" id="profileSkillsWrap"><div class="profile-field-label">@L["SkillsDescription"]</div><div class="profile-field-value" id="profileSkills"></div></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Close"]</button>
+      <button type="button" class="btn btn-primary" id="profileEditBtn"><i class="fa-solid fa-pen"></i> @L["EditProfile"]</button>
+    </div>
+  </div>
+</div>
+
+@section Styles {
+  <style>
+    .artisan-layout { display:grid; grid-template-columns:300px 1fr; gap:18px; margin-bottom:20px; }
+    @@media (max-width: 900px) { .artisan-layout { grid-template-columns:1fr; } }
+    .empty-state { text-align:center; padding:24px 12px; color:var(--text-muted); font-size:.8rem; }
+  </style>
+}
+
+@section Scripts {
+    <script>window.ArtisansI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+    <script src="~/js/artisans.js" asp-append-version="true"></script>
+}

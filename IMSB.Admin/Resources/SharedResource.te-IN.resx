@@ -1,0 +1,2592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OperationsDashboard" xml:space="preserve">
+    <value>ఆపరేషన్స్ డాష్‌బోర్డ్</value>
+  </data>
+  <data name="GovernmentStrip" xml:space="preserve">
+    <value>🏛️ తెలంగాణ ప్రభుత్వం | ఇందిరా మహిళా శక్తి బజార్ (IMSB) | అడ్మిన్ మేనేజ్‌మెంట్ పోర్టల్ | గోప్యమైనది – అధీకృత ప్రాప్యత మాత్రమే</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>డాష్‌బోర్డ్</value>
+  </data>
+  <data name="AdminDashboard" xml:space="preserve">
+    <value>అడ్మిన్ డాష్‌బోర్డ్</value>
+  </data>
+  <data name="Sales" xml:space="preserve">
+    <value>అమ్మకాలు</value>
+  </data>
+  <data name="ArtisanApplications" xml:space="preserve">
+    <value>కారిగర్లు యాప్‌లికేషన్లు</value>
+  </data>
+  <data name="ApplicationsSubtitle" xml:space="preserve">
+    <value>ఆవేదనలను సమీక్షించండి, ఆమోదించండి మరియు నిర్వహించండి</value>
+  </data>
+  <data name="NewApplication" xml:space="preserve">
+    <value>కొత్త దరఖాస్తు</value>
+  </data>
+  <data name="TotalApplications" xml:space="preserve">
+    <value>మొత్తం దరఖాస్తుల</value>
+  </data>
+  <data name="ApprovedLabel" xml:space="preserve">
+    <value>ఆమోదించబడింది</value>
+  </data>
+  <data name="UnderReviewLabel" xml:space="preserve">
+    <value>సమీక్షలో</value>
+  </data>
+  <data name="PendingLabel" xml:space="preserve">
+    <value>పెండింగ్‌లో ఉంది</value>
+  </data>
+  <data name="PendingTab" xml:space="preserve">
+    <value>పెండింగ్ / కొత్త</value>
+  </data>
+  <data name="SearchApproved" xml:space="preserve">
+    <value>ఉత్పత్తులను శోధించండి…</value>
+  </data>
+  <data name="AppID" xml:space="preserve">
+    <value>అప్లికేషన్ ID</value>
+  </data>
+  <data name="Applicant" xml:space="preserve">
+    <value>దరఖాస్తుదారు</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>వర్గం</value>
+  </data>
+  <data name="District" xml:space="preserve">
+    <value>జిల్లా</value>
+  </data>
+  <data name="StallAssigned" xml:space="preserve">
+    <value>అవకాసపరచిన స్టాల్</value>
+  </data>
+  <data name="ApprovedDate" xml:space="preserve">
+    <value>ఆమోద తేది</value>
+  </data>
+  <data name="ApprovedBy" xml:space="preserve">
+    <value>ద్వారా ఆమోదించబడింది</value>
+  </data>
+  <data name="Submitted" xml:space="preserve">
+    <value>సబ్మిట్ చేయబడింది</value>
+  </data>
+  <data name="DaysPending" xml:space="preserve">
+    <value>పెండింగ్ రోజులు</value>
+  </data>
+  <data name="Reviewer" xml:space="preserve">
+    <value>సమీక్షకుడు</value>
+  </data>
+  <data name="DaysWaiting" xml:space="preserve">
+    <value>వేటింగ్ రోజులు</value>
+  </data>
+  <data name="ApplicationReview" xml:space="preserve">
+    <value>అప్లికేషన్ సమీక్ష</value>
+  </data>
+  <data name="ApplicantName" xml:space="preserve">
+    <value>దరఖాస్తుదారు పేరు</value>
+  </data>
+  <data name="AssignStall" xml:space="preserve">
+    <value>స్టాల్ ను కేటాయించండి</value>
+  </data>
+  <data name="SelectAvailableStall" xml:space="preserve">
+    <value>లభ్యమైన స్టాల్‌ను ఎంచుకోండి</value>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>వ్యాఖ్యలు</value>
+  </data>
+  <data name="ApprovalRejectionRemarks" xml:space="preserve">
+    <value>ఆమోదం/తిరస్కరణ వ్యాఖ్యలు…</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>రద్దు చేయి</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>తిరస్కరించు</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>ఆమోదించు</value>
+  </data>
+  <data name="ApplicationRejected" xml:space="preserve">
+    <value>అప్లికేషన్ తిరస్కరించబడింది</value>
+  </data>
+  <data name="ApplicationHasBeenRejected" xml:space="preserve">
+    <value>అప్లికేషన్ తిరస్కరించబడి ఉంది</value>
+  </data>
+  <data name="ApplicationApproved" xml:space="preserve">
+    <value>అప్లికేషన్ ఆమోదించబడింది</value>
+  </data>
+  <data name="ApplicantApprovedAndAssigned" xml:space="preserve">
+    <value>దరఖాస్తుదారు ఆమోదించబడిన మరియు స్టాల్ కేటాయించబడింది</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>మొబైల్</value>
+  </data>
+  <data name="ArtisanManagement" xml:space="preserve">
+    <value>కళాకారుల నిర్వహణ</value>
+  </data>
+  <data name="ArtisanManagementSubtitle" xml:space="preserve">
+    <value>కళాకారుల ప్రొఫైళ్లు, దరఖాస్తులు మరియు స్టాల్ కేటాయింపులను నిర్వహించండి</value>
+  </data>
+  <data name="TotalArtisans" xml:space="preserve">
+    <value>మొత్తం కళాకారులు</value>
+  </data>
+  <data name="OnLeave" xml:space="preserve">
+    <value>సెలవులో</value>
+  </data>
+  <data name="RenewalPending" xml:space="preserve">
+    <value>పునరుద్ధరణ పెండింగ్</value>
+  </data>
+  <data name="StatusOverview" xml:space="preserve">
+    <value>స్థితి అవలోకనం</value>
+  </data>
+  <data name="ArtisanDirectory" xml:space="preserve">
+    <value>కళాకారుల డైరెక్టరీ</value>
+  </data>
+  <data name="SearchArtisans" xml:space="preserve">
+    <value>కళాకారులను శోధించండి…</value>
+  </data>
+  <data name="AllStatus" xml:space="preserve">
+    <value>అన్ని పరిస్థితులు</value>
+  </data>
+  <data name="RenewalDue" xml:space="preserve">
+    <value>పునరుద్ధరణ అవసరం</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>అన్ని విభాగాలు</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ఐడీ</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>పేరు</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>ఫోన్</value>
+  </data>
+  <data name="Joined" xml:space="preserve">
+    <value>చేరిన తేదీ</value>
+  </data>
+  <data name="AttendanceManagement" xml:space="preserve">
+    <value>హాజరుకాల నిర్వహణ</value>
+  </data>
+  <data name="AttendanceSubtitle" xml:space="preserve">
+    <value>హాజరును మార్క్ చేయండి, ఇన్-టైమ్/ఆవుట్-టైమ్ లాగ్ చేయండి, మరియు ఓవర్‌టైమ్ ట్రాక్ చేయండి</value>
+  </data>
+  <data name="SaveAttendance" xml:space="preserve">
+    <value>హాజరును సేవ్ చేయండి</value>
+  </data>
+  <data name="TotalStaff" xml:space="preserve">
+    <value>మొత్తం స్టాఫ్</value>
+  </data>
+  <data name="PresentToday" xml:space="preserve">
+    <value>ఇప్పుడు హాజరు</value>
+  </data>
+  <data name="AbsentToday" xml:space="preserve">
+    <value>ఈ రోజు లేరు</value>
+  </data>
+  <data name="OvertimeToday" xml:space="preserve">
+    <value>ఈ రోజు ఓవర్‌టైమ్</value>
+  </data>
+  <data name="WeekOfDates" xml:space="preserve">
+    <value>వారం 5 – 11 మే 2025</value>
+  </data>
+  <data name="AttendanceEntry" xml:space="preserve">
+    <value>హాజరు నమోదు</value>
+  </data>
+  <data name="DepartmentWise" xml:space="preserve">
+    <value>శాఖ వారీగా</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>చరిత్ర</value>
+  </data>
+  <data name="MarkAttendance" xml:space="preserve">
+    <value>హాజరును మార్క్ చేయండి</value>
+  </data>
+  <data name="AllDepartments" xml:space="preserve">
+    <value>అన్ని శాఖలు</value>
+  </data>
+  <data name="StaffName" xml:space="preserve">
+    <value>సిబ్బంది పేరు</value>
+  </data>
+  <data name="InTime" xml:space="preserve">
+    <value>ఇన్-టైమ్</value>
+  </data>
+  <data name="OutTime" xml:space="preserve">
+    <value>అవుట్-టైమ్</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>గంటలు</value>
+  </data>
+  <data name="OT" xml:space="preserve">
+    <value>ఓటీ</value>
+  </data>
+  <data name="SearchStaff" xml:space="preserve">
+    <value>స్టాఫ్‌ను శోధించండి…</value>
+  </data>
+  <data name="InventoryManagement" xml:space="preserve">
+    <value>ఇన్వెంటరీ నిర్వహణ</value>
+  </data>
+  <data name="InventorySubtitle" xml:space="preserve">
+    <value>ఉత్పత్తులు, స్టాక్ స్థాయిలు మరియు తక్కువ స్టాక్ హెచ్చరికలను ట్రాక్ చేయండి</value>
+  </data>
+  <data name="AddProduct" xml:space="preserve">
+    <value>ఉత్పత్తిని జత చేయండి</value>
+  </data>
+  <data name="BelowMinStock" xml:space="preserve">
+    <value>కనీస స్టాక్ పరిమితి కంటే తక్కువగా ఉన్నాయి, వెంటనే రీస్టాక్ చేయాలి.</value>
+  </data>
+  <data name="TotalProducts" xml:space="preserve">
+    <value>మొత్తం ఉత్పత్తులు</value>
+  </data>
+  <data name="InStock" xml:space="preserve">
+    <value>స్టాక్‌లో ఉంది</value>
+  </data>
+  <data name="LowStock" xml:space="preserve">
+    <value>తక్కువ స్టాక్</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>వర్గాలు</value>
+  </data>
+  <data name="StallsTracked" xml:space="preserve">
+    <value>స్టాల్స్ ట్రాక్ చేయబడ్డాయి</value>
+  </data>
+  <data name="StockLevelByCategory" xml:space="preserve">
+    <value>వర్గాల వారీ స్టాక్ స్థాయి</value>
+  </data>
+  <data name="LowStockItems" xml:space="preserve">
+    <value>తక్కువ స్టాక్ అంశాలు</value>
+  </data>
+  <data name="AllProducts" xml:space="preserve">
+    <value>అన్ని ఉత్పత్తులు</value>
+  </data>
+  <data name="ByCategory" xml:space="preserve">
+    <value>వర్గానుసారం</value>
+  </data>
+  <data name="StockUpdate" xml:space="preserve">
+    <value>స్టాక్ అప్‌డేట్</value>
+  </data>
+  <data name="LowStockAlerts" xml:space="preserve">
+    <value>తక్కువ స్టాక్ హెచ్చరికలు</value>
+  </data>
+  <data name="SearchProducts" xml:space="preserve">
+    <value>ఉత్పత్తులను శోధించండి…</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>ఉత్పత్తి పేరు</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>పరిమాణం</value>
+  </data>
+  <data name="MinStock" xml:space="preserve">
+    <value>కనీస స్టాక్</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>యూనిట్ ధర (₹)</value>
+  </data>
+  <data name="UpdateStock" xml:space="preserve">
+    <value>స్టాక్‌ను అప్‌డేట్ చేయండి</value>
+  </data>
+  <data name="StockUpdatedSuccessfully" xml:space="preserve">
+    <value>స్టాక్ విజయవంతంగా అప్‌డేట్ చేయబడింది!</value>
+  </data>
+  <data name="SelectProduct" xml:space="preserve">
+    <value>ఉత్పత్తిని ఎంచుకోండి</value>
+  </data>
+  <data name="SearchSelect" xml:space="preserve">
+    <value>శోధించండి / ఎంచుకోండి</value>
+  </data>
+  <data name="UpdateType" xml:space="preserve">
+    <value>అప్డేట్ రకం</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>ఎంచుకోండి</value>
+  </data>
+  <data name="AddStock" xml:space="preserve">
+    <value>స్టాక్ జోడించు (రీస్టాక్)</value>
+  </data>
+  <data name="ReduceStock" xml:space="preserve">
+    <value>స్టాక్ తగ్గించు (అమ్మకం)</value>
+  </data>
+  <data name="Correction" xml:space="preserve">
+    <value>సవరణ</value>
+  </data>
+  <data name="EnterQuantity" xml:space="preserve">
+    <value>పరిమాణాన్ని నమోదు చేయండి</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>తేదీ</value>
+  </data>
+  <data name="ReasonForStockUpdate" xml:space="preserve">
+    <value>స్టాక్ అప్‌డేట్‌కు కారణం…</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>ప్రధాన</value>
+  </data>
+  <data name="Operations" xml:space="preserve">
+    <value>కార్యకలాపాలు</value>
+  </data>
+  <data name="StallManagement" xml:space="preserve">
+    <value>స్టాల్ నిర్వహణ</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>ఇన్వెంటరీ</value>
+  </data>
+  <data name="People" xml:space="preserve">
+    <value>వ్యక్తులు</value>
+  </data>
+  <data name="Artisans" xml:space="preserve">
+    <value>కళాకారులు</value>
+  </data>
+  <data name="Applications" xml:space="preserve">
+    <value>దరఖాస్తులు</value>
+  </data>
+  <data name="StaffHR" xml:space="preserve">
+    <value>సిబ్బంది / మానవ వనరులు</value>
+  </data>
+  <data name="Attendance" xml:space="preserve">
+    <value>హాజరు</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>నివేదికలు</value>
+  </data>
+  <data name="AdminUser" xml:space="preserve">
+    <value>నిర్వాహక వినియోగదారు</value>
+  </data>
+  <data name="StateLevelAdmin" xml:space="preserve">
+    <value>రాష్ట్ర స్థాయి నిర్వాహకుడు</value>
+  </data>
+  <data name="IMSBPortal" xml:space="preserve">
+    <value>IMSB పోర్టల్</value>
+  </data>
+  <data name="StaffTitle" xml:space="preserve">
+    <value>సిబ్బంది</value>
+  </data>
+  <data name="StaffHRManagement" xml:space="preserve">
+    <value>సిబ్బంది / HR నిర్వహణ</value>
+  </data>
+  <data name="StaffHRSubtitle" xml:space="preserve">
+    <value>సిబ్బంది రికార్డులు, విభాగాలు మరియు HR కార్యకలాపాలను నిర్వహించండి</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>ఎగుమతి</value>
+  </data>
+  <data name="AddStaff" xml:space="preserve">
+    <value>సిబ్బందిని జోడించు</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>సక్రియం</value>
+  </data>
+  <data name="Inactive" xml:space="preserve">
+    <value>నిష్క్రియం</value>
+  </data>
+  <data name="Departments" xml:space="preserve">
+    <value>విభాగాలు</value>
+  </data>
+  <data name="ContractExpiring" xml:space="preserve">
+    <value>ఒప్పందం ముగుస్తోంది</value>
+  </data>
+  <data name="DeptDistribution" xml:space="preserve">
+    <value>విభాగాల వారీ పంపిణీ</value>
+  </data>
+  <data name="StaffDirectory" xml:space="preserve">
+    <value>సిబ్బంది డైరెక్టరీ</value>
+  </data>
+  <data name="FilterByDepartment" xml:space="preserve">
+    <value>విభాగం ద్వారా ఫిల్టర్ చేయండి</value>
+  </data>
+  <data name="FilterByStatus" xml:space="preserve">
+    <value>స్థితి ద్వారా ఫిల్టర్ చేయండి</value>
+  </data>
+  <data name="StaffID" xml:space="preserve">
+    <value>సిబ్బంది ID</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>విభాగం</value>
+  </data>
+  <data name="Designation" xml:space="preserve">
+    <value>హోదా</value>
+  </data>
+  <data name="JoinDate" xml:space="preserve">
+    <value>చేరిన తేదీ</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>స్థితి</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>చర్యలు</value>
+  </data>
+  <data name="DeptWiseStaffCount" xml:space="preserve">
+    <value>విభాగాల వారీ సిబ్బంది సంఖ్య</value>
+  </data>
+  <data name="AddNewStaffMember" xml:space="preserve">
+    <value>కొత్త సిబ్బంది సభ్యుడిని జోడించండి</value>
+  </data>
+  <data name="EditStaffMember" xml:space="preserve">
+    <value>సిబ్బంది వివరాలను సవరించండి</value>
+  </data>
+  <data name="RegisterStaff" xml:space="preserve">
+    <value>సిబ్బందిని నమోదు చేయండి</value>
+  </data>
+  <data name="UpdateStaff" xml:space="preserve">
+    <value>సిబ్బందిని నవీకరించండి</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>వ్యక్తిగత వివరాలు</value>
+  </data>
+  <data name="EmploymentDetails" xml:space="preserve">
+    <value>ఉద్యోగ వివరాలు</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>పూర్తి పేరు</value>
+  </data>
+  <data name="EmployeeID" xml:space="preserve">
+    <value>ఉద్యోగి ID</value>
+  </data>
+  <data name="AutoGenerated" xml:space="preserve">
+    <value>స్వయంచాలకంగా రూపొందించబడుతుంది</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>ఇమెయిల్</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>పుట్టిన తేదీ</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>లింగం</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>స్త్రీ</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>పురుషుడు</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>ఇతర</value>
+  </data>
+  <data name="Shift" xml:space="preserve">
+    <value>షిఫ్ట్</value>
+  </data>
+  <data name="DesignationPlaceholder" xml:space="preserve">
+    <value>ఉదా. సేల్స్ ఎగ్జిక్యూటివ్</value>
+  </data>
+  <data name="SelectPlaceholder" xml:space="preserve">
+    <value>-- ఎంచుకోండి --</value>
+  </data>
+  <data name="NoDepartmentsConfigured" xml:space="preserve">
+    <value>విభాగాలు ఏవీ కాన్ఫిగర్ చేయబడలేదు</value>
+  </data>
+  <data name="NoStaffFound" xml:space="preserve">
+    <value>సిబ్బంది కనుగొనబడలేదు</value>
+  </data>
+  <data name="PercentOfTotal" xml:space="preserve">
+    <value>మొత్తంలో {0}%</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>చూడండి</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>సవరించు</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>తొలగించు</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>విజయం</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>లోపం</value>
+  </data>
+  <data name="StaffRegistered" xml:space="preserve">
+    <value>సిబ్బంది నమోదు చేయబడ్డారు</value>
+  </data>
+  <data name="StaffUpdated" xml:space="preserve">
+    <value>సిబ్బంది వివరాలు నవీకరించబడ్డాయి</value>
+  </data>
+  <data name="StaffDeleted" xml:space="preserve">
+    <value>సిబ్బంది తొలగించబడ్డారు</value>
+  </data>
+  <data name="StaffNotFound" xml:space="preserve">
+    <value>సిబ్బంది కనుగొనబడలేదు</value>
+  </data>
+  <data name="ConfirmDeleteStaff" xml:space="preserve">
+    <value>{0} ({1})ను తొలగించాలా? దీన్ని రద్దు చేయలేరు.</value>
+  </data>
+  <data name="DiscardChanges" xml:space="preserve">
+    <value>మార్పులను విస్మరించాలా?</value>
+  </data>
+  <data name="CouldNotSave" xml:space="preserve">
+    <value>సిబ్బంది వివరాలను సేవ్ చేయడం సాధ్యం కాలేదు</value>
+  </data>
+  <data name="CouldNotDelete" xml:space="preserve">
+    <value>సిబ్బందిని తొలగించడం సాధ్యం కాలేదు</value>
+  </data>
+  <data name="CouldNotReachServer" xml:space="preserve">
+    <value>సర్వర్‌ను చేరుకోలేకపోయాము</value>
+  </data>
+  <data name="CheckForm" xml:space="preserve">
+    <value>దయచేసి ఫారమ్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి</value>
+  </data>
+  <data name="ViewingProfile" xml:space="preserve">
+    <value>{0} ప్రొఫైల్‌ను చూస్తున్నారు</value>
+  </data>
+  <data name="ValFullName" xml:space="preserve">
+    <value>పూర్తి పేరు అవసరం (2-100 అక్షరాలు)</value>
+  </data>
+  <data name="ValMobile" xml:space="preserve">
+    <value>మొబైల్ నంబర్ 9-12 అంకెలు ఉండాలి</value>
+  </data>
+  <data name="ValEmail" xml:space="preserve">
+    <value>చెల్లని ఇమెయిల్</value>
+  </data>
+  <data name="ValDobRequired" xml:space="preserve">
+    <value>పుట్టిన తేదీ అవసరం</value>
+  </data>
+  <data name="ValDobInvalid" xml:space="preserve">
+    <value>చెల్లని పుట్టిన తేదీ</value>
+  </data>
+  <data name="ValDobFuture" xml:space="preserve">
+    <value>పుట్టిన తేదీ భవిష్యత్తులో ఉండకూడదు</value>
+  </data>
+  <data name="ValMinAge" xml:space="preserve">
+    <value>సిబ్బందికి కనీసం 18 సంవత్సరాలు ఉండాలి</value>
+  </data>
+  <data name="ValDepartment" xml:space="preserve">
+    <value>విభాగం అవసరం</value>
+  </data>
+  <data name="ValDesignation" xml:space="preserve">
+    <value>హోదా అవసరం</value>
+  </data>
+  <data name="ValJoinRequired" xml:space="preserve">
+    <value>చేరిన తేదీ అవసరం</value>
+  </data>
+  <data name="ValJoinInvalid" xml:space="preserve">
+    <value>చెల్లని చేరిన తేదీ</value>
+  </data>
+  <data name="ValJoinFuture" xml:space="preserve">
+    <value>చేరిన తేదీ భవిష్యత్తులో ఉండకూడదు</value>
+  </data>
+  <data name="ValJoinAfterDob" xml:space="preserve">
+    <value>చేరిన తేదీ పుట్టిన తేదీ నుండి కనీసం 18 సంవత్సరాల తర్వాత ఉండాలి</value>
+  </data>
+  <data name="ValMobileExists" xml:space="preserve">
+    <value>ఈ మొబైల్ నంబర్ ఇప్పటికే నమోదు చేయబడింది</value>
+  </data>
+  <data name="ValEmailExists" xml:space="preserve">
+    <value>ఈ ఇమెయిల్ ఇప్పటికే నమోదు చేయబడింది</value>
+  </data>
+  <data name="ValShift" xml:space="preserve">
+    <value>చెల్లని షిఫ్ట్</value>
+  </data>
+  <data name="ValStatus" xml:space="preserve">
+    <value>చెల్లని స్థితి</value>
+  </data>
+  <data name="OutOfStock" xml:space="preserve">
+    <value>స్టాక్ లేదు</value>
+  </data>
+  <data name="Stall" xml:space="preserve">
+    <value>స్టాల్</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>రీసెట్</value>
+  </data>
+  <data name="ItemsCount" xml:space="preserve">
+    <value>{0} అంశాలు</value>
+  </data>
+  <data name="AddNewProduct" xml:space="preserve">
+    <value>కొత్త ఉత్పత్తిని జోడించండి</value>
+  </data>
+  <data name="EditProduct" xml:space="preserve">
+    <value>ఉత్పత్తిని సవరించండి</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>మార్పులను సేవ్ చేయండి</value>
+  </data>
+  <data name="ProductCode" xml:space="preserve">
+    <value>ఉత్పత్తి కోడ్</value>
+  </data>
+  <data name="AssignedStall" xml:space="preserve">
+    <value>కేటాయించిన స్టాల్</value>
+  </data>
+  <data name="StallPlaceholder" xml:space="preserve">
+    <value>ఉదా. A-01</value>
+  </data>
+  <data name="InitialQuantity" xml:space="preserve">
+    <value>ప్రారంభ పరిమాణం</value>
+  </data>
+  <data name="CurrentQuantity" xml:space="preserve">
+    <value>ప్రస్తుత పరిమాణం</value>
+  </data>
+  <data name="QuantityViaStockUpdate" xml:space="preserve">
+    <value>పరిమాణాన్ని "స్టాక్ అప్‌డేట్" ట్యాబ్‌లో మార్చండి</value>
+  </data>
+  <data name="MinStockPlaceholder" xml:space="preserve">
+    <value>హెచ్చరిక పరిమితి</value>
+  </data>
+  <data name="CurrentQty" xml:space="preserve">
+    <value>ప్రస్తుత పరిమాణం</value>
+  </data>
+  <data name="MinRequired" xml:space="preserve">
+    <value>కనీస అవసరం</value>
+  </data>
+  <data name="Urgency" xml:space="preserve">
+    <value>అత్యవసరత</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>క్లిష్టం</value>
+  </data>
+  <data name="Moderate" xml:space="preserve">
+    <value>మధ్యస్థం</value>
+  </data>
+  <data name="Restock" xml:space="preserve">
+    <value>రీస్టాక్</value>
+  </data>
+  <data name="ProductsLabel" xml:space="preserve">
+    <value>ఉత్పత్తులు</value>
+  </data>
+  <data name="LowStockCount" xml:space="preserve">
+    <value>{0} తక్కువ స్టాక్</value>
+  </data>
+  <data name="AllStocked" xml:space="preserve">
+    <value>అన్నీ స్టాక్‌లో ఉన్నాయి</value>
+  </data>
+  <data name="ViewProducts" xml:space="preserve">
+    <value>ఉత్పత్తులను చూడండి</value>
+  </data>
+  <data name="TotalUnits" xml:space="preserve">
+    <value>మొత్తం యూనిట్లు</value>
+  </data>
+  <data name="StockValue" xml:space="preserve">
+    <value>స్టాక్ విలువ</value>
+  </data>
+  <data name="CurrentStock" xml:space="preserve">
+    <value>ప్రస్తుత స్టాక్</value>
+  </data>
+  <data name="NoProductsFound" xml:space="preserve">
+    <value>ఉత్పత్తులు కనుగొనబడలేదు</value>
+  </data>
+  <data name="NoLowStock" xml:space="preserve">
+    <value>అన్ని ఉత్పత్తులు కనీస స్టాక్ కంటే ఎక్కువగా ఉన్నాయి</value>
+  </data>
+  <data name="RecentStockUpdates" xml:space="preserve">
+    <value>ఇటీవలి స్టాక్ అప్‌డేట్‌లు</value>
+  </data>
+  <data name="NoStockUpdates" xml:space="preserve">
+    <value>ఇంకా స్టాక్ అప్‌డేట్‌లు లేవు</value>
+  </data>
+  <data name="Before" xml:space="preserve">
+    <value>ముందు</value>
+  </data>
+  <data name="After" xml:space="preserve">
+    <value>తర్వాత</value>
+  </data>
+  <data name="UpdatedBy" xml:space="preserve">
+    <value>చేసినవారు</value>
+  </data>
+  <data name="InitialStock" xml:space="preserve">
+    <value>ప్రారంభ స్టాక్</value>
+  </data>
+  <data name="ProductRemoved" xml:space="preserve">
+    <value>తొలగించబడింది</value>
+  </data>
+  <data name="AvailableQty" xml:space="preserve">
+    <value>అందుబాటులో: {0}</value>
+  </data>
+  <data name="NewQuantityPreview" xml:space="preserve">
+    <value>కొత్త పరిమాణం: {0}</value>
+  </data>
+  <data name="CorrectionHint" xml:space="preserve">
+    <value>లెక్కించిన పరిమాణాన్ని నమోదు చేయండి; స్టాక్ ఈ విలువకు సెట్ అవుతుంది</value>
+  </data>
+  <data name="ProductAdded" xml:space="preserve">
+    <value>ఉత్పత్తి ఇన్వెంటరీకి జోడించబడింది</value>
+  </data>
+  <data name="ProductUpdated" xml:space="preserve">
+    <value>ఉత్పత్తి నవీకరించబడింది</value>
+  </data>
+  <data name="ProductDeletedMsg" xml:space="preserve">
+    <value>ఉత్పత్తి తొలగించబడింది</value>
+  </data>
+  <data name="ProductNotFound" xml:space="preserve">
+    <value>ఉత్పత్తి కనుగొనబడలేదు</value>
+  </data>
+  <data name="ConfirmDeleteProduct" xml:space="preserve">
+    <value>{0} ({1})ను తొలగించాలా? దాని స్టాక్ చరిత్ర ఉంచబడుతుంది.</value>
+  </data>
+  <data name="ValProductName" xml:space="preserve">
+    <value>ఉత్పత్తి పేరు అవసరం (2-200 అక్షరాలు)</value>
+  </data>
+  <data name="ValCategory" xml:space="preserve">
+    <value>వర్గం అవసరం</value>
+  </data>
+  <data name="ValStall" xml:space="preserve">
+    <value>స్టాల్ అవసరం (అక్షరాలు, అంకెలు, -)</value>
+  </data>
+  <data name="ValQuantity" xml:space="preserve">
+    <value>0 లేదా అంతకంటే ఎక్కువ పరిమాణాన్ని నమోదు చేయండి</value>
+  </data>
+  <data name="ValQuantityPositive" xml:space="preserve">
+    <value>పరిమాణం కనీసం 1 ఉండాలి</value>
+  </data>
+  <data name="ValMinStock" xml:space="preserve">
+    <value>కనీస స్టాక్ 0 లేదా అంతకంటే ఎక్కువ ఉండాలి</value>
+  </data>
+  <data name="ValUnitPrice" xml:space="preserve">
+    <value>సరైన ధరను నమోదు చేయండి</value>
+  </data>
+  <data name="ValSelectProduct" xml:space="preserve">
+    <value>ఒక ఉత్పత్తిని ఎంచుకోండి</value>
+  </data>
+  <data name="ValUpdateType" xml:space="preserve">
+    <value>అప్‌డేట్ రకాన్ని ఎంచుకోండి</value>
+  </data>
+  <data name="ValDate" xml:space="preserve">
+    <value>తేదీ అవసరం</value>
+  </data>
+  <data name="ValDateInvalid" xml:space="preserve">
+    <value>చెల్లని తేదీ</value>
+  </data>
+  <data name="ValDateFuture" xml:space="preserve">
+    <value>తేదీ భవిష్యత్తులో ఉండకూడదు</value>
+  </data>
+  <data name="ValRemarks" xml:space="preserve">
+    <value>వ్యాఖ్యలు గరిష్టంగా 500 అక్షరాలు</value>
+  </data>
+  <data name="ValProductExists" xml:space="preserve">
+    <value>ఈ ఉత్పత్తి ఈ స్టాల్‌లో ఇప్పటికే ఉంది</value>
+  </data>
+  <data name="ValInsufficientStock" xml:space="preserve">
+    <value>సరిపడా స్టాక్ లేదు: {0} మాత్రమే అందుబాటులో ఉంది</value>
+  </data>
+  <data name="AadhaarNumber" xml:space="preserve">
+    <value>ఆధార్ నంబర్</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>గైర్హాజరు</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>ప్రవేశం నిరాకరించబడింది</value>
+  </data>
+  <data name="AccessDeniedMsg" xml:space="preserve">
+    <value>ఈ పేజీని చూడటానికి మీ పాత్రకు అనుమతి లేదు.</value>
+  </data>
+  <data name="AccountDisabled" xml:space="preserve">
+    <value>ఖాతా నిలిపివేయబడింది.</value>
+  </data>
+  <data name="AccountNotFound" xml:space="preserve">
+    <value>ఖాతా కనుగొనబడలేదు.</value>
+  </data>
+  <data name="ActiveArtisans" xml:space="preserve">
+    <value>సక్రియ కళాకారులు</value>
+  </data>
+  <data name="ActiveStalls" xml:space="preserve">
+    <value>సక్రియ స్టాల్‌లు</value>
+  </data>
+  <data name="ActSale" xml:space="preserve">
+    <value>అమ్మకం నమోదు చేయబడింది</value>
+  </data>
+  <data name="ActSaleDesc" xml:space="preserve">
+    <value>{0}: {1} ({2} యూనిట్లు)</value>
+  </data>
+  <data name="ActStaffAdded" xml:space="preserve">
+    <value>సిబ్బంది నమోదు చేయబడ్డారు</value>
+  </data>
+  <data name="ActStaffDesc" xml:space="preserve">
+    <value>{0} చేరారు ({1})</value>
+  </data>
+  <data name="ActStockAdd" xml:space="preserve">
+    <value>స్టాక్ జోడించబడింది</value>
+  </data>
+  <data name="ActStockCorrection" xml:space="preserve">
+    <value>స్టాక్ సరిదిద్దబడింది</value>
+  </data>
+  <data name="ActStockDesc" xml:space="preserve">
+    <value>{0} — {1} యూనిట్లు</value>
+  </data>
+  <data name="ActStockInitial" xml:space="preserve">
+    <value>ఉత్పత్తి జోడించబడింది</value>
+  </data>
+  <data name="ActStockReduce" xml:space="preserve">
+    <value>స్టాక్ తగ్గించబడింది</value>
+  </data>
+  <data name="AdditionalNotes" xml:space="preserve">
+    <value>అదనపు గమనికలు…</value>
+  </data>
+  <data name="AddProductRow" xml:space="preserve">
+    <value>ఉత్పత్తి వరుసను జోడించండి</value>
+  </data>
+  <data name="AgreementEndDate" xml:space="preserve">
+    <value>ఒప్పందం ముగింపు తేదీ</value>
+  </data>
+  <data name="AllDates" xml:space="preserve">
+    <value>అన్ని తేదీలు</value>
+  </data>
+  <data name="AllocateStall" xml:space="preserve">
+    <value>స్టాల్ కేటాయించండి</value>
+  </data>
+  <data name="AllocateStallToArtisan" xml:space="preserve">
+    <value>కళాకారునికి స్టాల్ కేటాయించండి</value>
+  </data>
+  <data name="AllotmentDate" xml:space="preserve">
+    <value>కేటాయింపు తేదీ</value>
+  </data>
+  <data name="AllottedDate" xml:space="preserve">
+    <value>కేటాయించిన తేదీ</value>
+  </data>
+  <data name="AllStalls" xml:space="preserve">
+    <value>అన్ని స్టాల్‌లు</value>
+  </data>
+  <data name="ApplicationsApproved" xml:space="preserve">
+    <value>ఆమోదించిన దరఖాస్తులు</value>
+  </data>
+  <data name="ApplicationSentForReview" xml:space="preserve">
+    <value>దరఖాస్తు నిర్వాహక సమీక్షకు పంపబడింది</value>
+  </data>
+  <data name="ApplicationsNotConnected" xml:space="preserve">
+    <value>కళాకారుల దరఖాస్తులు వ్యవస్థలో నమోదైన తర్వాత దరఖాస్తు గణాంకాలు ఇక్కడ కనిపిస్తాయి.</value>
+  </data>
+  <data name="ApplicationSubmitted" xml:space="preserve">
+    <value>దరఖాస్తు సమర్పించబడింది</value>
+  </data>
+  <data name="ApplicationSubmittedMsg" xml:space="preserve">
+    <value>దరఖాస్తు సమీక్షకు సమర్పించబడింది!</value>
+  </data>
+  <data name="ApprovedThisMonth" xml:space="preserve">
+    <value>ఈ నెలలో ఆమోదించిన దరఖాస్తులు</value>
+  </data>
+  <data name="Artisan" xml:space="preserve">
+    <value>కళాకారుడు</value>
+  </data>
+  <data name="ArtisanApplicationsOverview" xml:space="preserve">
+    <value>కళాకారుల దరఖాస్తులు – అవలోకనం</value>
+  </data>
+  <data name="ArtisanID" xml:space="preserve">
+    <value>కళాకారుని ID</value>
+  </data>
+  <data name="ArtisanOfCategory" xml:space="preserve">
+    <value>{0} కళాకారుడు</value>
+  </data>
+  <data name="ArtisanPerformanceReport" xml:space="preserve">
+    <value>కళాకారుల పనితీరు నివేదిక</value>
+  </data>
+  <data name="ArtisanProfile" xml:space="preserve">
+    <value>కళాకారుని ప్రొఫైల్</value>
+  </data>
+  <data name="ArtisanReport" xml:space="preserve">
+    <value>కళాకారుల నివేదిక</value>
+  </data>
+  <data name="AsPerAadhaar" xml:space="preserve">
+    <value>ఆధార్ ప్రకారం</value>
+  </data>
+  <data name="AttendanceHistory" xml:space="preserve">
+    <value>హాజరు చరిత్ర</value>
+  </data>
+  <data name="AttendanceNotConnected" xml:space="preserve">
+    <value>రోజువారీ హాజరు వ్యవస్థలో నమోదైన తర్వాత హాజరు డేటా ఇక్కడ కనిపిస్తుంది.</value>
+  </data>
+  <data name="AttendancePercent" xml:space="preserve">
+    <value>హాజరు %</value>
+  </data>
+  <data name="AttendanceRatio" xml:space="preserve">
+    <value>హాజరు: {0}/{1}</value>
+  </data>
+  <data name="AttendanceSaved" xml:space="preserve">
+    <value>హాజరు సేవ్ చేయబడింది</value>
+  </data>
+  <data name="AttendanceSavedMsg" xml:space="preserve">
+    <value>{0} కోసం అన్ని రికార్డులు సేవ్ చేయబడ్డాయి</value>
+  </data>
+  <data name="AutoDeductInfo" xml:space="preserve">
+    <value>అమ్మకం నమోదు చేసినప్పుడు స్టాక్ ఇన్వెంటరీ నుండి స్వయంచాలకంగా తగ్గించబడుతుంది; అమ్మకాన్ని సవరించినా లేదా తొలగించినా తిరిగి జోడించబడుతుంది.</value>
+  </data>
+  <data name="AutoDeductOn" xml:space="preserve">
+    <value>ఆటో-తగ్గింపు ఆన్</value>
+  </data>
+  <data name="AutoStockDeduction" xml:space="preserve">
+    <value>ఆటో స్టాక్ తగ్గింపు</value>
+  </data>
+  <data name="AutoStockDeductionLog" xml:space="preserve">
+    <value>ఆటో స్టాక్ తగ్గింపు లాగ్</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>అందుబాటులో ఉంది</value>
+  </data>
+  <data name="AvgAttendancePct" xml:space="preserve">
+    <value>సగటు హాజరు %</value>
+  </data>
+  <data name="AvgPerTxn" xml:space="preserve">
+    <value>సగటు {0}/లావాదేవీ</value>
+  </data>
+  <data name="AwaitingReview" xml:space="preserve">
+    <value>సమీక్ష కోసం వేచి ఉంది</value>
+  </data>
+  <data name="BackToLogin" xml:space="preserve">
+    <value>లాగిన్‌కు తిరిగి వెళ్ళండి</value>
+  </data>
+  <data name="BeforeAfter" xml:space="preserve">
+    <value>ముందు → తర్వాత</value>
+  </data>
+  <data name="BeingProcessed" xml:space="preserve">
+    <value>నిర్వాహకుడు ప్రాసెస్ చేస్తున్నారు</value>
+  </data>
+  <data name="BestPerformingStalls" xml:space="preserve">
+    <value>ఉత్తమ పనితీరు స్టాల్‌లు</value>
+  </data>
+  <data name="BlockZone" xml:space="preserve">
+    <value>బ్లాక్ / జోన్</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>సవరణ రద్దు చేయండి</value>
+  </data>
+  <data name="CategoryMonthSubtitle" xml:space="preserve">
+    <value>{0} – అన్ని స్టాల్‌లు</value>
+  </data>
+  <data name="CategorySkills" xml:space="preserve">
+    <value>వర్గం &amp; నైపుణ్యాలు</value>
+  </data>
+  <data name="CategoryWiseRevenue" xml:space="preserve">
+    <value>వర్గాల వారీ ఆదాయం</value>
+  </data>
+  <data name="CategoryWiseSales" xml:space="preserve">
+    <value>వర్గాల వారీ అమ్మకాలు</value>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>సర్టిఫికెట్</value>
+  </data>
+  <data name="CertificateGenerated" xml:space="preserve">
+    <value>సర్టిఫికెట్ రూపొందించబడింది</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>క్లియర్ చేయండి</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>మూసివేయండి</value>
+  </data>
+  <data name="ConfirmDeleteSale" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ {0} ({1}) ను తొలగించాలా? అమ్మిన పరిమాణాలు తిరిగి స్టాక్‌లో జోడించబడతాయి.</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>పాస్‌వర్డ్‌ను నిర్ధారించండి</value>
+  </data>
+  <data name="CraftCategory" xml:space="preserve">
+    <value>హస్తకళ వర్గం</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>సృష్టించండి</value>
+  </data>
+  <data name="CreateNewStall" xml:space="preserve">
+    <value>కొత్త స్టాల్ సృష్టించండి</value>
+  </data>
+  <data name="CreateStall" xml:space="preserve">
+    <value>స్టాల్ సృష్టించండి</value>
+  </data>
+  <data name="CurrentArtisan" xml:space="preserve">
+    <value>ప్రస్తుత కళాకారుడు</value>
+  </data>
+  <data name="CurrentStatus" xml:space="preserve">
+    <value>ప్రస్తుత స్థితి</value>
+  </data>
+  <data name="CurrentWeek" xml:space="preserve">
+    <value>ప్రస్తుత వారం</value>
+  </data>
+  <data name="DailySales" xml:space="preserve">
+    <value>రోజువారీ అమ్మకాలు</value>
+  </data>
+  <data name="DailySalesEntry" xml:space="preserve">
+    <value>రోజువారీ అమ్మకాల నమోదు</value>
+  </data>
+  <data name="DailySalesOverDays" xml:space="preserve">
+    <value>గత {0} రోజుల రోజువారీ అమ్మకాలు</value>
+  </data>
+  <data name="DashboardSubtitle" xml:space="preserve">
+    <value>ఇందిర మహిళా శక్తి బజార్ — నిజ-సమయ అవలోకనం</value>
+  </data>
+  <data name="DaysCount" xml:space="preserve">
+    <value>{0} రోజులు</value>
+  </data>
+  <data name="DaysOfMonth" xml:space="preserve">
+    <value>{0}/{1} రోజులు</value>
+  </data>
+  <data name="Deducted" xml:space="preserve">
+    <value>తగ్గించబడింది</value>
+  </data>
+  <data name="DemoCredentials" xml:space="preserve">
+    <value>డెమో ఆధారాలు (నింపడానికి క్లిక్ చేయండి)</value>
+  </data>
+  <data name="DeptWiseAttendance" xml:space="preserve">
+    <value>విభాగాల వారీ హాజరు</value>
+  </data>
+  <data name="DescribeSkills" xml:space="preserve">
+    <value>మీ హస్తకళ మరియు నైపుణ్యాలను వివరించండి…</value>
+  </data>
+  <data name="DevResetLink" xml:space="preserve">
+    <value>డెవలపర్ రీసెట్ లింక్ (డెవలప్‌మెంట్ మాత్రమే):</value>
+  </data>
+  <data name="DisplayName" xml:space="preserve">
+    <value>ప్రదర్శన పేరు</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>పత్రాలు</value>
+  </data>
+  <data name="DropFilesOrBrowse" xml:space="preserve">
+    <value>ఫైళ్లను ఇక్కడ వదలండి లేదా బ్రౌజ్ చేయండి</value>
+  </data>
+  <data name="EditingEntry" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ {0} సవరిస్తోంది</value>
+  </data>
+  <data name="EditModeFor" xml:space="preserve">
+    <value>{0} కోసం సవరణ మోడ్</value>
+  </data>
+  <data name="EditModeOpened" xml:space="preserve">
+    <value>సవరణ మోడ్ తెరవబడింది</value>
+  </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>ప్రొఫైల్ సవరించండి</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>ఇమెయిల్ చిరునామా</value>
+  </data>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>మీ పాస్‌వర్డ్ నమోదు చేయండి</value>
+  </data>
+  <data name="EnterSales" xml:space="preserve">
+    <value>అమ్మకాలు నమోదు చేయండి</value>
+  </data>
+  <data name="EnterUserId" xml:space="preserve">
+    <value>మీ యూజర్ ID నమోదు చేయండి</value>
+  </data>
+  <data name="EntryNo" xml:space="preserve">
+    <value>ఎంట్రీ సంఖ్య</value>
+  </data>
+  <data name="EntryTotal" xml:space="preserve">
+    <value>ఎంట్రీ మొత్తం</value>
+  </data>
+  <data name="ErrorProcessingRequest" xml:space="preserve">
+    <value>మీ అభ్యర్థనను ప్రాసెస్ చేస్తున్నప్పుడు లోపం సంభవించింది. దయచేసి మళ్లీ ప్రయత్నించండి.</value>
+  </data>
+  <data name="ExportAll" xml:space="preserve">
+    <value>అన్నీ ఎగుమతి చేయండి</value>
+  </data>
+  <data name="ExportCsv" xml:space="preserve">
+    <value>CSV ఎగుమతి</value>
+  </data>
+  <data name="ExportKPIs" xml:space="preserve">
+    <value>KPIలను ఎగుమతి చేయండి</value>
+  </data>
+  <data name="ExportPdf" xml:space="preserve">
+    <value>PDF ఎగుమతి</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>నివేదికను ఎగుమతి చేయండి</value>
+  </data>
+  <data name="ExportSalesHint" xml:space="preserve">
+    <value>ఎంచుకున్న తేదీ అమ్మకపు ఎంట్రీలను CSVగా డౌన్‌లోడ్ చేయండి</value>
+  </data>
+  <data name="ExportUnavailable" xml:space="preserve">
+    <value>ఎగుమతి ఇంకా అందుబాటులో లేదు</value>
+  </data>
+  <data name="ExportUnavailableMsg" xml:space="preserve">
+    <value>ఈ మాడ్యూల్ ఇంకా డేటాను నిల్వ చేయదు, కాబట్టి ఎగుమతి చేయడానికి ఏమీ లేదు.</value>
+  </data>
+  <data name="FillRequiredFields" xml:space="preserve">
+    <value>దయచేసి అన్ని అవసరమైన ఫీల్డ్‌లను పూరించండి.</value>
+  </data>
+  <data name="FooterCopyright" xml:space="preserve">
+    <value>IMSB — ఇందిర మహిళా శక్తి బజార్</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>పాస్‌వర్డ్ మర్చిపోయారా</value>
+  </data>
+  <data name="ForgotPasswordHint" xml:space="preserve">
+    <value>పాస్‌వర్డ్ రీసెట్ లింక్ పొందడానికి మీ యూజర్‌నేమ్ లేదా ఇమెయిల్ నమోదు చేయండి.</value>
+  </data>
+  <data name="ForgotPasswordQ" xml:space="preserve">
+    <value>పాస్‌వర్డ్ మర్చిపోయారా?</value>
+  </data>
+  <data name="FromDate" xml:space="preserve">
+    <value>నుండి</value>
+  </data>
+  <data name="GovernmentOfTelangana" xml:space="preserve">
+    <value>తెలంగాణ ప్రభుత్వం</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>హోమ్</value>
+  </data>
+  <data name="HourlySalesTrend" xml:space="preserve">
+    <value>గంటవారీ అమ్మకాల ధోరణి</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>చెల్లని యూజర్‌నేమ్ లేదా పాస్‌వర్డ్.</value>
+  </data>
+  <data name="InvalidOrExpiredToken" xml:space="preserve">
+    <value>చెల్లని లేదా గడువు ముగిసిన రీసెట్ లింక్.</value>
+  </data>
+  <data name="InvalidRoleSelected" xml:space="preserve">
+    <value>చెల్లని పాత్ర ఎంచుకోబడింది.</value>
+  </data>
+  <data name="ItemsSold" xml:space="preserve">
+    <value>అమ్మిన అంశాలు</value>
+  </data>
+  <data name="JustNow" xml:space="preserve">
+    <value>ఇప్పుడే</value>
+  </data>
+  <data name="KeyPerformanceIndicators" xml:space="preserve">
+    <value>కీలక పనితీరు సూచికలు</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>భాష</value>
+  </data>
+  <data name="Last3Months" xml:space="preserve">
+    <value>గత 3 నెలలు</value>
+  </data>
+  <data name="Last6Months" xml:space="preserve">
+    <value>గత 6 నెలలు</value>
+  </data>
+  <data name="LastNDays" xml:space="preserve">
+    <value>గత {0} రోజులు</value>
+  </data>
+  <data name="Leave" xml:space="preserve">
+    <value>సెలవు</value>
+  </data>
+  <data name="LineTotal" xml:space="preserve">
+    <value>లైన్ మొత్తం</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>స్థానం</value>
+  </data>
+  <data name="LocationDescription" xml:space="preserve">
+    <value>స్థాన వివరణ</value>
+  </data>
+  <data name="LocationDetailsPlaceholder" xml:space="preserve">
+    <value>భౌతిక స్థాన వివరాలు…</value>
+  </data>
+  <data name="LoginFooter" xml:space="preserve">
+    <value>© 2026 తెలంగాణ ప్రభుత్వం | IMSB కేంద్రీకృత నిర్వహణ వ్యవస్థ | వెర్షన్ 1.0.0 | అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి</value>
+  </data>
+  <data name="LoginGovtStrip" xml:space="preserve">
+    <value>🏛️ తెలంగాణ ప్రభుత్వం | ఇందిర మహిళా శక్తి బజార్ (IMSB) – కేంద్రీకృత నిర్వహణ పోర్టల్ | అధికారిక ఉపయోగం కోసం మాత్రమే</value>
+  </data>
+  <data name="LoginHeadline" xml:space="preserve">
+    <value>డిజిటల్ నిర్వహణ ద్వారా {0} సాధికారత</value>
+  </data>
+  <data name="LoginHeadlineHighlight" xml:space="preserve">
+    <value>మహిళా కళాకారులకు</value>
+  </data>
+  <data name="LoginTagline" xml:space="preserve">
+    <value>అన్ని IMSB ప్రదేశాలలో స్టాల్‌లు, ఇన్వెంటరీ, కళాకారుల ప్రొఫైల్‌లు, మానవ వనరులు మరియు అమ్మకాలను నిర్వహించడానికి కేంద్రీకృత పోర్టల్.</value>
+  </data>
+  <data name="LowPerformingStalls" xml:space="preserve">
+    <value>తక్కువ పనితీరు స్టాల్‌లు</value>
+  </data>
+  <data name="LowStockAlertLabel" xml:space="preserve">
+    <value>తక్కువ స్టాక్ హెచ్చరిక:</value>
+  </data>
+  <data name="LowStockBanner" xml:space="preserve">
+    <value>{0} ఉత్పత్తులు కనీస స్టాక్ పరిమితి కంటే తక్కువగా ఉన్నాయి.</value>
+  </data>
+  <data name="Metric" xml:space="preserve">
+    <value>కొలమానం</value>
+  </data>
+  <data name="MobileNumber" xml:space="preserve">
+    <value>మొబైల్ నంబర్</value>
+  </data>
+  <data name="ModuleNotConnected" xml:space="preserve">
+    <value>ఇంకా డేటా లేదు</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>నెల</value>
+  </data>
+  <data name="MonthlyAttendanceRate" xml:space="preserve">
+    <value>నెలవారీ హాజరు రేటు</value>
+  </data>
+  <data name="MonthlyRent" xml:space="preserve">
+    <value>నెలవారీ అద్దె (₹)</value>
+  </data>
+  <data name="MonthlyRevenue" xml:space="preserve">
+    <value>నెలవారీ ఆదాయం</value>
+  </data>
+  <data name="MonthlySales" xml:space="preserve">
+    <value>నెలవారీ అమ్మకాలు</value>
+  </data>
+  <data name="MonthlySalesTrend" xml:space="preserve">
+    <value>నెలవారీ అమ్మకాల ధోరణి</value>
+  </data>
+  <data name="NeedsRestock" xml:space="preserve">
+    <value>మళ్లీ స్టాక్ అవసరం</value>
+  </data>
+  <data name="NewArtisan" xml:space="preserve">
+    <value>కొత్త కళాకారుడు</value>
+  </data>
+  <data name="NewArtisanApplication" xml:space="preserve">
+    <value>కొత్త కళాకారుని దరఖాస్తు</value>
+  </data>
+  <data name="NewlySubmitted" xml:space="preserve">
+    <value>కొత్తగా సమర్పించబడింది, సమీక్ష కోసం వేచి ఉంది</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>కొత్త పాస్‌వర్డ్</value>
+  </data>
+  <data name="NewSalesEntry" xml:space="preserve">
+    <value>కొత్త అమ్మకపు ఎంట్రీ</value>
+  </data>
+  <data name="NoActivity" xml:space="preserve">
+    <value>ఇటీవలి కార్యకలాపం లేదు</value>
+  </data>
+  <data name="NoComparison" xml:space="preserve">
+    <value>పోల్చడానికి మునుపటి రోజు అమ్మకాలు లేవు</value>
+  </data>
+  <data name="NoDeductions" xml:space="preserve">
+    <value>స్టాక్ తగ్గింపులు ఏవీ నమోదు కాలేదు</value>
+  </data>
+  <data name="NoSalesEntries" xml:space="preserve">
+    <value>ఈ తేదీకి అమ్మకపు ఎంట్రీలు లేవు</value>
+  </data>
+  <data name="NoSalesForFilters" xml:space="preserve">
+    <value>ఈ ఫిల్టర్‌లకు సరిపోయే అమ్మకాలు లేవు</value>
+  </data>
+  <data name="NoSalesYet" xml:space="preserve">
+    <value>ఈ నెల అమ్మకాలు నమోదు కాలేదు</value>
+  </data>
+  <data name="NoStallsYet" xml:space="preserve">
+    <value>పోల్చడానికి ఇతర స్టాల్‌లు లేవు</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>అందుబాటులో లేదు</value>
+  </data>
+  <data name="NothingToSubmit" xml:space="preserve">
+    <value>సేవ్ చేయడానికి ముందు కనీసం ఒక ఉత్పత్తిని జోడించండి</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>నోటిఫికేషన్‌లు</value>
+  </data>
+  <data name="OccupancyDays" xml:space="preserve">
+    <value>ఆక్రమణ రోజులు</value>
+  </data>
+  <data name="OccupancyRate" xml:space="preserve">
+    <value>ఆక్రమణ రేటు</value>
+  </data>
+  <data name="Occupied" xml:space="preserve">
+    <value>ఆక్రమించబడింది</value>
+  </data>
+  <data name="OccupiedBy" xml:space="preserve">
+    <value>{0} ఆక్రమించారు – {1}</value>
+  </data>
+  <data name="OccupiedPct" xml:space="preserve">
+    <value>{0}% ఆక్రమించబడింది</value>
+  </data>
+  <data name="OccupiedStalls" xml:space="preserve">
+    <value>ఆక్రమిత స్టాల్‌లు</value>
+  </data>
+  <data name="OnlyLeft" xml:space="preserve">
+    <value>{0} మాత్రమే మిగిలింది (కనీసం: {1})</value>
+  </data>
+  <data name="OpenedStallDetails" xml:space="preserve">
+    <value>స్టాల్ వివరాలు తెరవబడ్డాయి</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>ఐచ్ఛికం</value>
+  </data>
+  <data name="OTHours" xml:space="preserve">
+    <value>ఓటీ గంటలు</value>
+  </data>
+  <data name="OverviewCharts" xml:space="preserve">
+    <value>అవలోకన చార్ట్‌లు</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>పాస్‌వర్డ్</value>
+  </data>
+  <data name="PasswordResetDone" xml:space="preserve">
+    <value>పాస్‌వర్డ్ రీసెట్ చేయబడింది. ఇప్పుడు లాగిన్ అవ్వవచ్చు.</value>
+  </data>
+  <data name="PendingApplications" xml:space="preserve">
+    <value>పెండింగ్ దరఖాస్తులు</value>
+  </data>
+  <data name="PendingReallocation" xml:space="preserve">
+    <value>పెండింగ్ పునః కేటాయింపు</value>
+  </data>
+  <data name="PercentRemaining" xml:space="preserve">
+    <value>{0}% మిగిలింది</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>వ్యక్తిగత సమాచారం</value>
+  </data>
+  <data name="PersonalInformation" xml:space="preserve">
+    <value>వ్యక్తిగత వివరాలు</value>
+  </data>
+  <data name="PoweredBy" xml:space="preserve">
+    <value>IMSB అడ్మిన్ పోర్టల్ ఆధారితం</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>హాజరు</value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>గోప్యతా విధానం</value>
+  </data>
+  <data name="PrivacyPolicyText" xml:space="preserve">
+    <value>ఈ పోర్టల్‌లోని డేటా అధీకృత IMSB సిబ్బంది అధికారిక ఉపయోగం కోసం మాత్రమే.</value>
+  </data>
+  <data name="Process" xml:space="preserve">
+    <value>ప్రాసెస్ చేయండి</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>ఉత్పత్తి</value>
+  </data>
+  <data name="ProductCategories" xml:space="preserve">
+    <value>ఉత్పత్తి వర్గాలు</value>
+  </data>
+  <data name="ProductCategory" xml:space="preserve">
+    <value>ఉత్పత్తి వర్గం</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>ఉత్పత్తులు</value>
+  </data>
+  <data name="ProductsCount" xml:space="preserve">
+    <value>{0} ఉత్పత్తులు</value>
+  </data>
+  <data name="ProductsListed" xml:space="preserve">
+    <value>జాబితా చేసిన ఉత్పత్తులు</value>
+  </data>
+  <data name="ProductWiseSales" xml:space="preserve">
+    <value>ఉత్పత్తి వారీ అమ్మకాలు</value>
+  </data>
+  <data name="ProductWiseSalesReport" xml:space="preserve">
+    <value>ఉత్పత్తి వారీ అమ్మకాల నివేదిక</value>
+  </data>
+  <data name="QtySold" xml:space="preserve">
+    <value>అమ్మిన పరిమాణం</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>త్వరిత చర్యలు</value>
+  </data>
+  <data name="Rating" xml:space="preserve">
+    <value>రేటింగ్</value>
+  </data>
+  <data name="Reallocation" xml:space="preserve">
+    <value>పునః కేటాయింపు</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>కారణం</value>
+  </data>
+  <data name="RecentActivity" xml:space="preserve">
+    <value>ఇటీవలి కార్యకలాపం</value>
+  </data>
+  <data name="RecordSaved" xml:space="preserve">
+    <value>రికార్డ్ విజయవంతంగా సేవ్ చేయబడింది.</value>
+  </data>
+  <data name="Registered" xml:space="preserve">
+    <value>నమోదైనవారు</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>నన్ను గుర్తుంచుకో</value>
+  </data>
+  <data name="ReportLibrary" xml:space="preserve">
+    <value>నివేదికల లైబ్రరీ</value>
+  </data>
+  <data name="ReportsAnalytics" xml:space="preserve">
+    <value>నివేదికలు &amp; విశ్లేషణ</value>
+  </data>
+  <data name="ReportsSubtitle" xml:space="preserve">
+    <value>అన్ని మాడ్యూళ్లలో నివేదికలను రూపొందించి ఎగుమతి చేయండి</value>
+  </data>
+  <data name="RequestedDate" xml:space="preserve">
+    <value>అభ్యర్థించిన తేదీ</value>
+  </data>
+  <data name="RequestId" xml:space="preserve">
+    <value>అభ్యర్థన ID</value>
+  </data>
+  <data name="RequestNewResetLink" xml:space="preserve">
+    <value>కొత్త రీసెట్ లింక్ అభ్యర్థించండి</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>అవసరం</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>రిజర్వ్ చేయబడింది</value>
+  </data>
+  <data name="ResetLinkSentMsg" xml:space="preserve">
+    <value>ఇచ్చిన గుర్తింపుకు ఖాతా ఉంటే, పాస్‌వర్డ్ రీసెట్ లింక్ పంపబడింది.</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>పాస్‌వర్డ్ రీసెట్ చేయండి</value>
+  </data>
+  <data name="ResidentialAddress" xml:space="preserve">
+    <value>నివాస చిరునామా</value>
+  </data>
+  <data name="Restored" xml:space="preserve">
+    <value>పునరుద్ధరించబడింది</value>
+  </data>
+  <data name="Revenue" xml:space="preserve">
+    <value>ఆదాయం (₹)</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>సమీక్షించండి</value>
+  </data>
+  <data name="RoleNotAuthorized" xml:space="preserve">
+    <value>ఎంచుకున్న పాత్రతో లాగిన్ అవ్వడానికి మీకు అనుమతి లేదు.</value>
+  </data>
+  <data name="Row" xml:space="preserve">
+    <value>వరుస</value>
+  </data>
+  <data name="RowPlaceholder" xml:space="preserve">
+    <value>ఉదా. వరుస 3</value>
+  </data>
+  <data name="RptArtisan" xml:space="preserve">
+    <value>కళాకారుల కేటాయింపు నివేదిక</value>
+  </data>
+  <data name="RptArtisanDesc" xml:space="preserve">
+    <value>అన్ని కళాకారుల ప్రొఫైల్‌లు, స్టాల్ కేటాయింపులు మరియు పనితీరు కొలమానాలు.</value>
+  </data>
+  <data name="RptAttendance" xml:space="preserve">
+    <value>మానవ వనరుల హాజరు నివేదిక</value>
+  </data>
+  <data name="RptAttendanceDesc" xml:space="preserve">
+    <value>విభాగాల వారీ హాజరు, ఓవర్‌టైమ్ మరియు సెలవుల సారాంశం.</value>
+  </data>
+  <data name="RptInventory" xml:space="preserve">
+    <value>ఇన్వెంటరీ నివేదిక</value>
+  </data>
+  <data name="RptInventoryDesc" xml:space="preserve">
+    <value>వర్గాల వారీ స్టాక్ స్థాయిలు, తక్కువ స్టాక్ హెచ్చరికలు మరియు రీస్టాక్ సారాంశం.</value>
+  </data>
+  <data name="RptProcurement" xml:space="preserve">
+    <value>సేకరణ &amp; లాభం</value>
+  </data>
+  <data name="RptProcurementDesc" xml:space="preserve">
+    <value>కొనుగోలు ఖర్చులు, అమ్మకపు ధర మార్జిన్‌లు మరియు నికర లాభం లెక్కింపు.</value>
+  </data>
+  <data name="RptSales" xml:space="preserve">
+    <value>అమ్మకాల నివేదిక</value>
+  </data>
+  <data name="RptSalesDesc" xml:space="preserve">
+    <value>రోజువారీ, స్టాల్ వారీ మరియు వర్గాల వారీ అమ్మకాల విశ్లేషణ.</value>
+  </data>
+  <data name="RptStallOccupancy" xml:space="preserve">
+    <value>స్టాల్ ఆక్రమణ నివేదిక</value>
+  </data>
+  <data name="RptStallOccupancyDesc" xml:space="preserve">
+    <value>స్టాల్ వారీ ఆక్రమణ, కళాకారుల వివరాలు మరియు ప్రతి స్టాల్ ఆదాయాన్ని ట్రాక్ చేయండి.</value>
+  </data>
+  <data name="SaleDeduction" xml:space="preserve">
+    <value>అమ్మకం (ఆటో తగ్గింపు)</value>
+  </data>
+  <data name="SaleNotFound" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ కనుగొనబడలేదు</value>
+  </data>
+  <data name="SaleReversal" xml:space="preserve">
+    <value>అమ్మకం రద్దు (పునరుద్ధరించబడింది)</value>
+  </data>
+  <data name="SalesAmount" xml:space="preserve">
+    <value>అమ్మకాలు (₹)</value>
+  </data>
+  <data name="SalesByCategoryOn" xml:space="preserve">
+    <value>వర్గాల వారీ అమ్మకాలు – {0}</value>
+  </data>
+  <data name="SalesByCategoryToday" xml:space="preserve">
+    <value>వర్గాల వారీ అమ్మకాలు – ఈరోజు</value>
+  </data>
+  <data name="SalesChart" xml:space="preserve">
+    <value>అమ్మకాల చార్ట్</value>
+  </data>
+  <data name="SalesDeleted" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ {0} తొలగించబడింది; స్టాక్ పునరుద్ధరించబడింది</value>
+  </data>
+  <data name="SalesEntries" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీలు</value>
+  </data>
+  <data name="SalesEntry" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ</value>
+  </data>
+  <data name="SalesEntryCleared" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ క్లియర్ చేయబడింది</value>
+  </data>
+  <data name="SalesManagement" xml:space="preserve">
+    <value>అమ్మకాల నిర్వహణ</value>
+  </data>
+  <data name="SalesRemarksPlaceholder" xml:space="preserve">
+    <value>ఐచ్ఛిక గమనిక (ఉదా. పండుగ తగ్గింపు)</value>
+  </data>
+  <data name="SalesSaved" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ {0} సేవ్ చేయబడింది ({1}). స్టాక్ స్వయంచాలకంగా తగ్గించబడింది.</value>
+  </data>
+  <data name="SalesSubtitle" xml:space="preserve">
+    <value>రోజువారీ నమోదు, ఉత్పత్తి వారీ ట్రాకింగ్ మరియు ఆటో స్టాక్ తగ్గింపు</value>
+  </data>
+  <data name="SalesTrend" xml:space="preserve">
+    <value>అమ్మకాల ధోరణి</value>
+  </data>
+  <data name="SalesUpdated" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ {0} నవీకరించబడింది ({1}). స్టాక్ సర్దుబాటు చేయబడింది.</value>
+  </data>
+  <data name="SaveSalesEntry" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ సేవ్ చేయండి</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>వెతకండి</value>
+  </data>
+  <data name="SearchStalls" xml:space="preserve">
+    <value>స్టాల్‌లను వెతకండి…</value>
+  </data>
+  <data name="SelectArtisan" xml:space="preserve">
+    <value>కళాకారుడిని ఎంచుకోండి</value>
+  </data>
+  <data name="SelectDistrict" xml:space="preserve">
+    <value>జిల్లాను ఎంచుకోండి</value>
+  </data>
+  <data name="SelectedDateOnly" xml:space="preserve">
+    <value>ఎంచుకున్న తేదీ</value>
+  </data>
+  <data name="SelectProductOption" xml:space="preserve">
+    <value>-- ఉత్పత్తిని ఎంచుకోండి --</value>
+  </data>
+  <data name="SelectVacantStall" xml:space="preserve">
+    <value>ఖాళీ స్టాల్ ఎంచుకోండి</value>
+  </data>
+  <data name="SendResetLink" xml:space="preserve">
+    <value>రీసెట్ లింక్ పంపండి</value>
+  </data>
+  <data name="SetNewPasswordHint" xml:space="preserve">
+    <value>మీ ఖాతాకు కొత్త పాస్‌వర్డ్ సెట్ చేయండి.</value>
+  </data>
+  <data name="SetPassword" xml:space="preserve">
+    <value>పాస్‌వర్డ్ సెట్ చేయండి</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>పాస్‌వర్డ్ చూపించు</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>సైన్ ఇన్</value>
+  </data>
+  <data name="SignInDifferentUser" xml:space="preserve">
+    <value>వేరే వినియోగదారుగా సైన్ ఇన్ చేయండి</value>
+  </data>
+  <data name="SignInToContinue" xml:space="preserve">
+    <value>IMSB అడ్మిన్ పోర్టల్‌కు కొనసాగడానికి సైన్ ఇన్ చేయండి</value>
+  </data>
+  <data name="SignInToPortal" xml:space="preserve">
+    <value>పోర్టల్‌లో సైన్ ఇన్ చేయండి</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>సైన్ అవుట్</value>
+  </data>
+  <data name="SinceDate" xml:space="preserve">
+    <value>{0} నుండి</value>
+  </data>
+  <data name="SkillsDescription" xml:space="preserve">
+    <value>నైపుణ్యాల వివరణ</value>
+  </data>
+  <data name="StaffAttendancePct" xml:space="preserve">
+    <value>సిబ్బంది హాజరు %</value>
+  </data>
+  <data name="StaffCount" xml:space="preserve">
+    <value>సిబ్బంది సంఖ్య</value>
+  </data>
+  <data name="StallAllocated" xml:space="preserve">
+    <value>స్టాల్ విజయవంతంగా కేటాయించబడింది!</value>
+  </data>
+  <data name="StallCreated" xml:space="preserve">
+    <value>స్టాల్ విజయవంతంగా సృష్టించబడింది!</value>
+  </data>
+  <data name="StallID" xml:space="preserve">
+    <value>స్టాల్ ID</value>
+  </data>
+  <data name="StallIdPlaceholder" xml:space="preserve">
+    <value>ఉదా. A-21</value>
+  </data>
+  <data name="StallIsVacant" xml:space="preserve">
+    <value>ఈ స్టాల్ ఖాళీగా మరియు అందుబాటులో ఉంది.</value>
+  </data>
+  <data name="StallLabel" xml:space="preserve">
+    <value>స్టాల్ {0}</value>
+  </data>
+  <data name="StallLayoutMap" xml:space="preserve">
+    <value>స్టాల్ లేఅవుట్ – దృశ్య మ్యాప్</value>
+  </data>
+  <data name="StallList" xml:space="preserve">
+    <value>స్టాల్ జాబితా</value>
+  </data>
+  <data name="StallMap" xml:space="preserve">
+    <value>స్టాల్ మ్యాప్</value>
+  </data>
+  <data name="StallName" xml:space="preserve">
+    <value>స్టాల్ పేరు</value>
+  </data>
+  <data name="StallOccupancy" xml:space="preserve">
+    <value>స్టాల్ ఆక్రమణ</value>
+  </data>
+  <data name="StallOccupancyOverTime" xml:space="preserve">
+    <value>కాలక్రమేణా స్టాల్ ఆక్రమణ</value>
+  </data>
+  <data name="StallReallocated" xml:space="preserve">
+    <value>స్టాల్ విజయవంతంగా పునః కేటాయించబడింది</value>
+  </data>
+  <data name="StallReallocation" xml:space="preserve">
+    <value>స్టాల్ పునః కేటాయింపు</value>
+  </data>
+  <data name="StallReport" xml:space="preserve">
+    <value>స్టాల్ నివేదిక</value>
+  </data>
+  <data name="StallsActiveToday" xml:space="preserve">
+    <value>ఈరోజు సక్రియ స్టాల్‌లు</value>
+  </data>
+  <data name="StallSubtitle" xml:space="preserve">
+    <value>మార్కెట్ స్టాల్‌లను సృష్టించండి, కేటాయించండి, ట్రాక్ చేయండి మరియు పునః కేటాయించండి</value>
+  </data>
+  <data name="StateAdmin" xml:space="preserve">
+    <value>రాష్ట్ర నిర్వాహకుడు</value>
+  </data>
+  <data name="StockAvailable" xml:space="preserve">
+    <value>అందుబాటులో ఉన్న స్టాక్: {0}</value>
+  </data>
+  <data name="StockItems" xml:space="preserve">
+    <value>స్టాక్ అంశాలు</value>
+  </data>
+  <data name="StockLeft" xml:space="preserve">
+    <value>మిగిలిన స్టాక్</value>
+  </data>
+  <data name="SubmitApplication" xml:space="preserve">
+    <value>దరఖాస్తు సమర్పించండి</value>
+  </data>
+  <data name="SubmitTodaysSales" xml:space="preserve">
+    <value>ఈరోజు అమ్మకాలను సమర్పించండి</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>సారాంశం</value>
+  </data>
+  <data name="ThisMonth" xml:space="preserve">
+    <value>ఈ నెల</value>
+  </data>
+  <data name="ThisWeekAverage" xml:space="preserve">
+    <value>ఈ వారం సగటు %</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>సమయం</value>
+  </data>
+  <data name="ToBeProcessed" xml:space="preserve">
+    <value>ప్రాసెస్ చేయాల్సినవి</value>
+  </data>
+  <data name="ToDate" xml:space="preserve">
+    <value>వరకు</value>
+  </data>
+  <data name="TodaysSales" xml:space="preserve">
+    <value>ఈరోజు అమ్మకాలు</value>
+  </data>
+  <data name="TodaysTotalSales" xml:space="preserve">
+    <value>ఈరోజు మొత్తం అమ్మకాలు</value>
+  </data>
+  <data name="ToggleDarkMode" xml:space="preserve">
+    <value>డార్క్ మోడ్ మార్చండి</value>
+  </data>
+  <data name="ToggleSidebar" xml:space="preserve">
+    <value>సైడ్‌బార్ మార్చండి</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>మొత్తం</value>
+  </data>
+  <data name="TotalMonthlySales" xml:space="preserve">
+    <value>మొత్తం నెలవారీ అమ్మకాలు</value>
+  </data>
+  <data name="TotalSalesForDay" xml:space="preserve">
+    <value>మొత్తం అమ్మకాలు</value>
+  </data>
+  <data name="TotalStalls" xml:space="preserve">
+    <value>మొత్తం స్టాల్‌లు</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>లావాదేవీలు</value>
+  </data>
+  <data name="TransactionsToday" xml:space="preserve">
+    <value>ఈరోజు లావాదేవీలు</value>
+  </data>
+  <data name="UnitsRestored" xml:space="preserve">
+    <value>పునరుద్ధరించబడింది: {0} యూనిట్లు</value>
+  </data>
+  <data name="UnitsSold" xml:space="preserve">
+    <value>అమ్మినవి: {0} యూనిట్లు</value>
+  </data>
+  <data name="UpdateSalesEntry" xml:space="preserve">
+    <value>అమ్మకపు ఎంట్రీ నవీకరించండి</value>
+  </data>
+  <data name="UploadHint" xml:space="preserve">
+    <value>ఆధార్, బ్యాంక్ పాస్‌బుక్, ఫోటోలు (PDF/JPG – ఒక్కొక్కటి గరిష్టంగా 5MB)</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>వినియోగదారు</value>
+  </data>
+  <data name="UserIdOrEmail" xml:space="preserve">
+    <value>యూజర్ ID / ఇమెయిల్</value>
+  </data>
+  <data name="Vacant" xml:space="preserve">
+    <value>ఖాళీ</value>
+  </data>
+  <data name="VacantStalls" xml:space="preserve">
+    <value>ఖాళీ స్టాల్‌లు</value>
+  </data>
+  <data name="ValDateRange" xml:space="preserve">
+    <value>ముగింపు తేదీ ప్రారంభ తేదీ లేదా ఆ తర్వాత ఉండాలి</value>
+  </data>
+  <data name="ValDuplicateProduct" xml:space="preserve">
+    <value>ఈ ఉత్పత్తి ఇప్పటికే ఎంట్రీలో ఉంది; దాని పరిమాణాన్ని మార్చండి</value>
+  </data>
+  <data name="ValidationError" xml:space="preserve">
+    <value>ధృవీకరణ లోపం</value>
+  </data>
+  <data name="ValPasswordLength" xml:space="preserve">
+    <value>పాస్‌వర్డ్ 8-100 అక్షరాలు ఉండాలి</value>
+  </data>
+  <data name="ValPasswordRequired" xml:space="preserve">
+    <value>పాస్‌వర్డ్ అవసరం</value>
+  </data>
+  <data name="ValPasswordsDoNotMatch" xml:space="preserve">
+    <value>పాస్‌వర్డ్‌లు సరిపోలలేదు</value>
+  </data>
+  <data name="ValSalesItemsMax" xml:space="preserve">
+    <value>ఒక ఎంట్రీలో గరిష్టంగా {0} ఉత్పత్తులు ఉండవచ్చు</value>
+  </data>
+  <data name="ValSalesItemsRequired" xml:space="preserve">
+    <value>కనీసం ఒక ఉత్పత్తిని జోడించండి</value>
+  </data>
+  <data name="ValTime" xml:space="preserve">
+    <value>సరైన సమయాన్ని నమోదు చేయండి (HH:mm)</value>
+  </data>
+  <data name="ValTimeFuture" xml:space="preserve">
+    <value>సమయం భవిష్యత్తులో ఉండకూడదు</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>విలువ</value>
+  </data>
+  <data name="ValUsernameOrEmail" xml:space="preserve">
+    <value>దయచేసి మీ యూజర్‌నేమ్ లేదా ఇమెయిల్ నమోదు చేయండి.</value>
+  </data>
+  <data name="ValUsernameRequired" xml:space="preserve">
+    <value>యూజర్ ID అవసరం</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>అన్నీ చూడండి</value>
+  </data>
+  <data name="ViewInventory" xml:space="preserve">
+    <value>ఇన్వెంటరీ చూడండి</value>
+  </data>
+  <data name="VsLastMonth" xml:space="preserve">
+    <value>గత నెలతో పోలిస్తే {0}</value>
+  </data>
+  <data name="VsYesterday" xml:space="preserve">
+    <value>నిన్నటితో పోలిస్తే {0}</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>స్వాగతం</value>
+  </data>
+  <data name="WelcomeBack" xml:space="preserve">
+    <value>తిరిగి స్వాగతం</value>
+  </data>
+  <data name="YearsOfExperience" xml:space="preserve">
+    <value>అనుభవ సంవత్సరాలు</value>
+  </data>
+  <data name="ChangeVsYesterday" xml:space="preserve">
+    <value>నిన్నటితో పోలిస్తే మార్పు</value>
+  </data>
+  <data name="AadhaarKeepHint" xml:space="preserve">
+    <value>నమోదైనది: {0}. మార్చకూడదంటే ఖాళీగా వదలండి.</value>
+  </data>
+  <data name="AadhaarStoredHint" xml:space="preserve">
+    <value>చివరి 4 అంకెలు మాత్రమే రికార్డులో ఉంచబడతాయి.</value>
+  </data>
+  <data name="ActiveSessions" xml:space="preserve">
+    <value>సక్రియ సెషన్‌లు</value>
+  </data>
+  <data name="AgreementUntil" xml:space="preserve">
+    <value>ఒప్పందం వరకు</value>
+  </data>
+  <data name="AllActiveSessions" xml:space="preserve">
+    <value>అన్ని సక్రియ సెషన్‌లు</value>
+  </data>
+  <data name="AllBlocks" xml:space="preserve">
+    <value>అన్ని బ్లాక్‌లు</value>
+  </data>
+  <data name="AllDistricts" xml:space="preserve">
+    <value>అన్ని జిల్లాలు</value>
+  </data>
+  <data name="AllottedOn" xml:space="preserve">
+    <value>కేటాయించిన తేదీ</value>
+  </data>
+  <data name="ArtisanDeleted" xml:space="preserve">
+    <value>కళాకారుడు {0} తొలగించబడ్డారు</value>
+  </data>
+  <data name="ArtisanNotFound" xml:space="preserve">
+    <value>కళాకారుడు కనుగొనబడలేదు</value>
+  </data>
+  <data name="ArtisanRegistered" xml:space="preserve">
+    <value>దరఖాస్తు సేవ్ చేయబడింది. కళాకారుడు {0} నమోదయ్యారు.</value>
+  </data>
+  <data name="ArtisansCraftCategory" xml:space="preserve">
+    <value>-- కళాకారుని హస్తకళ వర్గం --</value>
+  </data>
+  <data name="ArtisansWithStall" xml:space="preserve">
+    <value>ప్రస్తుతం {0} మంది కళాకారులకు స్టాల్ ఉంది</value>
+  </data>
+  <data name="ArtisanUpdated" xml:space="preserve">
+    <value>కళాకారుడు {0} నవీకరించబడ్డారు</value>
+  </data>
+  <data name="BlockLabel" xml:space="preserve">
+    <value>బ్లాక్ {0}</value>
+  </data>
+  <data name="ClosedArtisanDeleted" xml:space="preserve">
+    <value>మూసివేయబడింది: కళాకారుడు తొలగించబడ్డారు</value>
+  </data>
+  <data name="ClosedStallVacated" xml:space="preserve">
+    <value>మూసివేయబడింది: స్టాల్ ఖాళీ చేయబడింది</value>
+  </data>
+  <data name="ConfirmApproveReallocation" xml:space="preserve">
+    <value>ఆమోదించాలా: స్టాల్ {0} {1}కు వెళ్తుంది?</value>
+  </data>
+  <data name="ConfirmDeleteArtisan" xml:space="preserve">
+    <value>{0} ({1}) ను తొలగించాలా? దీన్ని రద్దు చేయలేరు.</value>
+  </data>
+  <data name="ConfirmDeleteStall" xml:space="preserve">
+    <value>స్టాల్ {0} ను తొలగించాలా? దాని పునః కేటాయింపు చరిత్ర కూడా తొలగించబడుతుంది.</value>
+  </data>
+  <data name="ConfirmSignOutOthers" xml:space="preserve">
+    <value>మిగతా అన్ని పరికరాల నుండి సైన్ అవుట్ చేయాలా?</value>
+  </data>
+  <data name="ConfirmVacateStall" xml:space="preserve">
+    <value>స్టాల్ {0} ను ఖాళీ చేయాలా? కళాకారుడికి ఇకపై అది ఉండదు.</value>
+  </data>
+  <data name="DecisionRemarksPrompt" xml:space="preserve">
+    <value>వ్యాఖ్యలు (ఐచ్ఛికం):</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>పరికరం</value>
+  </data>
+  <data name="EditArtisan" xml:space="preserve">
+    <value>కళాకారుని సవరించండి</value>
+  </data>
+  <data name="EditStall" xml:space="preserve">
+    <value>స్టాల్ సవరించండి</value>
+  </data>
+  <data name="EndSession" xml:space="preserve">
+    <value>సెషన్ ముగించండి</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>గడువు</value>
+  </data>
+  <data name="FreeArtisansHint" xml:space="preserve">
+    <value>స్టాల్ లేని కళాకారులు మాత్రమే జాబితాలో ఉన్నారు.</value>
+  </data>
+  <data name="IpAddress" xml:space="preserve">
+    <value>IP చిరునామా</value>
+  </data>
+  <data name="LastActivity" xml:space="preserve">
+    <value>చివరి కార్యకలాపం</value>
+  </data>
+  <data name="MySessions" xml:space="preserve">
+    <value>నా సెషన్‌లు</value>
+  </data>
+  <data name="NoArtisansFound" xml:space="preserve">
+    <value>కళాకారులు కనుగొనబడలేదు</value>
+  </data>
+  <data name="NoFreeArtisans" xml:space="preserve">
+    <value>స్టాల్ లేని కళాకారులు లేరు</value>
+  </data>
+  <data name="NoOccupiedStalls" xml:space="preserve">
+    <value>ఆక్రమిత స్టాల్‌లు లేవు</value>
+  </data>
+  <data name="NoReallocations" xml:space="preserve">
+    <value>పునః కేటాయింపు అభ్యర్థనలు లేవు</value>
+  </data>
+  <data name="NoStallAssigned" xml:space="preserve">
+    <value>స్టాల్ కేటాయించబడలేదు</value>
+  </data>
+  <data name="NoStallsFound" xml:space="preserve">
+    <value>ఈ ఫిల్టర్‌లకు సరిపోయే స్టాల్‌లు లేవు</value>
+  </data>
+  <data name="NoStallsRegistered" xml:space="preserve">
+    <value>ఇంకా స్టాల్‌లు నమోదు కాలేదు. జోడించడానికి "స్టాల్ సృష్టించండి" ఉపయోగించండి.</value>
+  </data>
+  <data name="NoVacantStalls" xml:space="preserve">
+    <value>ఖాళీ స్టాల్‌లు లేవు</value>
+  </data>
+  <data name="OccupiedStall" xml:space="preserve">
+    <value>ఆక్రమిత స్టాల్</value>
+  </data>
+  <data name="OccupiedStatusHint" xml:space="preserve">
+    <value>ఆక్రమిత స్టాల్‌లు ఖాళీ చేయడం లేదా పునః కేటాయింపు ద్వారా మారుతాయి.</value>
+  </data>
+  <data name="OtherSessionsRevokedMsg" xml:space="preserve">
+    <value>మిగతా {0} సెషన్‌ల నుండి సైన్ అవుట్ చేయబడింది.</value>
+  </data>
+  <data name="PendingReallocationBadge" xml:space="preserve">
+    <value>పునః కేటాయింపు పెండింగ్</value>
+  </data>
+  <data name="ProductsAtStall" xml:space="preserve">
+    <value>స్టాల్‌లోని ఉత్పత్తులు</value>
+  </data>
+  <data name="ReallocationApproved" xml:space="preserve">
+    <value>అభ్యర్థన {0} ఆమోదించబడింది</value>
+  </data>
+  <data name="ReallocationRejected" xml:space="preserve">
+    <value>అభ్యర్థన {0} తిరస్కరించబడింది</value>
+  </data>
+  <data name="ReallocationRequested" xml:space="preserve">
+    <value>పునః కేటాయింపు అభ్యర్థన {0} సమర్పించబడింది</value>
+  </data>
+  <data name="ReasonAgreementExpired" xml:space="preserve">
+    <value>ఒప్పందం గడువు ముగిసింది</value>
+  </data>
+  <data name="ReasonArtisanRequest" xml:space="preserve">
+    <value>కళాకారుని అభ్యర్థన</value>
+  </data>
+  <data name="ReasonCategoryChange" xml:space="preserve">
+    <value>వర్గం మార్పు</value>
+  </data>
+  <data name="ReasonClosure" xml:space="preserve">
+    <value>మూసివేత</value>
+  </data>
+  <data name="ReasonExpired" xml:space="preserve">
+    <value>గడువు ముగిసింది</value>
+  </data>
+  <data name="ReasonIdleTimeout" xml:space="preserve">
+    <value>నిష్క్రియత వల్ల గడువు ముగిసింది</value>
+  </data>
+  <data name="ReasonNonPerformance" xml:space="preserve">
+    <value>తక్కువ పనితీరు</value>
+  </data>
+  <data name="ReasonOther" xml:space="preserve">
+    <value>ఇతర</value>
+  </data>
+  <data name="ReasonPasswordReset" xml:space="preserve">
+    <value>పాస్‌వర్డ్ రీసెట్</value>
+  </data>
+  <data name="ReasonRevoked" xml:space="preserve">
+    <value>వినియోగదారు ముగించారు</value>
+  </data>
+  <data name="ReasonSignedOut" xml:space="preserve">
+    <value>సైన్ అవుట్ అయ్యారు</value>
+  </data>
+  <data name="RejectedLabel" xml:space="preserve">
+    <value>తిరస్కరించబడింది</value>
+  </data>
+  <data name="RequestNo" xml:space="preserve">
+    <value>అభ్యర్థన సంఖ్య</value>
+  </data>
+  <data name="RequestReallocation" xml:space="preserve">
+    <value>పునః కేటాయింపు అభ్యర్థించండి</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>పాత్ర</value>
+  </data>
+  <data name="SessionEndedMsg" xml:space="preserve">
+    <value>మీరు సైన్ అవుట్ చేయబడ్డారు.</value>
+  </data>
+  <data name="SessionExpiredMsg" xml:space="preserve">
+    <value>మీ సెషన్ గడువు ముగిసింది. దయచేసి మళ్లీ సైన్ ఇన్ చేయండి.</value>
+  </data>
+  <data name="SessionExpiredTitle" xml:space="preserve">
+    <value>సెషన్ గడువు ముగిసింది</value>
+  </data>
+  <data name="SessionExpiringMsg" xml:space="preserve">
+    <value>నిష్క్రియత కారణంగా మీరు సైన్ అవుట్ అయ్యే సమయం:</value>
+  </data>
+  <data name="SessionExpiringTitle" xml:space="preserve">
+    <value>సెషన్ త్వరలో ముగుస్తుంది</value>
+  </data>
+  <data name="SessionRevokedMsg" xml:space="preserve">
+    <value>సెషన్ ముగిసింది.</value>
+  </data>
+  <data name="SessionsSubtitle" xml:space="preserve">
+    <value>మీ ఖాతా సైన్ ఇన్ అయిన ప్రదేశాలు. {0} నిమిషాలు నిష్క్రియంగా ఉంటే సెషన్ ముగుస్తుంది.</value>
+  </data>
+  <data name="SignedIn" xml:space="preserve">
+    <value>సైన్ ఇన్ అయిన సమయం</value>
+  </data>
+  <data name="SignOutOtherSessions" xml:space="preserve">
+    <value>ఇతర సెషన్‌ల నుండి సైన్ అవుట్</value>
+  </data>
+  <data name="StallDeleted" xml:space="preserve">
+    <value>స్టాల్ {0} తొలగించబడింది</value>
+  </data>
+  <data name="StallNotFound" xml:space="preserve">
+    <value>స్టాల్ కనుగొనబడలేదు</value>
+  </data>
+  <data name="StallUpdated" xml:space="preserve">
+    <value>స్టాల్ {0} నవీకరించబడింది</value>
+  </data>
+  <data name="StallVacated" xml:space="preserve">
+    <value>స్టాల్ {0} ఇప్పుడు ఖాళీగా ఉంది</value>
+  </data>
+  <data name="StaySignedIn" xml:space="preserve">
+    <value>సైన్ ఇన్‌లోనే ఉండండి</value>
+  </data>
+  <data name="SubmitRequest" xml:space="preserve">
+    <value>అభ్యర్థన సమర్పించండి</value>
+  </data>
+  <data name="ThisDevice" xml:space="preserve">
+    <value>ఈ పరికరం</value>
+  </data>
+  <data name="UnderMaintenance" xml:space="preserve">
+    <value>నిర్వహణలో</value>
+  </data>
+  <data name="VacateStall" xml:space="preserve">
+    <value>స్టాల్ ఖాళీ చేయండి</value>
+  </data>
+  <data name="VacateStallOption" xml:space="preserve">
+    <value>— స్టాల్ ఖాళీ చేయండి —</value>
+  </data>
+  <data name="ValAadhaar" xml:space="preserve">
+    <value>సరైన 12 అంకెల ఆధార్ నంబర్ నమోదు చేయండి</value>
+  </data>
+  <data name="ValAadhaarExists" xml:space="preserve">
+    <value>ఈ ఆధార్ నంబర్ ఇప్పటికే నమోదైంది</value>
+  </data>
+  <data name="ValAddress" xml:space="preserve">
+    <value>చిరునామా అవసరం (5-500 అక్షరాలు)</value>
+  </data>
+  <data name="ValAgreementEnd" xml:space="preserve">
+    <value>ఒప్పందం ముగింపు కేటాయింపు తేదీ తర్వాత ఉండాలి</value>
+  </data>
+  <data name="ValArtisanDeleteHasStall" xml:space="preserve">
+    <value>ఈ కళాకారుడికి స్టాల్ {0} ఉంది. ముందుగా దాన్ని ఖాళీ చేయండి లేదా పునః కేటాయించండి.</value>
+  </data>
+  <data name="ValArtisanHasStall" xml:space="preserve">
+    <value>ఈ కళాకారుడికి ఇప్పటికే ఒక స్టాల్ ఉంది</value>
+  </data>
+  <data name="ValArtisanInactive" xml:space="preserve">
+    <value>నిష్క్రియ కళాకారులకు స్టాల్ ఇవ్వలేరు</value>
+  </data>
+  <data name="ValArtisanMinAge" xml:space="preserve">
+    <value>కళాకారుడికి కనీసం 18 సంవత్సరాలు ఉండాలి</value>
+  </data>
+  <data name="ValArtisanMobile" xml:space="preserve">
+    <value>సరైన 10 అంకెల మొబైల్ నంబర్ నమోదు చేయండి</value>
+  </data>
+  <data name="ValBlock" xml:space="preserve">
+    <value>బ్లాక్ అవసరం (అక్షరాలు, అంకెలు, ఖాళీ, -)</value>
+  </data>
+  <data name="ValCraftCategory" xml:space="preserve">
+    <value>హస్తకళ వర్గాన్ని ఎంచుకోండి</value>
+  </data>
+  <data name="ValDistrict" xml:space="preserve">
+    <value>జిల్లాను ఎంచుకోండి</value>
+  </data>
+  <data name="ValExperience" xml:space="preserve">
+    <value>అనుభవం 0-80 సంవత్సరాలు ఉండాలి</value>
+  </data>
+  <data name="ValGender" xml:space="preserve">
+    <value>లింగాన్ని ఎంచుకోండి</value>
+  </data>
+  <data name="ValInactiveWithStall" xml:space="preserve">
+    <value>నిష్క్రియంగా గుర్తించే ముందు కళాకారుని స్టాల్ ఖాళీ చేయండి</value>
+  </data>
+  <data name="ValLocation" xml:space="preserve">
+    <value>స్థానం గరిష్టంగా 500 అక్షరాలు</value>
+  </data>
+  <data name="ValReallocationDecided" xml:space="preserve">
+    <value>ఈ అభ్యర్థనపై ఇప్పటికే నిర్ణయం తీసుకోబడింది</value>
+  </data>
+  <data name="ValReallocationPending" xml:space="preserve">
+    <value>ఈ స్టాల్‌కు ఇప్పటికే పెండింగ్ పునః కేటాయింపు అభ్యర్థన ఉంది</value>
+  </data>
+  <data name="ValReallocationStale" xml:space="preserve">
+    <value>ఈ అభ్యర్థన తర్వాత స్టాల్ చేతులు మారింది; దీన్ని తిరస్కరించి కొత్తది సృష్టించండి</value>
+  </data>
+  <data name="ValReallocationTargetUnavailable" xml:space="preserve">
+    <value>కొత్త కళాకారుడు ఇకపై ఈ స్టాల్ తీసుకోలేరు</value>
+  </data>
+  <data name="ValReason" xml:space="preserve">
+    <value>కారణాన్ని ఎంచుకోండి</value>
+  </data>
+  <data name="ValRent" xml:space="preserve">
+    <value>సరైన అద్దె నమోదు చేయండి</value>
+  </data>
+  <data name="ValRow" xml:space="preserve">
+    <value>వరుస గరిష్టంగా 20 అక్షరాలు</value>
+  </data>
+  <data name="ValSameArtisan" xml:space="preserve">
+    <value>ఈ స్టాల్ ఇప్పటికే ఈ కళాకారుడి వద్దే ఉంది</value>
+  </data>
+  <data name="ValSelectArtisan" xml:space="preserve">
+    <value>కళాకారుడిని ఎంచుకోండి</value>
+  </data>
+  <data name="ValSelectStall" xml:space="preserve">
+    <value>స్టాల్‌ను ఎంచుకోండి</value>
+  </data>
+  <data name="ValSkills" xml:space="preserve">
+    <value>నైపుణ్యాలు గరిష్టంగా 1000 అక్షరాలు</value>
+  </data>
+  <data name="ValStallCode" xml:space="preserve">
+    <value>స్టాల్ ID అవసరం (అక్షరాలు, అంకెలు, -)</value>
+  </data>
+  <data name="ValStallCodeExists" xml:space="preserve">
+    <value>ఈ IDతో స్టాల్ ఇప్పటికే ఉంది</value>
+  </data>
+  <data name="ValStallHasProducts" xml:space="preserve">
+    <value>ఈ స్టాల్‌కు {0} ఉత్పత్తులు కేటాయించబడ్డాయి. ముందుగా ఇన్వెంటరీలో వాటిని మార్చండి.</value>
+  </data>
+  <data name="ValStallName" xml:space="preserve">
+    <value>స్టాల్ పేరు అవసరం (2-100 అక్షరాలు)</value>
+  </data>
+  <data name="ValStallNotOccupied" xml:space="preserve">
+    <value>ఈ స్టాల్ ఆక్రమించబడలేదు</value>
+  </data>
+  <data name="ValStallNotVacant" xml:space="preserve">
+    <value>ఖాళీ స్టాల్‌ను మాత్రమే కేటాయించగలరు</value>
+  </data>
+  <data name="ValStallOccupiedDelete" xml:space="preserve">
+    <value>ఆక్రమిత స్టాల్‌ను తొలగించలేరు. ముందుగా ఖాళీ చేయండి.</value>
+  </data>
+  <data name="ValStallOccupiedStatus" xml:space="preserve">
+    <value>ఆక్రమిత స్టాల్ అలాగే ఉంటుంది; ఖాళీ చేయండి లేదా పునః కేటాయించండి</value>
+  </data>
+  <data name="ValStallStatus" xml:space="preserve">
+    <value>ఖాళీ, రిజర్వ్ లేదా నిర్వహణను ఎంచుకోండి</value>
+  </data>
+  <data name="WithoutStall" xml:space="preserve">
+    <value>స్టాల్ లేనివారు</value>
+  </data>
+  <data name="WithStall" xml:space="preserve">
+    <value>స్టాల్ ఉన్నవారు</value>
+  </data>
+  <data name="YearsCount" xml:space="preserve">
+    <value>{0} సంవత్సరాలు</value>
+  </data>
+  <data name="ExportApproved" xml:space="preserve">
+    <value>ఆమోదించినవి ఎగుమతి చేయండి</value>
+  </data>
+  <data name="ExportUnderReview" xml:space="preserve">
+    <value>సమీక్షలో ఉన్నవి ఎగుమతి చేయండి</value>
+  </data>
+  <data name="ExportPending" xml:space="preserve">
+    <value>కొత్తవి ఎగుమతి చేయండి</value>
+  </data>
+  <data name="ExportRejected" xml:space="preserve">
+    <value>తిరస్కరించినవి ఎగుమతి చేయండి</value>
+  </data>
+  <data name="SearchUnderReview" xml:space="preserve">
+    <value>సమీక్షలో ఉన్నవి వెతకండి…</value>
+  </data>
+  <data name="SearchPending" xml:space="preserve">
+    <value>కొత్త దరఖాస్తులు వెతకండి…</value>
+  </data>
+  <data name="SearchRejected" xml:space="preserve">
+    <value>తిరస్కరించినవి వెతకండి…</value>
+  </data>
+  <data name="RejectedDate" xml:space="preserve">
+    <value>తిరస్కరించిన తేదీ</value>
+  </data>
+  <data name="RejectedBy" xml:space="preserve">
+    <value>తిరస్కరించినవారు</value>
+  </data>
+  <data name="DecisionRemarks" xml:space="preserve">
+    <value>నిర్ణయ వ్యాఖ్యలు</value>
+  </data>
+  <data name="SubmittedOn" xml:space="preserve">
+    <value>సమర్పించిన తేదీ</value>
+  </data>
+  <data name="DecidedOn" xml:space="preserve">
+    <value>నిర్ణయించిన తేదీ</value>
+  </data>
+  <data name="DecidedBy" xml:space="preserve">
+    <value>నిర్ణయించినవారు</value>
+  </data>
+  <data name="NoApplicationsFound" xml:space="preserve">
+    <value>దరఖాస్తులు ఏవీ లేవు</value>
+  </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>దరఖాస్తు కనుగొనబడలేదు</value>
+  </data>
+  <data name="EditApplication" xml:space="preserve">
+    <value>దరఖాస్తును సవరించండి</value>
+  </data>
+  <data name="ApplicationCreated" xml:space="preserve">
+    <value>దరఖాస్తు {0} సమర్పించబడింది</value>
+  </data>
+  <data name="ApplicationUpdated" xml:space="preserve">
+    <value>దరఖాస్తు {0} నవీకరించబడింది</value>
+  </data>
+  <data name="ApplicationDeleted" xml:space="preserve">
+    <value>దరఖాస్తు {0} తొలగించబడింది</value>
+  </data>
+  <data name="ConfirmDeleteApplication" xml:space="preserve">
+    <value>దరఖాస్తు {0}ను తొలగించాలా? దీన్ని రద్దు చేయలేరు.</value>
+  </data>
+  <data name="ApplicationProcessed" xml:space="preserve">
+    <value>దరఖాస్తు {0} సమీక్షకు మార్చబడింది</value>
+  </data>
+  <data name="ApplicationApprovedMsg" xml:space="preserve">
+    <value>{0} ఆమోదించబడింది. కళాకారుడు {1} నమోదయ్యారు.</value>
+  </data>
+  <data name="ApplicationApprovedWithStall" xml:space="preserve">
+    <value>{0} ఆమోదించబడింది. కళాకారుడు {1} నమోదై స్టాల్ {2} కేటాయించబడింది.</value>
+  </data>
+  <data name="ApplicationRejectedMsg" xml:space="preserve">
+    <value>దరఖాస్తు {0} తిరస్కరించబడింది</value>
+  </data>
+  <data name="NoStallNow" xml:space="preserve">
+    <value>— ఇప్పుడు స్టాల్ లేదు (తర్వాత కేటాయించండి) —</value>
+  </data>
+  <data name="ApplicationDetails" xml:space="preserve">
+    <value>దరఖాస్తు వివరాలు</value>
+  </data>
+  <data name="ValRejectRemarks" xml:space="preserve">
+    <value>తిరస్కరణకు కారణం నమోదు చేయండి</value>
+  </data>
+  <data name="ValApplicationDecided" xml:space="preserve">
+    <value>ఈ దరఖాస్తుపై ఇప్పటికే నిర్ణయం తీసుకోబడింది</value>
+  </data>
+  <data name="ValApplicationApprovedDelete" xml:space="preserve">
+    <value>ఆమోదించిన దరఖాస్తు కళాకారుని నమోదు రికార్డుగా ఉంచబడుతుంది; దాన్ని తొలగించలేరు</value>
+  </data>
+  <data name="ValApplicationNotPending" xml:space="preserve">
+    <value>కొత్త దరఖాస్తును మాత్రమే ప్రాసెస్ చేయగలరు</value>
+  </data>
+  <data name="ValApplicantAlreadyArtisan" xml:space="preserve">
+    <value>ఈ మొబైల్ నంబర్ లేదా ఆధార్ ఇప్పటికే ఒక కళాకారునికి నమోదై ఉంది</value>
+  </data>
+  <data name="ValMobileApplicationExists" xml:space="preserve">
+    <value>ఈ మొబైల్ నంబర్ ఇప్పటికే మరో పెండింగ్ దరఖాస్తులో ఉంది</value>
+  </data>
+  <data name="ValAadhaarApplicationExists" xml:space="preserve">
+    <value>ఈ ఆధార్ నంబర్ ఇప్పటికే మరో పెండింగ్ దరఖాస్తులో ఉంది</value>
+  </data>
+  <data name="RegisteredFromApplication" xml:space="preserve">
+    <value>దరఖాస్తు {0} ద్వారా నమోదు</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>కళాకారులు, స్టాళ్లు, సిబ్బంది, ఉత్పత్తులు వెతకండి…</value>
+  </data>
+  <data name="SearchMinChars" xml:space="preserve">
+    <value>కనీసం 2 అక్షరాలు టైప్ చేయండి</value>
+  </data>
+  <data name="SearchNoResults" xml:space="preserve">
+    <value>సరిపోలికలు ఏవీ లేవు</value>
+  </data>
+  <data name="Searching" xml:space="preserve">
+    <value>వెతుకుతోంది…</value>
+  </data>
+  <data name="SearchGroupPages" xml:space="preserve">
+    <value>పేజీలు</value>
+  </data>
+  <data name="SearchGroupArtisans" xml:space="preserve">
+    <value>కళాకారులు</value>
+  </data>
+  <data name="SearchGroupApplications" xml:space="preserve">
+    <value>దరఖాస్తులు</value>
+  </data>
+  <data name="SearchGroupStalls" xml:space="preserve">
+    <value>స్టాళ్లు</value>
+  </data>
+  <data name="SearchGroupStaff" xml:space="preserve">
+    <value>సిబ్బంది</value>
+  </data>
+  <data name="SearchGroupProducts" xml:space="preserve">
+    <value>ఉత్పత్తులు</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>కొత్త నోటిఫికేషన్లు లేవు</value>
+  </data>
+  <data name="MarkAllRead" xml:space="preserve">
+    <value>అన్నీ చదివినట్లు గుర్తించండి</value>
+  </data>
+  <data name="NotifAppsPending" xml:space="preserve">
+    <value>{0} కొత్త దరఖాస్తు(లు) ప్రాసెస్ కోసం వేచి ఉన్నాయి</value>
+  </data>
+  <data name="NotifAppsReview" xml:space="preserve">
+    <value>{0} దరఖాస్తు(లు) సమీక్షలో ఉన్నాయి</value>
+  </data>
+  <data name="NotifReallocationsPending" xml:space="preserve">
+    <value>{0} స్టాల్ పునః కేటాయింపు అభ్యర్థన(లు) పెండింగ్‌లో ఉన్నాయి</value>
+  </data>
+  <data name="NotifAgreementsExpired" xml:space="preserve">
+    <value>{0} స్టాల్ ఒప్పందం(లు) గడువు ముగిశాయి</value>
+  </data>
+  <data name="NotifAgreementsExpiring" xml:space="preserve">
+    <value>{0} స్టాల్ ఒప్పందం(లు) 30 రోజుల్లో ముగుస్తాయి</value>
+  </data>
+  <data name="NotifArtisanRenewals" xml:space="preserve">
+    <value>{0} కళాకారు(లు) పునరుద్ధరణకు ఉన్నారు</value>
+  </data>
+  <data name="NotifOutOfStock" xml:space="preserve">
+    <value>{0} ఉత్పత్తి(లు) స్టాక్‌లో లేవు</value>
+  </data>
+  <data name="NotifLowStock" xml:space="preserve">
+    <value>{0} ఉత్పత్తి(లు) కనీస స్టాక్ కంటే తక్కువ</value>
+  </data>
+  <data name="NotifContractsExpiring" xml:space="preserve">
+    <value>{0} సిబ్బంది ఒప్పందం(లు) 30 రోజుల్లో ముగుస్తాయి</value>
+  </data>
+  <data name="ExportAllPdf" xml:space="preserve">
+    <value>అన్నీ ఎగుమతి (PDF)</value>
+  </data>
+  <data name="KpiTitleFor" xml:space="preserve">
+    <value>ముఖ్య పనితీరు సూచికలు – {0}</value>
+  </data>
+  <data name="SalesThisYear" xml:space="preserve">
+    <value>ఈ సంవత్సరం</value>
+  </data>
+  <data name="SalesPreviousYear" xml:space="preserve">
+    <value>గత సంవత్సరం</value>
+  </data>
+  <data name="RatingOutOf" xml:space="preserve">
+    <value>రేటింగ్ 5కి {0}</value>
+  </data>
+  <data name="OfTotal" xml:space="preserve">
+    <value>మొత్తం: {0}</value>
+  </data>
+  <data name="RptApplications" xml:space="preserve">
+    <value>దరఖాస్తుల నివేదిక</value>
+  </data>
+  <data name="RptApplicationsDesc" xml:space="preserve">
+    <value>నెలలో అందిన, ఆమోదించిన మరియు తిరస్కరించిన దరఖాస్తులు.</value>
+  </data>
+  <data name="ChangeVsLastMonth" xml:space="preserve">
+    <value>గత నెలతో పోలిస్తే మార్పు</value>
+  </data>
+  <data name="NoComparisonMonth" xml:space="preserve">
+    <value>పోల్చడానికి గత నెల అమ్మకాలు లేవు</value>
+  </data>
+  <data name="OccupancyHistoryNote" xml:space="preserve">
+    <value>గత నెలలు ప్రస్తుత స్టాల్ కేటాయింపుల ఆధారంగా లెక్కించబడ్డాయి; ముగిసిన అద్దెలు లెక్కించబడవు.</value>
+  </data>
+  <data name="UnitsSoldLabel" xml:space="preserve">
+    <value>అమ్మిన యూనిట్లు</value>
+  </data>
+  <data name="SalesShare" xml:space="preserve">
+    <value>అమ్మకాల వాటా</value>
+  </data>
+  <data name="RatingNote" xml:space="preserve">
+    <value>రేటింగ్ ప్రతి కళాకారుని అమ్మకాలను నెలలో అత్యధికంగా అమ్మినవారితో పోలుస్తుంది (5 = అత్యుత్తమం).</value>
+  </data>
+  <data name="ApplicationsSummary" xml:space="preserve">
+    <value>దరఖాస్తుల సారాంశం</value>
+  </data>
+  <data name="SubmittedThisPeriod" xml:space="preserve">
+    <value>ఈ కాలంలో సమర్పించినవి</value>
+  </data>
+  <data name="StillOpen" xml:space="preserve">
+    <value>ఇంకా పెండింగ్ (కొత్తవి + సమీక్షలో)</value>
+  </data>
+  <data name="StallWiseSales" xml:space="preserve">
+    <value>స్టాల్ వారీ అమ్మకాలు</value>
+  </data>
+  <data name="GeneratedOn" xml:space="preserve">
+    <value>రూపొందించిన తేదీ</value>
+  </data>
+  <data name="NoDataForPeriod" xml:space="preserve">
+    <value>ఈ కాలానికి డేటా లేదు</value>
+  </data>
+  <data name="PrintSavePdf" xml:space="preserve">
+    <value>ముద్రించండి / PDFగా సేవ్ చేయండి</value>
+  </data>
+  <data name="HalfDay" xml:space="preserve">
+    <value>అర్ధ రోజు</value>
+  </data>
+  <data name="NotMarked" xml:space="preserve">
+    <value>గుర్తించబడలేదు</value>
+  </data>
+  <data name="NotMarkedOption" xml:space="preserve">
+    <value>— గుర్తించబడలేదు —</value>
+  </data>
+  <data name="NotMarkedCount" xml:space="preserve">
+    <value>{0} గుర్తించబడలేదు</value>
+  </data>
+  <data name="MarkAllPresent" xml:space="preserve">
+    <value>అందరినీ హాజరుగా గుర్తించు</value>
+  </data>
+  <data name="WithOvertime" xml:space="preserve">
+    <value>ఓవర్‌టైమ్‌తో</value>
+  </data>
+  <data name="WeekOf" xml:space="preserve">
+    <value>{0} వారం</value>
+  </data>
+  <data name="PreviousWeek" xml:space="preserve">
+    <value>మునుపటి వారం</value>
+  </data>
+  <data name="NextWeek" xml:space="preserve">
+    <value>తదుపరి వారం</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>ఈరోజు</value>
+  </data>
+  <data name="NothingToSave" xml:space="preserve">
+    <value>సేవ్ చేయడానికి ఏమీ లేదు — ముందుగా కనీసం ఒక సిబ్బందిని గుర్తించండి లేదా మార్చండి.</value>
+  </data>
+  <data name="NoStaffForAttendance" xml:space="preserve">
+    <value>ఈ తేదీకి గుర్తించాల్సిన సిబ్బంది లేరు.</value>
+  </data>
+  <data name="NoStaffInDepartment" xml:space="preserve">
+    <value>ఈ విభాగంలో సిబ్బంది లేరు.</value>
+  </data>
+  <data name="NoAttendanceRecords" xml:space="preserve">
+    <value>ఫిల్టర్‌లకు సరిపోయే హాజరు రికార్డులు లేవు.</value>
+  </data>
+  <data name="AttendanceUpdated" xml:space="preserve">
+    <value>{0} – {1} హాజరు నవీకరించబడింది</value>
+  </data>
+  <data name="AttendanceDeleted" xml:space="preserve">
+    <value>{0} – {1} హాజరు రికార్డు తొలగించబడింది</value>
+  </data>
+  <data name="ConfirmDeleteAttendance" xml:space="preserve">
+    <value>{0} యొక్క {1} హాజరు రికార్డును తొలగించాలా?</value>
+  </data>
+  <data name="AttendanceNotFound" xml:space="preserve">
+    <value>ఈ హాజరు రికార్డు ఇక లేదు.</value>
+  </data>
+  <data name="EditAttendance" xml:space="preserve">
+    <value>హాజరును సవరించు</value>
+  </data>
+  <data name="AttendanceDetails" xml:space="preserve">
+    <value>హాజరు వివరాలు</value>
+  </data>
+  <data name="HistoryTotals" xml:space="preserve">
+    <value>{0} రికార్డులు · హాజరు {1} · గైర్హాజరు {2} · సెలవు {3} · అర్ధ రోజు {4} · {5} గం. పని · {6} గం. ఓవర్‌టైమ్</value>
+  </data>
+  <data name="MonthToDate" xml:space="preserve">
+    <value>ఈ నెల ఇప్పటివరకు: {0}</value>
+  </data>
+  <data name="OpenInEntry" xml:space="preserve">
+    <value>హాజరు నమోదులో తెరువు</value>
+  </data>
+  <data name="ExportDayHint" xml:space="preserve">
+    <value>ఎంచుకున్న రోజు హాజరును డౌన్‌లోడ్ చేయండి (CSV)</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>భవిష్యత్ తేదీకి హాజరు గుర్తించలేరు.</value>
+  </data>
+  <data name="AllStatuses" xml:space="preserve">
+    <value>అన్ని స్థితులు</value>
+  </data>
+  <data name="UnsavedChanges" xml:space="preserve">
+    <value>సేవ్ చేయని మార్పులు</value>
+  </data>
+  <data name="ValAttendanceStatus" xml:space="preserve">
+    <value>హాజరు, గైర్హాజరు, సెలవు లేదా అర్ధ రోజు ఎంచుకోండి</value>
+  </data>
+  <data name="ValInTimeRequired" xml:space="preserve">
+    <value>ఇన్-టైమ్ నమోదు చేయండి</value>
+  </data>
+  <data name="ValOutBeforeIn" xml:space="preserve">
+    <value>అవుట్-టైమ్ ఇన్-టైమ్ తర్వాత ఉండాలి</value>
+  </data>
+  <data name="ValStaffNotFound" xml:space="preserve">
+    <value>సిబ్బంది కనుగొనబడలేదు</value>
+  </data>
+  <data name="ValDuplicateStaff" xml:space="preserve">
+    <value>ఈ సిబ్బంది ఒకటి కంటే ఎక్కువసార్లు ఉన్నారు</value>
+  </data>
+  <data name="ValBeforeJoining" xml:space="preserve">
+    <value>ఈ తేదీన ఈ సిబ్బంది ఇంకా చేరలేదు</value>
+  </data>
+  <data name="ValTooManyEntries" xml:space="preserve">
+    <value>ఒకేసారి గరిష్టంగా {0} నమోదులను సేవ్ చేయవచ్చు</value>
+  </data>
+</root>

@@ -1,0 +1,12 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+}
+<footer class="app-footer" style="padding:12px 24px;border-top:1px solid var(--border)">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+    <div style="font-size:.75rem;color:var(--text-muted)">&copy; @L["FooterCopyright"]</div>
+    <div style="font-size:.75rem;color:var(--text-muted)">@L["PoweredBy"]</div>
+  </div>
+</footer>
+@* Sidebar toggle is handled by initSidebar() in main.js *@

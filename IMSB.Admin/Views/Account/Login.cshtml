@@ -1,0 +1,181 @@
+@model IMSB.Dto.Models.LoginViewModel
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    Layout = null;
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    var selectedRole = (Model?.SelectedRole ?? "admin").ToLowerInvariant();
+    var demoUsers = ViewBag.DemoUsers as IEnumerable<IMSB.Dto.Models.DemoUsers.DemoUser>;
+    var lang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+}
+
+<!DOCTYPE html>
+<html lang="@lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@L["IMSBPortal"] – @L["SignIn"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/Login.css" asp-append-version="true">
+</head>
+<body>
+
+    <!-- Decorative circles -->
+    <div class="bg-circle c1"></div>
+    <div class="bg-circle c2"></div>
+    <div class="bg-circle c3"></div>
+    <div class="bg-circle c4"></div>
+
+    <!-- Govt strip -->
+    <div class="govt-strip">
+        @L["LoginGovtStrip"]
+    </div>
+
+    <!-- Language -->
+    <form asp-controller="Language" asp-action="SetLanguage" method="post" style="position:fixed;top:42px;right:20px;z-index:10">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+        <select name="culture" aria-label="@L["Language"]" onchange="this.form.submit()"
+                style="font-family:inherit;font-size:.78rem;padding:6px 10px;border-radius:8px;border:1px solid #d6dce8;background:#fff">
+            <option value="en-US" selected="@(lang == "en")">English</option>
+            <option value="ta-IN" selected="@(lang == "ta")">தமிழ்</option>
+            <option value="te-IN" selected="@(lang == "te")">తెలుగు</option>
+            <option value="hi-IN" selected="@(lang == "hi")">हिन्दी</option>
+        </select>
+    </form>
+
+    <!-- Login Wrapper -->
+    <div class="login-wrapper">
+        <div class="login-container">
+
+            <!-- ── Left Panel ── -->
+            <div class="login-left">
+                <div class="login-logo">
+                    <div class="login-logo-icon"><i class="fa-solid fa-store-alt"></i></div>
+                    <div class="login-logo-text">
+                        <span>@L["IMSBPortal"]</span>
+                        <span>@L["GovernmentOfTelangana"]</span>
+                    </div>
+                </div>
+
+                <div class="login-headline">
+                    @* word order differs per language, so the highlighted words are slotted into one sentence *@
+                    <h2>@Html.Raw(string.Format(System.Net.WebUtility.HtmlEncode(L["LoginHeadline"].Value), "<span>" + System.Net.WebUtility.HtmlEncode(L["LoginHeadlineHighlight"].Value) + "</span>"))</h2>
+                    <p>@L["LoginTagline"]</p>
+                </div>
+
+                <div class="login-stats">
+                    <div class="ls-item"><div class="ls-val">120+</div><div class="ls-lbl">@L["ActiveStalls"]</div></div>
+                    <div class="ls-item"><div class="ls-val">89</div><div class="ls-lbl">@L["Artisans"]</div></div>
+                    <div class="ls-item"><div class="ls-val">₹42.8L</div><div class="ls-lbl">@L["MonthlyRevenue"]</div></div>
+                    <div class="ls-item"><div class="ls-val">7</div><div class="ls-lbl">@L["ProductCategories"]</div></div>
+                </div>
+            </div>
+
+            <!-- ── Right Panel (Form) ── -->
+            <div class="login-right">
+                <div class="login-form-header">
+                    <h1>@L["WelcomeBack"]</h1>
+                    <p>@L["SignInToContinue"]</p>
+                </div>
+
+                <!-- Role Tabs -->
+                <div class="role-tabs" id="roleTabs">
+                    <button type="button" class="role-tab @(selectedRole == "admin" ? "active" : "")" data-role="admin" onclick="selectRole(this,'admin')">
+                        <i class="fa-solid fa-shield-halved"></i>@L["StateAdmin"]
+                    </button>
+                    <button type="button" class="role-tab @(selectedRole == "staff" ? "active" : "")" data-role="staff" onclick="selectRole(this,'staff')">
+                        <i class="fa-solid fa-user-tie"></i>@L["StaffHR"]
+                    </button>
+                    <button type="button" class="role-tab @(selectedRole == "inventory" ? "active" : "")" data-role="inventory" onclick="selectRole(this,'inventory')">
+                        <i class="fa-solid fa-boxes-stacked"></i>@L["Inventory"]
+                    </button>
+                </div>
+
+                <!-- Error banner -->
+                <div class="login-error" id="loginError">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    <span id="loginErrorMsg">@L["InvalidCredentials"]</span>
+                </div>
+
+                <!-- Form -->
+                <form id="loginForm" asp-controller="Account" asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="selectedRole" name="SelectedRole" value="@selectedRole" />
+                    <input type="hidden" asp-for="ReturnUrl" />
+                    @if (ViewBag.Notice != null)
+                    {
+                        <div class="login-error visible" id="sessionNotice" style="display:flex;"><i class="fa-solid fa-clock"></i><span>@ViewBag.Notice</span></div>
+                    }
+                    @if (TempData["Message"] != null)
+                    {
+                        <div class="login-error visible" style="display:flex;"><i class="fa-solid fa-circle-check"></i><span>@TempData["Message"]</span></div>
+                    }
+                    <div asp-validation-summary="ModelOnly" class="login-error visible"
+                         style="@(ViewData.ModelState.IsValid ? "display:none;" : "display:flex;")"></div>
+                    <div class="form-group">
+                        <label class="form-label" for="username">@L["UserIdOrEmail"]</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input asp-for="Username" type="text" class="form-control" id="username" placeholder="@L["EnterUserId"]" autocomplete="username">
+                            <span asp-validation-for="Username" class="field-validation"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">@L["Password"]</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input asp-for="Password" type="password" class="form-control has-right" id="password" placeholder="@L["EnterPassword"]" autocomplete="current-password">
+                            <span asp-validation-for="Password" class="field-validation"></span>
+                            <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePassword()" aria-label="@L["ShowPassword"]">
+                                <i class="fa-solid fa-eye" id="pwIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label class="form-check">
+                            <input asp-for="RememberMe" type="checkbox" id="rememberMe">
+                            <span class="form-check-label">@L["RememberMe"]</span>
+                        </label>
+                        <a href="@Url.Action("Forgot","Account")" class="forgot-link">@L["ForgotPasswordQ"]</a>
+                    </div>
+                    <button type="submit" class="btn-login" id="loginBtn" onclick="startLogin()">
+                        <i class="fa-solid fa-spinner spinner" id="loginSpinner"></i>
+                        <span class="btn-label">@L["SignInToPortal"]</span>
+                        <i class="fa-solid fa-arrow-right btn-label"></i>
+                    </button>
+                </form>
+
+                @if (demoUsers != null)
+                {
+                    <!-- Demo credentials (Development environment only) -->
+                    <div class="demo-creds">
+                        <div class="demo-creds-title"><i class="fa-solid fa-circle-info"></i> &nbsp;@L["DemoCredentials"]</div>
+                        @foreach (var demo in demoUsers)
+                        {
+                            <div class="demo-creds-row">
+                                <span>@(demo.Role switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, _ => L["StateAdmin"].Value }):</span>
+                                <code data-user="@demo.Username" data-pass="@demo.Password" data-role="@demo.Role.ToLowerInvariant()"
+                                      onclick="fillCreds(this.dataset.user, this.dataset.pass, this.dataset.role)">@demo.Username</code>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+        @L["LoginFooter"]
+    </div>
+
+    <div id="toast-container" style="position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none"></div>
+
+    <script src="~/js/Login.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,2592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OperationsDashboard" xml:space="preserve">
+    <value>Operations Dashboard</value>
+  </data>
+  <data name="GovernmentStrip" xml:space="preserve">
+    <value>🏛️ Government of Telangana | Indhira Mahila Sakthi Bazar (IMSB) | Admin Management Portal | Confidential – Authorised Access Only</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="AdminDashboard" xml:space="preserve">
+    <value>Admin Dashboard</value>
+  </data>
+  <data name="Sales" xml:space="preserve">
+    <value>Sales</value>
+  </data>
+  <data name="ArtisanApplications" xml:space="preserve">
+    <value>Artisan Applications</value>
+  </data>
+  <data name="ApplicationsSubtitle" xml:space="preserve">
+    <value>Review, approve, and manage artisan applications</value>
+  </data>
+  <data name="NewApplication" xml:space="preserve">
+    <value>New Application</value>
+  </data>
+  <data name="TotalApplications" xml:space="preserve">
+    <value>Total Applications</value>
+  </data>
+  <data name="ApprovedLabel" xml:space="preserve">
+    <value>Approved</value>
+  </data>
+  <data name="UnderReviewLabel" xml:space="preserve">
+    <value>Under Review</value>
+  </data>
+  <data name="PendingLabel" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="PendingTab" xml:space="preserve">
+    <value>Pending / New</value>
+  </data>
+  <data name="SearchApproved" xml:space="preserve">
+    <value>Search approved…</value>
+  </data>
+  <data name="AppID" xml:space="preserve">
+    <value>App ID</value>
+  </data>
+  <data name="Applicant" xml:space="preserve">
+    <value>Applicant</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="District" xml:space="preserve">
+    <value>District</value>
+  </data>
+  <data name="StallAssigned" xml:space="preserve">
+    <value>Stall Assigned</value>
+  </data>
+  <data name="ApprovedDate" xml:space="preserve">
+    <value>Approved Date</value>
+  </data>
+  <data name="ApprovedBy" xml:space="preserve">
+    <value>Approved By</value>
+  </data>
+  <data name="Submitted" xml:space="preserve">
+    <value>Submitted</value>
+  </data>
+  <data name="DaysPending" xml:space="preserve">
+    <value>Days Pending</value>
+  </data>
+  <data name="Reviewer" xml:space="preserve">
+    <value>Reviewer</value>
+  </data>
+  <data name="DaysWaiting" xml:space="preserve">
+    <value>Days Waiting</value>
+  </data>
+  <data name="ApplicationReview" xml:space="preserve">
+    <value>Application Review</value>
+  </data>
+  <data name="ApplicantName" xml:space="preserve">
+    <value>Applicant Name</value>
+  </data>
+  <data name="AssignStall" xml:space="preserve">
+    <value>Assign Stall</value>
+  </data>
+  <data name="SelectAvailableStall" xml:space="preserve">
+    <value>Select Available Stall</value>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>Remarks</value>
+  </data>
+  <data name="ApprovalRejectionRemarks" xml:space="preserve">
+    <value>Approval/rejection remarks…</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>Reject</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="ApplicationRejected" xml:space="preserve">
+    <value>Application Rejected</value>
+  </data>
+  <data name="ApplicationHasBeenRejected" xml:space="preserve">
+    <value>Application has been rejected</value>
+  </data>
+  <data name="ApplicationApproved" xml:space="preserve">
+    <value>Application Approved</value>
+  </data>
+  <data name="ApplicantApprovedAndAssigned" xml:space="preserve">
+    <value>Applicant approved and stall assigned</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>Mobile</value>
+  </data>
+  <data name="ArtisanManagement" xml:space="preserve">
+    <value>Artisan Management</value>
+  </data>
+  <data name="ArtisanManagementSubtitle" xml:space="preserve">
+    <value>Manage artisan profiles, applications, and stall allocations</value>
+  </data>
+  <data name="TotalArtisans" xml:space="preserve">
+    <value>Total Artisans</value>
+  </data>
+  <data name="OnLeave" xml:space="preserve">
+    <value>On Leave</value>
+  </data>
+  <data name="RenewalPending" xml:space="preserve">
+    <value>Renewal Pending</value>
+  </data>
+  <data name="StatusOverview" xml:space="preserve">
+    <value>Status Overview</value>
+  </data>
+  <data name="ArtisanDirectory" xml:space="preserve">
+    <value>Artisan Directory</value>
+  </data>
+  <data name="SearchArtisans" xml:space="preserve">
+    <value>Search artisans…</value>
+  </data>
+  <data name="AllStatus" xml:space="preserve">
+    <value>All Status</value>
+  </data>
+  <data name="RenewalDue" xml:space="preserve">
+    <value>Renewal Due</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>All Categories</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Joined" xml:space="preserve">
+    <value>Joined</value>
+  </data>
+  <data name="AttendanceManagement" xml:space="preserve">
+    <value>Attendance Management</value>
+  </data>
+  <data name="AttendanceSubtitle" xml:space="preserve">
+    <value>Mark attendance, log in-time / out-time, and track overtime</value>
+  </data>
+  <data name="SaveAttendance" xml:space="preserve">
+    <value>Save Attendance</value>
+  </data>
+  <data name="TotalStaff" xml:space="preserve">
+    <value>Total Staff</value>
+  </data>
+  <data name="PresentToday" xml:space="preserve">
+    <value>Present Today</value>
+  </data>
+  <data name="AbsentToday" xml:space="preserve">
+    <value>Absent Today</value>
+  </data>
+  <data name="OvertimeToday" xml:space="preserve">
+    <value>Overtime Today</value>
+  </data>
+  <data name="WeekOfDates" xml:space="preserve">
+    <value>Week of 5 – 11 May 2025</value>
+  </data>
+  <data name="AttendanceEntry" xml:space="preserve">
+    <value>Attendance Entry</value>
+  </data>
+  <data name="DepartmentWise" xml:space="preserve">
+    <value>Department-wise</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="MarkAttendance" xml:space="preserve">
+    <value>Mark Attendance</value>
+  </data>
+  <data name="AllDepartments" xml:space="preserve">
+    <value>All Departments</value>
+  </data>
+  <data name="StaffName" xml:space="preserve">
+    <value>Staff Name</value>
+  </data>
+  <data name="InTime" xml:space="preserve">
+    <value>In-Time</value>
+  </data>
+  <data name="OutTime" xml:space="preserve">
+    <value>Out-Time</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="OT" xml:space="preserve">
+    <value>OT</value>
+  </data>
+  <data name="SearchStaff" xml:space="preserve">
+    <value>Search staff…</value>
+  </data>
+  <data name="InventoryManagement" xml:space="preserve">
+    <value>Inventory Management</value>
+  </data>
+  <data name="InventorySubtitle" xml:space="preserve">
+    <value>Track products, stock levels and low-stock alerts</value>
+  </data>
+  <data name="AddProduct" xml:space="preserve">
+    <value>Add Product</value>
+  </data>
+  <data name="BelowMinStock" xml:space="preserve">
+    <value>are below the minimum stock threshold and require immediate restocking.</value>
+  </data>
+  <data name="TotalProducts" xml:space="preserve">
+    <value>Total Products</value>
+  </data>
+  <data name="InStock" xml:space="preserve">
+    <value>In Stock</value>
+  </data>
+  <data name="LowStock" xml:space="preserve">
+    <value>Low Stock</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="StallsTracked" xml:space="preserve">
+    <value>Stalls Tracked</value>
+  </data>
+  <data name="StockLevelByCategory" xml:space="preserve">
+    <value>Stock Level by Category</value>
+  </data>
+  <data name="LowStockItems" xml:space="preserve">
+    <value>Low Stock Items</value>
+  </data>
+  <data name="AllProducts" xml:space="preserve">
+    <value>All Products</value>
+  </data>
+  <data name="ByCategory" xml:space="preserve">
+    <value>By Category</value>
+  </data>
+  <data name="StockUpdate" xml:space="preserve">
+    <value>Stock Update</value>
+  </data>
+  <data name="LowStockAlerts" xml:space="preserve">
+    <value>Low Stock Alerts</value>
+  </data>
+  <data name="SearchProducts" xml:space="preserve">
+    <value>Search products…</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Product Name</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="MinStock" xml:space="preserve">
+    <value>Min Stock</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>Unit Price (₹)</value>
+  </data>
+  <data name="UpdateStock" xml:space="preserve">
+    <value>Update Stock</value>
+  </data>
+  <data name="StockUpdatedSuccessfully" xml:space="preserve">
+    <value>Stock updated successfully!</value>
+  </data>
+  <data name="SelectProduct" xml:space="preserve">
+    <value>Select Product</value>
+  </data>
+  <data name="SearchSelect" xml:space="preserve">
+    <value>Search / Select</value>
+  </data>
+  <data name="UpdateType" xml:space="preserve">
+    <value>Update Type</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="AddStock" xml:space="preserve">
+    <value>Add Stock (Restock)</value>
+  </data>
+  <data name="ReduceStock" xml:space="preserve">
+    <value>Reduce Stock (Sold)</value>
+  </data>
+  <data name="Correction" xml:space="preserve">
+    <value>Correction</value>
+  </data>
+  <data name="EnterQuantity" xml:space="preserve">
+    <value>Enter quantity</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="ReasonForStockUpdate" xml:space="preserve">
+    <value>Reason for stock update…</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="Operations" xml:space="preserve">
+    <value>Operations</value>
+  </data>
+  <data name="StallManagement" xml:space="preserve">
+    <value>Stall Management</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="People" xml:space="preserve">
+    <value>People</value>
+  </data>
+  <data name="Artisans" xml:space="preserve">
+    <value>Artisans</value>
+  </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Applications</value>
+  </data>
+  <data name="StaffHR" xml:space="preserve">
+    <value>Staff / HR</value>
+  </data>
+  <data name="Attendance" xml:space="preserve">
+    <value>Attendance</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="AdminUser" xml:space="preserve">
+    <value>Admin User</value>
+  </data>
+  <data name="StateLevelAdmin" xml:space="preserve">
+    <value>State Level Admin</value>
+  </data>
+  <data name="IMSBPortal" xml:space="preserve">
+    <value>IMSB Portal</value>
+  </data>
+  <data name="StaffTitle" xml:space="preserve">
+    <value>Staff</value>
+  </data>
+  <data name="StaffHRManagement" xml:space="preserve">
+    <value>Staff / HR Management</value>
+  </data>
+  <data name="StaffHRSubtitle" xml:space="preserve">
+    <value>Manage staff records, departments, and HR activities</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="AddStaff" xml:space="preserve">
+    <value>Add Staff</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Inactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="Departments" xml:space="preserve">
+    <value>Departments</value>
+  </data>
+  <data name="ContractExpiring" xml:space="preserve">
+    <value>Contract Expiring</value>
+  </data>
+  <data name="DeptDistribution" xml:space="preserve">
+    <value>Dept Distribution</value>
+  </data>
+  <data name="StaffDirectory" xml:space="preserve">
+    <value>Staff Directory</value>
+  </data>
+  <data name="FilterByDepartment" xml:space="preserve">
+    <value>Filter by department</value>
+  </data>
+  <data name="FilterByStatus" xml:space="preserve">
+    <value>Filter by status</value>
+  </data>
+  <data name="StaffID" xml:space="preserve">
+    <value>Staff ID</value>
+  </data>
+  <data name="Department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="Designation" xml:space="preserve">
+    <value>Designation</value>
+  </data>
+  <data name="JoinDate" xml:space="preserve">
+    <value>Join Date</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="DeptWiseStaffCount" xml:space="preserve">
+    <value>Department-wise Staff Count</value>
+  </data>
+  <data name="AddNewStaffMember" xml:space="preserve">
+    <value>Add New Staff Member</value>
+  </data>
+  <data name="EditStaffMember" xml:space="preserve">
+    <value>Edit Staff Member</value>
+  </data>
+  <data name="RegisterStaff" xml:space="preserve">
+    <value>Register Staff</value>
+  </data>
+  <data name="UpdateStaff" xml:space="preserve">
+    <value>Update Staff</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Personal Details</value>
+  </data>
+  <data name="EmploymentDetails" xml:space="preserve">
+    <value>Employment Details</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Full Name</value>
+  </data>
+  <data name="EmployeeID" xml:space="preserve">
+    <value>Employee ID</value>
+  </data>
+  <data name="AutoGenerated" xml:space="preserve">
+    <value>Auto-generated</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>Date of Birth</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Female</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="Shift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="DesignationPlaceholder" xml:space="preserve">
+    <value>e.g. Sales Executive</value>
+  </data>
+  <data name="SelectPlaceholder" xml:space="preserve">
+    <value>-- Select --</value>
+  </data>
+  <data name="NoDepartmentsConfigured" xml:space="preserve">
+    <value>No departments configured</value>
+  </data>
+  <data name="NoStaffFound" xml:space="preserve">
+    <value>No staff found</value>
+  </data>
+  <data name="PercentOfTotal" xml:space="preserve">
+    <value>{0}% of total</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="StaffRegistered" xml:space="preserve">
+    <value>Staff registered</value>
+  </data>
+  <data name="StaffUpdated" xml:space="preserve">
+    <value>Staff updated</value>
+  </data>
+  <data name="StaffDeleted" xml:space="preserve">
+    <value>Staff deleted</value>
+  </data>
+  <data name="StaffNotFound" xml:space="preserve">
+    <value>Staff not found</value>
+  </data>
+  <data name="ConfirmDeleteStaff" xml:space="preserve">
+    <value>Delete {0} ({1})? This cannot be undone.</value>
+  </data>
+  <data name="DiscardChanges" xml:space="preserve">
+    <value>Discard changes?</value>
+  </data>
+  <data name="CouldNotSave" xml:space="preserve">
+    <value>Could not save staff</value>
+  </data>
+  <data name="CouldNotDelete" xml:space="preserve">
+    <value>Could not delete staff</value>
+  </data>
+  <data name="CouldNotReachServer" xml:space="preserve">
+    <value>Could not reach the server</value>
+  </data>
+  <data name="CheckForm" xml:space="preserve">
+    <value>Please check the form and try again</value>
+  </data>
+  <data name="ViewingProfile" xml:space="preserve">
+    <value>Viewing {0} profile</value>
+  </data>
+  <data name="ValFullName" xml:space="preserve">
+    <value>Full name is required (2-100 chars)</value>
+  </data>
+  <data name="ValMobile" xml:space="preserve">
+    <value>Mobile must be 9-12 digits</value>
+  </data>
+  <data name="ValEmail" xml:space="preserve">
+    <value>Invalid email</value>
+  </data>
+  <data name="ValDobRequired" xml:space="preserve">
+    <value>Date of birth is required</value>
+  </data>
+  <data name="ValDobInvalid" xml:space="preserve">
+    <value>Invalid date of birth</value>
+  </data>
+  <data name="ValDobFuture" xml:space="preserve">
+    <value>DOB cannot be in the future</value>
+  </data>
+  <data name="ValMinAge" xml:space="preserve">
+    <value>Staff must be at least 18 years old</value>
+  </data>
+  <data name="ValDepartment" xml:space="preserve">
+    <value>Department is required</value>
+  </data>
+  <data name="ValDesignation" xml:space="preserve">
+    <value>Designation is required</value>
+  </data>
+  <data name="ValJoinRequired" xml:space="preserve">
+    <value>Join date is required</value>
+  </data>
+  <data name="ValJoinInvalid" xml:space="preserve">
+    <value>Invalid join date</value>
+  </data>
+  <data name="ValJoinFuture" xml:space="preserve">
+    <value>Join date cannot be in the future</value>
+  </data>
+  <data name="ValJoinAfterDob" xml:space="preserve">
+    <value>Join date must be at least 18 years after DOB</value>
+  </data>
+  <data name="ValMobileExists" xml:space="preserve">
+    <value>Mobile already registered</value>
+  </data>
+  <data name="ValEmailExists" xml:space="preserve">
+    <value>Email already registered</value>
+  </data>
+  <data name="ValShift" xml:space="preserve">
+    <value>Invalid shift</value>
+  </data>
+  <data name="ValStatus" xml:space="preserve">
+    <value>Invalid status</value>
+  </data>
+  <data name="OutOfStock" xml:space="preserve">
+    <value>Out of Stock</value>
+  </data>
+  <data name="Stall" xml:space="preserve">
+    <value>Stall</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="ItemsCount" xml:space="preserve">
+    <value>{0} items</value>
+  </data>
+  <data name="AddNewProduct" xml:space="preserve">
+    <value>Add New Product</value>
+  </data>
+  <data name="EditProduct" xml:space="preserve">
+    <value>Edit Product</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+  <data name="ProductCode" xml:space="preserve">
+    <value>Product Code</value>
+  </data>
+  <data name="AssignedStall" xml:space="preserve">
+    <value>Assigned Stall</value>
+  </data>
+  <data name="StallPlaceholder" xml:space="preserve">
+    <value>e.g. A-01</value>
+  </data>
+  <data name="InitialQuantity" xml:space="preserve">
+    <value>Initial Quantity</value>
+  </data>
+  <data name="CurrentQuantity" xml:space="preserve">
+    <value>Current Quantity</value>
+  </data>
+  <data name="QuantityViaStockUpdate" xml:space="preserve">
+    <value>Change quantity from the Stock Update tab</value>
+  </data>
+  <data name="MinStockPlaceholder" xml:space="preserve">
+    <value>Alert threshold</value>
+  </data>
+  <data name="CurrentQty" xml:space="preserve">
+    <value>Current Qty</value>
+  </data>
+  <data name="MinRequired" xml:space="preserve">
+    <value>Min Required</value>
+  </data>
+  <data name="Urgency" xml:space="preserve">
+    <value>Urgency</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="Moderate" xml:space="preserve">
+    <value>Moderate</value>
+  </data>
+  <data name="Restock" xml:space="preserve">
+    <value>Restock</value>
+  </data>
+  <data name="ProductsLabel" xml:space="preserve">
+    <value>products</value>
+  </data>
+  <data name="LowStockCount" xml:space="preserve">
+    <value>{0} low stock</value>
+  </data>
+  <data name="AllStocked" xml:space="preserve">
+    <value>All stocked</value>
+  </data>
+  <data name="ViewProducts" xml:space="preserve">
+    <value>View Products</value>
+  </data>
+  <data name="TotalUnits" xml:space="preserve">
+    <value>Total units</value>
+  </data>
+  <data name="StockValue" xml:space="preserve">
+    <value>Stock value</value>
+  </data>
+  <data name="CurrentStock" xml:space="preserve">
+    <value>Current Stock</value>
+  </data>
+  <data name="NoProductsFound" xml:space="preserve">
+    <value>No products found</value>
+  </data>
+  <data name="NoLowStock" xml:space="preserve">
+    <value>All products are above their minimum stock</value>
+  </data>
+  <data name="RecentStockUpdates" xml:space="preserve">
+    <value>Recent Stock Updates</value>
+  </data>
+  <data name="NoStockUpdates" xml:space="preserve">
+    <value>No stock updates yet</value>
+  </data>
+  <data name="Before" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="After" xml:space="preserve">
+    <value>After</value>
+  </data>
+  <data name="UpdatedBy" xml:space="preserve">
+    <value>By</value>
+  </data>
+  <data name="InitialStock" xml:space="preserve">
+    <value>Initial Stock</value>
+  </data>
+  <data name="ProductRemoved" xml:space="preserve">
+    <value>deleted</value>
+  </data>
+  <data name="AvailableQty" xml:space="preserve">
+    <value>Available: {0}</value>
+  </data>
+  <data name="NewQuantityPreview" xml:space="preserve">
+    <value>New quantity: {0}</value>
+  </data>
+  <data name="CorrectionHint" xml:space="preserve">
+    <value>Enter the counted quantity; stock will be set to this value</value>
+  </data>
+  <data name="ProductAdded" xml:space="preserve">
+    <value>Product added to inventory</value>
+  </data>
+  <data name="ProductUpdated" xml:space="preserve">
+    <value>Product updated</value>
+  </data>
+  <data name="ProductDeletedMsg" xml:space="preserve">
+    <value>Product deleted</value>
+  </data>
+  <data name="ProductNotFound" xml:space="preserve">
+    <value>Product not found</value>
+  </data>
+  <data name="ConfirmDeleteProduct" xml:space="preserve">
+    <value>Delete {0} ({1})? Its stock history is kept.</value>
+  </data>
+  <data name="ValProductName" xml:space="preserve">
+    <value>Product name is required (2-200 chars)</value>
+  </data>
+  <data name="ValCategory" xml:space="preserve">
+    <value>Category is required</value>
+  </data>
+  <data name="ValStall" xml:space="preserve">
+    <value>Stall is required (letters, digits, -)</value>
+  </data>
+  <data name="ValQuantity" xml:space="preserve">
+    <value>Enter a quantity of 0 or more</value>
+  </data>
+  <data name="ValQuantityPositive" xml:space="preserve">
+    <value>Quantity must be at least 1</value>
+  </data>
+  <data name="ValMinStock" xml:space="preserve">
+    <value>Minimum stock must be 0 or more</value>
+  </data>
+  <data name="ValUnitPrice" xml:space="preserve">
+    <value>Enter a valid price</value>
+  </data>
+  <data name="ValSelectProduct" xml:space="preserve">
+    <value>Select a product</value>
+  </data>
+  <data name="ValUpdateType" xml:space="preserve">
+    <value>Select an update type</value>
+  </data>
+  <data name="ValDate" xml:space="preserve">
+    <value>Date is required</value>
+  </data>
+  <data name="ValDateInvalid" xml:space="preserve">
+    <value>Invalid date</value>
+  </data>
+  <data name="ValDateFuture" xml:space="preserve">
+    <value>Date cannot be in the future</value>
+  </data>
+  <data name="ValRemarks" xml:space="preserve">
+    <value>Remarks can be at most 500 characters</value>
+  </data>
+  <data name="ValProductExists" xml:space="preserve">
+    <value>This product already exists in this stall</value>
+  </data>
+  <data name="ValInsufficientStock" xml:space="preserve">
+    <value>Not enough stock: only {0} available</value>
+  </data>
+  <data name="AadhaarNumber" xml:space="preserve">
+    <value>Aadhaar Number</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>Absent</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Access Denied</value>
+  </data>
+  <data name="AccessDeniedMsg" xml:space="preserve">
+    <value>Your role does not have permission to view this page.</value>
+  </data>
+  <data name="AccountDisabled" xml:space="preserve">
+    <value>Account is disabled.</value>
+  </data>
+  <data name="AccountNotFound" xml:space="preserve">
+    <value>Account not found.</value>
+  </data>
+  <data name="ActiveArtisans" xml:space="preserve">
+    <value>Active Artisans</value>
+  </data>
+  <data name="ActiveStalls" xml:space="preserve">
+    <value>Active Stalls</value>
+  </data>
+  <data name="ActSale" xml:space="preserve">
+    <value>Sale Recorded</value>
+  </data>
+  <data name="ActSaleDesc" xml:space="preserve">
+    <value>{0}: {1} ({2} units)</value>
+  </data>
+  <data name="ActStaffAdded" xml:space="preserve">
+    <value>Staff Registered</value>
+  </data>
+  <data name="ActStaffDesc" xml:space="preserve">
+    <value>{0} joined ({1})</value>
+  </data>
+  <data name="ActStockAdd" xml:space="preserve">
+    <value>Stock Added</value>
+  </data>
+  <data name="ActStockCorrection" xml:space="preserve">
+    <value>Stock Corrected</value>
+  </data>
+  <data name="ActStockDesc" xml:space="preserve">
+    <value>{0} — {1} units</value>
+  </data>
+  <data name="ActStockInitial" xml:space="preserve">
+    <value>Product Added</value>
+  </data>
+  <data name="ActStockReduce" xml:space="preserve">
+    <value>Stock Reduced</value>
+  </data>
+  <data name="AdditionalNotes" xml:space="preserve">
+    <value>Additional notes…</value>
+  </data>
+  <data name="AddProductRow" xml:space="preserve">
+    <value>Add Product Row</value>
+  </data>
+  <data name="AgreementEndDate" xml:space="preserve">
+    <value>Agreement End Date</value>
+  </data>
+  <data name="AllDates" xml:space="preserve">
+    <value>All dates</value>
+  </data>
+  <data name="AllocateStall" xml:space="preserve">
+    <value>Allocate Stall</value>
+  </data>
+  <data name="AllocateStallToArtisan" xml:space="preserve">
+    <value>Allocate Stall to Artisan</value>
+  </data>
+  <data name="AllotmentDate" xml:space="preserve">
+    <value>Allotment Date</value>
+  </data>
+  <data name="AllottedDate" xml:space="preserve">
+    <value>Allotted Date</value>
+  </data>
+  <data name="AllStalls" xml:space="preserve">
+    <value>All Stalls</value>
+  </data>
+  <data name="ApplicationsApproved" xml:space="preserve">
+    <value>Applications Approved</value>
+  </data>
+  <data name="ApplicationSentForReview" xml:space="preserve">
+    <value>Application sent for admin review</value>
+  </data>
+  <data name="ApplicationsNotConnected" xml:space="preserve">
+    <value>Application figures will appear here once artisan applications are recorded in the system.</value>
+  </data>
+  <data name="ApplicationSubmitted" xml:space="preserve">
+    <value>Application Submitted</value>
+  </data>
+  <data name="ApplicationSubmittedMsg" xml:space="preserve">
+    <value>Application submitted for review!</value>
+  </data>
+  <data name="ApprovedThisMonth" xml:space="preserve">
+    <value>Applications cleared this month</value>
+  </data>
+  <data name="Artisan" xml:space="preserve">
+    <value>Artisan</value>
+  </data>
+  <data name="ArtisanApplicationsOverview" xml:space="preserve">
+    <value>Artisan Applications – Overview</value>
+  </data>
+  <data name="ArtisanID" xml:space="preserve">
+    <value>Artisan ID</value>
+  </data>
+  <data name="ArtisanOfCategory" xml:space="preserve">
+    <value>{0} Artisan</value>
+  </data>
+  <data name="ArtisanPerformanceReport" xml:space="preserve">
+    <value>Artisan Performance Report</value>
+  </data>
+  <data name="ArtisanProfile" xml:space="preserve">
+    <value>Artisan Profile</value>
+  </data>
+  <data name="ArtisanReport" xml:space="preserve">
+    <value>Artisan Report</value>
+  </data>
+  <data name="AsPerAadhaar" xml:space="preserve">
+    <value>As per Aadhaar</value>
+  </data>
+  <data name="AttendanceHistory" xml:space="preserve">
+    <value>Attendance History</value>
+  </data>
+  <data name="AttendanceNotConnected" xml:space="preserve">
+    <value>Attendance data will appear here once daily attendance is recorded in the system.</value>
+  </data>
+  <data name="AttendancePercent" xml:space="preserve">
+    <value>Attendance %</value>
+  </data>
+  <data name="AttendanceRatio" xml:space="preserve">
+    <value>Attendance: {0}/{1}</value>
+  </data>
+  <data name="AttendanceSaved" xml:space="preserve">
+    <value>Attendance Saved</value>
+  </data>
+  <data name="AttendanceSavedMsg" xml:space="preserve">
+    <value>All records saved for {0}</value>
+  </data>
+  <data name="AutoDeductInfo" xml:space="preserve">
+    <value>Stock is automatically deducted from inventory when a sale is recorded, and put back when a sale is edited or deleted.</value>
+  </data>
+  <data name="AutoDeductOn" xml:space="preserve">
+    <value>Auto-Deduct ON</value>
+  </data>
+  <data name="AutoStockDeduction" xml:space="preserve">
+    <value>Auto Stock Deduction</value>
+  </data>
+  <data name="AutoStockDeductionLog" xml:space="preserve">
+    <value>Auto Stock Deduction Log</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="AvgAttendancePct" xml:space="preserve">
+    <value>Avg Attendance %</value>
+  </data>
+  <data name="AvgPerTxn" xml:space="preserve">
+    <value>Avg {0}/txn</value>
+  </data>
+  <data name="AwaitingReview" xml:space="preserve">
+    <value>Awaiting review</value>
+  </data>
+  <data name="BackToLogin" xml:space="preserve">
+    <value>Back to Login</value>
+  </data>
+  <data name="BeforeAfter" xml:space="preserve">
+    <value>Before → After</value>
+  </data>
+  <data name="BeingProcessed" xml:space="preserve">
+    <value>Being processed by admin</value>
+  </data>
+  <data name="BestPerformingStalls" xml:space="preserve">
+    <value>Best Performing Stalls</value>
+  </data>
+  <data name="BlockZone" xml:space="preserve">
+    <value>Block / Zone</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>Cancel Edit</value>
+  </data>
+  <data name="CategoryMonthSubtitle" xml:space="preserve">
+    <value>{0} – All Stalls</value>
+  </data>
+  <data name="CategorySkills" xml:space="preserve">
+    <value>Category &amp; Skills</value>
+  </data>
+  <data name="CategoryWiseRevenue" xml:space="preserve">
+    <value>Category-wise Revenue</value>
+  </data>
+  <data name="CategoryWiseSales" xml:space="preserve">
+    <value>Category-wise Sales</value>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>Certificate</value>
+  </data>
+  <data name="CertificateGenerated" xml:space="preserve">
+    <value>Certificate generated</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ConfirmDeleteSale" xml:space="preserve">
+    <value>Delete sales entry {0} ({1})? The sold quantities will be put back into stock.</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="CraftCategory" xml:space="preserve">
+    <value>Craft Category</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreateNewStall" xml:space="preserve">
+    <value>Create New Stall</value>
+  </data>
+  <data name="CreateStall" xml:space="preserve">
+    <value>Create Stall</value>
+  </data>
+  <data name="CurrentArtisan" xml:space="preserve">
+    <value>Current Artisan</value>
+  </data>
+  <data name="CurrentStatus" xml:space="preserve">
+    <value>Current status</value>
+  </data>
+  <data name="CurrentWeek" xml:space="preserve">
+    <value>Current week</value>
+  </data>
+  <data name="DailySales" xml:space="preserve">
+    <value>Daily Sales</value>
+  </data>
+  <data name="DailySalesEntry" xml:space="preserve">
+    <value>Daily Sales Entry</value>
+  </data>
+  <data name="DailySalesOverDays" xml:space="preserve">
+    <value>Daily sales over the last {0} days</value>
+  </data>
+  <data name="DashboardSubtitle" xml:space="preserve">
+    <value>Indhira Mahila Sakthi Bazar — Real-time Overview</value>
+  </data>
+  <data name="DaysCount" xml:space="preserve">
+    <value>{0} days</value>
+  </data>
+  <data name="DaysOfMonth" xml:space="preserve">
+    <value>{0}/{1} days</value>
+  </data>
+  <data name="Deducted" xml:space="preserve">
+    <value>Deducted</value>
+  </data>
+  <data name="DemoCredentials" xml:space="preserve">
+    <value>Demo Credentials (Click to fill)</value>
+  </data>
+  <data name="DeptWiseAttendance" xml:space="preserve">
+    <value>Dept-wise Attendance</value>
+  </data>
+  <data name="DescribeSkills" xml:space="preserve">
+    <value>Describe your craft and skills…</value>
+  </data>
+  <data name="DevResetLink" xml:space="preserve">
+    <value>Developer reset link (dev only):</value>
+  </data>
+  <data name="DisplayName" xml:space="preserve">
+    <value>Display name</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="DropFilesOrBrowse" xml:space="preserve">
+    <value>Drop files here or browse</value>
+  </data>
+  <data name="EditingEntry" xml:space="preserve">
+    <value>Editing Sales Entry {0}</value>
+  </data>
+  <data name="EditModeFor" xml:space="preserve">
+    <value>Edit mode for {0}</value>
+  </data>
+  <data name="EditModeOpened" xml:space="preserve">
+    <value>Edit mode opened</value>
+  </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Enter your password</value>
+  </data>
+  <data name="EnterSales" xml:space="preserve">
+    <value>Enter Sales</value>
+  </data>
+  <data name="EnterUserId" xml:space="preserve">
+    <value>Enter your User ID</value>
+  </data>
+  <data name="EntryNo" xml:space="preserve">
+    <value>Entry No</value>
+  </data>
+  <data name="EntryTotal" xml:space="preserve">
+    <value>Entry Total</value>
+  </data>
+  <data name="ErrorProcessingRequest" xml:space="preserve">
+    <value>An error occurred while processing your request. Please try again.</value>
+  </data>
+  <data name="ExportAll" xml:space="preserve">
+    <value>Export All</value>
+  </data>
+  <data name="ExportCsv" xml:space="preserve">
+    <value>Export CSV</value>
+  </data>
+  <data name="ExportKPIs" xml:space="preserve">
+    <value>Export KPIs</value>
+  </data>
+  <data name="ExportPdf" xml:space="preserve">
+    <value>Export PDF</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>Export Report</value>
+  </data>
+  <data name="ExportSalesHint" xml:space="preserve">
+    <value>Download the sales entries of the selected date as CSV</value>
+  </data>
+  <data name="ExportUnavailable" xml:space="preserve">
+    <value>Export not available yet</value>
+  </data>
+  <data name="ExportUnavailableMsg" xml:space="preserve">
+    <value>This module does not store data yet, so there is nothing to export.</value>
+  </data>
+  <data name="FillRequiredFields" xml:space="preserve">
+    <value>Please fill in all required fields.</value>
+  </data>
+  <data name="FooterCopyright" xml:space="preserve">
+    <value>IMSB — Indhira Mahila Sakthi Bazar</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Forgot Password</value>
+  </data>
+  <data name="ForgotPasswordHint" xml:space="preserve">
+    <value>Enter your username or email to receive a password reset link.</value>
+  </data>
+  <data name="ForgotPasswordQ" xml:space="preserve">
+    <value>Forgot Password?</value>
+  </data>
+  <data name="FromDate" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="GovernmentOfTelangana" xml:space="preserve">
+    <value>Government of Telangana</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="HourlySalesTrend" xml:space="preserve">
+    <value>Hourly Sales Trend</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Invalid username or password.</value>
+  </data>
+  <data name="InvalidOrExpiredToken" xml:space="preserve">
+    <value>Invalid or expired reset link.</value>
+  </data>
+  <data name="InvalidRoleSelected" xml:space="preserve">
+    <value>Invalid role selected.</value>
+  </data>
+  <data name="ItemsSold" xml:space="preserve">
+    <value>Items Sold</value>
+  </data>
+  <data name="JustNow" xml:space="preserve">
+    <value>just now</value>
+  </data>
+  <data name="KeyPerformanceIndicators" xml:space="preserve">
+    <value>Key Performance Indicators</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Last3Months" xml:space="preserve">
+    <value>Last 3 Months</value>
+  </data>
+  <data name="Last6Months" xml:space="preserve">
+    <value>Last 6 Months</value>
+  </data>
+  <data name="LastNDays" xml:space="preserve">
+    <value>Last {0} Days</value>
+  </data>
+  <data name="Leave" xml:space="preserve">
+    <value>Leave</value>
+  </data>
+  <data name="LineTotal" xml:space="preserve">
+    <value>Line Total</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="LocationDescription" xml:space="preserve">
+    <value>Location Description</value>
+  </data>
+  <data name="LocationDetailsPlaceholder" xml:space="preserve">
+    <value>Physical location details…</value>
+  </data>
+  <data name="LoginFooter" xml:space="preserve">
+    <value>© 2026 Government of Telangana | IMSB Centralised Management System | Version 1.0.0 | All rights reserved</value>
+  </data>
+  <data name="LoginGovtStrip" xml:space="preserve">
+    <value>🏛️ Government of Telangana | Indhira Mahila Sakthi Bazar (IMSB) – Centralised Management Portal | Official Use Only</value>
+  </data>
+  <data name="LoginHeadline" xml:space="preserve">
+    <value>Empowering {0} Through Digital Management</value>
+  </data>
+  <data name="LoginHeadlineHighlight" xml:space="preserve">
+    <value>Women Artisans</value>
+  </data>
+  <data name="LoginTagline" xml:space="preserve">
+    <value>Centralised portal for managing stalls, inventory, artisan profiles, HR, and sales across all IMSB locations.</value>
+  </data>
+  <data name="LowPerformingStalls" xml:space="preserve">
+    <value>Low Performing Stalls</value>
+  </data>
+  <data name="LowStockAlertLabel" xml:space="preserve">
+    <value>Low Stock Alert:</value>
+  </data>
+  <data name="LowStockBanner" xml:space="preserve">
+    <value>{0} products are below their minimum stock threshold.</value>
+  </data>
+  <data name="Metric" xml:space="preserve">
+    <value>Metric</value>
+  </data>
+  <data name="MobileNumber" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="ModuleNotConnected" xml:space="preserve">
+    <value>No data yet</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="MonthlyAttendanceRate" xml:space="preserve">
+    <value>Monthly Attendance Rate</value>
+  </data>
+  <data name="MonthlyRent" xml:space="preserve">
+    <value>Monthly Rent (₹)</value>
+  </data>
+  <data name="MonthlyRevenue" xml:space="preserve">
+    <value>Monthly Revenue</value>
+  </data>
+  <data name="MonthlySales" xml:space="preserve">
+    <value>Monthly Sales</value>
+  </data>
+  <data name="MonthlySalesTrend" xml:space="preserve">
+    <value>Monthly Sales Trend</value>
+  </data>
+  <data name="NeedsRestock" xml:space="preserve">
+    <value>Needs restock</value>
+  </data>
+  <data name="NewArtisan" xml:space="preserve">
+    <value>New Artisan</value>
+  </data>
+  <data name="NewArtisanApplication" xml:space="preserve">
+    <value>New Artisan Application</value>
+  </data>
+  <data name="NewlySubmitted" xml:space="preserve">
+    <value>Newly submitted, awaiting review</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="NewSalesEntry" xml:space="preserve">
+    <value>New Sales Entry</value>
+  </data>
+  <data name="NoActivity" xml:space="preserve">
+    <value>No recent activity</value>
+  </data>
+  <data name="NoComparison" xml:space="preserve">
+    <value>No sales on the previous day to compare</value>
+  </data>
+  <data name="NoDeductions" xml:space="preserve">
+    <value>No stock deductions recorded</value>
+  </data>
+  <data name="NoSalesEntries" xml:space="preserve">
+    <value>No sales entries for this date</value>
+  </data>
+  <data name="NoSalesForFilters" xml:space="preserve">
+    <value>No sales match these filters</value>
+  </data>
+  <data name="NoSalesYet" xml:space="preserve">
+    <value>No sales recorded this month</value>
+  </data>
+  <data name="NoStallsYet" xml:space="preserve">
+    <value>No other stalls to compare</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Not available</value>
+  </data>
+  <data name="NothingToSubmit" xml:space="preserve">
+    <value>Add at least one product before saving</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="OccupancyDays" xml:space="preserve">
+    <value>Occupancy Days</value>
+  </data>
+  <data name="OccupancyRate" xml:space="preserve">
+    <value>Occupancy Rate</value>
+  </data>
+  <data name="Occupied" xml:space="preserve">
+    <value>Occupied</value>
+  </data>
+  <data name="OccupiedBy" xml:space="preserve">
+    <value>Occupied by {0} – {1}</value>
+  </data>
+  <data name="OccupiedPct" xml:space="preserve">
+    <value>{0}% Occupied</value>
+  </data>
+  <data name="OccupiedStalls" xml:space="preserve">
+    <value>Occupied Stalls</value>
+  </data>
+  <data name="OnlyLeft" xml:space="preserve">
+    <value>Only {0} left (min: {1})</value>
+  </data>
+  <data name="OpenedStallDetails" xml:space="preserve">
+    <value>Opened stall details</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>optional</value>
+  </data>
+  <data name="OTHours" xml:space="preserve">
+    <value>OT Hrs</value>
+  </data>
+  <data name="OverviewCharts" xml:space="preserve">
+    <value>Overview Charts</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordResetDone" xml:space="preserve">
+    <value>Password has been reset. You may now log in.</value>
+  </data>
+  <data name="PendingApplications" xml:space="preserve">
+    <value>Pending Applications</value>
+  </data>
+  <data name="PendingReallocation" xml:space="preserve">
+    <value>Pending Reallocation</value>
+  </data>
+  <data name="PercentRemaining" xml:space="preserve">
+    <value>{0}% remaining</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>Personal Info</value>
+  </data>
+  <data name="PersonalInformation" xml:space="preserve">
+    <value>Personal Information</value>
+  </data>
+  <data name="PoweredBy" xml:space="preserve">
+    <value>Powered by IMSB Admin Portal</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="PrivacyPolicyText" xml:space="preserve">
+    <value>Data in this portal is for official use by authorised IMSB staff only.</value>
+  </data>
+  <data name="Process" xml:space="preserve">
+    <value>Process</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>Product</value>
+  </data>
+  <data name="ProductCategories" xml:space="preserve">
+    <value>Product Categories</value>
+  </data>
+  <data name="ProductCategory" xml:space="preserve">
+    <value>Product Category</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="ProductsCount" xml:space="preserve">
+    <value>{0} products</value>
+  </data>
+  <data name="ProductsListed" xml:space="preserve">
+    <value>Products Listed</value>
+  </data>
+  <data name="ProductWiseSales" xml:space="preserve">
+    <value>Product-wise Sales</value>
+  </data>
+  <data name="ProductWiseSalesReport" xml:space="preserve">
+    <value>Product-wise Sales Report</value>
+  </data>
+  <data name="QtySold" xml:space="preserve">
+    <value>Qty Sold</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>Quick Actions</value>
+  </data>
+  <data name="Rating" xml:space="preserve">
+    <value>Rating</value>
+  </data>
+  <data name="Reallocation" xml:space="preserve">
+    <value>Reallocation</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="RecentActivity" xml:space="preserve">
+    <value>Recent Activity</value>
+  </data>
+  <data name="RecordSaved" xml:space="preserve">
+    <value>Record saved successfully.</value>
+  </data>
+  <data name="Registered" xml:space="preserve">
+    <value>Registered</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>Remember me</value>
+  </data>
+  <data name="ReportLibrary" xml:space="preserve">
+    <value>Report Library</value>
+  </data>
+  <data name="ReportsAnalytics" xml:space="preserve">
+    <value>Reports &amp; Analytics</value>
+  </data>
+  <data name="ReportsSubtitle" xml:space="preserve">
+    <value>Generate and export reports across all modules</value>
+  </data>
+  <data name="RequestedDate" xml:space="preserve">
+    <value>Requested Date</value>
+  </data>
+  <data name="RequestId" xml:space="preserve">
+    <value>Request ID</value>
+  </data>
+  <data name="RequestNewResetLink" xml:space="preserve">
+    <value>Request a new reset link</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reserved</value>
+  </data>
+  <data name="ResetLinkSentMsg" xml:space="preserve">
+    <value>If an account exists for the provided identifier, a password reset link has been sent.</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="ResidentialAddress" xml:space="preserve">
+    <value>Residential Address</value>
+  </data>
+  <data name="Restored" xml:space="preserve">
+    <value>Restored</value>
+  </data>
+  <data name="Revenue" xml:space="preserve">
+    <value>Revenue (₹)</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="RoleNotAuthorized" xml:space="preserve">
+    <value>You are not authorized to log in with the selected role.</value>
+  </data>
+  <data name="Row" xml:space="preserve">
+    <value>Row</value>
+  </data>
+  <data name="RowPlaceholder" xml:space="preserve">
+    <value>e.g. Row 3</value>
+  </data>
+  <data name="RptArtisan" xml:space="preserve">
+    <value>Artisan Allocation Report</value>
+  </data>
+  <data name="RptArtisanDesc" xml:space="preserve">
+    <value>All artisan profiles, stall assignments, and performance metrics.</value>
+  </data>
+  <data name="RptAttendance" xml:space="preserve">
+    <value>HR Attendance Report</value>
+  </data>
+  <data name="RptAttendanceDesc" xml:space="preserve">
+    <value>Department-wise attendance, overtime, and leave summary.</value>
+  </data>
+  <data name="RptInventory" xml:space="preserve">
+    <value>Inventory Report</value>
+  </data>
+  <data name="RptInventoryDesc" xml:space="preserve">
+    <value>Category-wise stock levels, low stock alerts, and restocking summary.</value>
+  </data>
+  <data name="RptProcurement" xml:space="preserve">
+    <value>Procurement &amp; Profit</value>
+  </data>
+  <data name="RptProcurementDesc" xml:space="preserve">
+    <value>Purchase costs, selling price margins, and net profit calculation.</value>
+  </data>
+  <data name="RptSales" xml:space="preserve">
+    <value>Sales Report</value>
+  </data>
+  <data name="RptSalesDesc" xml:space="preserve">
+    <value>Daily, stall-wise, and category-wise sales analysis.</value>
+  </data>
+  <data name="RptStallOccupancy" xml:space="preserve">
+    <value>Stall Occupancy Report</value>
+  </data>
+  <data name="RptStallOccupancyDesc" xml:space="preserve">
+    <value>Track stall-wise occupancy, artisan details, and revenue per stall.</value>
+  </data>
+  <data name="SaleDeduction" xml:space="preserve">
+    <value>Sale (auto deduction)</value>
+  </data>
+  <data name="SaleNotFound" xml:space="preserve">
+    <value>Sales entry not found</value>
+  </data>
+  <data name="SaleReversal" xml:space="preserve">
+    <value>Sale reversed (restored)</value>
+  </data>
+  <data name="SalesAmount" xml:space="preserve">
+    <value>Sales (₹)</value>
+  </data>
+  <data name="SalesByCategoryOn" xml:space="preserve">
+    <value>Sales by Category – {0}</value>
+  </data>
+  <data name="SalesByCategoryToday" xml:space="preserve">
+    <value>Sales by Category – Today</value>
+  </data>
+  <data name="SalesChart" xml:space="preserve">
+    <value>Sales Chart</value>
+  </data>
+  <data name="SalesDeleted" xml:space="preserve">
+    <value>Sales entry {0} deleted; stock restored</value>
+  </data>
+  <data name="SalesEntries" xml:space="preserve">
+    <value>Sales Entries</value>
+  </data>
+  <data name="SalesEntry" xml:space="preserve">
+    <value>Sales Entry</value>
+  </data>
+  <data name="SalesEntryCleared" xml:space="preserve">
+    <value>Sales entry cleared</value>
+  </data>
+  <data name="SalesManagement" xml:space="preserve">
+    <value>Sales Management</value>
+  </data>
+  <data name="SalesRemarksPlaceholder" xml:space="preserve">
+    <value>Optional note (e.g. festival discount)</value>
+  </data>
+  <data name="SalesSaved" xml:space="preserve">
+    <value>Sales entry {0} saved ({1}). Stock deducted automatically.</value>
+  </data>
+  <data name="SalesSubtitle" xml:space="preserve">
+    <value>Daily entry, product-wise tracking, and auto stock deduction</value>
+  </data>
+  <data name="SalesTrend" xml:space="preserve">
+    <value>Sales Trend</value>
+  </data>
+  <data name="SalesUpdated" xml:space="preserve">
+    <value>Sales entry {0} updated ({1}). Stock adjusted.</value>
+  </data>
+  <data name="SaveSalesEntry" xml:space="preserve">
+    <value>Save Sales Entry</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchStalls" xml:space="preserve">
+    <value>Search stalls…</value>
+  </data>
+  <data name="SelectArtisan" xml:space="preserve">
+    <value>Select Artisan</value>
+  </data>
+  <data name="SelectDistrict" xml:space="preserve">
+    <value>Select District</value>
+  </data>
+  <data name="SelectedDateOnly" xml:space="preserve">
+    <value>Selected date</value>
+  </data>
+  <data name="SelectProductOption" xml:space="preserve">
+    <value>-- Select Product --</value>
+  </data>
+  <data name="SelectVacantStall" xml:space="preserve">
+    <value>Select Vacant Stall</value>
+  </data>
+  <data name="SendResetLink" xml:space="preserve">
+    <value>Send Reset Link</value>
+  </data>
+  <data name="SetNewPasswordHint" xml:space="preserve">
+    <value>Set a new password for your account.</value>
+  </data>
+  <data name="SetPassword" xml:space="preserve">
+    <value>Set Password</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Show password</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SignInDifferentUser" xml:space="preserve">
+    <value>Sign in as a different user</value>
+  </data>
+  <data name="SignInToContinue" xml:space="preserve">
+    <value>Sign in to continue to the IMSB Admin Portal</value>
+  </data>
+  <data name="SignInToPortal" xml:space="preserve">
+    <value>Sign In to Portal</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="SinceDate" xml:space="preserve">
+    <value>Since {0}</value>
+  </data>
+  <data name="SkillsDescription" xml:space="preserve">
+    <value>Skills Description</value>
+  </data>
+  <data name="StaffAttendancePct" xml:space="preserve">
+    <value>Staff Attendance %</value>
+  </data>
+  <data name="StaffCount" xml:space="preserve">
+    <value>Staff Count</value>
+  </data>
+  <data name="StallAllocated" xml:space="preserve">
+    <value>Stall allocated successfully!</value>
+  </data>
+  <data name="StallCreated" xml:space="preserve">
+    <value>Stall created successfully!</value>
+  </data>
+  <data name="StallID" xml:space="preserve">
+    <value>Stall ID</value>
+  </data>
+  <data name="StallIdPlaceholder" xml:space="preserve">
+    <value>e.g. A-21</value>
+  </data>
+  <data name="StallIsVacant" xml:space="preserve">
+    <value>This stall is vacant and available.</value>
+  </data>
+  <data name="StallLabel" xml:space="preserve">
+    <value>Stall {0}</value>
+  </data>
+  <data name="StallLayoutMap" xml:space="preserve">
+    <value>Stall Layout – Visual Map</value>
+  </data>
+  <data name="StallList" xml:space="preserve">
+    <value>Stall List</value>
+  </data>
+  <data name="StallMap" xml:space="preserve">
+    <value>Stall Map</value>
+  </data>
+  <data name="StallName" xml:space="preserve">
+    <value>Stall Name</value>
+  </data>
+  <data name="StallOccupancy" xml:space="preserve">
+    <value>Stall Occupancy</value>
+  </data>
+  <data name="StallOccupancyOverTime" xml:space="preserve">
+    <value>Stall Occupancy Over Time</value>
+  </data>
+  <data name="StallReallocated" xml:space="preserve">
+    <value>Stall reallocated successfully</value>
+  </data>
+  <data name="StallReallocation" xml:space="preserve">
+    <value>Stall Reallocation</value>
+  </data>
+  <data name="StallReport" xml:space="preserve">
+    <value>Stall Report</value>
+  </data>
+  <data name="StallsActiveToday" xml:space="preserve">
+    <value>Stalls Active Today</value>
+  </data>
+  <data name="StallSubtitle" xml:space="preserve">
+    <value>Create, allocate, track and reallocate market stalls</value>
+  </data>
+  <data name="StateAdmin" xml:space="preserve">
+    <value>State Admin</value>
+  </data>
+  <data name="StockAvailable" xml:space="preserve">
+    <value>Stock available: {0}</value>
+  </data>
+  <data name="StockItems" xml:space="preserve">
+    <value>Stock Items</value>
+  </data>
+  <data name="StockLeft" xml:space="preserve">
+    <value>Stock Left</value>
+  </data>
+  <data name="SubmitApplication" xml:space="preserve">
+    <value>Submit Application</value>
+  </data>
+  <data name="SubmitTodaysSales" xml:space="preserve">
+    <value>Submit Today's Sales</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="ThisMonth" xml:space="preserve">
+    <value>This month</value>
+  </data>
+  <data name="ThisWeekAverage" xml:space="preserve">
+    <value>This week's average %</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="ToBeProcessed" xml:space="preserve">
+    <value>To Be Processed</value>
+  </data>
+  <data name="ToDate" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="TodaysSales" xml:space="preserve">
+    <value>Today's Sales</value>
+  </data>
+  <data name="TodaysTotalSales" xml:space="preserve">
+    <value>Today's Total Sales</value>
+  </data>
+  <data name="ToggleDarkMode" xml:space="preserve">
+    <value>Toggle Dark Mode</value>
+  </data>
+  <data name="ToggleSidebar" xml:space="preserve">
+    <value>Toggle Sidebar</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="TotalMonthlySales" xml:space="preserve">
+    <value>Total Monthly Sales</value>
+  </data>
+  <data name="TotalSalesForDay" xml:space="preserve">
+    <value>Total Sales</value>
+  </data>
+  <data name="TotalStalls" xml:space="preserve">
+    <value>Total Stalls</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transactions</value>
+  </data>
+  <data name="TransactionsToday" xml:space="preserve">
+    <value>Transactions Today</value>
+  </data>
+  <data name="UnitsRestored" xml:space="preserve">
+    <value>Restored: {0} units</value>
+  </data>
+  <data name="UnitsSold" xml:space="preserve">
+    <value>Sold: {0} units</value>
+  </data>
+  <data name="UpdateSalesEntry" xml:space="preserve">
+    <value>Update Sales Entry</value>
+  </data>
+  <data name="UploadHint" xml:space="preserve">
+    <value>Aadhaar, Bank Passbook, Photos (PDF/JPG – max 5MB each)</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="UserIdOrEmail" xml:space="preserve">
+    <value>User ID / Email</value>
+  </data>
+  <data name="Vacant" xml:space="preserve">
+    <value>Vacant</value>
+  </data>
+  <data name="VacantStalls" xml:space="preserve">
+    <value>Vacant Stalls</value>
+  </data>
+  <data name="ValDateRange" xml:space="preserve">
+    <value>The end date must be on or after the start date</value>
+  </data>
+  <data name="ValDuplicateProduct" xml:space="preserve">
+    <value>This product is already in the entry; change its quantity instead</value>
+  </data>
+  <data name="ValidationError" xml:space="preserve">
+    <value>Validation Error</value>
+  </data>
+  <data name="ValPasswordLength" xml:space="preserve">
+    <value>Password must be 8-100 characters</value>
+  </data>
+  <data name="ValPasswordRequired" xml:space="preserve">
+    <value>Password is required</value>
+  </data>
+  <data name="ValPasswordsDoNotMatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
+  <data name="ValSalesItemsMax" xml:space="preserve">
+    <value>An entry can have at most {0} products</value>
+  </data>
+  <data name="ValSalesItemsRequired" xml:space="preserve">
+    <value>Add at least one product</value>
+  </data>
+  <data name="ValTime" xml:space="preserve">
+    <value>Enter a valid time (HH:mm)</value>
+  </data>
+  <data name="ValTimeFuture" xml:space="preserve">
+    <value>Time cannot be in the future</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="ValUsernameOrEmail" xml:space="preserve">
+    <value>Please enter your username or email.</value>
+  </data>
+  <data name="ValUsernameRequired" xml:space="preserve">
+    <value>User ID is required</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>View All</value>
+  </data>
+  <data name="ViewInventory" xml:space="preserve">
+    <value>View Inventory</value>
+  </data>
+  <data name="VsLastMonth" xml:space="preserve">
+    <value>{0} vs last month</value>
+  </data>
+  <data name="VsYesterday" xml:space="preserve">
+    <value>{0} vs yesterday</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="WelcomeBack" xml:space="preserve">
+    <value>Welcome Back</value>
+  </data>
+  <data name="YearsOfExperience" xml:space="preserve">
+    <value>Years of Experience</value>
+  </data>
+  <data name="ChangeVsYesterday" xml:space="preserve">
+    <value>Change vs Yesterday</value>
+  </data>
+  <data name="AadhaarKeepHint" xml:space="preserve">
+    <value>Registered: {0}. Leave blank to keep it.</value>
+  </data>
+  <data name="AadhaarStoredHint" xml:space="preserve">
+    <value>Only the last 4 digits are kept on record.</value>
+  </data>
+  <data name="ActiveSessions" xml:space="preserve">
+    <value>Active Sessions</value>
+  </data>
+  <data name="AgreementUntil" xml:space="preserve">
+    <value>Agreement Until</value>
+  </data>
+  <data name="AllActiveSessions" xml:space="preserve">
+    <value>All Active Sessions</value>
+  </data>
+  <data name="AllBlocks" xml:space="preserve">
+    <value>All Blocks</value>
+  </data>
+  <data name="AllDistricts" xml:space="preserve">
+    <value>All Districts</value>
+  </data>
+  <data name="AllottedOn" xml:space="preserve">
+    <value>Allotted On</value>
+  </data>
+  <data name="ArtisanDeleted" xml:space="preserve">
+    <value>Artisan {0} deleted</value>
+  </data>
+  <data name="ArtisanNotFound" xml:space="preserve">
+    <value>Artisan not found</value>
+  </data>
+  <data name="ArtisanRegistered" xml:space="preserve">
+    <value>Application saved. Artisan {0} registered.</value>
+  </data>
+  <data name="ArtisansCraftCategory" xml:space="preserve">
+    <value>-- Artisan's craft category --</value>
+  </data>
+  <data name="ArtisansWithStall" xml:space="preserve">
+    <value>{0} artisans currently hold a stall</value>
+  </data>
+  <data name="ArtisanUpdated" xml:space="preserve">
+    <value>Artisan {0} updated</value>
+  </data>
+  <data name="BlockLabel" xml:space="preserve">
+    <value>Block {0}</value>
+  </data>
+  <data name="ClosedArtisanDeleted" xml:space="preserve">
+    <value>Closed: the artisan was deleted</value>
+  </data>
+  <data name="ClosedStallVacated" xml:space="preserve">
+    <value>Closed: the stall was vacated</value>
+  </data>
+  <data name="ConfirmApproveReallocation" xml:space="preserve">
+    <value>Approve: stall {0} goes to {1}?</value>
+  </data>
+  <data name="ConfirmDeleteArtisan" xml:space="preserve">
+    <value>Delete {0} ({1})? This cannot be undone.</value>
+  </data>
+  <data name="ConfirmDeleteStall" xml:space="preserve">
+    <value>Delete stall {0}? Its reallocation history is removed too.</value>
+  </data>
+  <data name="ConfirmSignOutOthers" xml:space="preserve">
+    <value>Sign out of every other device?</value>
+  </data>
+  <data name="ConfirmVacateStall" xml:space="preserve">
+    <value>Vacate stall {0}? The artisan will no longer hold it.</value>
+  </data>
+  <data name="DecisionRemarksPrompt" xml:space="preserve">
+    <value>Remarks (optional):</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="EditArtisan" xml:space="preserve">
+    <value>Edit Artisan</value>
+  </data>
+  <data name="EditStall" xml:space="preserve">
+    <value>Edit Stall</value>
+  </data>
+  <data name="EndSession" xml:space="preserve">
+    <value>End Session</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>Expires</value>
+  </data>
+  <data name="FreeArtisansHint" xml:space="preserve">
+    <value>Only artisans without a stall are listed.</value>
+  </data>
+  <data name="IpAddress" xml:space="preserve">
+    <value>IP Address</value>
+  </data>
+  <data name="LastActivity" xml:space="preserve">
+    <value>Last Activity</value>
+  </data>
+  <data name="MySessions" xml:space="preserve">
+    <value>My Sessions</value>
+  </data>
+  <data name="NoArtisansFound" xml:space="preserve">
+    <value>No artisans found</value>
+  </data>
+  <data name="NoFreeArtisans" xml:space="preserve">
+    <value>No artisans without a stall</value>
+  </data>
+  <data name="NoOccupiedStalls" xml:space="preserve">
+    <value>No occupied stalls</value>
+  </data>
+  <data name="NoReallocations" xml:space="preserve">
+    <value>No reallocation requests</value>
+  </data>
+  <data name="NoStallAssigned" xml:space="preserve">
+    <value>No stall assigned</value>
+  </data>
+  <data name="NoStallsFound" xml:space="preserve">
+    <value>No stalls match these filters</value>
+  </data>
+  <data name="NoStallsRegistered" xml:space="preserve">
+    <value>No stalls registered yet. Use Create Stall to add one.</value>
+  </data>
+  <data name="NoVacantStalls" xml:space="preserve">
+    <value>No vacant stalls</value>
+  </data>
+  <data name="OccupiedStall" xml:space="preserve">
+    <value>Occupied Stall</value>
+  </data>
+  <data name="OccupiedStatusHint" xml:space="preserve">
+    <value>Occupied stalls change through Vacate or Reallocation.</value>
+  </data>
+  <data name="OtherSessionsRevokedMsg" xml:space="preserve">
+    <value>Signed out of {0} other session(s).</value>
+  </data>
+  <data name="PendingReallocationBadge" xml:space="preserve">
+    <value>Reallocation pending</value>
+  </data>
+  <data name="ProductsAtStall" xml:space="preserve">
+    <value>Products at Stall</value>
+  </data>
+  <data name="ReallocationApproved" xml:space="preserve">
+    <value>Request {0} approved</value>
+  </data>
+  <data name="ReallocationRejected" xml:space="preserve">
+    <value>Request {0} rejected</value>
+  </data>
+  <data name="ReallocationRequested" xml:space="preserve">
+    <value>Reallocation request {0} submitted</value>
+  </data>
+  <data name="ReasonAgreementExpired" xml:space="preserve">
+    <value>Agreement Expired</value>
+  </data>
+  <data name="ReasonArtisanRequest" xml:space="preserve">
+    <value>Artisan's Request</value>
+  </data>
+  <data name="ReasonCategoryChange" xml:space="preserve">
+    <value>Category Change</value>
+  </data>
+  <data name="ReasonClosure" xml:space="preserve">
+    <value>Closure</value>
+  </data>
+  <data name="ReasonExpired" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="ReasonIdleTimeout" xml:space="preserve">
+    <value>Timed out (inactive)</value>
+  </data>
+  <data name="ReasonNonPerformance" xml:space="preserve">
+    <value>Low Performance</value>
+  </data>
+  <data name="ReasonOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="ReasonPasswordReset" xml:space="preserve">
+    <value>Password reset</value>
+  </data>
+  <data name="ReasonRevoked" xml:space="preserve">
+    <value>Ended by user</value>
+  </data>
+  <data name="ReasonSignedOut" xml:space="preserve">
+    <value>Signed out</value>
+  </data>
+  <data name="RejectedLabel" xml:space="preserve">
+    <value>Rejected</value>
+  </data>
+  <data name="RequestNo" xml:space="preserve">
+    <value>Request No</value>
+  </data>
+  <data name="RequestReallocation" xml:space="preserve">
+    <value>Request Reallocation</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="SessionEndedMsg" xml:space="preserve">
+    <value>You have been signed out.</value>
+  </data>
+  <data name="SessionExpiredMsg" xml:space="preserve">
+    <value>Your session has expired. Please sign in again.</value>
+  </data>
+  <data name="SessionExpiredTitle" xml:space="preserve">
+    <value>Session expired</value>
+  </data>
+  <data name="SessionExpiringMsg" xml:space="preserve">
+    <value>You will be signed out for inactivity in</value>
+  </data>
+  <data name="SessionExpiringTitle" xml:space="preserve">
+    <value>Session about to expire</value>
+  </data>
+  <data name="SessionRevokedMsg" xml:space="preserve">
+    <value>Session ended.</value>
+  </data>
+  <data name="SessionsSubtitle" xml:space="preserve">
+    <value>Where your account is signed in. Sessions end after {0} minutes of inactivity.</value>
+  </data>
+  <data name="SignedIn" xml:space="preserve">
+    <value>Signed In</value>
+  </data>
+  <data name="SignOutOtherSessions" xml:space="preserve">
+    <value>Sign out other sessions</value>
+  </data>
+  <data name="StallDeleted" xml:space="preserve">
+    <value>Stall {0} deleted</value>
+  </data>
+  <data name="StallNotFound" xml:space="preserve">
+    <value>Stall not found</value>
+  </data>
+  <data name="StallUpdated" xml:space="preserve">
+    <value>Stall {0} updated</value>
+  </data>
+  <data name="StallVacated" xml:space="preserve">
+    <value>Stall {0} is now vacant</value>
+  </data>
+  <data name="StaySignedIn" xml:space="preserve">
+    <value>Stay signed in</value>
+  </data>
+  <data name="SubmitRequest" xml:space="preserve">
+    <value>Submit Request</value>
+  </data>
+  <data name="ThisDevice" xml:space="preserve">
+    <value>This device</value>
+  </data>
+  <data name="UnderMaintenance" xml:space="preserve">
+    <value>Maintenance</value>
+  </data>
+  <data name="VacateStall" xml:space="preserve">
+    <value>Vacate Stall</value>
+  </data>
+  <data name="VacateStallOption" xml:space="preserve">
+    <value>— Vacate the stall —</value>
+  </data>
+  <data name="ValAadhaar" xml:space="preserve">
+    <value>Enter a valid 12-digit Aadhaar number</value>
+  </data>
+  <data name="ValAadhaarExists" xml:space="preserve">
+    <value>This Aadhaar number is already registered</value>
+  </data>
+  <data name="ValAddress" xml:space="preserve">
+    <value>Address is required (5-500 characters)</value>
+  </data>
+  <data name="ValAgreementEnd" xml:space="preserve">
+    <value>Agreement end must be after the allotment date</value>
+  </data>
+  <data name="ValArtisanDeleteHasStall" xml:space="preserve">
+    <value>This artisan holds stall {0}. Vacate or reallocate it first.</value>
+  </data>
+  <data name="ValArtisanHasStall" xml:space="preserve">
+    <value>This artisan already holds a stall</value>
+  </data>
+  <data name="ValArtisanInactive" xml:space="preserve">
+    <value>Inactive artisans cannot be given a stall</value>
+  </data>
+  <data name="ValArtisanMinAge" xml:space="preserve">
+    <value>Artisan must be at least 18 years old</value>
+  </data>
+  <data name="ValArtisanMobile" xml:space="preserve">
+    <value>Enter a valid 10-digit mobile number</value>
+  </data>
+  <data name="ValBlock" xml:space="preserve">
+    <value>Block is required (letters, digits, space, -)</value>
+  </data>
+  <data name="ValCraftCategory" xml:space="preserve">
+    <value>Select a craft category</value>
+  </data>
+  <data name="ValDistrict" xml:space="preserve">
+    <value>Select a district</value>
+  </data>
+  <data name="ValExperience" xml:space="preserve">
+    <value>Experience must be 0-80 years</value>
+  </data>
+  <data name="ValGender" xml:space="preserve">
+    <value>Select a gender</value>
+  </data>
+  <data name="ValInactiveWithStall" xml:space="preserve">
+    <value>Vacate the artisan's stall before marking them inactive</value>
+  </data>
+  <data name="ValLocation" xml:space="preserve">
+    <value>Location can be at most 500 characters</value>
+  </data>
+  <data name="ValReallocationDecided" xml:space="preserve">
+    <value>This request has already been decided</value>
+  </data>
+  <data name="ValReallocationPending" xml:space="preserve">
+    <value>This stall already has a pending reallocation request</value>
+  </data>
+  <data name="ValReallocationStale" xml:space="preserve">
+    <value>The stall has changed hands since this request; reject it and raise a new one</value>
+  </data>
+  <data name="ValReallocationTargetUnavailable" xml:space="preserve">
+    <value>The new artisan can no longer take this stall</value>
+  </data>
+  <data name="ValReason" xml:space="preserve">
+    <value>Select a reason</value>
+  </data>
+  <data name="ValRent" xml:space="preserve">
+    <value>Enter a valid rent</value>
+  </data>
+  <data name="ValRow" xml:space="preserve">
+    <value>Row can be at most 20 characters</value>
+  </data>
+  <data name="ValSameArtisan" xml:space="preserve">
+    <value>This artisan already holds the stall</value>
+  </data>
+  <data name="ValSelectArtisan" xml:space="preserve">
+    <value>Select an artisan</value>
+  </data>
+  <data name="ValSelectStall" xml:space="preserve">
+    <value>Select a stall</value>
+  </data>
+  <data name="ValSkills" xml:space="preserve">
+    <value>Skills can be at most 1000 characters</value>
+  </data>
+  <data name="ValStallCode" xml:space="preserve">
+    <value>Stall ID is required (letters, digits, -)</value>
+  </data>
+  <data name="ValStallCodeExists" xml:space="preserve">
+    <value>A stall with this ID already exists</value>
+  </data>
+  <data name="ValStallHasProducts" xml:space="preserve">
+    <value>{0} products are assigned to this stall. Move them in Inventory first.</value>
+  </data>
+  <data name="ValStallName" xml:space="preserve">
+    <value>Stall name is required (2-100 characters)</value>
+  </data>
+  <data name="ValStallNotOccupied" xml:space="preserve">
+    <value>This stall is not occupied</value>
+  </data>
+  <data name="ValStallNotVacant" xml:space="preserve">
+    <value>Only a vacant stall can be allocated</value>
+  </data>
+  <data name="ValStallOccupiedDelete" xml:space="preserve">
+    <value>An occupied stall cannot be deleted. Vacate it first.</value>
+  </data>
+  <data name="ValStallOccupiedStatus" xml:space="preserve">
+    <value>An occupied stall stays occupied; vacate or reallocate it instead</value>
+  </data>
+  <data name="ValStallStatus" xml:space="preserve">
+    <value>Select Vacant, Reserved or Maintenance</value>
+  </data>
+  <data name="WithoutStall" xml:space="preserve">
+    <value>Without stall</value>
+  </data>
+  <data name="WithStall" xml:space="preserve">
+    <value>With stall</value>
+  </data>
+  <data name="YearsCount" xml:space="preserve">
+    <value>{0} years</value>
+  </data>
+  <data name="ExportApproved" xml:space="preserve">
+    <value>Export Approved</value>
+  </data>
+  <data name="ExportUnderReview" xml:space="preserve">
+    <value>Export Under Review</value>
+  </data>
+  <data name="ExportPending" xml:space="preserve">
+    <value>Export New</value>
+  </data>
+  <data name="ExportRejected" xml:space="preserve">
+    <value>Export Rejected</value>
+  </data>
+  <data name="SearchUnderReview" xml:space="preserve">
+    <value>Search under review…</value>
+  </data>
+  <data name="SearchPending" xml:space="preserve">
+    <value>Search new applications…</value>
+  </data>
+  <data name="SearchRejected" xml:space="preserve">
+    <value>Search rejected…</value>
+  </data>
+  <data name="RejectedDate" xml:space="preserve">
+    <value>Rejected Date</value>
+  </data>
+  <data name="RejectedBy" xml:space="preserve">
+    <value>Rejected By</value>
+  </data>
+  <data name="DecisionRemarks" xml:space="preserve">
+    <value>Decision Remarks</value>
+  </data>
+  <data name="SubmittedOn" xml:space="preserve">
+    <value>Submitted On</value>
+  </data>
+  <data name="DecidedOn" xml:space="preserve">
+    <value>Decided On</value>
+  </data>
+  <data name="DecidedBy" xml:space="preserve">
+    <value>Decided By</value>
+  </data>
+  <data name="NoApplicationsFound" xml:space="preserve">
+    <value>No applications found</value>
+  </data>
+  <data name="ApplicationNotFound" xml:space="preserve">
+    <value>Application not found</value>
+  </data>
+  <data name="EditApplication" xml:space="preserve">
+    <value>Edit Application</value>
+  </data>
+  <data name="ApplicationCreated" xml:space="preserve">
+    <value>Application {0} submitted</value>
+  </data>
+  <data name="ApplicationUpdated" xml:space="preserve">
+    <value>Application {0} updated</value>
+  </data>
+  <data name="ApplicationDeleted" xml:space="preserve">
+    <value>Application {0} deleted</value>
+  </data>
+  <data name="ConfirmDeleteApplication" xml:space="preserve">
+    <value>Delete application {0}? This cannot be undone.</value>
+  </data>
+  <data name="ApplicationProcessed" xml:space="preserve">
+    <value>Application {0} moved to Under Review</value>
+  </data>
+  <data name="ApplicationApprovedMsg" xml:space="preserve">
+    <value>{0} approved. Artisan {1} registered.</value>
+  </data>
+  <data name="ApplicationApprovedWithStall" xml:space="preserve">
+    <value>{0} approved. Artisan {1} registered and stall {2} allotted.</value>
+  </data>
+  <data name="ApplicationRejectedMsg" xml:space="preserve">
+    <value>Application {0} rejected</value>
+  </data>
+  <data name="NoStallNow" xml:space="preserve">
+    <value>— No stall now (allot later) —</value>
+  </data>
+  <data name="ApplicationDetails" xml:space="preserve">
+    <value>Application Details</value>
+  </data>
+  <data name="ValRejectRemarks" xml:space="preserve">
+    <value>Enter the reason for rejection</value>
+  </data>
+  <data name="ValApplicationDecided" xml:space="preserve">
+    <value>This application has already been decided</value>
+  </data>
+  <data name="ValApplicationApprovedDelete" xml:space="preserve">
+    <value>An approved application is kept as the artisan&apos;s registration record and cannot be deleted</value>
+  </data>
+  <data name="ValApplicationNotPending" xml:space="preserve">
+    <value>Only a new application can be processed</value>
+  </data>
+  <data name="ValApplicantAlreadyArtisan" xml:space="preserve">
+    <value>This mobile number or Aadhaar is already registered to an artisan</value>
+  </data>
+  <data name="ValMobileApplicationExists" xml:space="preserve">
+    <value>Another open application already uses this mobile number</value>
+  </data>
+  <data name="ValAadhaarApplicationExists" xml:space="preserve">
+    <value>Another open application already uses this Aadhaar number</value>
+  </data>
+  <data name="RegisteredFromApplication" xml:space="preserve">
+    <value>Registered from application {0}</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Search artisans, stalls, staff, products…</value>
+  </data>
+  <data name="SearchMinChars" xml:space="preserve">
+    <value>Type at least 2 characters</value>
+  </data>
+  <data name="SearchNoResults" xml:space="preserve">
+    <value>No matches found</value>
+  </data>
+  <data name="Searching" xml:space="preserve">
+    <value>Searching…</value>
+  </data>
+  <data name="SearchGroupPages" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="SearchGroupArtisans" xml:space="preserve">
+    <value>Artisans</value>
+  </data>
+  <data name="SearchGroupApplications" xml:space="preserve">
+    <value>Applications</value>
+  </data>
+  <data name="SearchGroupStalls" xml:space="preserve">
+    <value>Stalls</value>
+  </data>
+  <data name="SearchGroupStaff" xml:space="preserve">
+    <value>Staff</value>
+  </data>
+  <data name="SearchGroupProducts" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>You&apos;re all caught up</value>
+  </data>
+  <data name="MarkAllRead" xml:space="preserve">
+    <value>Mark all as read</value>
+  </data>
+  <data name="NotifAppsPending" xml:space="preserve">
+    <value>{0} new application(s) waiting to be processed</value>
+  </data>
+  <data name="NotifAppsReview" xml:space="preserve">
+    <value>{0} application(s) under review</value>
+  </data>
+  <data name="NotifReallocationsPending" xml:space="preserve">
+    <value>{0} stall reallocation request(s) pending</value>
+  </data>
+  <data name="NotifAgreementsExpired" xml:space="preserve">
+    <value>{0} stall agreement(s) have expired</value>
+  </data>
+  <data name="NotifAgreementsExpiring" xml:space="preserve">
+    <value>{0} stall agreement(s) expire within 30 days</value>
+  </data>
+  <data name="NotifArtisanRenewals" xml:space="preserve">
+    <value>{0} artisan(s) due for renewal</value>
+  </data>
+  <data name="NotifOutOfStock" xml:space="preserve">
+    <value>{0} product(s) out of stock</value>
+  </data>
+  <data name="NotifLowStock" xml:space="preserve">
+    <value>{0} product(s) below minimum stock</value>
+  </data>
+  <data name="NotifContractsExpiring" xml:space="preserve">
+    <value>{0} staff contract(s) end within 30 days</value>
+  </data>
+  <data name="ExportAllPdf" xml:space="preserve">
+    <value>Export All (PDF)</value>
+  </data>
+  <data name="KpiTitleFor" xml:space="preserve">
+    <value>Key Performance Indicators – {0}</value>
+  </data>
+  <data name="SalesThisYear" xml:space="preserve">
+    <value>This year</value>
+  </data>
+  <data name="SalesPreviousYear" xml:space="preserve">
+    <value>Previous year</value>
+  </data>
+  <data name="RatingOutOf" xml:space="preserve">
+    <value>Rating {0} of 5</value>
+  </data>
+  <data name="OfTotal" xml:space="preserve">
+    <value>Total: {0}</value>
+  </data>
+  <data name="RptApplications" xml:space="preserve">
+    <value>Applications Report</value>
+  </data>
+  <data name="RptApplicationsDesc" xml:space="preserve">
+    <value>Applications received, approved and rejected in the month.</value>
+  </data>
+  <data name="ChangeVsLastMonth" xml:space="preserve">
+    <value>Change vs Last Month</value>
+  </data>
+  <data name="NoComparisonMonth" xml:space="preserve">
+    <value>No sales last month to compare</value>
+  </data>
+  <data name="OccupancyHistoryNote" xml:space="preserve">
+    <value>Past months are based on current stall allotments; tenancies that have ended are not counted.</value>
+  </data>
+  <data name="UnitsSoldLabel" xml:space="preserve">
+    <value>Units Sold</value>
+  </data>
+  <data name="SalesShare" xml:space="preserve">
+    <value>Share of Sales</value>
+  </data>
+  <data name="RatingNote" xml:space="preserve">
+    <value>Rating compares each artisan&apos;s sales with the month&apos;s best seller (5 = top).</value>
+  </data>
+  <data name="ApplicationsSummary" xml:space="preserve">
+    <value>Applications Summary</value>
+  </data>
+  <data name="SubmittedThisPeriod" xml:space="preserve">
+    <value>Submitted in this period</value>
+  </data>
+  <data name="StillOpen" xml:space="preserve">
+    <value>Still open (new + under review)</value>
+  </data>
+  <data name="StallWiseSales" xml:space="preserve">
+    <value>Stall-wise Sales</value>
+  </data>
+  <data name="GeneratedOn" xml:space="preserve">
+    <value>Generated on</value>
+  </data>
+  <data name="NoDataForPeriod" xml:space="preserve">
+    <value>No data for this period</value>
+  </data>
+  <data name="PrintSavePdf" xml:space="preserve">
+    <value>Print / Save as PDF</value>
+  </data>
+  <data name="HalfDay" xml:space="preserve">
+    <value>Half Day</value>
+  </data>
+  <data name="NotMarked" xml:space="preserve">
+    <value>Not Marked</value>
+  </data>
+  <data name="NotMarkedOption" xml:space="preserve">
+    <value>— Not marked —</value>
+  </data>
+  <data name="NotMarkedCount" xml:space="preserve">
+    <value>{0} not marked</value>
+  </data>
+  <data name="MarkAllPresent" xml:space="preserve">
+    <value>Mark All Present</value>
+  </data>
+  <data name="WithOvertime" xml:space="preserve">
+    <value>With Overtime</value>
+  </data>
+  <data name="WeekOf" xml:space="preserve">
+    <value>Week of {0}</value>
+  </data>
+  <data name="PreviousWeek" xml:space="preserve">
+    <value>Previous week</value>
+  </data>
+  <data name="NextWeek" xml:space="preserve">
+    <value>Next week</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="NothingToSave" xml:space="preserve">
+    <value>Nothing to save — mark or change at least one staff member first.</value>
+  </data>
+  <data name="NoStaffForAttendance" xml:space="preserve">
+    <value>No staff to mark for this date.</value>
+  </data>
+  <data name="NoStaffInDepartment" xml:space="preserve">
+    <value>No staff in this department.</value>
+  </data>
+  <data name="NoAttendanceRecords" xml:space="preserve">
+    <value>No attendance records match the filters.</value>
+  </data>
+  <data name="AttendanceUpdated" xml:space="preserve">
+    <value>Attendance updated for {0} on {1}</value>
+  </data>
+  <data name="AttendanceDeleted" xml:space="preserve">
+    <value>Attendance record removed for {0} on {1}</value>
+  </data>
+  <data name="ConfirmDeleteAttendance" xml:space="preserve">
+    <value>Delete the attendance record of {0} for {1}?</value>
+  </data>
+  <data name="AttendanceNotFound" xml:space="preserve">
+    <value>This attendance record no longer exists.</value>
+  </data>
+  <data name="EditAttendance" xml:space="preserve">
+    <value>Edit Attendance</value>
+  </data>
+  <data name="AttendanceDetails" xml:space="preserve">
+    <value>Attendance Details</value>
+  </data>
+  <data name="HistoryTotals" xml:space="preserve">
+    <value>{0} records · Present {1} · Absent {2} · Leave {3} · Half Day {4} · {5} h worked · {6} h overtime</value>
+  </data>
+  <data name="MonthToDate" xml:space="preserve">
+    <value>Month to date: {0}</value>
+  </data>
+  <data name="OpenInEntry" xml:space="preserve">
+    <value>Open in Attendance Entry</value>
+  </data>
+  <data name="ExportDayHint" xml:space="preserve">
+    <value>Download the selected day&apos;s attendance (CSV)</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>Attendance cannot be marked for a future date.</value>
+  </data>
+  <data name="AllStatuses" xml:space="preserve">
+    <value>All Statuses</value>
+  </data>
+  <data name="UnsavedChanges" xml:space="preserve">
+    <value>Unsaved changes</value>
+  </data>
+  <data name="ValAttendanceStatus" xml:space="preserve">
+    <value>Select Present, Absent, Leave or Half Day</value>
+  </data>
+  <data name="ValInTimeRequired" xml:space="preserve">
+    <value>Enter the in-time</value>
+  </data>
+  <data name="ValOutBeforeIn" xml:space="preserve">
+    <value>Out-time must be after the in-time</value>
+  </data>
+  <data name="ValStaffNotFound" xml:space="preserve">
+    <value>Staff member not found</value>
+  </data>
+  <data name="ValDuplicateStaff" xml:space="preserve">
+    <value>This staff member appears more than once</value>
+  </data>
+  <data name="ValBeforeJoining" xml:space="preserve">
+    <value>This staff member had not joined on this date</value>
+  </data>
+  <data name="ValTooManyEntries" xml:space="preserve">
+    <value>At most {0} entries can be saved at once</value>
+  </data>
+</root>

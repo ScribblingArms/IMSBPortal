@@ -1,0 +1,118 @@
+@model List<IMSB.Admin.Controllers.AccountController.SessionRow>
+@using IMSB.Admin.Resources
+@using IMSB.Dto.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["ActiveSessions"].Value;
+    var current = (Guid?)ViewBag.CurrentSessionId;
+    var everyone = ViewBag.Everyone as List<IMSB.Admin.Controllers.AccountController.SessionRow>;
+    string Time(DateTime utc) => DateTime.SpecifyKind(utc, DateTimeKind.Utc).ToString("o");
+    string Device(string? ua) => string.IsNullOrEmpty(ua) ? "—"
+        : ua.Contains("Edg/") ? "Edge" : ua.Contains("Chrome/") ? "Chrome" : ua.Contains("Firefox/") ? "Firefox" : ua.Contains("Safari/") ? "Safari" : ua.Length > 40 ? ua[..40] + "…" : ua;
+    string Reason(string? r) => r switch
+    {
+        SessionEndReasons.SignedOut => L["ReasonSignedOut"].Value,
+        SessionEndReasons.Revoked => L["ReasonRevoked"].Value,
+        SessionEndReasons.PasswordReset => L["ReasonPasswordReset"].Value,
+        SessionEndReasons.AccountDisabled => L["AccountDisabled"].Value,
+        SessionEndReasons.IdleTimeout => L["ReasonIdleTimeout"].Value,
+        SessionEndReasons.Expired => L["ReasonExpired"].Value,
+        _ => L["ReasonExpired"].Value
+    };
+}
+
+<main class="page-body">
+  <div class="page-header">
+    <div>
+      <div class="page-title">@L["ActiveSessions"]</div>
+      <div class="page-subtitle">@string.Format(L["SessionsSubtitle"].Value, ViewBag.IdleMinutes)</div>
+    </div>
+    <div class="page-actions">
+      <form asp-action="RevokeOtherSessions" method="post" data-confirm="@L["ConfirmSignOutOthers"]" onsubmit="return confirm(this.dataset.confirm)">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-outline btn-sm" id="revokeOthersBtn"><i class="fa-solid fa-right-from-bracket"></i> @L["SignOutOtherSessions"]</button>
+      </form>
+    </div>
+  </div>
+
+  @if (TempData["SessionsMessage"] != null)
+  {
+    <div class="alert alert-info" style="margin-bottom:16px"><i class="fa-solid fa-circle-info"></i><div>@TempData["SessionsMessage"]</div></div>
+  }
+
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-header"><div class="card-title"><i class="fa-solid fa-laptop"></i> @L["MySessions"]</div></div>
+    <div class="card-body">
+      <div class="table-container">
+        <table class="data-table" id="mySessionsTable">
+          <thead><tr><th>@L["Device"]</th><th>@L["IpAddress"]</th><th>@L["SignedIn"]</th><th>@L["LastActivity"]</th><th>@L["Expires"]</th><th>@L["Status"]</th><th>@L["Actions"]</th></tr></thead>
+          <tbody>
+          @foreach (var s in Model)
+          {
+            <tr>
+              <td>@Device(s.UserAgent) @if (s.Id == current) { <span class="badge badge-primary">@L["ThisDevice"]</span> } @if (s.IsPersistent) { <span class="badge badge-info">@L["RememberMe"]</span> }</td>
+              <td>@(s.IpAddress ?? "—")</td>
+              <td data-utc="@Time(s.CreatedAt)"></td>
+              <td data-utc="@Time(s.LastSeenAt)"></td>
+              <td data-utc="@Time(s.ExpiresAt)"></td>
+              <td>@if (s.IsActive) { <span class="badge badge-success">@L["Active"]</span> } else { <span class="badge badge-warning">@Reason(s.EndedReason)</span> }</td>
+              <td>
+                @if (s.IsActive)
+                {
+                  <form asp-action="RevokeSession" asp-route-id="@s.Id" method="post" style="display:inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline btn-sm">@(s.Id == current ? L["SignOut"] : L["EndSession"])</button>
+                  </form>
+                }
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  @if (everyone != null)
+  {
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa-solid fa-users"></i> @L["AllActiveSessions"] <span class="tab-count">@everyone.Count</span></div></div>
+    <div class="card-body">
+      <div class="table-container">
+        <table class="data-table" id="allSessionsTable">
+          <thead><tr><th>@L["User"]</th><th>@L["Role"]</th><th>@L["Device"]</th><th>@L["IpAddress"]</th><th>@L["SignedIn"]</th><th>@L["LastActivity"]</th><th>@L["Actions"]</th></tr></thead>
+          <tbody>
+          @foreach (var s in everyone)
+          {
+            <tr>
+              <td><strong>@s.Username</strong> @if (s.Id == current) { <span class="badge badge-primary">@L["ThisDevice"]</span> }</td>
+              <td>@s.Role</td>
+              <td>@Device(s.UserAgent)</td>
+              <td>@(s.IpAddress ?? "—")</td>
+              <td data-utc="@Time(s.CreatedAt)"></td>
+              <td data-utc="@Time(s.LastSeenAt)"></td>
+              <td>
+                <form asp-action="RevokeSession" asp-route-id="@s.Id" method="post" style="display:inline">
+                  @Html.AntiForgeryToken()
+                  <button type="submit" class="btn btn-outline btn-sm">@L["EndSession"]</button>
+                </form>
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  }
+</main>
+
+@section Scripts {
+  <script>
+    // times are stored in UTC; show them in the viewer's local time and language
+    document.querySelectorAll('[data-utc]').forEach(td => {
+      td.textContent = new Date(td.dataset.utc).toLocaleString(document.documentElement.lang || undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    });
+  </script>
+}

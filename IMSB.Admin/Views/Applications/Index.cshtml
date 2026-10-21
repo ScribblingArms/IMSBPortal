@@ -1,0 +1,226 @@
+@using IMSB.Admin.Resources
+@using IMSB.Dto.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["Applications"].Value;
+    var stats = (ApplicationStats)ViewBag.Stats;
+
+    // Strings used by applications.js (tables, modals, toasts, client-side validation)
+    var jsKeys = new[] {
+        "Success", "Error", "Edit", "Delete", "View", "Review", "Process", "CouldNotReachServer", "CheckForm", "DiscardChanges",
+        "PendingLabel", "UnderReviewLabel", "ApprovedLabel", "RejectedLabel", "DaysCount", "NoApplicationsFound", "ApplicationNotFound",
+        "NewArtisanApplication", "EditApplication", "SubmitApplication", "SaveChanges", "ApplicationCreated", "ApplicationUpdated",
+        "ApplicationDeleted", "ConfirmDeleteApplication", "ApplicationProcessed", "ApplicationApprovedMsg",
+        "ApplicationApprovedWithStall", "ApplicationRejectedMsg", "ApplicationApproved", "ApplicationRejected", "NoStallNow", "NoVacantStalls",
+        "AadhaarKeepHint", "AadhaarStoredHint", "Female", "Male", "Other", "YearsCount", "ApplicationReview", "ApplicationDetails",
+        "ValFullName", "ValDobRequired", "ValDobFuture", "ValArtisanMinAge", "ValArtisanMobile", "ValEmail", "ValAddress", "ValAadhaar",
+        "ValDistrict", "ValCraftCategory", "ValExperience", "ValDateFuture", "ValRejectRemarks"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<div class="page-body">
+  <div class="page-header">
+    <div><div class="page-title">@L["ArtisanApplications"]</div><div class="page-subtitle">@L["ApplicationsSubtitle"]</div></div>
+    <div class="page-actions">
+      <button type="button" class="btn btn-outline btn-sm" id="appsExportAllBtn"><i class="fa-solid fa-download"></i> @L["Export"]</button>
+      <button type="button" class="btn btn-primary btn-sm" id="newApplicationBtn"><i class="fa-solid fa-plus"></i> @L["NewApplication"]</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
+    <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div><div class="stat-value" id="statTotal">@stats.Total</div><div class="stat-label">@L["TotalApplications"]</div></div>
+    <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-value" id="statApproved">@stats.Approved</div><div class="stat-label">@L["ApprovedLabel"]</div></div>
+    <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-magnifying-glass"></i></div><div class="stat-value" id="statReview">@stats.UnderReview</div><div class="stat-label">@L["UnderReviewLabel"]</div></div>
+    <div class="stat-card red"><div class="stat-icon"><i class="fa-solid fa-inbox"></i></div><div class="stat-value" id="statPending">@stats.Pending</div><div class="stat-label">@L["PendingTab"]</div></div>
+  </div>
+
+  <!-- Shared filters -->
+  <div class="toolbar" style="flex-wrap:wrap;margin-bottom:14px">
+    <select class="form-control" style="width:auto;min-width:160px" id="appFilterCategory" aria-label="@L["Category"]"><option value="">@L["AllCategories"]</option></select>
+    <select class="form-control" style="width:auto;min-width:160px" id="appFilterDistrict" aria-label="@L["District"]"><option value="">@L["AllDistricts"]</option></select>
+    <button type="button" class="btn btn-outline btn-sm" id="appFilterResetBtn">@L["Reset"]</button>
+  </div>
+
+  <!-- Tabs -->
+  <div data-tabs>
+    <div class="tab-bar">
+      <div class="tab-item active" data-tab="approved">@L["ApprovedLabel"] <span class="tab-count" id="countApproved" style="background:var(--success-light);color:var(--success)">@stats.Approved</span></div>
+      <div class="tab-item" data-tab="review">@L["UnderReviewLabel"] <span class="tab-count" id="countReview" style="background:var(--warning-light);color:var(--warning)">@stats.UnderReview</span></div>
+      <div class="tab-item" data-tab="pending">@L["PendingTab"] <span class="tab-count" id="countPending" style="background:var(--danger-light);color:var(--danger)">@stats.Pending</span></div>
+      <div class="tab-item" data-tab="rejected">@L["RejectedLabel"] <span class="tab-count" id="countRejected">@stats.Rejected</span></div>
+    </div>
+
+    <!-- Approved -->
+    <div class="tab-panel active" data-panel="approved">
+      <div class="card"><div class="card-body">
+        <div class="toolbar">
+          <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="searchApproved" data-status="APPROVED" placeholder="@L["SearchApproved"]" aria-label="@L["SearchApproved"]"></div>
+          <button type="button" class="btn btn-outline btn-sm" data-export-status="APPROVED"><i class="fa-solid fa-download"></i> @L["ExportApproved"]</button>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="approvedTable">
+            <thead><tr><th>@L["AppID"]</th><th>@L["Applicant"]</th><th>@L["Category"]</th><th>@L["District"]</th><th>@L["ArtisanID"]</th><th>@L["StallAssigned"]</th><th>@L["ApprovedDate"]</th><th>@L["ApprovedBy"]</th><th>@L["Actions"]</th></tr></thead>
+            <tbody id="approvedBody"></tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Under Review -->
+    <div class="tab-panel" data-panel="review">
+      <div class="card"><div class="card-body">
+        <div class="toolbar">
+          <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="searchReview" data-status="UNDER_REVIEW" placeholder="@L["SearchUnderReview"]" aria-label="@L["SearchUnderReview"]"></div>
+          <button type="button" class="btn btn-outline btn-sm" data-export-status="UNDER_REVIEW"><i class="fa-solid fa-download"></i> @L["ExportUnderReview"]</button>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="reviewTable">
+            <thead><tr><th>@L["AppID"]</th><th>@L["Applicant"]</th><th>@L["Category"]</th><th>@L["District"]</th><th>@L["Submitted"]</th><th>@L["DaysPending"]</th><th>@L["Reviewer"]</th><th>@L["Actions"]</th></tr></thead>
+            <tbody id="reviewBody"></tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Pending / New -->
+    <div class="tab-panel" data-panel="pending">
+      <div class="card"><div class="card-body">
+        <div class="toolbar">
+          <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="searchPending" data-status="PENDING" placeholder="@L["SearchPending"]" aria-label="@L["SearchPending"]"></div>
+          <button type="button" class="btn btn-outline btn-sm" data-export-status="PENDING"><i class="fa-solid fa-download"></i> @L["ExportPending"]</button>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="pendingTable">
+            <thead><tr><th>@L["AppID"]</th><th>@L["Applicant"]</th><th>@L["Category"]</th><th>@L["District"]</th><th>@L["Mobile"]</th><th>@L["Submitted"]</th><th>@L["DaysWaiting"]</th><th>@L["Actions"]</th></tr></thead>
+            <tbody id="pendingBody"></tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Rejected -->
+    <div class="tab-panel" data-panel="rejected">
+      <div class="card"><div class="card-body">
+        <div class="toolbar">
+          <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="searchRejected" data-status="REJECTED" placeholder="@L["SearchRejected"]" aria-label="@L["SearchRejected"]"></div>
+          <button type="button" class="btn btn-outline btn-sm" data-export-status="REJECTED"><i class="fa-solid fa-download"></i> @L["ExportRejected"]</button>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="rejectedTable">
+            <thead><tr><th>@L["AppID"]</th><th>@L["Applicant"]</th><th>@L["Category"]</th><th>@L["District"]</th><th>@L["RejectedDate"]</th><th>@L["RejectedBy"]</th><th>@L["DecisionRemarks"]</th><th>@L["Actions"]</th></tr></thead>
+            <tbody id="rejectedBody"></tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- New / Edit Application Modal -->
+<div class="modal-overlay" id="applicationModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="applicationModalTitle" style="max-width:720px">
+    <div class="modal-header"><div class="modal-title" id="applicationModalTitle"><i class="fa-solid fa-file-circle-plus" style="color:var(--primary)"></i> &nbsp;<span id="applicationModalText">@L["NewArtisanApplication"]</span></div>
+      <button type="button" class="modal-close" id="applicationModalClose" aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <form id="applicationForm" novalidate>
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="apEditing">
+        <div class="form-section-title"><i class="fa-solid fa-user"></i> @L["PersonalInformation"]</div>
+        <div class="form-grid col-2">
+          <div class="form-group"><label class="form-label" for="apName">@L["FullName"] <span class="req">*</span></label>
+            <input class="form-control" id="apName" maxlength="100" placeholder="@L["AsPerAadhaar"]" required><div class="form-error" id="err_full_name"></div></div>
+          <div class="form-group"><label class="form-label" for="apDob">@L["DateOfBirth"] <span class="req">*</span></label>
+            <input type="date" class="form-control" id="apDob" required><div class="form-error" id="err_date_of_birth"></div></div>
+          <div class="form-group"><label class="form-label" for="apGender">@L["Gender"] <span class="req">*</span></label>
+            <select class="form-control" id="apGender"><option value="Female">@L["Female"]</option><option value="Male">@L["Male"]</option><option value="Other">@L["Other"]</option></select>
+            <div class="form-error" id="err_gender"></div></div>
+          <div class="form-group"><label class="form-label" for="apMobile">@L["MobileNumber"] <span class="req">*</span></label>
+            <input type="tel" class="form-control" id="apMobile" maxlength="15" placeholder="98765 43210" required><div class="form-error" id="err_mobile"></div></div>
+          <div class="form-group"><label class="form-label" for="apEmail">@L["EmailAddress"]</label>
+            <input type="email" class="form-control" id="apEmail" maxlength="200" placeholder="@L["Optional"]"><div class="form-error" id="err_email"></div></div>
+          <div class="form-group"><label class="form-label" for="apAadhaar">@L["AadhaarNumber"] <span class="req" id="apAadhaarReq">*</span></label>
+            <input class="form-control" id="apAadhaar" maxlength="14" inputmode="numeric" autocomplete="off" placeholder="XXXX XXXX XXXX">
+            <div class="form-hint" id="apAadhaarHint" style="font-size:.7rem;color:var(--text-muted)">@L["AadhaarStoredHint"]</div>
+            <div class="form-error" id="err_aadhaar"></div></div>
+          <div class="form-group form-full"><label class="form-label" for="apAddress">@L["ResidentialAddress"] <span class="req">*</span></label>
+            <textarea class="form-control" id="apAddress" rows="2" maxlength="500" required></textarea><div class="form-error" id="err_address"></div></div>
+          <div class="form-group"><label class="form-label" for="apDistrict">@L["District"] <span class="req">*</span></label>
+            <select class="form-control" id="apDistrict" required><option value="">@L["SelectDistrict"]</option></select><div class="form-error" id="err_district"></div></div>
+          <div class="form-group"><label class="form-label" for="apSubmitted">@L["SubmittedOn"]</label>
+            <input type="date" class="form-control" id="apSubmitted"><div class="form-error" id="err_submitted_date"></div></div>
+        </div>
+        <div class="form-section-title" style="margin-top:20px"><i class="fa-solid fa-palette"></i> @L["CategorySkills"]</div>
+        <div class="form-grid col-2">
+          <div class="form-group"><label class="form-label" for="apCategory">@L["CraftCategory"] <span class="req">*</span></label>
+            <select class="form-control" id="apCategory" required><option value="">@L["SelectPlaceholder"]</option></select><div class="form-error" id="err_category_id"></div></div>
+          <div class="form-group"><label class="form-label" for="apYears">@L["YearsOfExperience"]</label>
+            <input type="number" class="form-control" id="apYears" min="0" max="80" step="1" value="0"><div class="form-error" id="err_years_of_experience"></div></div>
+          <div class="form-group form-full"><label class="form-label" for="apSkills">@L["SkillsDescription"]</label>
+            <textarea class="form-control" id="apSkills" rows="2" maxlength="1000" placeholder="@L["DescribeSkills"]"></textarea><div class="form-error" id="err_skills"></div></div>
+          <div class="form-group form-full"><label class="form-label" for="apRemarks">@L["Remarks"]</label>
+            <input class="form-control" id="apRemarks" maxlength="500" placeholder="@L["AdditionalNotes"]"><div class="form-error" id="err_remarks"></div></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" id="applicationCancelBtn">@L["Cancel"]</button>
+      <button type="button" class="btn btn-primary" id="applicationSaveBtn"><i class="fa-solid fa-paper-plane"></i> <span id="applicationSaveText">@L["SubmitApplication"]</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Review / Details Modal -->
+<div class="modal-overlay" id="reviewModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle" style="max-width:640px">
+    <div class="modal-header"><div class="modal-title" id="reviewModalTitle">@L["ApplicationReview"]</div><button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div style="display:grid;gap:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="profile-field"><div class="profile-field-label">@L["AppID"]</div><div class="profile-field-value" id="rv-id">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["Status"]</div><div class="profile-field-value" id="rv-status">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["ApplicantName"]</div><div class="profile-field-value" id="rv-name">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["Category"]</div><div class="profile-field-value" id="rv-cat">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["District"]</div><div class="profile-field-value" id="rv-district">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["Mobile"]</div><div class="profile-field-value" id="rv-phone">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["DateOfBirth"]</div><div class="profile-field-value" id="rv-dob">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["AadhaarNumber"]</div><div class="profile-field-value" id="rv-aadhaar">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["YearsOfExperience"]</div><div class="profile-field-value" id="rv-years">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["Submitted"]</div><div class="profile-field-value" id="rv-submitted">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">@L["Reviewer"]</div><div class="profile-field-value" id="rv-reviewer">—</div></div>
+          <div class="profile-field" id="rv-decisionWrap"><div class="profile-field-label">@L["DecidedOn"]</div><div class="profile-field-value" id="rv-decision">—</div></div>
+        </div>
+        <div class="profile-field"><div class="profile-field-label">@L["ResidentialAddress"]</div><div class="profile-field-value" id="rv-address">—</div></div>
+        <div class="profile-field" id="rv-skillsWrap"><div class="profile-field-label">@L["SkillsDescription"]</div><div class="profile-field-value" id="rv-skills"></div></div>
+        <div class="profile-field" id="rv-decisionRemarksWrap"><div class="profile-field-label">@L["DecisionRemarks"]</div><div class="profile-field-value" id="rv-decisionRemarks"></div></div>
+        <div id="rv-decide">
+          <div class="form-group"><label class="form-label" for="rvStall">@L["AssignStall"]</label>
+            <select class="form-control" id="rvStall"></select><div class="form-error" id="err_stall_code"></div></div>
+          <div class="form-group"><label class="form-label" for="rvRemarks">@L["Remarks"]</label>
+            <textarea class="form-control" id="rvRemarks" rows="3" maxlength="500" placeholder="@L["ApprovalRejectionRemarks"]"></textarea><div class="form-error" id="err_rv_remarks"></div></div>
+          <div class="form-error" id="err_application"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Close"]</button>
+      <button type="button" class="btn btn-outline" id="rvEditBtn"><i class="fa-solid fa-pen"></i> @L["Edit"]</button>
+      <button type="button" class="btn btn-danger" id="rvRejectBtn"><i class="fa-solid fa-xmark"></i> @L["Reject"]</button>
+      <button type="button" class="btn btn-success" id="rvApproveBtn"><i class="fa-solid fa-check"></i> @L["Approve"]</button>
+    </div>
+  </div>
+</div>
+
+@section Styles {
+  <style>
+    .empty-state { text-align:center; padding:24px 12px; color:var(--text-muted); font-size:.8rem; }
+    #rv-decide .form-error:not(:empty) { display:block; }
+  </style>
+}
+
+@section Scripts {
+    <script>window.ApplicationsI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+    <script src="~/js/applications.js" asp-append-version="true"></script>
+}

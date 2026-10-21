@@ -1,0 +1,83 @@
+@model IMSB.Dto.Models.ReportDocument
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    Layout = null;
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    // amounts and counts are written with invariant digits by the report; show them with Indian digit grouping
+    var inr = new System.Globalization.CultureInfo("en-IN");
+    string Show(string? v) => decimal.TryParse(v, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out var d) && v!.Contains('.')
+        ? d.ToString("N2", inr) : (v ?? "");
+}
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@Model.Title – @Model.Period</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#1e293b; --muted:#64748b; --line:#d6dce8; --head:#e8f0fb; --brand:#1a3c6e; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:24px; font-family:'Poppins', 'Noto Sans', 'Nirmala UI', sans-serif; color:var(--ink); background:#fff; font-size:12px; }
+    .bar { display:flex; justify-content:flex-end; gap:8px; margin-bottom:16px; }
+    .bar button { font:inherit; padding:7px 14px; border-radius:8px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+    .bar button.primary { background:var(--brand); color:#fff; border-color:var(--brand); }
+    header { border-bottom:3px solid var(--brand); padding-bottom:10px; margin-bottom:18px; }
+    .org { font-size:11px; color:var(--muted); }
+    h1 { font-size:20px; margin:4px 0; color:var(--brand); }
+    .meta { font-size:11px; color:var(--muted); }
+    h2 { font-size:14px; margin:22px 0 8px; color:var(--brand); }
+    table { width:100%; border-collapse:collapse; page-break-inside:auto; }
+    tr { page-break-inside:avoid; }
+    th, td { border:1px solid var(--line); padding:5px 7px; text-align:left; vertical-align:top; }
+    th { background:var(--head); font-weight:600; }
+    td.num, th.num { text-align:right; white-space:nowrap; }
+    .note { font-size:10.5px; color:var(--muted); margin-top:4px; }
+    .empty { color:var(--muted); text-align:center; }
+    footer { margin-top:24px; font-size:10px; color:var(--muted); border-top:1px solid var(--line); padding-top:8px; }
+    @@media print {
+      body { padding:0; }
+      .bar { display:none; }
+      thead { display:table-header-group; }
+      @@page { size:A4; margin:14mm 12mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <button type="button" onclick="window.close()">@L["Close"]</button>
+    <button type="button" class="primary" onclick="window.print()">@L["PrintSavePdf"]</button>
+  </div>
+  <header>
+    <div class="org">@L["GovernmentOfTelangana"] · @L["FooterCopyright"]</div>
+    <h1>@Model.Title</h1>
+    <div class="meta">@Model.Period · @L["GeneratedOn"]: @Model.GeneratedAt.ToString("dd MMM yyyy HH:mm", System.Globalization.CultureInfo.CurrentCulture)@(string.IsNullOrEmpty(Model.GeneratedBy) ? "" : " · " + Model.GeneratedBy)</div>
+  </header>
+
+  @foreach (var t in Model.Tables)
+  {
+    <h2>@t.Title</h2>
+    <table>
+      <thead><tr>@for (var i = 0; i < t.Headers.Length; i++) { <th class="@(t.NumericColumns.Contains(i) ? "num" : "")">@t.Headers[i]</th> }</tr></thead>
+      <tbody>
+        @if (t.Rows.Count == 0)
+        {
+          <tr><td colspan="@t.Headers.Length" class="empty">@L["NoDataForPeriod"]</td></tr>
+        }
+        @foreach (var r in t.Rows)
+        {
+          <tr>@for (var i = 0; i < r.Length; i++) { <td class="@(t.NumericColumns.Contains(i) ? "num" : "")">@(t.NumericColumns.Contains(i) ? Show(r[i]) : r[i])</td> }</tr>
+        }
+      </tbody>
+    </table>
+    @if (t.Note != null) { <div class="note">@t.Note</div> }
+  }
+
+  <footer>@L["LoginFooter"]</footer>
+  <script>
+    // open the print dialog (Save as PDF) once fonts are ready
+    window.addEventListener('load', () => { (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => window.print(), 300)); });
+  </script>
+</body>
+</html>

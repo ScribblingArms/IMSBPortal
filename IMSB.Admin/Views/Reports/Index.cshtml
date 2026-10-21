@@ -1,0 +1,231 @@
+@using IMSB.Admin.Resources
+@using IMSB.Dto.Models
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["Reports"].Value;
+    var k = (ReportKpis)ViewBag.Kpis;
+    var months = (List<KeyValuePair<string, string>>)ViewBag.Months;
+    var categories = (List<KeyValuePair<string, string>>)ViewBag.Categories;
+    var inr = new System.Globalization.CultureInfo("en-IN");
+
+    // Strings used by reports.js (KPIs, charts, report tables, library cards)
+    var jsKeys = new[] {
+        "Error", "CouldNotReachServer", "NotAvailable", "Revenue", "Occupied", "Vacant", "Reserved", "UnderMaintenance",
+        "Active", "OnLeave", "RenewalPending", "Inactive", "SalesThisYear", "SalesPreviousYear", "VsLastMonth", "NoComparisonMonth",
+        "DaysOfMonth", "NoStallsFound", "NoArtisansFound", "NoStallAssigned", "RatingOutOf", "ExportPdf", "ExportCsv",
+        "RptStallOccupancy", "RptStallOccupancyDesc", "RptInventory", "RptInventoryDesc", "RptArtisan", "RptArtisanDesc",
+        "RptAttendance", "RptAttendanceDesc", "RptSales", "RptSalesDesc", "RptApplications", "RptApplicationsDesc",
+        "ModuleNotConnected", "KpiTitleFor", "OfTotal"
+    };
+    var jsStrings = jsKeys.ToDictionary(x => x, x => L[x].Value);
+}
+
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <div class="page-title">@L["ReportsAnalytics"]</div>
+      <div class="page-subtitle">@L["ReportsSubtitle"]</div>
+    </div>
+    <div class="page-actions" style="flex-wrap:wrap">
+      <select class="form-control" style="width:170px" id="reportMonth" aria-label="@L["Month"]">
+        @foreach (var m in months) { <option value="@m.Key">@m.Value</option> }
+      </select>
+      <select class="form-control" style="width:170px" id="reportCategory" aria-label="@L["Category"]">
+        <option value="">@L["AllCategories"]</option>
+        @foreach (var c in categories) { <option value="@c.Key">@c.Value</option> }
+      </select>
+      <button type="button" class="btn btn-primary btn-sm" data-report="all" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportAll"]</button>
+      <button type="button" class="btn btn-outline btn-sm" data-report="all" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportAllPdf"]</button>
+    </div>
+  </div>
+
+  <!-- KPI Summary -->
+  <div class="card" style="margin-bottom:22px">
+    <div class="card-header">
+      <div class="card-title"><i class="fa-solid fa-star"></i> <span id="kpiTitle">@string.Format(L["KpiTitleFor"].Value, months[0].Value)</span></div>
+      <div style="display:flex;gap:6px">
+        <button type="button" class="btn btn-outline btn-sm" data-report="kpis" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportKPIs"]</button>
+        <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="kpis" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="kpi-row">
+        <div class="kpi-item" style="border-left-color:var(--success)"><div class="kpi-val" id="kpiSales">₹@k.TotalSales.ToString("N0", inr)</div><div class="kpi-lbl">@L["TotalMonthlySales"]</div><div class="kpi-sub" id="kpiSalesChange"></div></div>
+        <div class="kpi-item" style="border-left-color:var(--primary)"><div class="kpi-val" id="kpiOccupancy">@k.OccupiedStalls/@k.TotalStalls</div><div class="kpi-lbl">@L["StallOccupancy"]</div><div class="kpi-sub" id="kpiOccupancyPct">@k.OccupancyPct%</div></div>
+        <div class="kpi-item" style="border-left-color:var(--accent)"><div class="kpi-val" id="kpiArtisans">@k.ActiveArtisans</div><div class="kpi-lbl">@L["ActiveArtisans"]</div></div>
+        <div class="kpi-item" style="border-left-color:#6366f1"><div class="kpi-val" id="kpiAttendance">—</div><div class="kpi-lbl">@L["AvgAttendancePct"]</div><div class="kpi-sub">@L["ModuleNotConnected"]</div></div>
+        <div class="kpi-item" style="border-left-color:var(--warning)"><div class="kpi-val" id="kpiApproved">@k.ApplicationsApproved</div><div class="kpi-lbl">@L["ApplicationsApproved"]</div></div>
+        <div class="kpi-item" style="border-left-color:var(--danger)"><div class="kpi-val" id="kpiLowStock">@k.LowStockItems</div><div class="kpi-lbl">@L["LowStockItems"]</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div data-tabs>
+    <div class="tab-bar">
+      <div class="tab-item active" data-tab="overview">@L["OverviewCharts"]</div>
+      <div class="tab-item" data-tab="available">@L["ReportLibrary"]</div>
+      <div class="tab-item" data-tab="stall">@L["StallReport"]</div>
+      <div class="tab-item" data-tab="artisan">@L["ArtisanReport"]</div>
+    </div>
+
+    <!-- ── Overview Charts ── -->
+    <div class="tab-panel active" data-panel="overview">
+      <div class="report-chart-grid" style="margin-bottom:18px">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-line"></i> @L["MonthlySalesTrend"]</div>
+            <div class="chart-export">
+              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="sales-trend" data-format="csv" title="@L["ExportCsv"]" aria-label="@L["ExportCsv"]"><i class="fa-solid fa-file-csv"></i></button>
+              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="sales-trend" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+            </div>
+          </div>
+          <div class="card-body"><div style="height:260px"><canvas id="monthlyTrendChart" aria-label="@L["MonthlySalesTrend"]"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-bar"></i> @L["CategoryWiseRevenue"]</div>
+            <div class="chart-export">
+              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="category-revenue" data-format="csv" title="@L["ExportCsv"]" aria-label="@L["ExportCsv"]"><i class="fa-solid fa-file-csv"></i></button>
+              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="category-revenue" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+            </div>
+          </div>
+          <div class="card-body"><div style="height:260px"><canvas id="revCatChart" aria-label="@L["CategoryWiseRevenue"]"></canvas></div></div>
+        </div>
+      </div>
+      <div class="report-chart-grid">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-people-group"></i> @L["MonthlyAttendanceRate"]</div>
+          </div>
+          <div class="card-body"><div class="chart-empty" style="height:230px"><i class="fa-solid fa-calendar-xmark"></i><span>@L["AttendanceNotConnected"]</span></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-store"></i> @L["StallOccupancyOverTime"]</div>
+            <div class="chart-export">
+              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="occupancy-trend" data-format="csv" title="@L["ExportCsv"]" aria-label="@L["ExportCsv"]"><i class="fa-solid fa-file-csv"></i></button>
+              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="occupancy-trend" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+            </div>
+          </div>
+          <div class="card-body"><div style="height:230px"><canvas id="occupancyTrendChart" aria-label="@L["StallOccupancyOverTime"]"></canvas></div>
+            <div class="report-note">@L["OccupancyHistoryNote"]</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Report Library ── -->
+    <div class="tab-panel" data-panel="available">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px" id="reportCards"></div>
+    </div>
+
+    <!-- ── Stall Report ── -->
+    <div class="tab-panel" data-panel="stall">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-store"></i> @L["RptStallOccupancy"] <span class="tab-count" id="stallReportCount">0</span></div>
+          <div style="display:flex;gap:6px">
+            <button type="button" class="btn btn-outline btn-sm" data-report="stalls" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportCsv"]</button>
+            <button type="button" class="btn btn-outline btn-sm" data-report="stalls" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="toolbar" style="flex-wrap:wrap">
+            <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="stallReportSearch" placeholder="@L["SearchStalls"]" aria-label="@L["SearchStalls"]"></div>
+            <select class="form-control" style="width:auto;min-width:140px" id="stallReportStatus" aria-label="@L["Status"]">
+              <option value="">@L["AllStatus"]</option><option value="OCCUPIED">@L["Occupied"]</option><option value="VACANT">@L["Vacant"]</option>
+              <option value="RESERVED">@L["Reserved"]</option><option value="MAINTENANCE">@L["UnderMaintenance"]</option>
+            </select>
+            <select class="form-control" style="width:auto;min-width:130px" id="stallReportBlock" aria-label="@L["BlockZone"]"><option value="">@L["AllBlocks"]</option></select>
+            <button type="button" class="btn btn-outline btn-sm" id="stallReportReset">@L["Reset"]</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table" id="stallReportTable">
+              <thead><tr><th>@L["Stall"]</th><th>@L["Artisan"]</th><th>@L["Category"]</th><th>@L["MonthlySales"]</th><th>@L["Products"]</th><th>@L["StockItems"]</th><th>@L["OccupancyDays"]</th><th>@L["Status"]</th></tr></thead>
+              <tbody id="stallReportBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Artisan Report ── -->
+    <div class="tab-panel" data-panel="artisan">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-palette"></i> @L["ArtisanPerformanceReport"] <span class="tab-count" id="artisanReportCount">0</span></div>
+          <div style="display:flex;gap:6px">
+            <button type="button" class="btn btn-outline btn-sm" data-report="artisans" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportCsv"]</button>
+            <button type="button" class="btn btn-outline btn-sm" data-report="artisans" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="toolbar" style="flex-wrap:wrap">
+            <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="artisanReportSearch" placeholder="@L["SearchArtisans"]" aria-label="@L["SearchArtisans"]"></div>
+            <select class="form-control" style="width:auto;min-width:140px" id="artisanReportStatus" aria-label="@L["Status"]">
+              <option value="">@L["AllStatus"]</option><option value="ACTIVE">@L["Active"]</option><option value="ON_LEAVE">@L["OnLeave"]</option>
+              <option value="RENEWAL_DUE">@L["RenewalPending"]</option><option value="INACTIVE">@L["Inactive"]</option>
+            </select>
+            <button type="button" class="btn btn-outline btn-sm" id="artisanReportReset">@L["Reset"]</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead><tr><th>@L["Artisan"]</th><th>@L["Category"]</th><th>@L["Stall"]</th><th>@L["MonthlySales"]</th><th>@L["UnitsSoldLabel"]</th><th>@L["Products"]</th><th>@L["SalesShare"]</th><th>@L["Rating"]</th><th>@L["Status"]</th></tr></thead>
+              <tbody id="artisanReportBody"></tbody>
+            </table>
+          </div>
+          <div class="report-note">@L["RatingNote"]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@section Styles {
+    <style>
+    .report-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      display: flex; flex-direction: column;
+      gap: 12px;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .report-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .report-card-icon {
+      width: 48px; height: 48px; border-radius: var(--r);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .report-card-title { font-size: .88rem; font-weight: 700; color: var(--text); }
+    .report-card-desc  { font-size: .75rem; color: var(--text-muted); flex: 1; }
+    .report-card-footer { display: flex; gap: 8px; }
+    .kpi-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 14px;
+    }
+    .kpi-item {
+      background: var(--bg); border-radius: var(--r); padding: 14px 16px;
+      border-left: 3px solid var(--primary-light);
+    }
+    .kpi-val { font-size: 1.2rem; font-weight: 800; color: var(--text); }
+    .kpi-lbl { font-size: .7rem; color: var(--text-muted); font-weight: 500; }
+    .kpi-sub { font-size: .66rem; color: var(--text-muted); margin-top: 2px; }
+    .report-chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+    @@media (max-width: 420px) { .report-chart-grid { grid-template-columns: 1fr; } }
+    .chart-export { display: flex; gap: 6px; }
+    .chart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+      color: var(--text-muted); font-size: .8rem; text-align: center; padding: 0 20px; }
+    .chart-empty i { font-size: 1.6rem; opacity: .5; }
+    .report-note { font-size: .68rem; color: var(--text-muted); margin-top: 8px; }
+    .empty-state { text-align:center; padding:24px 12px; color:var(--text-muted); font-size:.8rem; }
+    .rating { color: #b45309; letter-spacing: 1px; white-space: nowrap; }
+    </style>
+}
+
+@section Scripts {
+    <script>window.ReportsI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+    <script src="~/js/reports.js" asp-append-version="true"></script>
+}

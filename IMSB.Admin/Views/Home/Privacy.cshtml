@@ -1,0 +1,11 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["PrivacyPolicy"].Value;
+}
+
+<main class="page-body">
+    <div class="page-title">@L["PrivacyPolicy"]</div>
+    <p style="margin-top:8px">@L["PrivacyPolicyText"]</p>
+</main>
