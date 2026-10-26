@@ -102,10 +102,26 @@ namespace IMSB.Backend
 
         public Task<List<string>> ReallocationNumbersAsync() => _context.StallReallocations.Select(r => r.RequestNo).ToListAsync();
 
-        public void Add(Stall stall) => _context.Stalls.Add(stall);
+        public async Task AddAsync(Stall stall)
+        {
+            _context.Stalls.Add(stall);
+            await _context.SaveChangesAsync();
+        }
 
-        public void Remove(Stall stall) => _context.Stalls.Remove(stall);
+        public Task UpdateAsync(Stall stall) => _context.SaveChangesAsync();
 
-        public void AddReallocation(StallReallocation request) => _context.StallReallocations.Add(request);
+        public async Task RemoveAsync(Stall stall)
+        {
+            _context.Stalls.Remove(stall);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddReallocationAsync(StallReallocation request)
+        {
+            _context.StallReallocations.Add(request);
+            await _context.SaveChangesAsync();
+        }
+
+        public Task DecideReallocationAsync(StallReallocation request) => _context.SaveChangesAsync();
     }
 }

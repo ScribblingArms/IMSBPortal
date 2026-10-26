@@ -81,14 +81,16 @@ namespace IMSB.Admin.Controllers
             var staff = await _staff.FilterAsync(q, departmentId, status);
             var depts = await _staff.DepartmentNamesAsync();
 
-            var sb = new StringBuilder();
-            sb.AppendLine("EmployeeId,FullName,Department,Designation,Mobile,Email,DateOfBirth,Gender,JoinDate,Shift,Status");
+            var rows = new List<string?[]>
+            {
+                new string?[] { "EmployeeId", "FullName", "Department", "Designation", "Mobile", "Email", "DateOfBirth", "Gender", "JoinDate", "Shift", "Status" }
+            };
             foreach (var s in staff.Select(s => s.ToListItem(depts)))
             {
-                sb.AppendLine(Row(s.EmployeeId, s.FullName, s.DepartmentName, s.Designation, s.Mobile, s.Email, s.DateOfBirth, s.Gender,
-                    s.JoinDate, s.Shift, s.Status));
+                rows.Add(new string?[] { s.EmployeeId, s.FullName, s.DepartmentName, s.Designation, s.Mobile, s.Email, s.DateOfBirth, s.Gender,
+                    s.JoinDate, s.Shift, s.Status });
             }
-            return Csv(sb, $"staff_{DateTime.UtcNow:yyyyMMddHHmmss}.csv");
+            return ExportCsv($"staff_{DateTime.UtcNow:yyyyMMddHHmmss}.csv", rows);
         }
 
         [HttpPost]
@@ -108,8 +110,7 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = User.Identity?.Name
             };
             dto.ApplyTo(entity);
-            _staff.Add(entity);
-            await _staff.SaveChangesAsync();
+            await _staff.AddAsync(entity);
 
             return Ok(new { employeeId = entity.EmployeeId });
         }
@@ -129,7 +130,7 @@ namespace IMSB.Admin.Controllers
             if (!string.IsNullOrWhiteSpace(dto.Status)) entity.Status = dto.Status.Trim().ToUpperInvariant();
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = User.Identity?.Name;
-            await _staff.SaveChangesAsync();
+            await _staff.UpdateAsync(entity);
 
             return Ok(new { employeeId = entity.EmployeeId });
         }
@@ -141,8 +142,7 @@ namespace IMSB.Admin.Controllers
             var entity = await _staff.FindAsync(id);
             if (entity == null) return NotFound();
 
-            _staff.Remove(entity);
-            await _staff.SaveChangesAsync();
+            await _staff.RemoveAsync(entity);
             return Ok(new { employeeId = id });
         }
 

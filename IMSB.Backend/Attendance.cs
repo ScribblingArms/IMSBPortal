@@ -69,8 +69,18 @@ namespace IMSB.Backend
             return query.OrderByDescending(r => r.AttendanceDate).ThenBy(r => r.Staff!.FullName).ToListAsync();
         }
 
-        public void Add(AttendanceRecord record) => _context.AttendanceRecords.Add(record);
+        public async Task SaveSheetAsync(IEnumerable<AttendanceRecord> newRecords)
+        {
+            _context.AttendanceRecords.AddRange(newRecords);
+            await _context.SaveChangesAsync();
+        }
 
-        public void Remove(AttendanceRecord record) => _context.AttendanceRecords.Remove(record);
+        public Task UpdateAsync(AttendanceRecord record) => _context.SaveChangesAsync();
+
+        public async Task RemoveAsync(AttendanceRecord record)
+        {
+            _context.AttendanceRecords.Remove(record);
+            await _context.SaveChangesAsync();
+        }
     }
 }

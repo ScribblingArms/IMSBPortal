@@ -90,10 +90,24 @@ namespace IMSB.Backend
 
         public Task<Stall?> FindStallAsync(string stallCode) => _context.Stalls.FirstOrDefaultAsync(s => s.StallCode == stallCode);
 
-        public void Add(ArtisanApplication application) => _context.ArtisanApplications.Add(application);
+        public async Task AddAsync(ArtisanApplication application)
+        {
+            _context.ArtisanApplications.Add(application);
+            await _context.SaveChangesAsync();
+        }
 
-        public void Remove(ArtisanApplication application) => _context.ArtisanApplications.Remove(application);
+        public Task UpdateAsync(ArtisanApplication application) => _context.SaveChangesAsync();
 
-        public void AddArtisan(Artisan artisan) => _context.Artisans.Add(artisan);
+        public async Task RemoveAsync(ArtisanApplication application)
+        {
+            _context.ArtisanApplications.Remove(application);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ApproveAsync(ArtisanApplication application, Artisan artisan)
+        {
+            _context.Artisans.Add(artisan);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace IMSB.Interfaces
 
         Task<UserSession?> GetUserSession(Guid sessionId);
 
-        Task SaveChangesAsync();
+        /// <summary>Stamps the tracked login's last sign-in and saves it (with a rehashed password, if any).</summary>
+        Task RecordLoginAsync(Login login);
     }
 }

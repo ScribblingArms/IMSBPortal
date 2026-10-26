@@ -175,14 +175,14 @@ namespace IMSB.Admin.Controllers
             var staffIds = lines.Select(l => l.Staff.Id).ToList();
             var existing = await _attendance.RecordsOnAsync(day, staffIds);
             var user = User.Identity?.Name;
-            int created = 0, updated = 0;
+            var created = new List<AttendanceRecord>();
+            int updated = 0;
             foreach (var l in lines)
             {
                 if (!existing.TryGetValue(l.Staff.Id, out var record))
                 {
                     record = new AttendanceRecord { StaffId = l.Staff.Id, AttendanceDate = day, CreatedBy = user };
-                    _attendance.Add(record);
-                    created++;
+                    created.Add(record);
                 }
                 else
                 {
@@ -192,8 +192,8 @@ namespace IMSB.Admin.Controllers
                 }
                 Apply(record, l.Status, l.In, l.Out, l.Remarks, shifts.GetValueOrDefault(l.Staff.Shift.Trim().ToUpperInvariant()));
             }
-            await _attendance.SaveChangesAsync();
-            return Ok(new { date = Date(day), saved = lines.Count, created, updated });
+            await _attendance.SaveSheetAsync(created);
+            return Ok(new { date = Date(day), saved = lines.Count, created = created.Count, updated });
         }
 
         // ── Single records (view / edit / delete) ─────────────────────
@@ -221,7 +221,7 @@ namespace IMSB.Admin.Controllers
             Apply(record, status, inTime, outTime, CleanRemarks(dto.Remarks), shifts.GetValueOrDefault(record.Staff!.Shift.Trim().ToUpperInvariant()));
             record.UpdatedAt = DateTime.UtcNow;
             record.UpdatedBy = User.Identity?.Name;
-            await _attendance.SaveChangesAsync();
+            await _attendance.UpdateAsync(record);
             return Ok(await HistoryDtoAsync(record));
         }
 
@@ -231,8 +231,7 @@ namespace IMSB.Admin.Controllers
         {
             var record = await FindAsync(id, tracking: true);
             if (record == null) return NotFound();
-            _attendance.Remove(record);
-            await _attendance.SaveChangesAsync();
+            await _attendance.RemoveAsync(record);
             return Ok(new { id = record.Id.ToString(), employeeId = record.Staff?.EmployeeId, date = Date(record.AttendanceDate) });
         }
 
@@ -301,16 +300,18 @@ namespace IMSB.Admin.Controllers
             if (errors.Count > 0) return BadRequest(new { errors });
             var rows = await HistoryRowsAsync(q, departmentId, status, start, end);
 
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(_L["Date"], _L["EmployeeID"], _L["StaffName"], _L["Department"], _L["Designation"], _L["InTime"], _L["OutTime"],
-                _L["Hours"], _L["OTHours"], _L["Status"], _L["Remarks"], _L["UpdatedBy"]));
+            var exportRows = new List<string?[]>
+            {
+                new string?[] { _L["Date"], _L["EmployeeID"], _L["StaffName"], _L["Department"], _L["Designation"], _L["InTime"], _L["OutTime"],
+                    _L["Hours"], _L["OTHours"], _L["Status"], _L["Remarks"], _L["UpdatedBy"] }
+            };
             foreach (var r in rows.OrderBy(r => r.Date).ThenBy(r => r.DepartmentName).ThenBy(r => r.Name))
             {
-                sb.AppendLine(Row(r.Date, r.EmployeeId, r.Name, r.DepartmentName, r.Designation, r.InTime, r.OutTime,
-                    Hours(r.WorkedHours), Hours(r.OvertimeHours), StatusLabel(_L, r.Status), r.Remarks, r.By));
+                exportRows.Add(new string?[] { r.Date, r.EmployeeId, r.Name, r.DepartmentName, r.Designation, r.InTime, r.OutTime,
+                    Hours(r.WorkedHours), Hours(r.OvertimeHours), StatusLabel(_L, r.Status), r.Remarks, r.By });
             }
-            sb.AppendLine(Row(_L["Total"], "", "", "", "", "", "", Hours(rows.Sum(r => r.WorkedHours)), Hours(rows.Sum(r => r.OvertimeHours)), "", "", ""));
-            return Csv(sb, $"attendance_{start:yyyyMMdd}_{end:yyyyMMdd}.csv");
+            exportRows.Add(new string?[] { _L["Total"], "", "", "", "", "", "", Hours(rows.Sum(r => r.WorkedHours)), Hours(rows.Sum(r => r.OvertimeHours)), "", "", "" });
+            return ExportCsv($"attendance_{start:yyyyMMdd}_{end:yyyyMMdd}.csv", exportRows);
         }
 
         // ── helpers ──────────────────────────────────────────────────

@@ -2,7 +2,8 @@
 :root {
     --primary: #1a3c6e;
     --primary-light: #2558a8;
-    --accent: #e85d04;
+    --accent: #0f9d8a;      /* teal accent */
+    --accent-soft: #5eead4;
     --success: #1b7a3e;
     --border: #d6dce8;
     --bg: #f0f4fa;
@@ -70,7 +71,7 @@ body {
         height: 140px;
         bottom: 20%;
         right: 15%;
-        background: rgba(232,93,4,.1);
+        background: rgba(15,157,138,.14);
     }
 
 /* Govt Strip */
@@ -139,7 +140,7 @@ body {
         width: 200px;
         height: 200px;
         border-radius: 50%;
-        background: rgba(232,93,4,.1);
+        background: rgba(15,157,138,.14);
     }
 
 .login-logo {
@@ -186,7 +187,7 @@ body {
     }
 
         .login-headline h2 span {
-            color: #f9a961;
+            color: var(--accent-soft);
         }
 
     .login-headline p {

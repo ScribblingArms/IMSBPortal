@@ -32,8 +32,12 @@ namespace IMSB.Interfaces
         /// <summary>Records (with staff) in the period, newest first, filtered by department, status and name / employee id.</summary>
         Task<List<AttendanceRecord>> HistoryAsync(string? q, string? departmentId, string? status, DateTime from, DateTime to);
 
-        void Add(AttendanceRecord record);
-        void Remove(AttendanceRecord record);
-        Task SaveChangesAsync();
+        /// <summary>Saves a marked sheet: inserts the new records and the changes made to the tracked existing ones.</summary>
+        Task SaveSheetAsync(IEnumerable<AttendanceRecord> newRecords);
+
+        /// <summary>Saves the changes made to a tracked record.</summary>
+        Task UpdateAsync(AttendanceRecord record);
+
+        Task RemoveAsync(AttendanceRecord record);
     }
 }

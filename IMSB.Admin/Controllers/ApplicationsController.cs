@@ -74,8 +74,7 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = User.Identity?.Name
             };
             Apply(app, dto, v);
-            _applications.Add(app);
-            await _applications.SaveChangesAsync();
+            await _applications.AddAsync(app);
             return Ok(new { id = app.ApplicationNo });
         }
 
@@ -92,7 +91,7 @@ namespace IMSB.Admin.Controllers
 
             Apply(app, dto, v);
             Touch(app);
-            await _applications.SaveChangesAsync();
+            await _applications.UpdateAsync(app);
             return Ok(new { id = app.ApplicationNo });
         }
 
@@ -104,8 +103,7 @@ namespace IMSB.Admin.Controllers
             var app = await _applications.FindAsync(id);
             if (app == null) return NotFound();
             if (app.Status == ApplicationStatuses.Approved) return ErrorResult("application", _L["ValApplicationApprovedDelete"]);
-            _applications.Remove(app);
-            await _applications.SaveChangesAsync();
+            await _applications.RemoveAsync(app);
             return Ok(new { id });
         }
 
@@ -123,7 +121,7 @@ namespace IMSB.Admin.Controllers
             app.Reviewer = User.Identity?.Name;
             app.ReviewStartedAt = DateTime.UtcNow;
             Touch(app);
-            await _applications.SaveChangesAsync();
+            await _applications.UpdateAsync(app);
             return Ok(new { id = app.ApplicationNo });
         }
 
@@ -156,7 +154,6 @@ namespace IMSB.Admin.Controllers
             var user = User.Identity?.Name;
             var artisan = app.ToArtisan(NextCode(await _applications.ArtisanCodesAsync(), "ART-", 4),
                 string.Format(_L["RegisteredFromApplication"], app.ApplicationNo), user);
-            _applications.AddArtisan(artisan);
 
             if (stall != null)
             {
@@ -174,7 +171,7 @@ namespace IMSB.Admin.Controllers
             app.ArtisanCode = artisan.ArtisanCode;
             app.StallCode = stall?.StallCode;
             Decide(app, dto.Remarks);
-            await _applications.SaveChangesAsync();
+            await _applications.ApproveAsync(app, artisan);
             return Ok(new { id = app.ApplicationNo, artisanCode = artisan.ArtisanCode, stallCode = stall?.StallCode });
         }
 
@@ -192,7 +189,7 @@ namespace IMSB.Admin.Controllers
             app.Status = ApplicationStatuses.Rejected;
             app.Reviewer ??= User.Identity?.Name;
             Decide(app, dto!.Remarks);
-            await _applications.SaveChangesAsync();
+            await _applications.UpdateAsync(app);
             return Ok(new { id = app.ApplicationNo });
         }
 
@@ -304,21 +301,23 @@ namespace IMSB.Admin.Controllers
         {
             var apps = await _applications.ExportAsync(q, status, categoryId, district);
 
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(_L["AppID"], _L["Applicant"], _L["Gender"], _L["DateOfBirth"], _L["Mobile"], _L["Email"], _L["AadhaarNumber"],
-                _L["District"], _L["CraftCategory"], _L["YearsOfExperience"], _L["Status"], _L["Submitted"], _L["DaysWaiting"], _L["Reviewer"],
-                _L["DecidedOn"], _L["DecidedBy"], _L["DecisionRemarks"], _L["ArtisanID"], _L["StallAssigned"]));
+            var rows = new List<string?[]>
+            {
+                new string?[] { _L["AppID"], _L["Applicant"], _L["Gender"], _L["DateOfBirth"], _L["Mobile"], _L["Email"], _L["AadhaarNumber"],
+                    _L["District"], _L["CraftCategory"], _L["YearsOfExperience"], _L["Status"], _L["Submitted"], _L["DaysWaiting"], _L["Reviewer"],
+                    _L["DecidedOn"], _L["DecidedBy"], _L["DecisionRemarks"], _L["ArtisanID"], _L["StallAssigned"] }
+            };
             foreach (var a in apps)
             {
                 var waiting = a.DaysWaiting();
-                sb.AppendLine(Row(a.ApplicationNo, a.FullName, a.Gender, Date(a.DateOfBirth), a.Mobile, a.Email, a.MaskedAadhaar,
+                rows.Add(new string?[] { a.ApplicationNo, a.FullName, a.Gender, Date(a.DateOfBirth), a.Mobile, a.Email, a.MaskedAadhaar,
                     a.District, a.Category?.Name, Int(a.YearsOfExperience), StatusLabels.Application(_L, a.Status), Date(a.SubmittedDate),
                     waiting == null ? null : Int(waiting.Value),
-                    a.Reviewer, LocalDate(a.DecidedAt), a.DecidedBy, a.DecisionRemarks, a.ArtisanCode, a.StallCode));
+                    a.Reviewer, LocalDate(a.DecidedAt), a.DecidedBy, a.DecisionRemarks, a.ArtisanCode, a.StallCode });
             }
             var st = status?.Trim().ToUpperInvariant();
             var suffix = !string.IsNullOrEmpty(st) && ApplicationStatuses.All.Contains(st) ? "_" + st.ToLowerInvariant() : "";
-            return Csv(sb, $"applications{suffix}_{DateTime.Now:yyyyMMddHHmmss}.csv");
+            return ExportCsv($"applications{suffix}_{DateTime.Now:yyyyMMddHHmmss}.csv", rows);
         }
     }
 }

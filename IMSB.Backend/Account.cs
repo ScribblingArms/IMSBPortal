@@ -48,5 +48,11 @@ namespace IMSB.Backend
 
         public Task<UserSession?> GetUserSession(Guid sessionId) =>
             _context.UserSessions.AsNoTracking().FirstOrDefaultAsync(s => s.Id == sessionId);
+
+        public async Task RecordLoginAsync(Login login)
+        {
+            login.LastLogin = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+        }
     }
 }

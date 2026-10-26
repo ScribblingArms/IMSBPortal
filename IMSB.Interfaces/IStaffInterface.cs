@@ -27,8 +27,11 @@ namespace IMSB.Interfaces
         /// <summary>email is lower-case.</summary>
         Task<bool> EmailExistsAsync(string email, Guid? exceptId);
 
-        void Add(Staff staff);
-        void Remove(Staff staff);
-        Task SaveChangesAsync();
+        Task AddAsync(Staff staff);
+
+        /// <summary>Saves the changes made to a tracked staff member.</summary>
+        Task UpdateAsync(Staff staff);
+
+        Task RemoveAsync(Staff staff);
     }
 }

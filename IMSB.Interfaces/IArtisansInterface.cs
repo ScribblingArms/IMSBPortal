@@ -32,14 +32,15 @@ namespace IMSB.Interfaces
         Task<bool> AadhaarExistsAsync(string aadhaarHash, Guid exceptId);
         Task<bool> HasStallAsync(Guid artisanId);
 
-        void Add(Artisan artisan);
+        Task AddAsync(Artisan artisan);
+
+        /// <summary>Saves the changes made to a tracked artisan.</summary>
+        Task UpdateAsync(Artisan artisan);
 
         /// <summary>
         /// Deletes the artisan: pending reallocation requests naming her as the new holder are closed with the given
         /// remarks, other requests and applications lose the reference (their snapshots keep the name).
         /// </summary>
         Task DeleteAsync(Artisan artisan, string? user, string closedRemarks);
-
-        Task SaveChangesAsync();
     }
 }

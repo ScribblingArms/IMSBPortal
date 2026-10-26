@@ -143,52 +143,54 @@ namespace IMSB.Admin.Controllers
             var s = await ComputeStatsAsync();
             string Na(int? v) => v?.ToString(CultureInfo.InvariantCulture) ?? _L["NotAvailable"];
 
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(_L["OperationsDashboard"], today.ToString("yyyy-MM-dd")));
-            sb.AppendLine();
-            sb.AppendLine(Row(_L["Summary"]));
-            sb.AppendLine(Row(_L["Metric"], _L["Value"]));
-            sb.AppendLine(Row(_L["TotalStalls"], Int(s.TotalStalls)));
-            sb.AppendLine(Row(_L["OccupiedStalls"], Int(s.OccupiedStalls)));
-            sb.AppendLine(Row(_L["VacantStalls"], Int(s.VacantStalls)));
-            sb.AppendLine(Row(_L["OccupancyRate"], s.OccupancyPct + "%"));
-            sb.AppendLine(Row(_L["TotalArtisans"], Na(s.TotalArtisans)));
-            sb.AppendLine(Row(_L["TodaysSales"], Money(s.TodaySales)));
-            sb.AppendLine(Row(_L["ChangeVsYesterday"], s.SalesChangePct == null ? _L["NotAvailable"] : s.SalesChangePct.Value.ToString("0.0", CultureInfo.InvariantCulture) + "%"));
-            sb.AppendLine(Row(_L["LowStockItems"], Int(s.LowStockItems)));
-            sb.AppendLine(Row(_L["OutOfStock"], Int(s.OutOfStockItems)));
-            sb.AppendLine(Row(_L["PendingApplications"], Na(s.PendingApplications)));
-            sb.AppendLine(Row(_L["TotalStaff"], Int(s.TotalStaff)));
+            var rows = new List<string?[]>
+            {
+                new string?[] { _L["OperationsDashboard"], today.ToString("yyyy-MM-dd") },
+                Array.Empty<string?>(),
+                new string?[] { _L["Summary"] },
+                new string?[] { _L["Metric"], _L["Value"] },
+                new string?[] { _L["TotalStalls"], Int(s.TotalStalls) },
+                new string?[] { _L["OccupiedStalls"], Int(s.OccupiedStalls) },
+                new string?[] { _L["VacantStalls"], Int(s.VacantStalls) },
+                new string?[] { _L["OccupancyRate"], s.OccupancyPct + "%" },
+                new string?[] { _L["TotalArtisans"], Na(s.TotalArtisans) },
+                new string?[] { _L["TodaysSales"], Money(s.TodaySales) },
+                new string?[] { _L["ChangeVsYesterday"], s.SalesChangePct == null ? _L["NotAvailable"] : s.SalesChangePct.Value.ToString("0.0", CultureInfo.InvariantCulture) + "%" },
+                new string?[] { _L["LowStockItems"], Int(s.LowStockItems) },
+                new string?[] { _L["OutOfStock"], Int(s.OutOfStockItems) },
+                new string?[] { _L["PendingApplications"], Na(s.PendingApplications) },
+                new string?[] { _L["TotalStaff"], Int(s.TotalStaff) }
+            };
 
-            sb.AppendLine();
-            sb.AppendLine(Row(_L["SalesTrend"], string.Format(_L["LastNDays"], period)));
-            sb.AppendLine(Row(_L["Date"], _L["Revenue"]));
+            rows.Add(Array.Empty<string?>());
+            rows.Add(new string?[] { _L["SalesTrend"], string.Format(_L["LastNDays"], period) });
+            rows.Add(new string?[] { _L["Date"], _L["Revenue"] });
             foreach (var (day, revenue) in await _dashboard.DailyTrendAsync(today, period))
-                sb.AppendLine(Row(day.ToString("yyyy-MM-dd"), Money(revenue)));
+                rows.Add(new string?[] { day.ToString("yyyy-MM-dd"), Money(revenue) });
 
-            sb.AppendLine();
-            sb.AppendLine(Row(_L["CategoryWiseSales"], monthStart.ToString("yyyy-MM")));
-            sb.AppendLine(Row(_L["Category"], _L["QtySold"], _L["Revenue"]));
+            rows.Add(Array.Empty<string?>());
+            rows.Add(new string?[] { _L["CategoryWiseSales"], monthStart.ToString("yyyy-MM") });
+            rows.Add(new string?[] { _L["Category"], _L["QtySold"], _L["Revenue"] });
             foreach (var (category, revenue, qty) in await _dashboard.ByCategoryAsync(monthStart, today.AddDays(1)))
-                sb.AppendLine(Row(category, Int(qty), Money(revenue)));
+                rows.Add(new string?[] { category, Int(qty), Money(revenue) });
 
             var (top, low) = RankStalls(await _dashboard.StallPerformanceAsync(monthStart, today.AddDays(1)));
             foreach (var (title, list) in new[] { (_L["BestPerformingStalls"].Value, top), (_L["LowPerformingStalls"].Value, low) })
             {
-                sb.AppendLine();
-                sb.AppendLine(Row(title, monthStart.ToString("yyyy-MM")));
-                sb.AppendLine(Row(_L["Stall"], _L["Category"], _L["QtySold"], _L["Revenue"]));
-                foreach (var r in list) sb.AppendLine(Row(r.StallCode, r.Category, Int(r.Quantity), Money(r.Revenue)));
+                rows.Add(Array.Empty<string?>());
+                rows.Add(new string?[] { title, monthStart.ToString("yyyy-MM") });
+                rows.Add(new string?[] { _L["Stall"], _L["Category"], _L["QtySold"], _L["Revenue"] });
+                foreach (var r in list) rows.Add(new string?[] { r.StallCode, r.Category, Int(r.Quantity), Money(r.Revenue) });
             }
 
-            sb.AppendLine();
-            sb.AppendLine(Row(_L["LowStockAlerts"]));
-            sb.AppendLine(Row(_L["ProductCode"], _L["ProductName"], _L["Category"], _L["Stall"], _L["CurrentQty"], _L["MinRequired"]));
+            rows.Add(Array.Empty<string?>());
+            rows.Add(new string?[] { _L["LowStockAlerts"] });
+            rows.Add(new string?[] { _L["ProductCode"], _L["ProductName"], _L["Category"], _L["Stall"], _L["CurrentQty"], _L["MinRequired"] });
             var lowStock = await _dashboard.LowStockAsync();
             foreach (var p in lowStock)
-                sb.AppendLine(Row(p.ProductCode, p.Name, p.Category?.Name ?? string.Empty, p.StallCode, Int(p.Quantity), Int(p.MinStock)));
+                rows.Add(new string?[] { p.ProductCode, p.Name, p.Category?.Name ?? string.Empty, p.StallCode, Int(p.Quantity), Int(p.MinStock) });
 
-            return Csv(sb, $"dashboard_report_{today:yyyyMMdd}.csv");
+            return ExportCsv($"dashboard_report_{today:yyyyMMdd}.csv", rows);
         }
     }
 }

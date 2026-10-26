@@ -58,9 +58,17 @@ namespace IMSB.Interfaces
 
         Task<List<string>> ReallocationNumbersAsync();
 
-        void Add(Stall stall);
-        void Remove(Stall stall);
-        void AddReallocation(StallReallocation request);
-        Task SaveChangesAsync();
+        Task AddAsync(Stall stall);
+
+        /// <summary>Saves the changes made to a tracked stall (details, allocation or vacating, with any requests closed by it).</summary>
+        Task UpdateAsync(Stall stall);
+
+        /// <summary>Deletes the stall; its reallocation requests go with it.</summary>
+        Task RemoveAsync(Stall stall);
+
+        Task AddReallocationAsync(StallReallocation request);
+
+        /// <summary>Saves the decided request together with the stall change it made, if any.</summary>
+        Task DecideReallocationAsync(StallReallocation request);
     }
 }

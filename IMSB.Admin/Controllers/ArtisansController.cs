@@ -122,8 +122,7 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = User.Identity?.Name
             };
             Apply(artisan, dto, v);
-            _artisans.Add(artisan);
-            await _artisans.SaveChangesAsync();
+            await _artisans.AddAsync(artisan);
             return Ok(new { code = artisan.ArtisanCode });
         }
 
@@ -140,7 +139,7 @@ namespace IMSB.Admin.Controllers
             Apply(artisan, dto, v);
             artisan.UpdatedAt = DateTime.UtcNow;
             artisan.UpdatedBy = User.Identity?.Name;
-            await _artisans.SaveChangesAsync();
+            await _artisans.UpdateAsync(artisan);
             return Ok(new { code = artisan.ArtisanCode });
         }
 
@@ -255,16 +254,18 @@ namespace IMSB.Admin.Controllers
             var stalls = await _artisans.StallsByArtisanAsync();
             var artisans = await _artisans.FilterAsync(q, status, categoryId, district, stall);
 
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(_L["ArtisanID"], _L["FullName"], _L["Gender"], _L["DateOfBirth"], _L["Mobile"], _L["Email"], _L["AadhaarNumber"],
-                _L["District"], _L["CraftCategory"], _L["YearsOfExperience"], _L["Stall"], _L["Status"], _L["Joined"]));
+            var rows = new List<string?[]>
+            {
+                new string?[] { _L["ArtisanID"], _L["FullName"], _L["Gender"], _L["DateOfBirth"], _L["Mobile"], _L["Email"], _L["AadhaarNumber"],
+                    _L["District"], _L["CraftCategory"], _L["YearsOfExperience"], _L["Stall"], _L["Status"], _L["Joined"] }
+            };
             foreach (var a in artisans)
             {
-                sb.AppendLine(Row(a.ArtisanCode, a.FullName, a.Gender, Date(a.DateOfBirth), a.Mobile, a.Email, a.MaskedAadhaar,
+                rows.Add(new string?[] { a.ArtisanCode, a.FullName, a.Gender, Date(a.DateOfBirth), a.Mobile, a.Email, a.MaskedAadhaar,
                     a.District, a.Category?.Name, Int(a.YearsOfExperience),
-                    stalls.GetValueOrDefault(a.Id), StatusLabels.Artisan(_L, a.Status), Date(a.JoinedDate)));
+                    stalls.GetValueOrDefault(a.Id), StatusLabels.Artisan(_L, a.Status), Date(a.JoinedDate) });
             }
-            return Csv(sb, $"artisans_{DateTime.Now:yyyyMMddHHmmss}.csv");
+            return ExportCsv($"artisans_{DateTime.Now:yyyyMMddHHmmss}.csv", rows);
         }
     }
 }

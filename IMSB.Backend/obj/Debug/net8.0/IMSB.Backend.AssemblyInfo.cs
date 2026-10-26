@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+381c415de3f1920e9f9ce94276307fa67f5f6226")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bba62cdd7ddae84224516f4762f670674de7d9e2")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

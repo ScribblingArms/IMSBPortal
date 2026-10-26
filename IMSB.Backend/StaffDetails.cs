@@ -58,8 +58,18 @@ namespace IMSB.Backend
         public Task<bool> EmailExistsAsync(string email, Guid? exceptId) =>
             _context.Staff.AnyAsync(s => s.Email != null && s.Email.ToLower() == email && s.Id != exceptId);
 
-        public void Add(Staff staff) => _context.Staff.Add(staff);
+        public async Task AddAsync(Staff staff)
+        {
+            _context.Staff.Add(staff);
+            await _context.SaveChangesAsync();
+        }
 
-        public void Remove(Staff staff) => _context.Staff.Remove(staff);
+        public Task UpdateAsync(Staff staff) => _context.SaveChangesAsync();
+
+        public async Task RemoveAsync(Staff staff)
+        {
+            _context.Staff.Remove(staff);
+            await _context.SaveChangesAsync();
+        }
     }
 }

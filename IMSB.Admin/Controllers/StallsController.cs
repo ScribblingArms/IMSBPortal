@@ -84,8 +84,7 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = User.Identity?.Name
             };
             ApplyDetails(stall, dto, categoryId);
-            _stalls.Add(stall);
-            await _stalls.SaveChangesAsync();
+            await _stalls.AddAsync(stall);
             return Ok(new { code = stall.StallCode });
         }
 
@@ -117,7 +116,7 @@ namespace IMSB.Admin.Controllers
             stall.Status = status;
             ApplyDetails(stall, dto, categoryId);
             Touch(stall);
-            await _stalls.SaveChangesAsync();
+            await _stalls.UpdateAsync(stall);
             return Ok(new { code = stall.StallCode });
         }
 
@@ -150,8 +149,7 @@ namespace IMSB.Admin.Controllers
             var products = await _stalls.ProductCountAsync(stall.StallCode);
             if (products > 0) return ErrorResult("stall", string.Format(_L["ValStallHasProducts"], products));
 
-            _stalls.Remove(stall);   // its reallocation requests go with it
-            await _stalls.SaveChangesAsync();
+            await _stalls.RemoveAsync(stall);   // its reallocation requests go with it
             return Ok(new { code = id });
         }
 
@@ -189,7 +187,7 @@ namespace IMSB.Admin.Controllers
             AssignArtisan(stall!, artisan!, allotted, agreementEnd, categoryId ?? artisan!.CategoryId);
             stall!.MonthlyRent = dto.MonthlyRent ?? stall.MonthlyRent;
             stall.Remarks = Clean(dto.Remarks) ?? stall.Remarks;
-            await _stalls.SaveChangesAsync();
+            await _stalls.UpdateAsync(stall);
             return Ok(new { code = stall.StallCode, artisanCode = artisan!.ArtisanCode });
         }
 
@@ -233,7 +231,7 @@ namespace IMSB.Admin.Controllers
             ClearArtisan(stall);
             foreach (var r in await _stalls.OpenReallocationsAsync(stall.Id))
                 Decide(r, ReallocationStatuses.Rejected, _L["ClosedStallVacated"]);
-            await _stalls.SaveChangesAsync();
+            await _stalls.UpdateAsync(stall);
             return Ok(new { code = stall.StallCode });
         }
 
@@ -294,8 +292,7 @@ namespace IMSB.Admin.Controllers
                 RequestedDate = requested,
                 CreatedBy = User.Identity?.Name
             };
-            _stalls.AddReallocation(request);
-            await _stalls.SaveChangesAsync();
+            await _stalls.AddReallocationAsync(request);
             return Ok(new { id = request.RequestNo });
         }
 
@@ -324,7 +321,7 @@ namespace IMSB.Admin.Controllers
                 ClearArtisan(stall);
             }
             Decide(request, ReallocationStatuses.Approved, dto?.Remarks);
-            await _stalls.SaveChangesAsync();
+            await _stalls.DecideReallocationAsync(request);
             return Ok(new { id = request.RequestNo, code = stall.StallCode });
         }
 
@@ -336,7 +333,7 @@ namespace IMSB.Admin.Controllers
             if (request == null) return NotFound();
             if (request.Status != ReallocationStatuses.Pending) return ErrorResult("request", _L["ValReallocationDecided"]);
             Decide(request, ReallocationStatuses.Rejected, dto?.Remarks);
-            await _stalls.SaveChangesAsync();
+            await _stalls.DecideReallocationAsync(request);
             return Ok(new { id = request.RequestNo });
         }
 
@@ -347,16 +344,18 @@ namespace IMSB.Admin.Controllers
         {
             var stalls = await _stalls.FilterAsync(q, status, categoryId, block);
 
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(_L["StallID"], _L["StallName"], _L["BlockZone"], _L["Row"], _L["Location"], _L["Status"], _L["Category"],
-                _L["ArtisanID"], _L["Artisan"], _L["AllottedDate"], _L["AgreementEndDate"], _L["MonthlyRent"], _L["Remarks"]));
+            var rows = new List<string?[]>
+            {
+                new string?[] { _L["StallID"], _L["StallName"], _L["BlockZone"], _L["Row"], _L["Location"], _L["Status"], _L["Category"],
+                    _L["ArtisanID"], _L["Artisan"], _L["AllottedDate"], _L["AgreementEndDate"], _L["MonthlyRent"], _L["Remarks"] }
+            };
             foreach (var s in stalls)
             {
-                sb.AppendLine(Row(s.StallCode, s.Name, s.Block, s.RowLabel, s.Location, StatusLabels.Stall(_L, s.Status), s.Category?.Name,
+                rows.Add(new string?[] { s.StallCode, s.Name, s.Block, s.RowLabel, s.Location, StatusLabels.Stall(_L, s.Status), s.Category?.Name,
                     s.Artisan?.ArtisanCode, s.Artisan?.FullName, Date(s.AllottedDate), Date(s.AgreementEndDate),
-                    s.MonthlyRent?.ToString("0.00", CultureInfo.InvariantCulture), s.Remarks));
+                    s.MonthlyRent?.ToString("0.00", CultureInfo.InvariantCulture), s.Remarks });
             }
-            return Csv(sb, $"stalls_{DateTime.Now:yyyyMMddHHmmss}.csv");
+            return ExportCsv($"stalls_{DateTime.Now:yyyyMMddHHmmss}.csv", rows);
         }
     }
 }

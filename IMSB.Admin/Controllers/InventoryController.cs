@@ -121,10 +121,9 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = user
             };
             // the opening quantity is the first entry in the stock history
-            _inventory.AddMovement(product.ToMovement(StockMovementTypes.Initial, dto.Quantity, dto.Quantity, DateTime.Today, null, user));
+            var opening = product.ToMovement(StockMovementTypes.Initial, dto.Quantity, dto.Quantity, DateTime.Today, null, user);
             product.Quantity = dto.Quantity;
-            _inventory.Add(product);
-            await _inventory.SaveChangesAsync();
+            await _inventory.AddAsync(product, opening);
             return Ok(new { code = product.ProductCode });
         }
 
@@ -146,7 +145,7 @@ namespace IMSB.Admin.Controllers
             product.UnitPrice = dto.UnitPrice;
             product.UpdatedAt = DateTime.UtcNow;
             product.UpdatedBy = User.Identity?.Name;
-            await _inventory.SaveChangesAsync();
+            await _inventory.UpdateAsync(product);
             return Ok(new { code = product.ProductCode });
         }
 
@@ -196,12 +195,12 @@ namespace IMSB.Admin.Controllers
 
             var user = User.Identity?.Name;
             var p = product!;
-            _inventory.AddMovement(p.ToMovement(type, dto.Quantity, after!.Value, date,
-                string.IsNullOrWhiteSpace(dto.Remarks) ? null : dto.Remarks.Trim(), user));
+            var movement = p.ToMovement(type, dto.Quantity, after!.Value, date,
+                string.IsNullOrWhiteSpace(dto.Remarks) ? null : dto.Remarks.Trim(), user);
             p.Quantity = after.Value;
             p.UpdatedAt = DateTime.UtcNow;
             p.UpdatedBy = user;
-            await _inventory.SaveChangesAsync();
+            await _inventory.UpdateStockAsync(p, movement);
 
             return Ok(new { code = p.ProductCode, quantity = p.Quantity, status = p.StockStatus });
         }
@@ -212,14 +211,16 @@ namespace IMSB.Admin.Controllers
             var products = await _inventory.FilterAsync(q, categoryId, status);
             var catNames = await _inventory.CategoryNamesAsync();
 
-            var sb = new StringBuilder();
-            sb.AppendLine("ProductCode,ProductName,Category,Stall,Quantity,MinStock,UnitPrice,Status");
+            var rows = new List<string?[]>
+            {
+                new string?[] { "ProductCode", "ProductName", "Category", "Stall", "Quantity", "MinStock", "UnitPrice", "Status" }
+            };
             foreach (var p in products)
             {
-                sb.AppendLine(Row(p.ProductCode, p.Name, catNames.GetValueOrDefault(p.CategoryId), p.StallCode, Int(p.Quantity), Int(p.MinStock),
-                    Money(p.UnitPrice), StatusLabels.Stock(_L, p.StockStatus)));
+                rows.Add(new string?[] { p.ProductCode, p.Name, catNames.GetValueOrDefault(p.CategoryId), p.StallCode, Int(p.Quantity), Int(p.MinStock),
+                    Money(p.UnitPrice), StatusLabels.Stock(_L, p.StockStatus) });
             }
-            return Csv(sb, $"inventory_{DateTime.UtcNow:yyyyMMddHHmmss}.csv");
+            return ExportCsv($"inventory_{DateTime.UtcNow:yyyyMMddHHmmss}.csv", rows);
         }
 
         // Errors are keyed by the snake_case field names the forms use for their err_* elements

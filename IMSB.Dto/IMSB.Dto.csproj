@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,6 +9,18 @@
   <ItemGroup>
     <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="8.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.31" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.31" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.31">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- connection string for the EF tools (dotnet ef migrations add / database update run against this project) -->
+    <!-- copied under its own name so it never replaces IMSB.Admin's appsettings.json in the web app's output -->
+    <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" TargetPath="IMSB.Dto.appsettings.json" />
   </ItemGroup>
 
 </Project>

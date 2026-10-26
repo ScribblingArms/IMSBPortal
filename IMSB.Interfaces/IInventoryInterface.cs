@@ -25,12 +25,16 @@ namespace IMSB.Interfaces
         /// <summary>Tracked product by code.</summary>
         Task<Product?> FindAsync(string productCode);
 
-        void Add(Product product);
-        void AddMovement(StockMovement movement);
+        /// <summary>Inserts the product with its opening stock movement.</summary>
+        Task AddAsync(Product product, StockMovement opening);
+
+        /// <summary>Saves the changes made to a tracked product.</summary>
+        Task UpdateAsync(Product product);
+
+        /// <summary>Records the stock movement and saves the product's new quantity.</summary>
+        Task UpdateStockAsync(Product product, StockMovement movement);
 
         /// <summary>Deletes the product; its stock history and sale lines keep their snapshot of it.</summary>
         Task DeleteAsync(Product product);
-
-        Task SaveChangesAsync();
     }
 }

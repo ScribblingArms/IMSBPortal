@@ -53,9 +53,20 @@ namespace IMSB.Backend
 
         public Task<Product?> FindAsync(string productCode) => _context.Products.FirstOrDefaultAsync(p => p.ProductCode == productCode);
 
-        public void Add(Product product) => _context.Products.Add(product);
+        public async Task AddAsync(Product product, StockMovement opening)
+        {
+            _context.StockMovements.Add(opening);
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+        }
 
-        public void AddMovement(StockMovement movement) => _context.StockMovements.Add(movement);
+        public Task UpdateAsync(Product product) => _context.SaveChangesAsync();
+
+        public async Task UpdateStockAsync(Product product, StockMovement movement)
+        {
+            _context.StockMovements.Add(movement);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task DeleteAsync(Product product)
         {

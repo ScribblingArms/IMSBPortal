@@ -225,8 +225,7 @@ namespace IMSB.Admin.Controllers
             await HttpContext.SignInAsync("IMSB.Cookie", claimsPrincipal, authProperties);
 
             // update last login
-            login.LastLogin = DateTime.UtcNow;
-            await _account.SaveChangesAsync();
+            await _account.RecordLoginAsync(login);
 
             if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
             {

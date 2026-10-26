@@ -81,7 +81,13 @@ namespace IMSB.Backend
 
         public Task<bool> HasStallAsync(Guid artisanId) => _context.Stalls.AnyAsync(s => s.ArtisanId == artisanId);
 
-        public void Add(Artisan artisan) => _context.Artisans.Add(artisan);
+        public async Task AddAsync(Artisan artisan)
+        {
+            _context.Artisans.Add(artisan);
+            await _context.SaveChangesAsync();
+        }
+
+        public Task UpdateAsync(Artisan artisan) => _context.SaveChangesAsync();
 
         public async Task DeleteAsync(Artisan artisan, string? user, string closedRemarks)
         {

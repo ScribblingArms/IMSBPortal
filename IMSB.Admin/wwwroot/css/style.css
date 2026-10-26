@@ -268,9 +268,12 @@ ul { list-style: none; }
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  /* without this a wide table stretches the whole page past the window instead of scrolling inside its card */
+  min-width: 0;
   transition: margin-left var(--transition);
 }
 .sidebar.collapsed ~ .main-content { margin-left: 68px; }
+.card { min-width: 0; }
 
 /* ── Top Header ─────────────────────────────────────────────── */
 .top-header {
@@ -307,9 +310,19 @@ ul { list-style: none; }
 }
 .header-breadcrumb i { font-size: .65rem; }
 
+.header-breadcrumb { min-width: 0; white-space: nowrap; overflow: hidden; }
 .header-actions {
   display: flex; align-items: center; gap: 8px;
+  min-width: 0;
 }
+.header-actions > form, .header-actions > a, .header-actions > .header-btn { flex-shrink: 0; }
+.header-user { min-width: 0; }
+.header-user-avatar { flex-shrink: 0; }
+.header-user > div:last-child { min-width: 0; }
+.header-user-name, .header-user-role {
+  max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+@media (max-width: 900px) { .header-user > div:last-child { display: none; } }
 
 .header-btn {
   background: none; border: none;

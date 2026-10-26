@@ -32,19 +32,6 @@
         @L["LoginGovtStrip"]
     </div>
 
-    <!-- Language -->
-    <form asp-controller="Language" asp-action="SetLanguage" method="post" style="position:fixed;top:42px;right:20px;z-index:10">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
-        <select name="culture" aria-label="@L["Language"]" onchange="this.form.submit()"
-                style="font-family:inherit;font-size:.78rem;padding:6px 10px;border-radius:8px;border:1px solid #d6dce8;background:#fff">
-            <option value="en-US" selected="@(lang == "en")">English</option>
-            <option value="ta-IN" selected="@(lang == "ta")">தமிழ்</option>
-            <option value="te-IN" selected="@(lang == "te")">తెలుగు</option>
-            <option value="hi-IN" selected="@(lang == "hi")">हिन्दी</option>
-        </select>
-    </form>
-
     <!-- Login Wrapper -->
     <div class="login-wrapper">
         <div class="login-container">

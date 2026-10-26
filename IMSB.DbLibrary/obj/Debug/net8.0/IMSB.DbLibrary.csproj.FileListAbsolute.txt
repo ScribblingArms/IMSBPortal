@@ -1,0 +1,12 @@
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\bin\Debug\net8.0\IMSB.DbLibrary.deps.json
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\bin\Debug\net8.0\IMSB.DbLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\bin\Debug\net8.0\IMSB.DbLibrary.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\IMSB.DbLibrary.GeneratedMSBuildEditorConfig.editorconfig
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\IMSB.DbLibrary.AssemblyInfoInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\IMSB.DbLibrary.AssemblyInfo.cs
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\IMSB.DbLibrary.csproj.CoreCompileInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\IMSB.DbLibrary.sourcelink.json
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\IMSB.DbLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\refint\IMSB.DbLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\IMSB.DbLibrary.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.DbLibrary\obj\Debug\net8.0\ref\IMSB.DbLibrary.dll

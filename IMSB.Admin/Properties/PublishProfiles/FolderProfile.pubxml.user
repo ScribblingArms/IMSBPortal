@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>K:\IMSBDeploy</_PublishTargetUrl>
+    <History>True|2026-10-25T15:06:55.1580590Z||;True|2026-10-25T20:05:29.3810967+05:30||;True|2026-10-25T19:21:47.6783516+05:30||;False|2026-10-25T19:20:17.4928550+05:30||;True|2026-10-25T18:20:54.3763026+05:30||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Server=103.24.200.99%3bDatabase=IMSB_DB%3bUser Id=IMSB_DB_USER%3bPassword=Aud9IfRM70sD2riRX8U0q0lp%3bTrustServerCertificate=True%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\bin\Release\net8.0\IMSB.Dto.appsettings.json
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\bin\Release\net8.0\IMSB.Dto.deps.json
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\bin\Release\net8.0\IMSB.Dto.runtimeconfig.json
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\bin\Release\net8.0\IMSB.Dto.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\bin\Release\net8.0\IMSB.Dto.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.csproj.AssemblyReference.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.GeneratedMSBuildEditorConfig.editorconfig
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.AssemblyInfoInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.AssemblyInfo.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.csproj.CoreCompileInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.sourcelink.json
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\refint\IMSB.Dto.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\IMSB.Dto.genruntimeconfig.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Release\net8.0\ref\IMSB.Dto.dll

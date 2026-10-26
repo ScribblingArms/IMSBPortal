@@ -1,0 +1,59 @@
+/* Attendance page (Views/Attendance/Index.cshtml); builds on the .att-* / .week-* rules in applications.css */
+
+.stat-card.teal::before { background: #0d9488; }
+.stat-card.teal .stat-icon { background: #ccfbf1; color: #0d9488; }
+
+.att-week-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.week-day.future { opacity: .45; cursor: not-allowed; }
+.week-day.future:hover { border-color: var(--border); background: var(--surface); }
+
+/* sheet: dot, staff, department, in, out, hours, OT, status, actions */
+.att-sheet { overflow-x: auto; }
+.att-sheet .att-entry-grid,
+.att-sheet .att-header-grid {
+    grid-template-columns: 36px minmax(170px, 1.8fr) minmax(120px, 1fr) 120px 120px 64px 70px 130px 64px;
+    min-width: 960px;
+}
+.att-row .form-group { margin: 0; }
+.att-row .form-control { padding: 5px 8px; font-size: .75rem; }
+.att-row.changed { background: var(--warning-light); }
+.att-row.hidden { display: none; }
+.att-name { font-weight: 600; }
+.att-sub { font-size: .68rem; color: var(--text-muted); }
+.att-hours { font-weight: 700; }
+.att-actions { display: flex; gap: 2px; justify-content: flex-end; }
+.att-status-dot.halfday { background: #ccfbf1; color: #0d9488; }
+.att-status-dot.none { background: var(--bg); color: var(--text-muted); }
+.att-empty { padding: 28px 14px; text-align: center; color: var(--text-muted); font-size: .82rem; }
+
+.att-unsaved { margin-right: auto; font-size: .75rem; font-weight: 600; color: var(--warning); display: inline-flex; align-items: center; gap: 6px; }
+.att-unsaved i { font-size: .45rem; }
+
+.badge.badge-halfday { background: #ccfbf1; color: #0d9488; }
+
+/* Department-wise cards */
+.att-dept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+.att-dept-counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; text-align: center; }
+.att-dept-counts .n { font-size: 1.25rem; font-weight: 800; }
+.att-dept-counts .l { font-size: .66rem; color: var(--text-muted); }
+.att-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.att-bar > div { height: 100%; border-radius: 4px; transition: width .6s ease; }
+.att-dept-foot { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .7rem; color: var(--text-muted); margin-top: 8px; }
+
+.att-detail { display: grid; grid-template-columns: 140px 1fr; gap: 8px 14px; font-size: .82rem; }
+.att-detail dt { color: var(--text-muted); }
+.att-detail dd { margin: 0; font-weight: 600; }
+
+@media (max-width: 700px) {
+    .week-calendar { gap: 4px; }
+    .week-day { padding: 8px 2px; }
+    .att-detail { grid-template-columns: 1fr; }
+}

@@ -38,9 +38,14 @@ namespace IMSB.Interfaces
         /// <summary>Tracked stall by code.</summary>
         Task<Stall?> FindStallAsync(string stallCode);
 
-        void Add(ArtisanApplication application);
-        void Remove(ArtisanApplication application);
-        void AddArtisan(Artisan artisan);
-        Task SaveChangesAsync();
+        Task AddAsync(ArtisanApplication application);
+
+        /// <summary>Saves the changes made to a tracked application.</summary>
+        Task UpdateAsync(ArtisanApplication application);
+
+        Task RemoveAsync(ArtisanApplication application);
+
+        /// <summary>Registers the new artisan and saves the approved application, together with the stall allotted with it.</summary>
+        Task ApproveAsync(ArtisanApplication application, Artisan artisan);
     }
 }

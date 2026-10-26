@@ -123,13 +123,13 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = user
             };
             SetItems(entry, lines);
-            _sales.Add(entry);
 
             // auto stock deduction
-            foreach (var g in lines.GroupBy(l => l.Product.Id))
-                Move(g.First().Product, StockMovementTypes.Sale, g.Sum(l => l.Quantity), soldAt, entry.EntryNo, user);
+            var movements = lines.GroupBy(l => l.Product.Id)
+                .Select(g => Move(g.First().Product, StockMovementTypes.Sale, g.Sum(l => l.Quantity), soldAt, entry.EntryNo, user))
+                .ToList();
 
-            await _sales.SaveChangesAsync();
+            await _sales.AddAsync(entry, movements);
             return Ok(new { entryNo = entry.EntryNo, total = entry.TotalAmount });
         }
 
@@ -149,23 +149,23 @@ namespace IMSB.Admin.Controllers
             var oldQty = SoldPerProduct(entry);
             var newQty = lines.GroupBy(l => l.Product.Id).ToDictionary(g => g.Key, g => g.Sum(l => l.Quantity));
             var products = await _sales.ProductsByIdAsync(oldQty.Keys.Union(newQty.Keys));
+            var movements = new List<StockMovement>();
             foreach (var (productId, product) in products)
             {
                 var delta = newQty.GetValueOrDefault(productId) - oldQty.GetValueOrDefault(productId);
-                if (delta > 0) Move(product, StockMovementTypes.Sale, delta, soldAt, entry.EntryNo, user);
-                else if (delta < 0) Move(product, StockMovementTypes.SaleReversal, -delta, soldAt, entry.EntryNo, user);
+                if (delta > 0) movements.Add(Move(product, StockMovementTypes.Sale, delta, soldAt, entry.EntryNo, user));
+                else if (delta < 0) movements.Add(Move(product, StockMovementTypes.SaleReversal, -delta, soldAt, entry.EntryNo, user));
             }
             // products deleted since the sale are not in the dictionary: nothing to put back
 
-            _sales.RemoveItems(entry.Items);
+            var oldItems = entry.Items.ToList();
             entry.Items.Clear();
             SetItems(entry, lines);
-            _sales.AddItems(entry.Items);
             entry.SoldAt = soldAt;
             entry.Remarks = CleanRemarks(dto.Remarks);
             entry.UpdatedAt = DateTime.UtcNow;
             entry.UpdatedBy = user;
-            await _sales.SaveChangesAsync();
+            await _sales.UpdateAsync(entry, oldItems, movements);
             return Ok(new { entryNo = entry.EntryNo, total = entry.TotalAmount });
         }
 
@@ -179,11 +179,11 @@ namespace IMSB.Admin.Controllers
             // put the sold quantities back into stock
             var user = User.Identity?.Name;
             var sold = SoldPerProduct(entry);
-            foreach (var (productId, product) in await _sales.ProductsByIdAsync(sold.Keys))
-                Move(product, StockMovementTypes.SaleReversal, sold[productId], entry.SoldAt, entry.EntryNo, user);
+            var movements = (await _sales.ProductsByIdAsync(sold.Keys))
+                .Select(p => Move(p.Value, StockMovementTypes.SaleReversal, sold[p.Key], entry.SoldAt, entry.EntryNo, user))
+                .ToList();
 
-            _sales.Remove(entry);
-            await _sales.SaveChangesAsync();
+            await _sales.DeleteAsync(entry, movements);
             return Ok(new { entryNo = id });
         }
 
@@ -198,16 +198,18 @@ namespace IMSB.Admin.Controllers
 
             var items = await _sales.ExportRowsAsync(start, end, stall);
 
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(_L["EntryNo"], _L["Date"], _L["Time"], _L["ProductCode"], _L["ProductName"], _L["Category"], _L["Stall"],
-                _L["QtySold"], _L["UnitPrice"], _L["LineTotal"], _L["UpdatedBy"]));
+            var exportRows = new List<string?[]>
+            {
+                new string?[] { _L["EntryNo"], _L["Date"], _L["Time"], _L["ProductCode"], _L["ProductName"], _L["Category"], _L["Stall"],
+                    _L["QtySold"], _L["UnitPrice"], _L["LineTotal"], _L["UpdatedBy"] }
+            };
             foreach (var i in items.OrderBy(i => i.SoldAt).ThenBy(i => i.EntryNo))
             {
-                sb.AppendLine(Row(i.EntryNo, i.SoldAt.ToString("yyyy-MM-dd"), i.SoldAt.ToString("HH:mm"), i.ProductCode, i.ProductName, i.CategoryName, i.StallCode,
-                    Int(i.Quantity), Money(i.UnitPrice), Money(i.LineTotal), i.CreatedBy ?? string.Empty));
+                exportRows.Add(new string?[] { i.EntryNo, i.SoldAt.ToString("yyyy-MM-dd"), i.SoldAt.ToString("HH:mm"), i.ProductCode, i.ProductName, i.CategoryName, i.StallCode,
+                    Int(i.Quantity), Money(i.UnitPrice), Money(i.LineTotal), i.CreatedBy ?? string.Empty });
             }
-            sb.AppendLine(Row(_L["Total"], "", "", "", "", "", "", Int(items.Sum(i => i.Quantity)), "", Money(items.Sum(i => i.LineTotal)), ""));
-            return Csv(sb, $"sales_{start:yyyyMMdd}_{end.AddDays(-1):yyyyMMdd}.csv");
+            exportRows.Add(new string?[] { _L["Total"], "", "", "", "", "", "", Int(items.Sum(i => i.Quantity)), "", Money(items.Sum(i => i.LineTotal)), "" });
+            return ExportCsv($"sales_{start:yyyyMMdd}_{end.AddDays(-1):yyyyMMdd}.csv", exportRows);
         }
 
         [HttpGet]
@@ -218,14 +220,16 @@ namespace IMSB.Admin.Controllers
             if (errors.Count > 0) return BadRequest(new { errors });
             var rows = await _sales.ProductReportRowsAsync(q, categoryId, stall, fromDay, toDay);
 
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(_L["Date"], _L["ProductCode"], _L["ProductName"], _L["Category"], _L["Stall"], _L["QtySold"], _L["UnitPrice"], _L["Revenue"], _L["StockLeft"]));
+            var exportRows = new List<string?[]>
+            {
+                new string?[] { _L["Date"], _L["ProductCode"], _L["ProductName"], _L["Category"], _L["Stall"], _L["QtySold"], _L["UnitPrice"], _L["Revenue"], _L["StockLeft"] }
+            };
             foreach (var r in rows)
             {
-                sb.AppendLine(Row(r.Date, r.Code, r.Name, r.CategoryName, r.StallCode, Int(r.Quantity),
-                    Money(r.UnitPrice), Money(r.Revenue), r.StockLeft?.ToString(CultureInfo.InvariantCulture) ?? string.Empty));
+                exportRows.Add(new string?[] { r.Date, r.Code, r.Name, r.CategoryName, r.StallCode, Int(r.Quantity),
+                    Money(r.UnitPrice), Money(r.Revenue), r.StockLeft?.ToString(CultureInfo.InvariantCulture) ?? string.Empty });
             }
-            return Csv(sb, $"product_sales_{DateTime.Now:yyyyMMddHHmmss}.csv");
+            return ExportCsv($"product_sales_{DateTime.Now:yyyyMMddHHmmss}.csv", exportRows);
         }
 
         // ── helpers ──────────────────────────────────────────────────────
@@ -298,14 +302,15 @@ namespace IMSB.Admin.Controllers
             entry.TotalAmount = entry.Items.Sum(i => i.LineTotal);
         }
 
-        /// <summary>Changes the product's quantity and writes the matching stock history row.</summary>
-        private void Move(Product product, string type, int quantity, DateTime soldAt, string entryNo, string? user)
+        /// <summary>Changes the product's quantity and returns the matching stock history row (saved by the backend).</summary>
+        private static StockMovement Move(Product product, string type, int quantity, DateTime soldAt, string entryNo, string? user)
         {
             var after = type == StockMovementTypes.Sale ? product.Quantity - quantity : product.Quantity + quantity;
-            _sales.AddMovement(product.ToMovement(type, quantity, after, soldAt.Date, entryNo, user));
+            var movement = product.ToMovement(type, quantity, after, soldAt.Date, entryNo, user);
             product.Quantity = after;
             product.UpdatedAt = DateTime.UtcNow;
             product.UpdatedBy = user;
+            return movement;
         }
 
         private static string? CleanRemarks(string? remarks) => string.IsNullOrWhiteSpace(remarks) ? null : remarks.Trim();

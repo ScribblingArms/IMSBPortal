@@ -13,8 +13,6 @@ namespace IMSB.Backend
             _context = context;
         }
 
-        public Task SaveChangesAsync() => _context.SaveChangesAsync();
-
         /// <summary>Product / craft categories in display order.</summary>
         public Task<List<ProductCategory>> CategoriesAsync() =>
             _context.ProductCategories.AsNoTracking().OrderBy(c => c.SortOrder).ThenBy(c => c.Name).ToListAsync();

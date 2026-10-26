@@ -1,0 +1,12 @@
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Debug\net8.0\IMSB.Models.deps.json
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Debug\net8.0\IMSB.Models.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Debug\net8.0\IMSB.Models.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\IMSB.Models.GeneratedMSBuildEditorConfig.editorconfig
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\IMSB.Models.AssemblyInfoInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\IMSB.Models.AssemblyInfo.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\IMSB.Models.csproj.CoreCompileInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\IMSB.Models.sourcelink.json
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\IMSB.Models.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\refint\IMSB.Models.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\IMSB.Models.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Debug\net8.0\ref\IMSB.Models.dll

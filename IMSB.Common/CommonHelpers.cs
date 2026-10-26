@@ -48,6 +48,13 @@ namespace IMSB.Common
 
         public static string Row(params string?[] values) => string.Join(',', values.Select(CsvEscape));
 
+        public static FileContentResult ExportCsv(string fileName, IEnumerable<IEnumerable<string?>> rows)
+        {
+            var sb = new StringBuilder();
+            foreach (var row in rows) sb.AppendLine(Row(row.ToArray()));
+            return Csv(sb, fileName);
+        }
+
         public static FileContentResult Csv(StringBuilder sb, string fileName)
         {
             // UTF-8 BOM so Excel shows non-ASCII text correctly

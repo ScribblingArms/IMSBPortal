@@ -153,7 +153,7 @@ namespace IMSB.Admin.Controllers
                 ViewData["Title"] = doc.Title;
                 return View("Print", doc);
             }
-            return Csv(ToCsv(doc), $"report_{reportId}_{period.MonthStart:yyyyMM}_{DateTime.Now:yyyyMMddHHmmss}.csv");
+            return ExportCsv($"report_{reportId}_{period.MonthStart:yyyyMM}_{DateTime.Now:yyyyMMddHHmmss}.csv", ToCsv(doc));
         }
 
         internal async Task<ReportDocument> BuildAsync(string id, ReportPeriod period, string? categoryId, string? q, string? status, string? block)
@@ -277,21 +277,23 @@ namespace IMSB.Admin.Controllers
             };
         }
 
-        internal StringBuilder ToCsv(ReportDocument doc)
+        internal List<string?[]> ToCsv(ReportDocument doc)
         {
-            var sb = new StringBuilder();
-            sb.AppendLine(Row(doc.Title, doc.Period));
-            sb.AppendLine(Row(_L["GeneratedOn"], doc.GeneratedAt.ToString("yyyy-MM-dd HH:mm"), doc.GeneratedBy));
+            var rows = new List<string?[]>
+            {
+                new string?[] { doc.Title, doc.Period },
+                new string?[] { _L["GeneratedOn"], doc.GeneratedAt.ToString("yyyy-MM-dd HH:mm"), doc.GeneratedBy }
+            };
             foreach (var t in doc.Tables)
             {
-                sb.AppendLine();
-                sb.AppendLine(Row(t.Title));
-                sb.AppendLine(Row(t.Headers));
-                foreach (var r in t.Rows) sb.AppendLine(Row(r));
-                if (t.Rows.Count == 0) sb.AppendLine(Row(_L["NoDataForPeriod"]));
-                if (t.Note != null) sb.AppendLine(Row(t.Note));
+                rows.Add(Array.Empty<string?>());
+                rows.Add(new string?[] { t.Title });
+                rows.Add(t.Headers);
+                rows.AddRange(t.Rows);
+                if (t.Rows.Count == 0) rows.Add(new string?[] { _L["NoDataForPeriod"] });
+                if (t.Note != null) rows.Add(new string?[] { t.Note });
             }
-            return sb;
+            return rows;
         }
     }
 }

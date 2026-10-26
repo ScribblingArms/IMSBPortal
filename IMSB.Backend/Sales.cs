@@ -128,16 +128,28 @@ namespace IMSB.Backend
             return $"SAL-{next:D6}";
         }
 
-        public void Add(SalesEntry entry) => _context.SalesEntries.Add(entry);
+        public async Task AddAsync(SalesEntry entry, IEnumerable<StockMovement> movements)
+        {
+            _context.SalesEntries.Add(entry);
+            _context.StockMovements.AddRange(movements);
+            await _context.SaveChangesAsync();
+        }
 
-        public void Remove(SalesEntry entry) => _context.SalesEntries.Remove(entry);
+        public async Task UpdateAsync(SalesEntry entry, IEnumerable<SaleItem> oldItems, IEnumerable<StockMovement> movements)
+        {
+            _context.SaleItems.RemoveRange(oldItems);
+            // new lines already carry a Guid key, so they must be marked as inserts explicitly;
+            // found only through the navigation EF would treat them as existing rows and UPDATE them
+            _context.SaleItems.AddRange(entry.Items);
+            _context.StockMovements.AddRange(movements);
+            await _context.SaveChangesAsync();
+        }
 
-        // new lines already carry a Guid key, so they must be marked as inserts explicitly;
-        // found only through the navigation EF would treat them as existing rows and UPDATE them
-        public void AddItems(IEnumerable<SaleItem> items) => _context.SaleItems.AddRange(items);
-
-        public void RemoveItems(IEnumerable<SaleItem> items) => _context.SaleItems.RemoveRange(items);
-
-        public void AddMovement(StockMovement movement) => _context.StockMovements.Add(movement);
+        public async Task DeleteAsync(SalesEntry entry, IEnumerable<StockMovement> movements)
+        {
+            _context.StockMovements.AddRange(movements);
+            _context.SalesEntries.Remove(entry);
+            await _context.SaveChangesAsync();
+        }
     }
 }

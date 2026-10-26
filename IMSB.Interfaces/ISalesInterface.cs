@@ -43,11 +43,13 @@ namespace IMSB.Interfaces
         /// <summary>Next SAL-000001 style entry number.</summary>
         Task<string> NextEntryNoAsync();
 
-        void Add(SalesEntry entry);
-        void Remove(SalesEntry entry);
-        void AddItems(IEnumerable<SaleItem> items);
-        void RemoveItems(IEnumerable<SaleItem> items);
-        void AddMovement(StockMovement movement);
-        Task SaveChangesAsync();
+        /// <summary>Inserts the entry with its items and the stock deductions it caused.</summary>
+        Task AddAsync(SalesEntry entry, IEnumerable<StockMovement> movements);
+
+        /// <summary>Replaces the tracked entry's old items with its current ones and records the stock changes.</summary>
+        Task UpdateAsync(SalesEntry entry, IEnumerable<SaleItem> oldItems, IEnumerable<StockMovement> movements);
+
+        /// <summary>Deletes the entry and records the stock it put back.</summary>
+        Task DeleteAsync(SalesEntry entry, IEnumerable<StockMovement> movements);
     }
 }

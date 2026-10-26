@@ -24,8 +24,9 @@ if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 }
+// migrations live in IMSB.Dto, next to IMSBContext
 builder.Services.AddDbContext<IMSBContext>(options =>
-    options.UseSqlServer(connectionString)
+    options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(typeof(IMSBContext).Assembly.FullName))
 );
 
 // Page backends (IMSB.Backend) behind the IMSB.Interfaces the controllers depend on
@@ -93,14 +94,32 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 var app = builder.Build();
 
-// Seed demo users (one per role) for local development only
-if (app.Environment.IsDevelopment())
+// Bring the database schema up to date (IMSB.Dto/Migrations) before anything reads or writes it
+using (var scope = app.Services.CreateScope())
 {
-    using var scope = app.Services.CreateScope();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var context = scope.ServiceProvider.GetRequiredService<IMSBContext>();
+    //if (context.Database.IsRelational()) context.Database.Migrate();
+
     try
     {
-        var context = scope.ServiceProvider.GetRequiredService<IMSBContext>();
+        var canConnect = await context.Database.CanConnectAsync();
+        Console.WriteLine($"Database connection successful: {canConnect}");
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine(ex.ToString());
+        throw;
+    }
+}
+
+// Seed demo users (one per role) for local development only
+// if (app.Environment.IsDevelopment())
+// {
+using var scope1 = app.Services.CreateScope();
+    var logger = scope1.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var context = scope1.ServiceProvider.GetRequiredService<IMSBContext>();
         var hasher = new PasswordHasher<Login>();
         foreach (var demo in DemoUsers.All)
         {
@@ -118,7 +137,7 @@ if (app.Environment.IsDevelopment())
     {
         logger.LogWarning(ex, "Could not seed demo data; is the database migrated?");
     }
-}
+//}
 
 if (!app.Environment.IsDevelopment())
 {
