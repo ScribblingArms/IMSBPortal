@@ -30,7 +30,6 @@
     <nav class="sidebar-nav">
       @if (isAdmin)
       {
-      <div class="nav-section-label">@L["Main"]</div>
       <div class="nav-item" data-page="/Dashboard/Index" onclick="location.href='/Dashboard/Index'">
         <i class="fa-solid fa-gauge-high"></i>
         <span class="nav-label">@L["Dashboard"]</span>
@@ -39,7 +38,6 @@
 
       @if (isAdmin || isInventory)
       {
-      <div class="nav-section-label">@L["Operations"]</div>
       @if (isAdmin)
       {
       <div class="nav-item" data-page="/Stalls/Index" onclick="location.href='/Stalls/Index'">
@@ -66,7 +64,6 @@
 
       @if (isAdmin || isStaff)
       {
-      <div class="nav-section-label">@L["People"]</div>
       @if (isAdmin)
       {
       <div class="nav-item" data-page="/Artisans/Index" onclick="location.href='/Artisans/Index'">
@@ -98,7 +95,6 @@
 
       @if (isAdmin || isStaff)
       {
-      <div class="nav-section-label">@L["Reports"]</div>
       @if (isAdmin)
       {
       <div class="nav-group" data-nav-group="reports">
