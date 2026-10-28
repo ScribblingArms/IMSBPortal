@@ -1,0 +1,17 @@
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\bin\LeaveTests\net8.0\IMSB.Dto.appsettings.json
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\bin\LeaveTests\net8.0\IMSB.Interfaces.deps.json
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\bin\LeaveTests\net8.0\IMSB.Interfaces.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\bin\LeaveTests\net8.0\IMSB.Interfaces.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\bin\LeaveTests\net8.0\IMSB.Dto.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\bin\LeaveTests\net8.0\IMSB.Dto.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.csproj.AssemblyReference.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.GeneratedMSBuildEditorConfig.editorconfig
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.AssemblyInfoInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.AssemblyInfo.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.csproj.CoreCompileInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.sourcelink.json
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Int.E902C819.Up2Date
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\refint\IMSB.Interfaces.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\IMSB.Interfaces.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\LeaveTests\net8.0\ref\IMSB.Interfaces.dll

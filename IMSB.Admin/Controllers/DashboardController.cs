@@ -190,7 +190,7 @@ namespace IMSB.Admin.Controllers
             foreach (var p in lowStock)
                 rows.Add(new string?[] { p.ProductCode, p.Name, p.Category?.Name ?? string.Empty, p.StallCode, Int(p.Quantity), Int(p.MinStock) });
 
-            return ExportCsv($"dashboard_report_{today:yyyyMMdd}.csv", rows);
+            return ExportExcel($"dashboard_report_{today:yyyyMMdd}.xls", rows);
         }
     }
 }

@@ -98,10 +98,12 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<IMSBContext>();
-    //if (context.Database.IsRelational()) context.Database.Migrate();
 
     try
     {
+        if (context.Database.IsRelational())
+            await context.Database.MigrateAsync();
+
         var canConnect = await context.Database.CanConnectAsync();
         Console.WriteLine($"Database connection successful: {canConnect}");
     }

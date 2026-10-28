@@ -26,8 +26,19 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
             {
                 ctx.Departments.AddRange(new Department { Id = TestHelpers.SalesDept, Name = "Sales" }, new Department { Id = TestHelpers.AdminDept, Name = "Admin" });
                 ctx.Shifts.Add(new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)" });
-                ctx.Staff.Add(TestHelpers.ExistingStaff("EMP101", "Http Meena", "900000101", dept: TestHelpers.SalesDept));
+                var meena = TestHelpers.ExistingStaff("EMP101", "Http Meena", "900000101", dept: TestHelpers.SalesDept);
+                meena.StaffCategory = "Operators";
+                ctx.Staff.Add(meena);
                 ctx.Staff.Add(TestHelpers.ExistingStaff("EMP102", "Http Ravi", "900000102", dept: TestHelpers.AdminDept));
+                ctx.LeaveEntitlements.Add(new LeaveEntitlement
+                {
+                    StaffId = meena.Id,
+                    StaffCategory = "Operators",
+                    LeaveType = "Casual",
+                    Year = DateTime.Today.Year,
+                    AnnualQuota = 5m,
+                    IsAttendanceLeaveType = true
+                });
             });
             _seeded = true;
         }
@@ -55,6 +66,9 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     [InlineData("/Attendance/Data")]
     [InlineData("/Attendance/History")]
     [InlineData("/Attendance/Export")]
+    [InlineData("/Attendance/MonthlyCalendar")]
+    [InlineData("/Attendance/Monthly")]
+    [InlineData("/Attendance/MonthlyExport")]
     public async Task Anonymous_users_are_challenged(string url)
     {
         var res = await _factory.ClientAs(null).GetAsync(url);
@@ -68,7 +82,9 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     public async Task Only_staff_and_admin_roles_can_use_attendance(string role, HttpStatusCode expected)
     {
         Assert.Equal(expected, (await _factory.ClientAs(role).GetAsync("/Attendance/Index")).StatusCode);
+        Assert.Equal(expected, (await _factory.ClientAs(role).GetAsync("/Attendance/MonthlyCalendar")).StatusCode);
         Assert.Equal(expected, (await _factory.ClientAs(role).GetAsync("/Attendance/Data")).StatusCode);
+        Assert.Equal(expected, (await _factory.ClientAs(role).GetAsync("/Attendance/Monthly")).StatusCode);
     }
 
     [Fact]
@@ -83,6 +99,56 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         Assert.Contains("/js/attendance.js", html);
         Assert.Contains("/css/attendance.css", html);
         Assert.Contains("id=\"attEditModal\"", html);
+        Assert.DoesNotContain("data-tab=\"monthly\"", html);
+        Assert.DoesNotContain("id=\"monthlyMonth\"", html);
+        Assert.Contains("data-page=\"/Attendance/MonthlyCalendar\"", html);
+    }
+
+    [Fact]
+    public async Task Monthly_calendar_is_linked_under_reports()
+    {
+        var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Attendance/MonthlyCalendar"));
+
+        Assert.Contains("Monthly Attendance Calendar", html);
+        Assert.Contains("id=\"monthlyMonth\"", html);
+        Assert.Contains("id=\"monthlyYear\"", html);
+        Assert.Contains("id=\"monthlyType\"", html);
+        Assert.Contains("id=\"monthlySearch\"", html);
+        Assert.Contains("id=\"monthlyStatus\"", html);
+        Assert.Contains("id=\"monthlyResetBtn\"", html);
+        Assert.Contains("id=\"monthlyCount\"", html);
+        Assert.Contains("att-monthly-report-header", html);
+        Assert.Contains("att-monthly-tools", html);
+        Assert.Contains("id=\"monthlyExportBtn\"", html);
+        Assert.DoesNotContain("id=\"monthlyPdfBtn\"", html);
+        Assert.Contains("/js/attendance-monthly.js", html);
+
+        var abstractReportLink = html.IndexOf("data-page=\"/Reports/AbstractReport\"", StringComparison.Ordinal);
+        var monthlyLink = html.IndexOf("data-page=\"/Attendance/MonthlyCalendar\"", StringComparison.Ordinal);
+        Assert.True(abstractReportLink >= 0 && monthlyLink > abstractReportLink);
+    }
+
+    [Fact]
+    public async Task Staff_can_find_monthly_calendar_under_reports_without_admin_report_links()
+    {
+        var html = WebUtility.HtmlDecode(await _factory.ClientAs("Staff").GetStringAsync("/Attendance/MonthlyCalendar"));
+
+        Assert.Contains("data-page=\"/Attendance/MonthlyCalendar\"", html);
+        Assert.DoesNotContain("data-page=\"/Reports/Index\"", html);
+    }
+
+    [Fact]
+    public async Task Monthly_calendar_shows_unmarked_days_for_a_month_without_attendance()
+    {
+        const string month = "2099-02";
+        var json = await _factory.ClientAs("Admin").GetFromJsonAsync<JsonElement>($"/Attendance/Monthly?month={month}");
+
+        Assert.Equal(month, json.GetProperty("month").GetString());
+        Assert.Equal(28, json.GetProperty("days").GetArrayLength());
+        var rows = json.GetProperty("rows").EnumerateArray().ToList();
+        Assert.Equal(2, rows.Count);
+        Assert.All(rows, row => Assert.All(row.GetProperty("days").EnumerateArray(),
+            status => Assert.Equal(JsonValueKind.Null, status.ValueKind)));
     }
 
     [Theory]
@@ -157,7 +223,7 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         Assert.Equal("EMP102", Assert.Single(hist.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
 
         // csv export
-        var csv = await client.GetStringAsync($"/Attendance/Export?from={Day}&to={Day}&departmentId={TestHelpers.AdminDept}");
+        var csv = ExcelExportTestHelpers.CsvText(await client.GetStringAsync($"/Attendance/Export?from={Day}&to={Day}&departmentId={TestHelpers.AdminDept}"));
         Assert.Contains($"{Day},EMP102,Http Ravi,Admin,Executive,09:15,18:45,9.5,1.5,Present,audit,tester", csv);
         Assert.DoesNotContain("EMP101", csv);
 
@@ -165,6 +231,42 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Attendance/Delete/{raviId}", token))).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/Attendance/Get/{raviId}")).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await client.SendAsync(Post($"/Attendance/Delete/{raviId}", token))).StatusCode);
+    }
+
+    [Fact]
+    public async Task Leave_balance_endpoint_reflects_attendance_add_and_status_updates_immediately()
+    {
+        var client = _factory.ClientAs("Staff");
+        var token = await Token(client);
+        var save = await client.SendAsync(Post("/Attendance/Save", token,
+            AttendanceTestHelpers.Sheet(DateTime.Today, AttendanceTestHelpers.E("EMP101", "LEAVE"))));
+        Assert.Equal(HttpStatusCode.OK, save.StatusCode);
+
+        var data = await client.GetFromJsonAsync<JsonElement>($"/Attendance/Data?date={DateTime.Today:yyyy-MM-dd}");
+        var record = data.GetProperty("rows").EnumerateArray()
+            .Single(row => row.GetProperty("employeeId").GetString() == "EMP101").GetProperty("record");
+        var id = record.GetProperty("id").GetString();
+        await AssertBalance(client, 1m, 4m);
+
+        var present = await client.SendAsync(Post($"/Attendance/Update/{id}", token,
+            new AttendanceUpdateDto { Status = "PRESENT", InTime = "08:00" }));
+        Assert.Equal(HttpStatusCode.OK, present.StatusCode);
+        await AssertBalance(client, 0m, 5m);
+
+        var halfDay = await client.SendAsync(Post($"/Attendance/Update/{id}", token,
+            new AttendanceUpdateDto { Status = "HALF_DAY", InTime = "08:00", OutTime = "12:00" }));
+        Assert.Equal(HttpStatusCode.OK, halfDay.StatusCode);
+        await AssertBalance(client, 0.5m, 4.5m);
+    }
+
+    private static async Task AssertBalance(HttpClient client, decimal taken, decimal balance)
+    {
+        var result = await client.GetFromJsonAsync<JsonElement>("/Leaves/CurrentBalances");
+        var row = result.GetProperty("rows").EnumerateArray()
+            .Single(item => item.GetProperty("employeeId").GetString() == "EMP101");
+        Assert.Equal(5m, row.GetProperty("entitlement").GetDecimal());
+        Assert.Equal(taken, row.GetProperty("taken").GetDecimal());
+        Assert.Equal(balance, row.GetProperty("balance").GetDecimal());
     }
 
     [Fact]

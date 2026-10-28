@@ -145,12 +145,19 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
     public async Task Staff_page_uses_prototype_styles_without_bootstrap()
     {
         var html = await _factory.ClientAs("Admin").GetStringAsync("/Staff/Index");
+        var staffHtml = await _factory.ClientAs("Staff").GetStringAsync("/Staff/Index");
 
         Assert.Contains("/css/style.css", html);
         Assert.Contains("/css/forms.css", html);
         Assert.DoesNotContain("bootstrap.min.css", html);
         Assert.Contains("class=\"form-grid col-2\"", html);
         Assert.Contains("id=\"addStaffModal\"", html);
+        Assert.Contains("id=\"staffMonthlySalary\"", html);
+        Assert.Contains("Monthly Salary", html);
+        Assert.Contains("id=\"staffProfileModal\"", html);
+        Assert.Contains("StaffCanViewSalary = true", html);
+        Assert.DoesNotContain("id=\"staffMonthlySalary\"", staffHtml);
+        Assert.Contains("StaffCanViewSalary = false", staffHtml);
         Assert.Single(Regex.Matches(html, "id=\"toast-container\""));
         Assert.Single(Regex.Matches(html, "/js/main\\.js"));
     }
@@ -214,16 +221,47 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
         list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?status=ON_LEAVE&q=900000555");
         row = Assert.Single(list.GetProperty("staff").EnumerateArray());
         Assert.Equal("Floor Manager", row.GetProperty("designation").GetString());
+        Assert.Equal("Executive", row.GetProperty("staffCategory").GetString());
 
         // csv export includes it
-        var csv = await client.GetStringAsync("/Staff/Export?q=900000555");
-        Assert.Contains($"{id},Meena Kumari,Sales,Floor Manager,900000555", csv);
+        var csv = ExcelExportTestHelpers.CsvText(await client.GetStringAsync("/Staff/Export?q=900000555"));
+        Assert.Contains($"{id},Meena Kumari,Sales,Floor Manager,Executive,900000555", csv);
 
         // delete
         Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Staff/Delete/{id}", token))).StatusCode);
         list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?q=900000555");
         Assert.Empty(list.GetProperty("staff").EnumerateArray());
         Assert.Equal(HttpStatusCode.NotFound, (await client.SendAsync(Post($"/Staff/Delete/{id}", token))).StatusCode);
+    }
+
+    [Fact]
+    public async Task Admin_can_create_update_and_view_salary_details()
+    {
+        var client = _factory.ClientAs("Admin");
+        var token = await AntiforgeryToken(client);
+        var dto = TestHelpers.ValidCreateDto(mobile: "900000556", email: "salary-roundtrip@example.com");
+        dto.MonthlySalary = 24680.50m;
+
+        var create = await client.SendAsync(Post("/Staff/Create", token, dto));
+        Assert.Equal(HttpStatusCode.OK, create.StatusCode);
+        var employeeId = (await create.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("employeeId").GetString()!;
+        var row = Assert.Single((await client.GetFromJsonAsync<JsonElement>($"/Staff/IndexData?q={employeeId}"))
+            .GetProperty("staff").EnumerateArray());
+        Assert.Equal(24680.50m, row.GetProperty("monthlySalary").GetDecimal());
+
+        var update = TestHelpers.ToUpdate(dto);
+        update.MonthlySalary = 31500m;
+        var response = await client.SendAsync(Post($"/Staff/Update/{employeeId}", token, update));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        row = Assert.Single((await client.GetFromJsonAsync<JsonElement>($"/Staff/IndexData?q={employeeId}"))
+            .GetProperty("staff").EnumerateArray());
+        Assert.Equal(31500m, row.GetProperty("monthlySalary").GetDecimal());
+
+        var page = await client.GetStringAsync("/Staff/Index");
+        Assert.Contains("Monthly Salary", page);
+        Assert.Contains("id=\"staffProfileModal\"", page);
+        Assert.Contains("StaffCanViewSalary = true", page);
     }
 
     [Fact]

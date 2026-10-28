@@ -1,5 +1,6 @@
 @model IMSB.Dto.Models.LoginViewModel
 @using IMSB.Admin.Resources
+@using IMSB.Admin.Models
 @inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
 @{
     Layout = null;
@@ -7,6 +8,8 @@
     var selectedRole = (Model?.SelectedRole ?? "admin").ToLowerInvariant();
     var demoUsers = ViewBag.DemoUsers as IEnumerable<IMSB.Dto.Models.DemoUsers.DemoUser>;
     var lang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var stats = ViewBag.LoginStats as LoginPageStats
+        ?? throw new InvalidOperationException("Login statistics were not provided by the account controller.");
 }
 
 <!DOCTYPE html>
@@ -53,10 +56,10 @@
                 </div>
 
                 <div class="login-stats">
-                    <div class="ls-item"><div class="ls-val">120+</div><div class="ls-lbl">@L["ActiveStalls"]</div></div>
-                    <div class="ls-item"><div class="ls-val">89</div><div class="ls-lbl">@L["Artisans"]</div></div>
-                    <div class="ls-item"><div class="ls-val">₹42.8L</div><div class="ls-lbl">@L["MonthlyRevenue"]</div></div>
-                    <div class="ls-item"><div class="ls-val">7</div><div class="ls-lbl">@L["ProductCategories"]</div></div>
+                    <div class="ls-item"><div class="ls-val" data-stat="active-stalls">@stats.ActiveStalls</div><div class="ls-lbl">@L["ActiveStalls"]</div></div>
+                    <div class="ls-item"><div class="ls-val" data-stat="artisans">@stats.Artisans</div><div class="ls-lbl">@L["Artisans"]</div></div>
+                    <div class="ls-item"><div class="ls-val" data-stat="monthly-revenue">@stats.MonthlyRevenue</div><div class="ls-lbl">@L["MonthlyRevenue"]</div></div>
+                    <div class="ls-item"><div class="ls-val" data-stat="product-categories">@stats.ProductCategories</div><div class="ls-lbl">@L["ProductCategories"]</div></div>
                 </div>
             </div>
 

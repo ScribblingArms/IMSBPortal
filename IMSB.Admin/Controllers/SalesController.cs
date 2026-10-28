@@ -209,7 +209,7 @@ namespace IMSB.Admin.Controllers
                     Int(i.Quantity), Money(i.UnitPrice), Money(i.LineTotal), i.CreatedBy ?? string.Empty });
             }
             exportRows.Add(new string?[] { _L["Total"], "", "", "", "", "", "", Int(items.Sum(i => i.Quantity)), "", Money(items.Sum(i => i.LineTotal)), "" });
-            return ExportCsv($"sales_{start:yyyyMMdd}_{end.AddDays(-1):yyyyMMdd}.csv", exportRows);
+            return ExportExcel($"sales_{start:yyyyMMdd}_{end.AddDays(-1):yyyyMMdd}.xls", exportRows);
         }
 
         [HttpGet]
@@ -229,7 +229,7 @@ namespace IMSB.Admin.Controllers
                 exportRows.Add(new string?[] { r.Date, r.Code, r.Name, r.CategoryName, r.StallCode, Int(r.Quantity),
                     Money(r.UnitPrice), Money(r.Revenue), r.StockLeft?.ToString(CultureInfo.InvariantCulture) ?? string.Empty });
             }
-            return ExportCsv($"product_sales_{DateTime.Now:yyyyMMddHHmmss}.csv", exportRows);
+            return ExportExcel($"product_sales_{DateTime.Now:yyyyMMddHHmmss}.xls", exportRows);
         }
 
         // ── helpers ──────────────────────────────────────────────────────

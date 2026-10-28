@@ -1,4 +1,4 @@
-/* Attendance page (Views/Attendance/Index.cshtml); builds on the .att-* / .week-* rules in applications.css */
+/* Attendance pages; builds on the .att-* / .week-* rules in applications.css */
 
 .stat-card.teal::before { background: #0d9488; }
 .stat-card.teal .stat-icon { background: #ccfbf1; color: #0d9488; }
@@ -52,8 +52,73 @@
 .att-detail dt { color: var(--text-muted); }
 .att-detail dd { margin: 0; font-weight: 600; }
 
+.att-monthly-report .card-header {
+    gap: 14px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+}
+.att-monthly-report-header .card-title { display: flex; align-items: center; gap: 8px; }
+.att-monthly-report-header .card-title i { color: var(--primary); }
+.att-monthly-report-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.att-monthly-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.att-monthly-search { flex: 1 1 280px; max-width: 420px; }
+.att-monthly-tools .form-control { flex: 0 1 150px; width: auto; min-width: 130px; }
+.att-monthly-tools > .btn { min-width: 90px; }
+.att-calendar-scroll { overflow: auto; max-height: 70vh; }
+.att-monthly-calendar { min-width: max-content; border-collapse: separate; border-spacing: 0; }
+.att-monthly-calendar th,
+.att-monthly-calendar td { min-width: 35px; padding: 7px 6px; text-align: center; white-space: nowrap; }
+.att-monthly-calendar th {
+    min-width: 35px;
+    padding: 11px 8px;
+    text-align: center;
+    white-space: nowrap;
+    background: #eff3f9;
+    color: #64748b;
+    font-size: .68rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+.att-monthly-calendar tbody tr:nth-child(even) td { background: #f8f9fb; }
+.att-monthly-calendar tbody tr:hover td { background: #f0f5ff; }
+.att-monthly-calendar th:nth-child(-n+3),
+.att-monthly-calendar td:nth-child(-n+3) { position: sticky; z-index: 1; background: var(--surface); text-align: left; }
+.att-monthly-calendar th:nth-child(1),
+.att-monthly-calendar td:nth-child(1) { left: 0; width: 75px; min-width: 75px; }
+.att-monthly-calendar th:nth-child(2),
+.att-monthly-calendar td:nth-child(2) { left: 75px; width: 205px; min-width: 205px; }
+.att-monthly-calendar th:nth-child(3),
+.att-monthly-calendar td:nth-child(3) { left: 280px; width: 145px; min-width: 145px; box-shadow: 2px 0 3px rgb(15 23 42 / 8%); }
+.att-monthly-calendar th:nth-child(1) { width: 75px; min-width: 75px; }
+.att-monthly-calendar th:nth-child(2) { width: 205px; min-width: 205px; }
+.att-monthly-calendar th:nth-child(3) { width: 145px; min-width: 145px; }
+.att-monthly-calendar thead th { position: sticky; top: 0; z-index: 2; }
+.att-monthly-calendar thead th:nth-child(-n+3) { z-index: 3; }
+.att-monthly-calendar tbody tr:nth-child(even) td:nth-child(-n+3) { background: #f8f9fb; }
+.att-monthly-calendar tbody tr:hover td:nth-child(-n+3) { background: #f0f5ff; }
+.att-calendar-mark { display: inline-flex; width: 22px; height: 22px; align-items: center; justify-content: center; font-weight: 700; }
+.att-calendar-mark.present { color: var(--success); }
+.att-calendar-mark.absent { color: var(--danger); }
+.att-calendar-mark.leave { color: var(--warning); }
+.att-calendar-mark.halfday { color: #0d9488; }
+.att-calendar-mark.unmarked { color: var(--text-muted); font-weight: 400; }
+
 @media (max-width: 700px) {
     .week-calendar { gap: 4px; }
     .week-day { padding: 8px 2px; }
     .att-detail { grid-template-columns: 1fr; }
+    .att-monthly-report-actions { width: 100%; }
+    .att-monthly-report-actions .btn { flex: 1 1 130px; }
+    .att-monthly-tools { align-items: stretch; }
+    .att-monthly-search { flex: 1 1 100%; max-width: none; }
+    .att-monthly-tools .form-control { flex: 1 1 130px; }
+    .att-monthly-tools > .btn { flex: 1 1 130px; }
+}
+
+@media print {
+    .sidebar, .top-header, .govt-strip, .app-footer, .att-monthly-tools, .att-monthly-report-actions { display: none !important; }
+    .app-wrapper, .main-content, .att-monthly-report, .att-calendar-scroll { display: block !important; width: 100% !important; max-height: none !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+    .att-monthly-report .card-header { border: 0; }
+    .att-monthly-calendar { min-width: 0 !important; width: 100%; font-size: 8pt; }
+    .att-monthly-calendar th, .att-monthly-calendar td { position: static !important; min-width: 0 !important; width: auto !important; padding: 3px 2px; }
 }

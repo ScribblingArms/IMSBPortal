@@ -265,7 +265,7 @@ namespace IMSB.Admin.Controllers
                     a.District, a.Category?.Name, Int(a.YearsOfExperience),
                     stalls.GetValueOrDefault(a.Id), StatusLabels.Artisan(_L, a.Status), Date(a.JoinedDate) });
             }
-            return ExportCsv($"artisans_{DateTime.Now:yyyyMMddHHmmss}.csv", rows);
+            return ExportExcel($"artisans_{DateTime.Now:yyyyMMddHHmmss}.xls", rows);
         }
     }
 }

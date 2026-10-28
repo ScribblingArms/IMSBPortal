@@ -64,6 +64,8 @@ public class InventoryIntegrationTests : IClassFixture<InventoryAppFactory>
         Assert.DoesNotContain(">487<", html);                  // prototype's hard-coded figures are gone
         Assert.Contains("window.InventoryI18n", html);
         Assert.Contains("id=\"stockUpdateForm\"", html);
+        Assert.Contains("id=\"productFilterResetBtn\"", html);
+        Assert.Contains("class=\"btn btn-outline btn-sm btn-reset\" id=\"productFilterResetBtn\"", html);
         Assert.DoesNotContain("data-validate", html);          // main.js's fake "saved" toasts are not wired
     }
 
@@ -121,7 +123,7 @@ public class InventoryIntegrationTests : IClassFixture<InventoryAppFactory>
         Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Inventory/Update/{code}", token, upd))).StatusCode);
 
         // export reflects the edit and new quantity
-        var csv = await client.GetStringAsync("/Inventory/Export?q=Round%20Trip");
+        var csv = ExcelExportTestHelpers.CsvText(await client.GetStringAsync("/Inventory/Export?q=Round%20Trip"));
         Assert.Contains($"{code},Round Trip Lamp XL,Pottery,R-02,2,1,50.00,In Stock", csv);
 
         // history: INITIAL + REDUCE

@@ -8,6 +8,7 @@
     var months = (List<KeyValuePair<string, string>>)ViewBag.Months;
     var categories = (List<KeyValuePair<string, string>>)ViewBag.Categories;
     var inr = new System.Globalization.CultureInfo("en-IN");
+    var today = DateTime.Today;
 
     // Strings used by reports.js (KPIs, charts, report tables, library cards)
     var jsKeys = new[] {
@@ -16,7 +17,9 @@
         "DaysOfMonth", "NoStallsFound", "NoArtisansFound", "NoStallAssigned", "RatingOutOf", "ExportPdf", "ExportCsv",
         "RptStallOccupancy", "RptStallOccupancyDesc", "RptInventory", "RptInventoryDesc", "RptArtisan", "RptArtisanDesc",
         "RptAttendance", "RptAttendanceDesc", "RptSales", "RptSalesDesc", "RptApplications", "RptApplicationsDesc",
-        "ModuleNotConnected", "KpiTitleFor", "OfTotal"
+        "ModuleNotConnected", "KpiTitleFor", "OfTotal", "AllTypes", "AllDepartments", "NoStaffForAttendance",
+        "SalaryReport", "MonthlySalary", "WorkedDays", "TotalSalary", "SalaryProrationNote", "SearchSalaryPlaceholder",
+        "SalaryRequestFailed", "GrandTotal"
     };
     var jsStrings = jsKeys.ToDictionary(x => x, x => L[x].Value);
 }
@@ -35,7 +38,7 @@
         <option value="">@L["AllCategories"]</option>
         @foreach (var c in categories) { <option value="@c.Key">@c.Value</option> }
       </select>
-      <button type="button" class="btn btn-primary btn-sm" data-report="all" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportAll"]</button>
+      <button type="button" class="btn btn-primary btn-sm" data-report="all" data-format="xls"><i class="fa-solid fa-file-excel"></i> @L["ExportAll"]</button>
       <button type="button" class="btn btn-outline btn-sm" data-report="all" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportAllPdf"]</button>
     </div>
   </div>
@@ -45,8 +48,8 @@
     <div class="card-header">
       <div class="card-title"><i class="fa-solid fa-star"></i> <span id="kpiTitle">@string.Format(L["KpiTitleFor"].Value, months[0].Value)</span></div>
       <div style="display:flex;gap:6px">
-        <button type="button" class="btn btn-outline btn-sm" data-report="kpis" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportKPIs"]</button>
-        <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="kpis" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+        <button type="button" class="btn btn-outline btn-sm" data-report="kpis" data-format="xls"><i class="fa-solid fa-file-excel"></i> @L["ExportKPIs"]</button>
+        <button type="button" class="btn btn-outline btn-sm" data-report="kpis" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
       </div>
     </div>
     <div class="card-body">
@@ -67,7 +70,6 @@
       <div class="tab-item active" data-tab="overview">@L["OverviewCharts"]</div>
       <div class="tab-item" data-tab="available">@L["ReportLibrary"]</div>
       <div class="tab-item" data-tab="stall">@L["StallReport"]</div>
-      <div class="tab-item" data-tab="artisan">@L["ArtisanReport"]</div>
     </div>
 
     <!-- ── Overview Charts ── -->
@@ -77,8 +79,8 @@
           <div class="card-header">
             <div class="card-title"><i class="fa-solid fa-chart-line"></i> @L["MonthlySalesTrend"]</div>
             <div class="chart-export">
-              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="sales-trend" data-format="csv" title="@L["ExportCsv"]" aria-label="@L["ExportCsv"]"><i class="fa-solid fa-file-csv"></i></button>
-              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="sales-trend" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+              <button type="button" class="btn btn-outline btn-sm" data-report="sales-trend" data-format="xls"><i class="fa-solid fa-file-excel"></i> @L["ExportCsv"]</button>
+              <button type="button" class="btn btn-outline btn-sm" data-report="sales-trend" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
             </div>
           </div>
           <div class="card-body"><div style="height:260px"><canvas id="monthlyTrendChart" aria-label="@L["MonthlySalesTrend"]"></canvas></div></div>
@@ -87,8 +89,8 @@
           <div class="card-header">
             <div class="card-title"><i class="fa-solid fa-chart-bar"></i> @L["CategoryWiseRevenue"]</div>
             <div class="chart-export">
-              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="category-revenue" data-format="csv" title="@L["ExportCsv"]" aria-label="@L["ExportCsv"]"><i class="fa-solid fa-file-csv"></i></button>
-              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="category-revenue" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+              <button type="button" class="btn btn-outline btn-sm" data-report="category-revenue" data-format="xls"><i class="fa-solid fa-file-excel"></i> @L["ExportCsv"]</button>
+              <button type="button" class="btn btn-outline btn-sm" data-report="category-revenue" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
             </div>
           </div>
           <div class="card-body"><div style="height:260px"><canvas id="revCatChart" aria-label="@L["CategoryWiseRevenue"]"></canvas></div></div>
@@ -105,8 +107,8 @@
           <div class="card-header">
             <div class="card-title"><i class="fa-solid fa-store"></i> @L["StallOccupancyOverTime"]</div>
             <div class="chart-export">
-              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="occupancy-trend" data-format="csv" title="@L["ExportCsv"]" aria-label="@L["ExportCsv"]"><i class="fa-solid fa-file-csv"></i></button>
-              <button type="button" class="btn btn-outline btn-sm btn-icon" data-report="occupancy-trend" data-format="pdf" title="@L["ExportPdf"]" aria-label="@L["ExportPdf"]"><i class="fa-solid fa-file-pdf"></i></button>
+              <button type="button" class="btn btn-outline btn-sm" data-report="occupancy-trend" data-format="xls"><i class="fa-solid fa-file-excel"></i> @L["ExportCsv"]</button>
+              <button type="button" class="btn btn-outline btn-sm" data-report="occupancy-trend" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
             </div>
           </div>
           <div class="card-body"><div style="height:230px"><canvas id="occupancyTrendChart" aria-label="@L["StallOccupancyOverTime"]"></canvas></div>
@@ -126,7 +128,7 @@
         <div class="card-header">
           <div class="card-title"><i class="fa-solid fa-store"></i> @L["RptStallOccupancy"] <span class="tab-count" id="stallReportCount">0</span></div>
           <div style="display:flex;gap:6px">
-            <button type="button" class="btn btn-outline btn-sm" data-report="stalls" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportCsv"]</button>
+            <button type="button" class="btn btn-outline btn-sm" data-report="stalls" data-format="xls"><i class="fa-solid fa-file-excel"></i> @L["ExportCsv"]</button>
             <button type="button" class="btn btn-outline btn-sm" data-report="stalls" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
           </div>
         </div>
@@ -138,7 +140,7 @@
               <option value="RESERVED">@L["Reserved"]</option><option value="MAINTENANCE">@L["UnderMaintenance"]</option>
             </select>
             <select class="form-control" style="width:auto;min-width:130px" id="stallReportBlock" aria-label="@L["BlockZone"]"><option value="">@L["AllBlocks"]</option></select>
-            <button type="button" class="btn btn-outline btn-sm" id="stallReportReset">@L["Reset"]</button>
+            <button type="button" class="btn btn-outline btn-sm btn-reset" id="stallReportReset">@L["Reset"]</button>
           </div>
           <div class="table-container">
             <table class="data-table" id="stallReportTable">
@@ -150,35 +152,6 @@
       </div>
     </div>
 
-    <!-- ── Artisan Report ── -->
-    <div class="tab-panel" data-panel="artisan">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-palette"></i> @L["ArtisanPerformanceReport"] <span class="tab-count" id="artisanReportCount">0</span></div>
-          <div style="display:flex;gap:6px">
-            <button type="button" class="btn btn-outline btn-sm" data-report="artisans" data-format="csv"><i class="fa-solid fa-file-csv"></i> @L["ExportCsv"]</button>
-            <button type="button" class="btn btn-outline btn-sm" data-report="artisans" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="toolbar" style="flex-wrap:wrap">
-            <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="artisanReportSearch" placeholder="@L["SearchArtisans"]" aria-label="@L["SearchArtisans"]"></div>
-            <select class="form-control" style="width:auto;min-width:140px" id="artisanReportStatus" aria-label="@L["Status"]">
-              <option value="">@L["AllStatus"]</option><option value="ACTIVE">@L["Active"]</option><option value="ON_LEAVE">@L["OnLeave"]</option>
-              <option value="RENEWAL_DUE">@L["RenewalPending"]</option><option value="INACTIVE">@L["Inactive"]</option>
-            </select>
-            <button type="button" class="btn btn-outline btn-sm" id="artisanReportReset">@L["Reset"]</button>
-          </div>
-          <div class="table-container">
-            <table class="data-table">
-              <thead><tr><th>@L["Artisan"]</th><th>@L["Category"]</th><th>@L["Stall"]</th><th>@L["MonthlySales"]</th><th>@L["UnitsSoldLabel"]</th><th>@L["Products"]</th><th>@L["SalesShare"]</th><th>@L["Rating"]</th><th>@L["Status"]</th></tr></thead>
-              <tbody id="artisanReportBody"></tbody>
-            </table>
-          </div>
-          <div class="report-note">@L["RatingNote"]</div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -202,7 +175,26 @@
     }
     .report-card-title { font-size: .88rem; font-weight: 700; color: var(--text); }
     .report-card-desc  { font-size: .75rem; color: var(--text-muted); flex: 1; }
-    .report-card-footer { display: flex; gap: 8px; }
+    .report-card-footer { display: flex; flex-wrap: wrap; gap: 8px; }
+    .monthly-report-header { gap: 12px; flex-wrap: wrap; }
+    .monthly-report-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+    .monthly-report-filters .form-control {
+      flex: 0 1 190px; width: auto; min-width: 150px; max-width: 220px;
+    }
+    .monthly-report-table { min-width: 760px; }
+    .monthly-report-table th, .monthly-report-table td { text-align: left; }
+    .monthly-report-table th {
+      background: #eff3f9; color: #64748b; font-size: .7rem;
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+    .monthly-report-table th.monthly-report-number,
+    .monthly-report-table td.monthly-report-number { width: 54px; text-align: center; color: var(--text-muted); }
+    .monthly-report-table th:nth-last-child(-n+2),
+    .monthly-report-table td:nth-last-child(-n+2) { text-align: center; }
+    .monthly-report-table tbody tr { border-bottom: 1px solid #d5deeb; }
+    .monthly-report-table tbody tr:hover td { background: #f8faff; }
+    .monthly-report-staff-name { font-weight: 700; }
+    .monthly-report-employee-id { color: var(--text-muted); font-size: .68rem; margin-top: 2px; }
     .kpi-row {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 14px;
     }
@@ -214,14 +206,39 @@
     .kpi-lbl { font-size: .7rem; color: var(--text-muted); font-weight: 500; }
     .kpi-sub { font-size: .66rem; color: var(--text-muted); margin-top: 2px; }
     .report-chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
-    @@media (max-width: 420px) { .report-chart-grid { grid-template-columns: 1fr; } }
-    .chart-export { display: flex; gap: 6px; }
+    @@media (max-width: 700px) {
+      .report-chart-grid { grid-template-columns: 1fr; }
+      .monthly-report-filters { width: 100%; }
+      .monthly-report-filters .form-control { flex: 1 1 130px; max-width: none; }
+      .monthly-report-filters .btn { flex: 1 0 100%; }
+    }
+    .chart-export { display: flex; gap: 6px; flex-wrap: wrap; }
     .chart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
       color: var(--text-muted); font-size: .8rem; text-align: center; padding: 0 20px; }
     .chart-empty i { font-size: 1.6rem; opacity: .5; }
     .report-note { font-size: .68rem; color: var(--text-muted); margin-top: 8px; }
     .empty-state { text-align:center; padding:24px 12px; color:var(--text-muted); font-size:.8rem; }
     .rating { color: #b45309; letter-spacing: 1px; white-space: nowrap; }
+    .salary-report-tools { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    .salary-report-search { flex: 1 1 280px; max-width: 420px; }
+    .salary-report-tools .form-control { flex: 0 1 150px; width: auto; min-width: 130px; }
+    .salary-report-tools > .btn { min-width: 100px; }
+    .salary-report-table { min-width: 1000px; }
+    .salary-report-table th, .salary-report-table td { text-align: center; }
+    .salary-report-table th {
+      background: #eff3f9; color: #64748b; font-size: .7rem;
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+    .salary-report-table tbody tr { border-bottom: 1px solid #d5deeb; }
+    .salary-report-table tbody tr:nth-child(even) td { background: #f8f9fb; }
+    .salary-report-table tbody tr:hover td { background: #f0f5ff; }
+    .salary-report-table .salary-report-name { text-align: left; font-weight: 700; }
+    @@media (max-width: 700px) {
+      .salary-report-tools { align-items: stretch; }
+      .salary-report-search { flex: 1 1 100%; max-width: none; }
+      .salary-report-tools .form-control { flex: 1 1 130px; }
+      .salary-report-tools > .btn { flex: 1 1 130px; }
+    }
     </style>
 }
 

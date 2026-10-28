@@ -90,15 +90,70 @@
         <i class="fa-solid fa-calendar-check"></i>
         <span class="nav-label">@L["Attendance"]</span>
       </div>
+      <div class="nav-item" data-page="/Leaves/Index" onclick="location.href='/Leaves/Index'">
+        <i class="fa-solid fa-calendar-minus"></i>
+        <span class="nav-label">@L["LeaveManagement"]</span>
+      </div>
       }
 
-      @if (isAdmin)
+      @if (isAdmin || isStaff)
       {
       <div class="nav-section-label">@L["Reports"]</div>
-      <div class="nav-item" data-page="/Reports/Index" onclick="location.href='/Reports/Index'">
-        <i class="fa-solid fa-chart-pie"></i>
-        <span class="nav-label">@L["Reports"]</span>
+      @if (isAdmin)
+      {
+      <div class="nav-group" data-nav-group="reports">
+        <div class="nav-group-heading">
+          <div class="nav-item" data-page="/Reports/Index" onclick="location.href='/Reports/Index'">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span class="nav-label">@L["Reports"]</span>
+          </div>
+          <button type="button" class="nav-group-toggle" aria-expanded="false" aria-controls="reportsSubmenu" aria-label="@L["Reports"]">
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+        </div>
+        <div class="nav-submenu" id="reportsSubmenu">
+          @* <div class="nav-item" data-page="/Reports/Index" data-tab-target="overview" onclick="location.href='/Reports/Index#overview'">
+            <i class="fa-solid fa-chart-line"></i>
+            <span class="nav-label">@L["OverviewCharts"]</span>
+          </div>
+          <div class="nav-item" data-page="/Reports/Index" data-tab-target="available" onclick="location.href='/Reports/Index#available'">
+            <i class="fa-solid fa-book-open"></i>
+            <span class="nav-label">@L["ReportLibrary"]</span>
+          </div>
+          <div class="nav-item" data-page="/Reports/Index" data-tab-target="stall" onclick="location.href='/Reports/Index#stall'">
+            <i class="fa-solid fa-store"></i>
+            <span class="nav-label">@L["StallReport"]</span>
+          </div> *@
+          <div class="nav-item" data-page="/Reports/ArtisanPerformance" onclick="location.href='/Reports/ArtisanPerformance'">
+            <i class="fa-solid fa-palette"></i>
+            <span class="nav-label">@L["ArtisanPerformanceReport"]</span>
+          </div>
+          <div class="nav-item" data-page="/Reports/MonthlyReports" onclick="location.href='/Reports/MonthlyReports'">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span class="nav-label">@L["MonthlyReports"]</span>
+          </div>
+          <div class="nav-item" data-page="/Reports/SalaryReport" onclick="location.href='/Reports/SalaryReport'">
+            <i class="fa-solid fa-money-check-dollar"></i>
+            <span class="nav-label">@L["SalaryReport"]</span>
+          </div>
+          <div class="nav-item" data-page="/Reports/AbstractReport" onclick="location.href='/Reports/AbstractReport'">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span class="nav-label">@L["AbstractReport"]</span>
+          </div>
+          <div class="nav-item" data-page="/Attendance/MonthlyCalendar" onclick="location.href='/Attendance/MonthlyCalendar'">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span class="nav-label">@L["MonthlyCalendar"]</span>
+          </div>
+        </div>
       </div>
+      }
+      else
+      {
+      <div class="nav-item" data-page="/Attendance/MonthlyCalendar" onclick="location.href='/Attendance/MonthlyCalendar'">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span class="nav-label">@L["MonthlyCalendar"]</span>
+      </div>
+      }
       }
     </nav>
 

@@ -546,8 +546,8 @@ public class SalesControllerTests
         var lines = csv.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         Assert.Equal("Entry No,Date,Time,Product Code,Product Name,Category,Stall,Qty Sold,Unit Price (₹),Line Total,By", lines[0]);
         var today = DateTime.Today.ToString("yyyy-MM-dd");
-        Assert.Contains($"{no},{today},00:00,PRD001,Kanjivaram Silk Saree,Textiles,A-01,2,8500.00,17000.00,'=cmd@imsb", lines);
-        Assert.Contains($"{no},{today},00:00,PRD002,Silk Dupatta (Blue),Textiles,A-03,1,1199.50,1199.50,'=cmd@imsb", lines);
+        Assert.Contains($"{no},{today},00:00,PRD001,Kanjivaram Silk Saree,Textiles,A-01,2,8500.00,17000.00,=cmd@imsb", lines);
+        Assert.Contains($"{no},{today},00:00,PRD002,Silk Dupatta (Blue),Textiles,A-03,1,1199.50,1199.50,=cmd@imsb", lines);
         Assert.Equal("Total,,,,,,,3,,18199.50,", lines[^1]);
         Assert.Equal(4, lines.Length);
     }

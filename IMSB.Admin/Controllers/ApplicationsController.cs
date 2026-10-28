@@ -317,7 +317,7 @@ namespace IMSB.Admin.Controllers
             }
             var st = status?.Trim().ToUpperInvariant();
             var suffix = !string.IsNullOrEmpty(st) && ApplicationStatuses.All.Contains(st) ? "_" + st.ToLowerInvariant() : "";
-            return ExportCsv($"applications{suffix}_{DateTime.Now:yyyyMMddHHmmss}.csv", rows);
+            return ExportExcel($"applications{suffix}_{DateTime.Now:yyyyMMddHHmmss}.xls", rows);
         }
     }
 }

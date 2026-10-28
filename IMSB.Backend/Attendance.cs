@@ -41,6 +41,19 @@ namespace IMSB.Backend
                 .Select(r => new { r.AttendanceDate, r.Status, r.Staff!.DepartmentId }).ToListAsync())
             .Select(r => new AttendanceStatusRow(r.AttendanceDate, r.Status, r.DepartmentId)).ToList();
 
+        public Task<List<Staff>> MonthlyStaffAsync(DateTime from, DateTime to)
+        {
+            var endExclusive = to.Date.AddDays(1);
+            var marked = _context.AttendanceRecords
+                .Where(r => r.AttendanceDate >= from.Date && r.AttendanceDate < endExclusive)
+                .Select(r => r.StaffId);
+
+            return _context.Staff.AsNoTracking()
+                .Where(s => s.JoinDate < endExclusive && (s.Status.ToUpper() != "INACTIVE" || marked.Contains(s.Id)))
+                .OrderBy(s => s.DepartmentId).ThenBy(s => s.FullName).ThenBy(s => s.EmployeeId)
+                .ToListAsync();
+        }
+
         public Task<List<Staff>> StaffByEmployeeIdsAsync(List<string> employeeIds) =>
             _context.Staff.Where(s => employeeIds.Contains(s.EmployeeId)).ToListAsync();
 

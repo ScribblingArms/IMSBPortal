@@ -16,6 +16,7 @@ namespace IMSB.Dto.Models
         public string DepartmentId { get; set; } = "";
         public string DepartmentName { get; set; } = "";
         public string Designation { get; set; } = "";
+        public string StaffCategory { get; set; } = "General";
         public string JoinDate { get; set; } = "";
         public string Shift { get; set; } = "morning";
         public string Status { get; set; } = "ACTIVE";
@@ -43,6 +44,10 @@ namespace IMSB.Dto.Models
         public string DepartmentId { get; set; } = "";
         [Required(ErrorMessage = "ValDesignation"), StringLength(100, ErrorMessage = "ValDesignation")]
         public string Designation { get; set; } = "";
+        [Required(ErrorMessage = "ValStaffCategory"), StringLength(100, ErrorMessage = "ValStaffCategory")]
+        public string StaffCategory { get; set; } = "";
+        [Range(typeof(decimal), "0", "999999999.99", ErrorMessage = "ValMonthlySalary")]
+        public decimal MonthlySalary { get; set; }
         [Required(ErrorMessage = "ValJoinRequired")]
         public string JoinDate { get; set; } = "";
         public string Shift { get; set; } = "";

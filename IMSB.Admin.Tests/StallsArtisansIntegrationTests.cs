@@ -141,9 +141,9 @@ public class StallsArtisansIntegrationTests : IClassFixture<BazaarAppFactory>
 
         // exports
         var csv = await client.GetAsync("/Stalls/Export?block=H");
-        Assert.Equal("text/csv", csv.Content.Headers.ContentType!.MediaType);
-        Assert.Contains("H-01,Http Stall,H,", await csv.Content.ReadAsStringAsync());
-        var artisanCsv = await (await client.GetAsync("/Artisans/Export?q=http")).Content.ReadAsStringAsync();
+        Assert.Equal("application/vnd.ms-excel", csv.Content.Headers.ContentType!.MediaType);
+        Assert.Contains("H-01,Http Stall,H,", ExcelExportTestHelpers.CsvText(await csv.Content.ReadAsStringAsync()));
+        var artisanCsv = ExcelExportTestHelpers.CsvText(await (await client.GetAsync("/Artisans/Export?q=http")).Content.ReadAsStringAsync());
         Assert.Contains("XXXX XXXX", artisanCsv);
         Assert.DoesNotContain(BazaarTestHelpers.ValidAadhaar(9001), artisanCsv);
 

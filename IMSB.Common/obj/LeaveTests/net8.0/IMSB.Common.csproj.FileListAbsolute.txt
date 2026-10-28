@@ -1,0 +1,13 @@
+K:\ScribblingArms\IMSBPortal\IMSB.Common\bin\LeaveTests\net8.0\IMSB.Common.deps.json
+K:\ScribblingArms\IMSBPortal\IMSB.Common\bin\LeaveTests\net8.0\IMSB.Common.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Common\bin\LeaveTests\net8.0\IMSB.Common.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.csproj.AssemblyReference.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.GeneratedMSBuildEditorConfig.editorconfig
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.AssemblyInfoInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.AssemblyInfo.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.csproj.CoreCompileInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.sourcelink.json
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\refint\IMSB.Common.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\IMSB.Common.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\LeaveTests\net8.0\ref\IMSB.Common.dll

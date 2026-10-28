@@ -21,7 +21,8 @@ internal static class ApplicationTestHelpers
         new(new IMSB.Backend.Applications(ctx), TestHelpers.LocalizerFactory()) { ControllerContext = Context(user) };
 
     public static ReportsController Reports(IMSBContext ctx, string user = "admin@imsb") =>
-        new(new IMSB.Backend.Reports(ctx), TestHelpers.LocalizerFactory()) { ControllerContext = Context(user) };
+        new(new IMSB.Backend.Reports(ctx), new IMSB.Backend.Attendance(ctx), new IMSB.Backend.Artisans(ctx),
+            TestHelpers.LocalizerFactory()) { ControllerContext = Context(user) };
 
     public static SearchController Search(IMSBContext ctx, string role = "Admin") =>
         new(new IMSB.Backend.Search(ctx), TestHelpers.LocalizerFactory()) { ControllerContext = Context("someone", role) };

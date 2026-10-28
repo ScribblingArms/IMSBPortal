@@ -341,6 +341,10 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("time")
                         .HasColumnName("in_time");
 
+                    b.Property<bool>("LeaveWithoutPay")
+                        .HasColumnType("bit")
+                        .HasColumnName("leave_without_pay");
+
                     b.Property<TimeSpan?>("OutTime")
                         .HasColumnType("time")
                         .HasColumnName("out_time");
@@ -406,6 +410,54 @@ namespace IMSB.Dto.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("departments");
+                });
+
+            modelBuilder.Entity("IMSB.Dto.Models.LeaveEntitlement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("AnnualQuota")
+                        .HasColumnType("decimal(8,2)")
+                        .HasColumnName("annual_quota");
+
+                    b.Property<bool>("IsAttendanceLeaveType")
+                        .HasColumnType("bit")
+                        .HasColumnName("attendance_leave_type");
+
+                    b.Property<string>("LeaveType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("leave_type");
+
+                    b.Property<string>("StaffCategory")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("staff_category");
+
+                    b.Property<Guid?>("StaffId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("staff_id");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StaffId", "Year")
+                        .IsUnique()
+                        .HasFilter("[attendance_leave_type] = 1");
+
+                    b.HasIndex("StaffId", "LeaveType", "Year")
+                        .IsUnique()
+                        .HasFilter("[staff_id] IS NOT NULL");
+
+                    b.ToTable("leave_entitlements");
                 });
 
             modelBuilder.Entity("IMSB.Dto.Models.Login", b =>
@@ -846,10 +898,20 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(32)")
                         .HasColumnName("mobile");
 
+                    b.Property<decimal>("MonthlySalary")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("monthly_salary");
+
                     b.Property<string>("Shift")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("shift");
+
+                    b.Property<string>("StaffCategory")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("staff_category");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -875,6 +937,71 @@ namespace IMSB.Dto.Migrations
                         .IsUnique();
 
                     b.ToTable("staff");
+                });
+
+            modelBuilder.Entity("IMSB.Dto.Models.StaffLeaveEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("created_by");
+
+                    b.Property<decimal>("Days")
+                        .HasColumnType("decimal(6,2)")
+                        .HasColumnName("days");
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("date")
+                        .HasColumnName("from_date");
+
+                    b.Property<string>("LeaveType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("leave_type");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("remarks");
+
+                    b.Property<Guid>("StaffId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("staff_id");
+
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("date")
+                        .HasColumnName("to_date");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("updated_by");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Year");
+
+                    b.HasIndex("StaffId", "FromDate");
+
+                    b.ToTable("staff_leave_entries");
                 });
 
             modelBuilder.Entity("IMSB.Dto.Models.Stall", b =>
@@ -1245,6 +1372,16 @@ namespace IMSB.Dto.Migrations
                     b.Navigation("Staff");
                 });
 
+            modelBuilder.Entity("IMSB.Dto.Models.LeaveEntitlement", b =>
+                {
+                    b.HasOne("IMSB.Dto.Models.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Staff");
+                });
+
             modelBuilder.Entity("IMSB.Dto.Models.PasswordResetToken", b =>
                 {
                     b.HasOne("IMSB.Dto.Models.Login", "Login")
@@ -1283,6 +1420,17 @@ namespace IMSB.Dto.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("SalesEntry");
+                });
+
+            modelBuilder.Entity("IMSB.Dto.Models.StaffLeaveEntry", b =>
+                {
+                    b.HasOne("IMSB.Dto.Models.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("IMSB.Dto.Models.Stall", b =>

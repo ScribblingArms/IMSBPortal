@@ -82,6 +82,8 @@ internal static class TestHelpers
         Gender = "Female",
         DepartmentId = SalesDept.ToString(),
         Designation = "Sales Executive",
+        StaffCategory = "Executive",
+        MonthlySalary = 24000m,
         JoinDate = "2020-01-15",
         Shift = "MORNING"
     };
@@ -89,7 +91,8 @@ internal static class TestHelpers
     public static UpdateStaffDto ToUpdate(CreateStaffDto c, string? status = null) => new()
     {
         FullName = c.FullName, Mobile = c.Mobile, Email = c.Email, DateOfBirth = c.DateOfBirth, Gender = c.Gender,
-        DepartmentId = c.DepartmentId, Designation = c.Designation, JoinDate = c.JoinDate, Shift = c.Shift, Status = status
+        DepartmentId = c.DepartmentId, Designation = c.Designation, StaffCategory = c.StaffCategory, MonthlySalary = c.MonthlySalary,
+        JoinDate = c.JoinDate, Shift = c.Shift, Status = status
     };
 
     public static Staff ExistingStaff(string employeeId, string fullName, string mobile, string status = "ACTIVE",
@@ -103,6 +106,7 @@ internal static class TestHelpers
         Gender = "Female",
         DepartmentId = dept ?? SalesDept,
         Designation = "Executive",
+        StaffCategory = "Executive",
         JoinDate = new DateTime(2015, 6, 1),
         Shift = shift,
         Status = status,

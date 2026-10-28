@@ -1,3 +1,4 @@
+using System.Text.Json;
 using IMSB.Admin.Controllers;
 using IMSB.Dto.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -90,6 +91,214 @@ public class ReportsControllerTests
         Assert.Equal(MonthStart.AddMonths(-1).ToString("yyyy-MM"), json.GetProperty("month").GetString());
         Assert.Equal(1600m, json.GetProperty("kpis").GetProperty("totalSales").GetDecimal());
         Assert.Equal(System.Text.Json.JsonValueKind.Null, json.GetProperty("attendance").ValueKind);
+    }
+
+    [Fact]
+    public async Task Monthly_attendance_report_filters_by_year_month_and_designation()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var executive = TestHelpers.ExistingStaff("EMP001", "Meena", "900000001", dept: TestHelpers.SalesDept);
+        var security = TestHelpers.ExistingStaff("EMP002", "Ravi", "900000002", dept: TestHelpers.AdminDept);
+        security.Designation = "Security";
+        ctx.Staff.AddRange(executive, security);
+        ctx.AttendanceRecords.AddRange(
+            new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart, Status = AttendanceStatuses.Present },
+            new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddDays(1), Status = AttendanceStatuses.Absent },
+            new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddDays(2), Status = AttendanceStatuses.HalfDay },
+            new AttendanceRecord { StaffId = security.Id, AttendanceDate = MonthStart, Status = AttendanceStatuses.Present },
+            new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddMonths(-1), Status = AttendanceStatuses.Present },
+            new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddYears(-1), Status = AttendanceStatuses.Present });
+        await ctx.SaveChangesAsync();
+
+        var json = TestHelpers.OkJson(await Reports(ctx).MonthlyAttendance(Today.Year, Today.Month, null));
+        Assert.Equal(2, json.GetProperty("rows").GetArrayLength());
+        Assert.Equal(31, json.GetProperty("totalDaysInMonth").GetInt32());
+        var meena = json.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "EMP001");
+        Assert.Equal(2, meena.GetProperty("totalWorkingDays").GetInt32()); // Present + Half Day count as worked days
+
+        var filtered = TestHelpers.OkJson(await Reports(ctx).MonthlyAttendance(Today.Year, Today.Month, "security"));
+        var row = Assert.Single(filtered.GetProperty("rows").EnumerateArray());
+        Assert.Equal("EMP002", row.GetProperty("employeeId").GetString());
+
+        var previousMonth = TestHelpers.OkJson(await Reports(ctx).MonthlyAttendance(MonthStart.AddMonths(-1).Year, MonthStart.AddMonths(-1).Month, null));
+        Assert.Equal(2, previousMonth.GetProperty("rows").GetArrayLength());
+        var priorStart = MonthStart.AddMonths(-1);
+        Assert.Equal(DateTime.DaysInMonth(priorStart.Year, priorStart.Month), previousMonth.GetProperty("totalDaysInMonth").GetInt32());
+        Assert.Equal(1, previousMonth.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "EMP001")
+            .GetProperty("totalWorkingDays").GetInt32());
+
+        var previousYear = TestHelpers.OkJson(await Reports(ctx).MonthlyAttendance(Today.Year - 1, Today.Month, null));
+        Assert.Equal(1, previousYear.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "EMP001")
+            .GetProperty("totalWorkingDays").GetInt32());
+    }
+
+    [Fact]
+    public async Task Abstract_report_counts_staff_attendance_and_marks_artisan_attendance_unavailable()
+    {
+        using var ctx = await ReportContext();
+        ctx.Departments.AddRange(
+            new Department { Id = TestHelpers.SalesDept, Name = "Sales" },
+            new Department { Id = TestHelpers.AdminDept, Name = "Admin" });
+        var present = TestHelpers.ExistingStaff("EMP001", "Meena", "9000000001", dept: TestHelpers.SalesDept);
+        var unmarked = TestHelpers.ExistingStaff("EMP002", "Ravi", "9000000002", dept: TestHelpers.SalesDept);
+        var absent = TestHelpers.ExistingStaff("EMP003", "Kiran", "9000000003", dept: TestHelpers.AdminDept);
+        ctx.Staff.AddRange(present, unmarked, absent);
+        ctx.AttendanceRecords.AddRange(
+            new AttendanceRecord { StaffId = present.Id, AttendanceDate = Today, Status = AttendanceStatuses.Present },
+            new AttendanceRecord { StaffId = absent.Id, AttendanceDate = Today, Status = AttendanceStatuses.Absent });
+        await ctx.SaveChangesAsync();
+
+        var report = TestHelpers.OkJson(await Reports(ctx).AbstractData(Today.ToString("yyyy-MM-dd")));
+        var historicalDate = Today.AddDays(-1);
+        var historicalReport = TestHelpers.OkJson(await Reports(ctx).AbstractData(historicalDate.ToString("yyyy-MM-dd")));
+        Assert.Equal(historicalDate.ToString("yyyy-MM-dd"), historicalReport.GetProperty("date").GetString());
+        var sections = report.GetProperty("sections").EnumerateArray().ToList();
+        var artisans = sections.Single(section => section.GetProperty("key").GetString() == "artisans");
+        Assert.Equal(4, artisans.GetProperty("total").GetInt32());
+        Assert.Equal(JsonValueKind.Null, artisans.GetProperty("attended").ValueKind);
+        Assert.Equal(JsonValueKind.Null, artisans.GetProperty("notAttended").ValueKind);
+
+        var sales = sections.Single(section => section.GetProperty("name").GetString() == "Sales");
+        Assert.Equal((2, 1, 1), (
+            sales.GetProperty("total").GetInt32(),
+            sales.GetProperty("attended").GetInt32(),
+            sales.GetProperty("notAttended").GetInt32()));
+        var admin = sections.Single(section => section.GetProperty("name").GetString() == "Admin");
+        Assert.Equal((1, 0, 1), (
+            admin.GetProperty("total").GetInt32(),
+            admin.GetProperty("attended").GetInt32(),
+            admin.GetProperty("notAttended").GetInt32()));
+        Assert.Equal(7, report.GetProperty("employees").GetArrayLength());
+        var meena = report.GetProperty("employees").EnumerateArray()
+            .Single(employee => employee.GetProperty("employeeId").GetString() == "EMP001");
+        Assert.Equal("Executive", meena.GetProperty("designation").GetString());
+        Assert.True(meena.GetProperty("attended").GetBoolean());
+        Assert.Equal(AttendanceStatuses.Present, meena.GetProperty("attendanceStatus").GetString());
+    }
+
+    [Fact]
+    public async Task Abstract_report_export_filters_total_attended_and_not_attended_employees()
+    {
+        using var ctx = await ReportContext();
+        ctx.Departments.Add(new Department { Id = TestHelpers.SalesDept, Name = "Sales" });
+        var attended = TestHelpers.ExistingStaff("EMP001", "Meena", "9000000001", dept: TestHelpers.SalesDept);
+        var absent = TestHelpers.ExistingStaff("EMP002", "Ravi", "9000000002", dept: TestHelpers.SalesDept);
+        var unmarked = TestHelpers.ExistingStaff("EMP003", "Kiran", "9000000003", dept: TestHelpers.SalesDept);
+        ctx.Staff.AddRange(attended, absent, unmarked);
+        ctx.AttendanceRecords.AddRange(
+            new AttendanceRecord { StaffId = attended.Id, AttendanceDate = Today, Status = AttendanceStatuses.Present },
+            new AttendanceRecord { StaffId = absent.Id, AttendanceDate = Today, Status = AttendanceStatuses.Absent });
+        await ctx.SaveChangesAsync();
+        var controller = Reports(ctx);
+
+        var invalid = Assert.IsType<BadRequestObjectResult>(await controller.AbstractData("2026-02-31"));
+        Assert.Contains("date", TestHelpers.Errors(invalid).Keys);
+        var invalidExport = Assert.IsType<BadRequestObjectResult>(
+            await controller.AbstractExport("2026-02-31", "staff:Sales", "total"));
+        Assert.Contains("date", TestHelpers.Errors(invalidExport).Keys);
+
+        var all = await controller.AbstractExport(Today.ToString("yyyy-MM-dd"), "staff:Sales", "total");
+        Assert.Equal($"abstract_report_{Today:yyyyMMdd}.xls", Assert.IsType<FileContentResult>(all).FileDownloadName);
+        Assert.Contains("EMP001", CsvText(all));
+        Assert.Contains("EMP002", CsvText(all));
+        Assert.Contains("EMP003", CsvText(all));
+
+        var attendedExport = CsvText(await controller.AbstractExport(Today.ToString("yyyy-MM-dd"), "staff:Sales", "attended"));
+        Assert.Contains("EMP001", attendedExport);
+        Assert.DoesNotContain("EMP002", attendedExport);
+        Assert.DoesNotContain("EMP003", attendedExport);
+
+        var notAttendedExport = CsvText(await controller.AbstractExport(Today.ToString("yyyy-MM-dd"), "staff:Sales", "notAttended"));
+        Assert.DoesNotContain("EMP001", notAttendedExport);
+        Assert.Contains("EMP002", notAttendedExport);
+        Assert.Contains("EMP003", notAttendedExport);
+
+        var invalidMetric = Assert.IsType<BadRequestObjectResult>(
+            await controller.AbstractExport(Today.ToString("yyyy-MM-dd"), "staff:Sales", "unknown"));
+        Assert.Contains("metric", TestHelpers.Errors(invalidMetric).Keys);
+    }
+
+    [Fact]
+    public async Task Monthly_attendance_report_rejects_invalid_period_and_exports_selected_designation()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var executive = TestHelpers.ExistingStaff("EMP001", "Meena", "900000001", dept: TestHelpers.SalesDept);
+        var security = TestHelpers.ExistingStaff("EMP002", "Ravi", "900000002", dept: TestHelpers.AdminDept);
+        security.Designation = "Security";
+        ctx.Staff.AddRange(executive, security);
+        ctx.AttendanceRecords.Add(new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart, Status = AttendanceStatuses.Present });
+        await ctx.SaveChangesAsync();
+
+        var controller = Reports(ctx);
+        Assert.IsType<BadRequestObjectResult>(await controller.MonthlyAttendance(Today.Year, 13, null));
+        Assert.IsType<BadRequestObjectResult>(await controller.MonthlyAttendance(Today.Year + 1, Today.Month, null));
+
+        var file = Assert.IsType<FileContentResult>(await controller.MonthlyAttendanceExport(Today.Year, Today.Month, "security"));
+        Assert.Equal($"monthly_attendance_{MonthStart:yyyyMM}.xls", file.FileDownloadName);
+        var csv = CsvText(file);
+        Assert.Contains("S.No,Employee ID,Staff Name,Designation,Total Days in Month,Total Working Days", csv);
+        Assert.Contains("1,EMP002,Ravi,Security", csv);
+        Assert.DoesNotContain("Meena", csv);
+    }
+
+    [Fact]
+    public async Task Salary_report_filters_and_prorates_monthly_salary_by_attendance()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var salesStaff = TestHelpers.ExistingStaff("EMP001", "Meena", "900000001", dept: TestHelpers.SalesDept);
+        salesStaff.Designation = "Sales Executive";
+        salesStaff.MonthlySalary = 31000m;
+        var adminStaff = TestHelpers.ExistingStaff("EMP002", "Ravi", "900000002", dept: TestHelpers.AdminDept);
+        adminStaff.Designation = "Security";
+        adminStaff.MonthlySalary = 62000m;
+        ctx.Staff.AddRange(salesStaff, adminStaff);
+        ctx.AttendanceRecords.AddRange(
+            new AttendanceRecord { StaffId = salesStaff.Id, AttendanceDate = MonthStart, Status = AttendanceStatuses.Present },
+            new AttendanceRecord { StaffId = salesStaff.Id, AttendanceDate = MonthStart.AddDays(1), Status = AttendanceStatuses.HalfDay },
+            new AttendanceRecord { StaffId = salesStaff.Id, AttendanceDate = MonthStart.AddDays(2), Status = AttendanceStatuses.Absent },
+            new AttendanceRecord { StaffId = salesStaff.Id, AttendanceDate = MonthStart.AddDays(3), Status = AttendanceStatuses.Leave });
+        ctx.AttendanceRecords.AddRange(Enumerable.Range(0, 15).Select(day =>
+            new AttendanceRecord { StaffId = adminStaff.Id, AttendanceDate = MonthStart.AddDays(day), Status = AttendanceStatuses.Present }));
+        await ctx.SaveChangesAsync();
+
+        var controller = Reports(ctx);
+        var json = TestHelpers.OkJson(await controller.Salary(Today.Year, Today.Month, null, null));
+        Assert.Equal(DateTime.DaysInMonth(Today.Year, Today.Month), json.GetProperty("monthDays").GetInt32());
+        Assert.Contains("Sales", json.GetProperty("types").EnumerateArray().Select(x => x.GetString()));
+        var meena = json.GetProperty("rows").EnumerateArray().Single(row => row.GetProperty("employeeId").GetString() == "EMP001");
+        Assert.Equal(1.5m, meena.GetProperty("workedDays").GetDecimal());
+        Assert.Equal(1500m, meena.GetProperty("totalSalary").GetDecimal());
+        var ravi = json.GetProperty("rows").EnumerateArray().Single(row => row.GetProperty("employeeId").GetString() == "EMP002");
+        Assert.Equal(15m, ravi.GetProperty("workedDays").GetDecimal());
+        Assert.Equal(30000m, ravi.GetProperty("totalSalary").GetDecimal());
+        Assert.Equal(31500m, json.GetProperty("grandTotalSalary").GetDecimal());
+
+        var byDepartment = TestHelpers.OkJson(await controller.Salary(Today.Year, Today.Month, "sales", null));
+        Assert.Equal("EMP001", Assert.Single(byDepartment.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
+        var byDesignation = TestHelpers.OkJson(await controller.Salary(Today.Year, Today.Month, null, "executive"));
+        Assert.Equal("EMP001", Assert.Single(byDesignation.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
+        var byEmployeeId = TestHelpers.OkJson(await controller.Salary(Today.Year, Today.Month, null, "emp002"));
+        Assert.Equal("EMP002", Assert.Single(byEmployeeId.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
+        var unknownDepartment = TestHelpers.OkJson(await controller.Salary(Today.Year, Today.Month, "Unknown", null));
+        Assert.Empty(unknownDepartment.GetProperty("rows").EnumerateArray());
+
+        var export = Assert.IsType<FileContentResult>(await controller.SalaryExport(Today.Year, Today.Month, "Admin", "security"));
+        Assert.Equal($"salary_report_{MonthStart:yyyyMM}.xls", export.FileDownloadName);
+        var csv = CsvText(export);
+        Assert.Contains("S.No,Employee ID,Staff Name,Employee Type,Designation,Total Days in Month,Worked Days,Total Salary", csv);
+        Assert.Contains("1,EMP002,Ravi,Admin,Security,31,15,30000.00", csv);
+        Assert.Contains("Grand Total,,,,,,,30000.00", csv);
+        Assert.DoesNotContain("Meena", csv);
+    }
+
+    [Fact]
+    public async Task Salary_report_rejects_invalid_period()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var controller = Reports(ctx);
+
+        Assert.IsType<BadRequestObjectResult>(await controller.Salary(Today.Year + 1, Today.Month, null, null));
+        Assert.IsType<BadRequestObjectResult>(await controller.SalaryExport(Today.Year, 13, null, null));
     }
 
     // ── Charts ────────────────────────────────────────────────────
@@ -192,11 +401,26 @@ public class ReportsControllerTests
     [InlineData(null, "INACTIVE", null, "ART-0004")]
     [InlineData("a-01", null, null, "ART-0001")]
     [InlineData("warangal", null, null, "ART-0004,ART-0002")]
+    [InlineData(null, "ON_LEAVE", null, "ART-0003")]
     public async Task Artisan_report_filters(string? q, string? status, string? category, string expected)
     {
         using var ctx = await ReportContext();
         var json = TestHelpers.OkJson(await Reports(ctx).ArtisanReport(null, q, status, category));
         Assert.Equal(expected, string.Join(",", json.GetProperty("rows").EnumerateArray().Select(r => r.GetProperty("artisanCode").GetString())));
+    }
+
+    [Fact]
+    public async Task Artisan_report_category_and_month_filters_are_applied()
+    {
+        using var ctx = await ReportContext();
+        var pottery = TestHelpers.OkJson(await Reports(ctx).ArtisanReport(null, null, null, Pottery.ToString()));
+        Assert.Equal("ART-0002", Assert.Single(pottery.GetProperty("rows").EnumerateArray()).GetProperty("artisanCode").GetString());
+
+        var previousMonth = MonthStart.AddMonths(-1).ToString("yyyy-MM");
+        var monthly = TestHelpers.OkJson(await Reports(ctx).ArtisanReport(previousMonth, null, null, null));
+        var kamala = monthly.GetProperty("rows").EnumerateArray()
+            .Single(row => row.GetProperty("artisanCode").GetString() == "ART-0001");
+        Assert.Equal(1600, kamala.GetProperty("monthlySales").GetDecimal());
     }
 
     [Theory]

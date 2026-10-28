@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -46,24 +47,45 @@ namespace IMSB.Common
         public static BadRequestObjectResult ErrorResult(string key, string message) =>
             new(new { errors = new Dictionary<string, string> { [key] = message } });
 
-        public static string Row(params string?[] values) => string.Join(',', values.Select(CsvEscape));
-
-        public static FileContentResult ExportCsv(string fileName, IEnumerable<IEnumerable<string?>> rows)
+        public static FileContentResult ExportExcel(string fileName, IEnumerable<IEnumerable<string?>> rows)
         {
-            var sb = new StringBuilder();
-            foreach (var row in rows) sb.AppendLine(Row(row.ToArray()));
-            return Csv(sb, fileName);
-        }
+            using var stream = new MemoryStream();
+            using (var writer = XmlWriter.Create(stream, new XmlWriterSettings
+            {
+                Encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+                Indent = true
+            }))
+            {
+                const string spreadsheetNamespace = "urn:schemas-microsoft-com:office:spreadsheet";
+                writer.WriteStartDocument();
+                writer.WriteStartElement("Workbook", spreadsheetNamespace);
+                writer.WriteAttributeString("xmlns", "ss", null, spreadsheetNamespace);
+                writer.WriteStartElement("Worksheet", spreadsheetNamespace);
+                writer.WriteAttributeString("ss", "Name", spreadsheetNamespace, "Report");
+                writer.WriteStartElement("Table", spreadsheetNamespace);
 
-        public static FileContentResult Csv(StringBuilder sb, string fileName)
-        {
-            // UTF-8 BOM so Excel shows non-ASCII text correctly
-            var preamble = Encoding.UTF8.GetPreamble();
-            var text = sb.ToString();
-            var bytes = new byte[preamble.Length + Encoding.UTF8.GetByteCount(text)];
-            preamble.CopyTo(bytes, 0);
-            Encoding.UTF8.GetBytes(text, 0, text.Length, bytes, preamble.Length);
-            return new FileContentResult(bytes, "text/csv") { FileDownloadName = fileName };
+                foreach (var row in rows)
+                {
+                    writer.WriteStartElement("Row", spreadsheetNamespace);
+                    foreach (var value in row)
+                    {
+                        writer.WriteStartElement("Cell", spreadsheetNamespace);
+                        writer.WriteStartElement("Data", spreadsheetNamespace);
+                        writer.WriteAttributeString("ss", "Type", spreadsheetNamespace, "String");
+                        writer.WriteString(value ?? string.Empty);
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+
+            return new FileContentResult(stream.ToArray(), "application/vnd.ms-excel") { FileDownloadName = fileName };
         }
 
         /// <summary>Next PREFIX-0001 style number after the highest existing one.</summary>

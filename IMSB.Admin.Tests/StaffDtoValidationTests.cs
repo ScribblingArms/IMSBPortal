@@ -71,9 +71,20 @@ public class StaffDtoValidationTests
     }
 
     [Theory]
+    [InlineData(-0.01)]
+    [InlineData(1000000000)]
+    public void Monthly_salary_must_be_within_supported_range(decimal salary)
+    {
+        var dto = TestHelpers.ValidCreateDto();
+        dto.MonthlySalary = salary;
+        Assert.Contains(nameof(CreateStaffDto.MonthlySalary), FailedMembers(dto));
+    }
+
+    [Theory]
     [InlineData(nameof(CreateStaffDto.DateOfBirth))]
     [InlineData(nameof(CreateStaffDto.DepartmentId))]
     [InlineData(nameof(CreateStaffDto.Designation))]
+    [InlineData(nameof(CreateStaffDto.StaffCategory))]
     [InlineData(nameof(CreateStaffDto.JoinDate))]
     public void Required_fields_fail_when_empty(string property)
     {

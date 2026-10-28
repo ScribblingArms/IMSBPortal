@@ -355,7 +355,7 @@ namespace IMSB.Admin.Controllers
                     s.Artisan?.ArtisanCode, s.Artisan?.FullName, Date(s.AllottedDate), Date(s.AgreementEndDate),
                     s.MonthlyRent?.ToString("0.00", CultureInfo.InvariantCulture), s.Remarks });
             }
-            return ExportCsv($"stalls_{DateTime.Now:yyyyMMddHHmmss}.csv", rows);
+            return ExportExcel($"stalls_{DateTime.Now:yyyyMMddHHmmss}.xls", rows);
         }
     }
 }

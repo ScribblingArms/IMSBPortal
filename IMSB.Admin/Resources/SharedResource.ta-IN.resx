@@ -312,6 +312,60 @@
   <data name="History" xml:space="preserve">
     <value>வரலாறு</value>
   </data>
+  <data name="MonthlyCalendar" xml:space="preserve">
+    <value>மாதாந்திர நாட்காட்டி</value>
+  </data>
+  <data name="MonthlyAttendanceCalendar" xml:space="preserve">
+    <value>மாதாந்திர வருகை நாட்காட்டி</value>
+  </data>
+  <data name="EmployeeType" xml:space="preserve">
+    <value>பணியாளர் வகை</value>
+  </data>
+  <data name="AllTypes" xml:space="preserve">
+    <value>அனைத்து வகைகள்</value>
+  </data>
+  <data name="ShowResult" xml:space="preserve">
+    <value>முடிவைக் காட்டு</value>
+  </data>
+  <data name="ExportToExcel" xml:space="preserve">
+    <value>Excel-க்கு ஏற்றுமதி செய்</value>
+  </data>
+  <data name="MonthlyReports" xml:space="preserve">
+    <value>மாதாந்திர அறிக்கைகள்</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>வ.எண்</value>
+  </data>
+  <data name="TotalDaysInMonth" xml:space="preserve">
+    <value>மாதத்தின் மொத்த நாட்கள்</value>
+  </data>
+  <data name="TotalWorkingDays" xml:space="preserve">
+    <value>மொத்த வேலை நாட்கள்</value>
+  </data>
+  <data name="SalaryReport" xml:space="preserve">
+    <value>சம்பள அறிக்கை</value>
+  </data>
+  <data name="SalaryRequestFailed" xml:space="preserve">
+    <value>சம்பள அறிக்கை கோரிக்கை தோல்வியடைந்தது ({0}).</value>
+  </data>
+  <data name="MonthlySalary" xml:space="preserve">
+    <value>மாதச் சம்பளம் (₹)</value>
+  </data>
+  <data name="WorkedDays" xml:space="preserve">
+    <value>பணிபுரிந்த நாட்கள்</value>
+  </data>
+  <data name="TotalSalary" xml:space="preserve">
+    <value>மொத்தச் சம்பளம்</value>
+  </data>
+  <data name="SalaryProrationNote" xml:space="preserve">
+    <value>மொத்தச் சம்பளம் = மாதச் சம்பளம் × பணிநாட்கள் ÷ மாத நாட்கள். வருகை = 1 நாள், அரை நாள் = 0.5; வராதது மற்றும் விடுப்பு = 0.</value>
+  </data>
+  <data name="SearchSalaryPlaceholder" xml:space="preserve">
+    <value>பணியாளர் / துறை / பதவியின் அடிப்படையில் தேடுங்கள்</value>
+  </data>
+  <data name="ValMonthlySalary" xml:space="preserve">
+    <value>0 முதல் 999,999,999.99 வரையிலான மாதச் சம்பளத்தை உள்ளிடவும்.</value>
+  </data>
   <data name="MarkAttendance" xml:space="preserve">
     <value>வருகையை குறி</value>
   </data>
@@ -1180,7 +1234,7 @@
     <value>அனைத்தையும் ஏற்றுமதி செய்</value>
   </data>
   <data name="ExportCsv" xml:space="preserve">
-    <value>CSV ஏற்றுமதி</value>
+    <value>Excel ஏற்றுமதி</value>
   </data>
   <data name="ExportKPIs" xml:space="preserve">
     <value>KPI-களை ஏற்றுமதி செய்</value>
@@ -1307,6 +1361,9 @@
   </data>
   <data name="Month" xml:space="preserve">
     <value>மாதம்</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>ஆண்டு</value>
   </data>
   <data name="MonthlyAttendanceRate" xml:space="preserve">
     <value>மாதாந்திர வருகை விகிதம்</value>
@@ -1790,6 +1847,9 @@
   </data>
   <data name="ToggleSidebar" xml:space="preserve">
     <value>பக்கப்பட்டியை மாற்று</value>
+  </data>
+  <data name="GrandTotal" xml:space="preserve">
+    <value>மொத்தத் தொகை</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>மொத்தம்</value>
@@ -2571,6 +2631,9 @@
   <data name="ValAttendanceStatus" xml:space="preserve">
     <value>வருகை, வரவில்லை, விடுப்பு அல்லது அரை நாள் என்பதைத் தேர்ந்தெடுக்கவும்</value>
   </data>
+  <data name="ValMonthlyAttendanceStatus" xml:space="preserve">
+    <value>சரியான மாதாந்திர வருகை நிலையைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
   <data name="ValInTimeRequired" xml:space="preserve">
     <value>உள்ளே நேரத்தை உள்ளிடவும்</value>
   </data>
@@ -2589,4 +2652,61 @@
   <data name="ValTooManyEntries" xml:space="preserve">
     <value>ஒரே நேரத்தில் அதிகபட்சம் {0} பதிவுகளைச் சேமிக்கலாம்</value>
   </data>
+  <data name="AbstractReport" xml:space="preserve"><value>சுருக்க அறிக்கை</value></data>
+  <data name="SelectDate" xml:space="preserve"><value>தேதியைத் தேர்ந்தெடுக்கவும்</value></data>
+  <data name="LoadData" xml:space="preserve"><value>தரவை ஏற்றவும்</value></data>
+  <data name="SectionName" xml:space="preserve"><value>பிரிவு பெயர்</value></data>
+  <data name="StaffCountTotal" xml:space="preserve"><value>பணியாளர் எண்ணிக்கை (மொத்தம்)</value></data>
+  <data name="Attended" xml:space="preserve"><value>வருகை</value></data>
+  <data name="NotAttended" xml:space="preserve"><value>வரவில்லை</value></data>
+  <data name="EmployeeDetails" xml:space="preserve"><value>பணியாளர் விவரங்கள்</value></data>
+  <data name="ArtisansAttendanceUnavailable" xml:space="preserve"><value>இந்த அமைப்பில் கைவினைஞர்களின் வருகை பதிவு செய்யப்படவில்லை. அவர்களின் வருகை எண்ணிக்கை கிடைக்காது.</value></data>
+  <data name="NoEmployeesForSection" xml:space="preserve"><value>இந்தப் பிரிவில் பணியாளர்கள் இல்லை.</value></data>
+  <data name="StaffCategory" xml:space="preserve"><value>பணியாளர் வகை</value></data>
+  <data name="StaffProfile" xml:space="preserve"><value>பணியாளர் சுயவிவரம்</value></data>
+  <data name="ValStaffCategory" xml:space="preserve"><value>பணியாளர் வகையை உள்ளிடவும் (அதிகபட்சம் 100 எழுத்துகள்)</value></data>
+  <data name="LeaveManagement" xml:space="preserve"><value>விடுப்பு மேலாண்மை</value></data>
+  <data name="Update" xml:space="preserve"><value>புதுப்பிக்கவும்</value></data>
+  <data name="LeaveManagementSubtitle" xml:space="preserve"><value>பணியாளர்களின் தற்போதைய ஆண்டு விடுப்பு இருப்புகளைப் பார்க்கவும்.</value></data>
+  <data name="AddLeaveTaken" xml:space="preserve"><value>விடுப்புக்கு விண்ணப்பிக்கவும்</value></data>
+  <data name="LeaveEntitlements" xml:space="preserve"><value>விடுப்பு ஒதுக்கீடுகள்</value></data>
+  <data name="LeaveType" xml:space="preserve"><value>விடுப்பு வகை</value></data>
+  <data name="AnnualQuota" xml:space="preserve"><value>ஆண்டு ஒதுக்கீடு</value></data>
+  <data name="Days" xml:space="preserve"><value>நாட்கள்</value></data>
+  <data name="SaveEntitlement" xml:space="preserve"><value>ஒதுக்கீட்டைச் சேமிக்கவும்</value></data>
+  <data name="NoLeaveEntitlements" xml:space="preserve"><value>இந்த ஆண்டிற்கு விடுப்பு வகைகள் அமைக்கப்படவில்லை.</value></data>
+  <data name="CurrentLeaveBalances" xml:space="preserve"><value>தற்போதைய விடுப்பு இருப்புகள்</value></data>
+  <data name="Taken" xml:space="preserve"><value>எடுத்தது</value></data>
+  <data name="Balance" xml:space="preserve"><value>மீதம்</value></data>
+  <data name="NoLeaveBalances" xml:space="preserve"><value>இருப்புகள் இல்லை. பணியாளர் வகைக்கு விடுப்பு ஒதுக்கீட்டைச் சேர்க்கவும்.</value></data>
+  <data name="LeaveEntrySubtitle" xml:space="preserve"><value>பணியாளர் எடுத்த விடுப்பைப் பதிவு செய்யவும் அல்லது திருத்தவும்.</value></data>
+  <data name="DaysTaken" xml:space="preserve"><value>எடுத்த நாட்கள்</value></data>
+  <data name="RecordLeaveTaken" xml:space="preserve"><value>எடுத்த விடுப்பைப் பதிவு செய்யவும்</value></data>
+  <data name="SaveLeaveEntry" xml:space="preserve"><value>விடுப்பைப் பதிவு செய்யவும்</value></data>
+  <data name="LeaveEntries" xml:space="preserve"><value>விடுப்பு பதிவுகள்</value></data>
+  <data name="NoLeaveEntries" xml:space="preserve"><value>இந்த ஆண்டில் விடுப்பு பதிவுகள் இல்லை.</value></data>
+  <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>விடுப்பைப் பதிவு செய்வதற்கு முன் குறைந்தது ஒரு ஒதுக்கீட்டை அமைக்கவும்.</value></data>
+  <data name="ValLeaveEntitlement" xml:space="preserve"><value>சரியான வகை, விடுப்பு வகை மற்றும் ஆண்டு ஒதுக்கீட்டை உள்ளிடவும்.</value></data>
+  <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>ஏற்கனவே எடுத்த விடுப்பை விட ஒதுக்கீடு குறைவாக இருக்க முடியாது.</value></data>
+  <data name="ValLeaveTypeInUse" xml:space="preserve"><value>பதிவுகள் உள்ளதால் இந்த விடுப்பு வகையை நீக்க முடியாது.</value></data>
+  <data name="ValLeaveEntry" xml:space="preserve"><value>சரியான பணியாளர், விடுப்பு வகை, தேதிகள் மற்றும் நாட்களை உள்ளிடவும்.</value></data>
+  <data name="ValLeaveDates" xml:space="preserve"><value>நடப்பு ஆண்டிற்குள் சரியான தேதிகளை உள்ளிடவும்.</value></data>
+  <data name="ValLeaveFutureDate" xml:space="preserve"><value>விடுப்பின் இரண்டு தேதிகளும் இன்றைய தேதிக்குப் பிறகு இருக்க வேண்டும்.</value></data>
+  <data name="ValLeaveDays" xml:space="preserve"><value>நாட்கள் அரை நாள் அளவிலும், தேதிகளுக்குள் இருக்க வேண்டும்.</value></data>
+  <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>இந்த பணியாளர் வகைக்கு இந்த விடுப்பு வகை அமைக்கப்படவில்லை.</value></data>
+  <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>இந்த தேதிகளில் பணியாளருக்கு ஏற்கனவே விடுப்பு பதிவு உள்ளது.</value></data>
+  <data name="ValInsufficientLeaveBalance" xml:space="preserve"><value>இந்த பதிவுக்கு போதுமான விடுப்பு இருப்பு இல்லை.</value></data>
+  <data name="LeaveEntitlementSaved" xml:space="preserve"><value>விடுப்பு ஒதுக்கீடு சேமிக்கப்பட்டது.</value></data>
+  <data name="LeaveEntitlementDeleted" xml:space="preserve"><value>விடுப்பு ஒதுக்கீடு நீக்கப்பட்டது.</value></data>
+  <data name="LeaveEntrySaved" xml:space="preserve"><value>விடுப்பு பதிவு சேமிக்கப்பட்டது.</value></data>
+  <data name="LeaveEntryDeleted" xml:space="preserve"><value>விடுப்பு பதிவு நீக்கப்பட்டது.</value></data>
+  <data name="AttendanceLeaveType" xml:space="preserve"><value>வருகை விடுப்பு வகை</value></data>
+  <data name="UseForAttendanceLeave" xml:space="preserve"><value>வருகை விடுப்பு மற்றும் அரை நாள் கழிவுகளுக்குப் பயன்படுத்தவும்</value></data>
+  <data name="AttendanceLeavePolicyHelp" xml:space="preserve"><value>ஒவ்வொரு பணியாளர் வகைக்கும் அதிகபட்சம் ஒரு விடுப்பு வகையைத் தேர்ந்தெடுக்கவும். விடுப்புக்கு 1 நாளும், அரை நாளுக்கு 0.5 நாளும் கழிக்கப்படும். இருப்பு இல்லையெனில் வருகை LOP ஆக சேமிக்கப்படும்; விடுப்பு இருப்பு குறையாது. வருகையின்மைக்கு விடுப்பு கழிக்கப்படாது.</value></data>
+  <data name="AttendanceLeaveSelected" xml:space="preserve"><value>தேர்ந்தெடுக்கப்பட்டது</value></data>
+  <data name="LeaveWithoutPay" xml:space="preserve"><value>LOP</value></data>
+  <data name="AttendanceLopMessage" xml:space="preserve"><value>{0} வருகைப் பதிவுகள் LOP எனக் குறிக்கப்பட்டன.</value></data>
+  <data name="BalanceRefreshFailed" xml:space="preserve"><value>விடுப்பு இருப்பைப் புதுப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கப் பக்கத்தை ஏற்றவும்.</value></data>
+  <data name="AllStaff" xml:space="preserve"><value>அனைத்து பணியாளர்களும்</value></data>
+  <data name="AllEmployeeTypes" xml:space="preserve"><value>அனைத்து பணியாளர் வகைகளும்</value></data>
 </root>

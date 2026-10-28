@@ -28,7 +28,21 @@ public class StaffControllerCreateTests
         Assert.Equal(TestHelpers.SalesDept, saved.DepartmentId);
         Assert.Equal("MORNING", saved.Shift);
         Assert.Equal("ACTIVE", saved.Status);
+        Assert.Equal(24000m, saved.MonthlySalary);
         Assert.Equal("hr@imsb", saved.CreatedBy);
+    }
+
+    [Fact]
+    public async Task Staff_role_cannot_set_monthly_salary_on_create()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.MonthlySalary = 99999m;
+
+        var result = await TestHelpers.CreateController(ctx, userName: "staff@imsb", role: "Staff").Create(dto);
+
+        Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(0m, (await ctx.Staff.SingleAsync()).MonthlySalary);
     }
 
     [Fact]
@@ -253,7 +267,7 @@ public class StaffControllerUpdateTests
     private static UpdateStaffDto DtoFor(Staff s, string? status = null) => new()
     {
         FullName = s.FullName, Mobile = s.Mobile, Email = s.Email, DateOfBirth = s.DateOfBirth.ToString("yyyy-MM-dd"),
-        Gender = s.Gender, DepartmentId = s.DepartmentId.ToString(), Designation = s.Designation,
+        Gender = s.Gender, DepartmentId = s.DepartmentId.ToString(), Designation = s.Designation, StaffCategory = s.StaffCategory,
         JoinDate = s.JoinDate.ToString("yyyy-MM-dd"), Shift = s.Shift, Status = status
     };
 
@@ -266,6 +280,7 @@ public class StaffControllerUpdateTests
         dto.Designation = "Senior Executive";
         dto.DepartmentId = TestHelpers.AdminDept.ToString();
         dto.Shift = "EVENING";
+        dto.MonthlySalary = 31500m;
 
         var result = await TestHelpers.CreateController(ctx, userName: "editor@imsb").Update("EMP001", dto);
 
@@ -274,10 +289,27 @@ public class StaffControllerUpdateTests
         Assert.Equal("Senior Executive", saved.Designation);
         Assert.Equal(TestHelpers.AdminDept, saved.DepartmentId);
         Assert.Equal("EVENING", saved.Shift);
+        Assert.Equal(31500m, saved.MonthlySalary);
         Assert.Equal("ON_LEAVE", saved.Status);
         Assert.Equal("editor@imsb", saved.UpdatedBy);
         Assert.NotNull(saved.UpdatedAt);
         Assert.Equal("EMP001", saved.EmployeeId);
+    }
+
+    [Fact]
+    public async Task Staff_role_cannot_set_or_change_monthly_salary()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        staff.MonthlySalary = 18000m;
+        await ctx.SaveChangesAsync();
+
+        var dto = DtoFor(staff);
+        dto.MonthlySalary = 99999m;
+        var update = await TestHelpers.CreateController(ctx, userName: "staff@imsb", role: "Staff").Update("EMP001", dto);
+
+        Assert.IsType<OkObjectResult>(update);
+        Assert.Equal(18000m, (await ctx.Staff.SingleAsync()).MonthlySalary);
     }
 
     [Fact]

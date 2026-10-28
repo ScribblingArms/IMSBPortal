@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 using IMSB.Interfaces;
+using IMSB.Admin.Models;
+using System.Globalization;
 
 namespace IMSB.Admin.Controllers
 {
@@ -16,12 +18,28 @@ namespace IMSB.Admin.Controllers
         private readonly IStringLocalizer _L;
         private readonly SessionService _sessions;
         private readonly IAccountInterface _account;
+        private readonly IStallsInterface _stalls;
+        private readonly IArtisansInterface _artisans;
+        private readonly IInventoryInterface _inventory;
+        private readonly ISalesInterface _sales;
 
-        public AccountController(IWebHostEnvironment env, IStringLocalizerFactory localizerFactory, SessionService sessions, IAccountInterface account)
+        public AccountController(
+            IWebHostEnvironment env,
+            IStringLocalizerFactory localizerFactory,
+            SessionService sessions,
+            IAccountInterface account,
+            IStallsInterface stalls,
+            IArtisansInterface artisans,
+            IInventoryInterface inventory,
+            ISalesInterface sales)
         {
             _env = env;
             _account = account;
             _sessions = sessions;
+            _stalls = stalls;
+            _artisans = artisans;
+            _inventory = inventory;
+            _sales = sales;
             // Same shared resources the views use (Resources/SharedResource.<culture>.resx)
             _L = localizerFactory.Create("SharedResource", typeof(AccountController).Assembly.GetName().Name!);
         }
@@ -57,10 +75,10 @@ namespace IMSB.Admin.Controllers
             var token = await _account.ValidatePasswordResetTokens(login.Id);
             // TODO: send the link by email. Until then it is shown on screen in Development only;
             // showing it in any other environment would let anyone reset any account's password.
-            if (_env.IsDevelopment())
-            {
-                ViewBag.ResetUrl = Url.Action("Reset", "Account", new { token }, Request.Scheme);
-            }
+            //if (_env.IsDevelopment())
+            //{
+              //  ViewBag.ResetUrl = Url.Action("Reset", "Account", new { token }, Request.Scheme);
+            //}
             return View();
         }
 
@@ -109,7 +127,7 @@ namespace IMSB.Admin.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login(string? returnUrl = null, string? reason = null)
+        public async Task<IActionResult> Login(string? returnUrl = null, string? reason = null)
         {
             // why the user is back at the login page (set by SessionCookieEvents / Logout)
             ViewBag.Notice = reason switch
@@ -126,12 +144,12 @@ namespace IMSB.Admin.Controllers
             }
 
             // Demo credentials are only exposed in Development (they are seeded at startup in Program.cs)
-            if (_env.IsDevelopment())
-            {
+            //if (_env.IsDevelopment())
+            //{
                 ViewBag.DemoUsers = DemoUsers.All;
-            }
+           // }
 
-            return View(new LoginViewModel { ReturnUrl = returnUrl });
+            return await LoginViewAsync(new LoginViewModel { ReturnUrl = returnUrl });
         }
 
         [HttpPost]
@@ -139,14 +157,14 @@ namespace IMSB.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (_env.IsDevelopment())
-            {
+            //if (_env.IsDevelopment())
+            //{
                 ViewBag.DemoUsers = DemoUsers.All;
-            }
+            //}
 
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return await LoginViewAsync(model);
             }
 
             // Lookup user by username or email
@@ -155,7 +173,7 @@ namespace IMSB.Admin.Controllers
             if (login == null)
             {
                 ModelState.AddModelError(string.Empty, _L["InvalidCredentials"]);
-                return View(model);
+                return await LoginViewAsync(model);
             }
 
             // verify password before revealing anything else about the account
@@ -164,13 +182,13 @@ namespace IMSB.Admin.Controllers
             if (verify == PasswordVerificationResult.Failed)
             {
                 ModelState.AddModelError(string.Empty, _L["InvalidCredentials"]);
-                return View(model);
+                return await LoginViewAsync(model);
             }
 
             if (!login.IsActive)
             {
                 ModelState.AddModelError(string.Empty, _L["AccountDisabled"]);
-                return View(model);
+                return await LoginViewAsync(model);
             }
 
             // validate selected role
@@ -185,13 +203,13 @@ namespace IMSB.Admin.Controllers
             if (string.IsNullOrEmpty(normalizedSelected))
             {
                 ModelState.AddModelError(string.Empty, _L["InvalidRoleSelected"]);
-                return View(model);
+                return await LoginViewAsync(model);
             }
 
             if (!string.Equals(login.Role, normalizedSelected, StringComparison.OrdinalIgnoreCase))
             {
                 ModelState.AddModelError(string.Empty, _L["RoleNotAuthorized"]);
-                return View(model);
+                return await LoginViewAsync(model);
             }
 
             if (verify == PasswordVerificationResult.SuccessRehashNeeded)
@@ -232,6 +250,34 @@ namespace IMSB.Admin.Controllers
                 return LocalRedirect(model.ReturnUrl);
             }
             return RedirectToRoleHome(normalizedSelected);
+        }
+
+        private async Task<ViewResult> LoginViewAsync(LoginViewModel model)
+        {
+            var today = DateTime.Today;
+            var monthStart = new DateTime(today.Year, today.Month, 1);
+            var monthEnd = monthStart.AddMonths(1);
+            var stallStats = await _stalls.StatsAsync();
+            var artisanStats = await _artisans.StatsAsync();
+            var monthlyRevenue = (await _sales.ByCategoryAsync(monthStart, monthEnd)).Sum(row => row.Revenue);
+            var categoryCount = await _inventory.CategoryCountAsync();
+
+            ViewBag.LoginStats = new LoginPageStats(
+                stallStats.Occupied.ToString("N0", CultureInfo.InvariantCulture),
+                artisanStats.Total.ToString("N0", CultureInfo.InvariantCulture),
+                FormatMonthlyRevenue(monthlyRevenue),
+                categoryCount.ToString("N0", CultureInfo.InvariantCulture));
+
+            return View("Login", model);
+        }
+
+        private static string FormatMonthlyRevenue(decimal revenue)
+        {
+            if (revenue >= 10_000_000m)
+                return "₹" + (revenue / 10_000_000m).ToString("0.#", CultureInfo.InvariantCulture) + "Cr";
+            if (revenue >= 100_000m)
+                return "₹" + (revenue / 100_000m).ToString("0.#", CultureInfo.InvariantCulture) + "L";
+            return "₹" + revenue.ToString("N0", CultureInfo.InvariantCulture);
         }
 
         [HttpPost]

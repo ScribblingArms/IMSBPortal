@@ -1,0 +1,61 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    var years = (List<int>)ViewBag.Years;
+    var months = (List<KeyValuePair<int, string>>)ViewBag.MonthsOfYear;
+    var today = DateTime.Today;
+    var jsKeys = new[] { "CouldNotReachServer", "AllTypes", "NoStaffForAttendance", "GrandTotal" };
+    var jsStrings = jsKeys.ToDictionary(key => key, key => L[key].Value);
+}
+<main class="page-body">
+  <div class="page-header"><div><div class="page-title">@L["MonthlyReports"]</div></div></div>
+  <div class="card">
+    <div class="card-header monthly-report-header">
+      <div class="card-title"><i class="fa-solid fa-chart-column"></i> @L["MonthlyReports"]</div>
+      <button type="button" class="btn btn-outline btn-sm" id="monthlyReportExport"><i class="fa-solid fa-download"></i> @L["ExportToExcel"]</button>
+    </div>
+    <div class="card-body">
+      <div class="toolbar monthly-report-filters">
+        <select class="form-control" id="monthlyReportYear" aria-label="@L["Year"]">
+          @foreach (var year in years) { <option value="@year" selected="@(year == today.Year)">@year</option> }
+        </select>
+        <select class="form-control" id="monthlyReportMonth" aria-label="@L["Month"]">
+          @foreach (var month in months) { <option value="@month.Key" selected="@(month.Key == today.Month)">@month.Value</option> }
+        </select>
+        <select class="form-control" id="monthlyReportType" aria-label="@L["EmployeeType"]"><option value="">@L["AllTypes"]</option></select>
+        <button type="button" class="btn btn-outline btn-sm btn-reset" id="monthlyReportReset">@L["Reset"]</button>
+      </div>
+      <div class="form-error" id="monthlyReportError" role="alert"></div>
+      <div class="table-container">
+        <table class="data-table monthly-report-table">
+          <thead><tr>
+            <th class="monthly-report-number">@L["SerialNumber"]</th>
+            <th>@L["StaffName"]</th>
+            <th>@L["Designation"]</th>
+            <th>@L["TotalDaysInMonth"]</th>
+            <th>@L["TotalWorkingDays"]</th>
+          </tr></thead>
+          <tbody id="monthlyReportBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+@section Styles {
+  <style>
+    .monthly-report-header { gap:12px; flex-wrap:wrap; }
+    .monthly-report-filters { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+    .monthly-report-filters .form-control { flex:0 1 190px; width:auto; min-width:150px; max-width:220px; }
+    .monthly-report-table { min-width:760px; }
+    .monthly-report-table th { background:#eff3f9; color:#64748b; font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; }
+    .monthly-report-table tbody tr { border-bottom:1px solid #d5deeb; }
+    .monthly-report-staff-name { font-weight:700; }
+    .monthly-report-employee-id { color:var(--text-muted); font-size:.68rem; margin-top:2px; }
+    @@media(max-width:700px) { .monthly-report-filters { width:100%; } .monthly-report-filters .form-control { flex:1 1 130px; max-width:none; } .monthly-report-filters .btn { flex:1 0 100%; } }
+  </style>
+}
+@section Scripts {
+  <script>window.ReportsI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+  <script src="~/js/reports.js" asp-append-version="true"></script>
+}

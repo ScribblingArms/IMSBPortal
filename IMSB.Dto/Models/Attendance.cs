@@ -29,6 +29,9 @@ namespace IMSB.Dto.Models
         [MaxLength(20)]
         public string Status { get; set; } = AttendanceStatuses.Present;
 
+        [Column("leave_without_pay")]
+        public bool LeaveWithoutPay { get; set; }
+
         [Column("in_time")]
         public TimeSpan? InTime { get; set; }
 

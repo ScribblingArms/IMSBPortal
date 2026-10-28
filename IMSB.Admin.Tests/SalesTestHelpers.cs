@@ -55,9 +55,6 @@ internal static class SalesTestHelpers
     public static string CsvText(IActionResult result)
     {
         var file = Assert.IsType<FileContentResult>(result);
-        Assert.Equal("text/csv", file.ContentType);
-        var bytes = file.FileContents;
-        Assert.True(bytes.Take(3).SequenceEqual(Encoding.UTF8.GetPreamble()), "CSV should start with a UTF-8 BOM");
-        return Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
+        return ExcelExportTestHelpers.CsvText(file);
     }
 }

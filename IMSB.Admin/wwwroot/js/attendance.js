@@ -53,6 +53,10 @@
   const worked = s => s === 'PRESENT' || s === 'HALF_DAY';
   const statusLabel = s => STATUS[s] ? t(STATUS[s].key) : t('NotMarked');
   const statusBadge = s => `<span class="badge ${STATUS[s]?.badge || 'badge-neutral'}">${esc(statusLabel(s))}</span>`;
+  const attendanceStatusBadge = (status, leaveWithoutPay) => statusBadge(status)
+    + (leaveWithoutPay ? ` <span class="badge badge-danger">${esc(t('LeaveWithoutPay'))}</span>` : '');
+  const leaveBalanceChannel = 'BroadcastChannel' in window ? new BroadcastChannel('imsb-leave-balances') : null;
+  const notifyAttendanceChanged = () => leaveBalanceChannel?.postMessage('attendance-saved');
 
   // same rule as AttendanceRules.Hours on the server (which stays authoritative)
   function calc(status, inTime, outTime, shiftHours){
@@ -328,7 +332,11 @@
         return;
       }
       if (!res.ok){ toast(t('Error'), `${t('CheckForm')} (${res.status})`, 'error'); return; }
-      toast(t('AttendanceSaved'), t('AttendanceSavedMsg', formatDate(data.date)), 'success');
+      const result = await res.json();
+      notifyAttendanceChanged();
+      const savedMessage = t('AttendanceSavedMsg', formatDate(data.date));
+      const lopMessage = result.lopCount > 0 ? ` ${t('AttendanceLopMessage', result.lopCount)}` : '';
+      toast(t('AttendanceSaved'), savedMessage + lopMessage, 'success');
       dirty = false;
       await Promise.all([load(), loadHistory()]);
     } catch (e) {
@@ -410,7 +418,7 @@
       <td>${esc(r.outTime || '—')}</td>
       <td>${r.workedHours > 0 ? hours(r.workedHours) + 'h' : '—'}</td>
       <td>${r.overtimeHours > 0 ? `<span class="overtime-chip">${hours(r.overtimeHours)}h</span>` : '—'}</td>
-      <td>${statusBadge(r.status)}</td>
+      <td>${attendanceStatusBadge(r.status, r.leaveWithoutPay)}</td>
       <td style="white-space:nowrap">${actionButtons(r.id, true)}</td>
     </tr>`).join('');
   }
@@ -452,7 +460,7 @@
       ${item(t('Department'), esc(r.departmentName || '—'))}
       ${item(t('Designation'), esc(r.designation || '—'))}
       ${item(t('Date'), esc(longDate(r.date)))}
-      ${item(t('Status'), statusBadge(r.status))}
+      ${item(t('Status'), attendanceStatusBadge(r.status, r.leaveWithoutPay))}
       ${item(t('InTime'), esc(r.inTime || '—'))}
       ${item(t('OutTime'), esc(r.outTime || '—'))}
       ${item(t('Hours'), r.workedHours > 0 ? hours(r.workedHours) + 'h' : '—')}
@@ -526,7 +534,9 @@
       if (res.status === 404){ toast(t('Error'), t('AttendanceNotFound'), 'error'); closeModal('attEditModal'); await refreshAfterChange(); return; }
       if (!res.ok){ toast(t('Error'), `${t('CheckForm')} (${res.status})`, 'error'); return; }
       const r = await res.json();
-      toast(t('Success'), t('AttendanceUpdated', r.name, formatDate(r.date)), 'success');
+      notifyAttendanceChanged();
+      const lopMessage = r.leaveWithoutPay ? ` ${t('AttendanceLopMessage', 1)}` : '';
+      toast(t('Success'), t('AttendanceUpdated', r.name, formatDate(r.date)) + lopMessage, 'success');
       closeModal('attEditModal');
       editingId = null;
       await refreshAfterChange();
@@ -547,6 +557,7 @@
       const res = await fetch('/Attendance/Delete/' + encodeURIComponent(id), { method: 'POST', headers: { 'RequestVerificationToken': token() } });
       if (res.status === 404){ toast(t('Error'), t('AttendanceNotFound'), 'error'); await refreshAfterChange(); return; }
       if (!res.ok){ toast(t('Error'), `${t('CheckForm')} (${res.status})`, 'error'); return; }
+      notifyAttendanceChanged();
       toast(t('Success'), t('AttendanceDeleted', r.name, formatDate(r.date)), 'success');
       await refreshAfterChange();
     } catch (e) {

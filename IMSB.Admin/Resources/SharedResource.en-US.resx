@@ -312,6 +312,60 @@
   <data name="History" xml:space="preserve">
     <value>History</value>
   </data>
+  <data name="MonthlyCalendar" xml:space="preserve">
+    <value>Monthly Calendar</value>
+  </data>
+  <data name="MonthlyAttendanceCalendar" xml:space="preserve">
+    <value>Monthly Attendance Calendar</value>
+  </data>
+  <data name="EmployeeType" xml:space="preserve">
+    <value>Employee Type</value>
+  </data>
+  <data name="AllTypes" xml:space="preserve">
+    <value>All Types</value>
+  </data>
+  <data name="ShowResult" xml:space="preserve">
+    <value>Show Result</value>
+  </data>
+  <data name="ExportToExcel" xml:space="preserve">
+    <value>Export to Excel</value>
+  </data>
+  <data name="MonthlyReports" xml:space="preserve">
+    <value>Monthly Reports</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>S.No</value>
+  </data>
+  <data name="TotalDaysInMonth" xml:space="preserve">
+    <value>Total Days in Month</value>
+  </data>
+  <data name="TotalWorkingDays" xml:space="preserve">
+    <value>Total Working Days</value>
+  </data>
+  <data name="SalaryReport" xml:space="preserve">
+    <value>Salary Report</value>
+  </data>
+  <data name="SalaryRequestFailed" xml:space="preserve">
+    <value>Salary report request failed ({0}).</value>
+  </data>
+  <data name="MonthlySalary" xml:space="preserve">
+    <value>Monthly Salary (₹)</value>
+  </data>
+  <data name="WorkedDays" xml:space="preserve">
+    <value>Worked Days</value>
+  </data>
+  <data name="TotalSalary" xml:space="preserve">
+    <value>Total Salary</value>
+  </data>
+  <data name="SalaryProrationNote" xml:space="preserve">
+    <value>Total salary = monthly salary × worked days ÷ days in month. Present = 1 day, Half Day = 0.5; Absent and Leave = 0.</value>
+  </data>
+  <data name="SearchSalaryPlaceholder" xml:space="preserve">
+    <value>Search by Employee / Department / Designation</value>
+  </data>
+  <data name="ValMonthlySalary" xml:space="preserve">
+    <value>Enter a monthly salary from 0 to 999,999,999.99.</value>
+  </data>
   <data name="MarkAttendance" xml:space="preserve">
     <value>Mark Attendance</value>
   </data>
@@ -1180,7 +1234,7 @@
     <value>Export All</value>
   </data>
   <data name="ExportCsv" xml:space="preserve">
-    <value>Export CSV</value>
+    <value>Export Excel</value>
   </data>
   <data name="ExportKPIs" xml:space="preserve">
     <value>Export KPIs</value>
@@ -1307,6 +1361,9 @@
   </data>
   <data name="Month" xml:space="preserve">
     <value>Month</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
   </data>
   <data name="MonthlyAttendanceRate" xml:space="preserve">
     <value>Monthly Attendance Rate</value>
@@ -1790,6 +1847,9 @@
   </data>
   <data name="ToggleSidebar" xml:space="preserve">
     <value>Toggle Sidebar</value>
+  </data>
+  <data name="GrandTotal" xml:space="preserve">
+    <value>Grand Total</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>Total</value>
@@ -2571,6 +2631,9 @@
   <data name="ValAttendanceStatus" xml:space="preserve">
     <value>Select Present, Absent, Leave or Half Day</value>
   </data>
+  <data name="ValMonthlyAttendanceStatus" xml:space="preserve">
+    <value>Select a valid monthly attendance status</value>
+  </data>
   <data name="ValInTimeRequired" xml:space="preserve">
     <value>Enter the in-time</value>
   </data>
@@ -2589,4 +2652,61 @@
   <data name="ValTooManyEntries" xml:space="preserve">
     <value>At most {0} entries can be saved at once</value>
   </data>
+  <data name="AbstractReport" xml:space="preserve"><value>Abstract Report</value></data>
+  <data name="SelectDate" xml:space="preserve"><value>Select Date</value></data>
+  <data name="LoadData" xml:space="preserve"><value>Load Data</value></data>
+  <data name="SectionName" xml:space="preserve"><value>Section Name</value></data>
+  <data name="StaffCountTotal" xml:space="preserve"><value>Staff Count (Total)</value></data>
+  <data name="Attended" xml:space="preserve"><value>Attended</value></data>
+  <data name="NotAttended" xml:space="preserve"><value>Not Attended</value></data>
+  <data name="EmployeeDetails" xml:space="preserve"><value>Employee Details</value></data>
+  <data name="ArtisansAttendanceUnavailable" xml:space="preserve"><value>Artisan attendance is not recorded in this system. Attendance counts are unavailable for artisans.</value></data>
+  <data name="NoEmployeesForSection" xml:space="preserve"><value>No employees found for this section.</value></data>
+  <data name="StaffCategory" xml:space="preserve"><value>Staff Category</value></data>
+  <data name="StaffProfile" xml:space="preserve"><value>Staff Profile</value></data>
+  <data name="ValStaffCategory" xml:space="preserve"><value>Enter a staff category (up to 100 characters)</value></data>
+  <data name="LeaveManagement" xml:space="preserve"><value>Leave Management</value></data>
+  <data name="Update" xml:space="preserve"><value>Update</value></data>
+  <data name="LeaveManagementSubtitle" xml:space="preserve"><value>Review current annual leave balances for staff.</value></data>
+  <data name="AddLeaveTaken" xml:space="preserve"><value>Apply Leave</value></data>
+  <data name="LeaveEntitlements" xml:space="preserve"><value>Leave Entitlements</value></data>
+  <data name="LeaveType" xml:space="preserve"><value>Leave Type</value></data>
+  <data name="AnnualQuota" xml:space="preserve"><value>Annual Quota</value></data>
+  <data name="Days" xml:space="preserve"><value>Days</value></data>
+  <data name="SaveEntitlement" xml:space="preserve"><value>Save Entitlement</value></data>
+  <data name="NoLeaveEntitlements" xml:space="preserve"><value>No leave types are configured for this year.</value></data>
+  <data name="CurrentLeaveBalances" xml:space="preserve"><value>Current Leave Balances</value></data>
+  <data name="Taken" xml:space="preserve"><value>Taken</value></data>
+  <data name="Balance" xml:space="preserve"><value>Balance</value></data>
+  <data name="NoLeaveBalances" xml:space="preserve"><value>No balances yet. Add a leave entitlement for a staff category.</value></data>
+  <data name="LeaveEntrySubtitle" xml:space="preserve"><value>Record or correct leave taken by an employee.</value></data>
+  <data name="DaysTaken" xml:space="preserve"><value>Days Taken</value></data>
+  <data name="RecordLeaveTaken" xml:space="preserve"><value>Record Leave Taken</value></data>
+  <data name="SaveLeaveEntry" xml:space="preserve"><value>Save Leave Entry</value></data>
+  <data name="LeaveEntries" xml:space="preserve"><value>Leave Entries</value></data>
+  <data name="NoLeaveEntries" xml:space="preserve"><value>No leave entries recorded this year.</value></data>
+  <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>Configure at least one leave entitlement before recording leave.</value></data>
+  <data name="ValLeaveEntitlement" xml:space="preserve"><value>Enter a valid category, leave type and annual quota.</value></data>
+  <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>The quota cannot be lower than leave already taken.</value></data>
+  <data name="ValLeaveTypeInUse" xml:space="preserve"><value>This leave type has entries and cannot be deleted.</value></data>
+  <data name="ValLeaveEntry" xml:space="preserve"><value>Enter valid employee, leave type, dates and days.</value></data>
+  <data name="ValLeaveDates" xml:space="preserve"><value>Enter a valid date range within the current year.</value></data>
+  <data name="ValLeaveFutureDate" xml:space="preserve"><value>Both leave dates must be after today.</value></data>
+  <data name="ValLeaveDays" xml:space="preserve"><value>Days must be in half-day increments and not exceed the date range.</value></data>
+  <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>This leave type is not configured for the employee's category.</value></data>
+  <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>This employee already has a leave entry overlapping those dates.</value></data>
+  <data name="ValInsufficientLeaveBalance" xml:space="preserve"><value>There are not enough leave days remaining for this entry.</value></data>
+  <data name="LeaveEntitlementSaved" xml:space="preserve"><value>Leave entitlement saved.</value></data>
+  <data name="LeaveEntitlementDeleted" xml:space="preserve"><value>Leave entitlement deleted.</value></data>
+  <data name="AttendanceLeaveType" xml:space="preserve"><value>Attendance leave type</value></data>
+  <data name="UseForAttendanceLeave" xml:space="preserve"><value>Use for attendance Leave and Half Day deductions</value></data>
+  <data name="AttendanceLeavePolicyHelp" xml:space="preserve"><value>Select at most one leave type per staff category. Leave deducts 1 day and Half Day deducts 0.5 day. If no balance is available, attendance is saved as LOP without reducing leave balance. Absent does not deduct leave.</value></data>
+  <data name="AttendanceLeaveSelected" xml:space="preserve"><value>Selected</value></data>
+  <data name="LeaveWithoutPay" xml:space="preserve"><value>LOP</value></data>
+  <data name="AttendanceLopMessage" xml:space="preserve"><value>{0} attendance record(s) marked LOP.</value></data>
+  <data name="BalanceRefreshFailed" xml:space="preserve"><value>Could not refresh leave balances. Reload the page to retry.</value></data>
+  <data name="AllStaff" xml:space="preserve"><value>All staff</value></data>
+  <data name="AllEmployeeTypes" xml:space="preserve"><value>All employee types</value></data>
+  <data name="LeaveEntrySaved" xml:space="preserve"><value>Leave entry saved.</value></data>
+  <data name="LeaveEntryDeleted" xml:space="preserve"><value>Leave entry deleted.</value></data>
 </root>

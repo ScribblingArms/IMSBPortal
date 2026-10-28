@@ -45,6 +45,40 @@
     return `${m[3]} ${d.toLocaleString(lang, { month: 'short' })} ${m[1]}`;
   }
 
+  function formatSalary(value){
+    if (value == null || !Number.isFinite(Number(value))) return '—';
+    return new Intl.NumberFormat(document.documentElement.lang || 'en-IN', {
+      style: 'currency', currency: 'INR', maximumFractionDigits: 2
+    }).format(Number(value));
+  }
+
+  function viewStaff(empId){
+    const s = staff.find(x => x.id === empId);
+    if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
+    const fields = [
+      ['EmployeeID', s.id],
+      ['FullName', s.full_name],
+      ['Department', s.department_name],
+      ['Designation', s.designation],
+      ['StaffCategory', s.staff_category],
+      ['Mobile', s.mobile],
+      ['Email', s.email],
+      ['DateOfBirth', formatDateDisplay(s.date_of_birth)],
+      ['Gender', s.gender],
+      ['JoinDate', formatDateDisplay(s.join_date)],
+      ['Shift', s.shift],
+      ['Status', statusLabel(s.status)]
+    ];
+    if (window.StaffCanViewSalary) fields.push(['MonthlySalary', formatSalary(s.monthly_salary)]);
+    document.getElementById('staffProfileBody').innerHTML = `
+      <div class="form-grid col-2">
+        ${fields.map(([label, value]) => `<div class="form-group"><div class="form-label">${esc(t(label))}</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(value || '—')}</div></div>`).join('')}
+      </div>`;
+    const overlay = document.getElementById('staffProfileModal');
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+
   // ── Rendering ─────────────────────────────────────────────────
   function renderTable(){
     const staffBody = document.getElementById('staffBody');
@@ -55,6 +89,8 @@
         <td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary-xlight);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--primary)">${esc((s.full_name||'').split(' ').map(x=>x[0]||'').join('').slice(0,2))}</div><strong>${esc(s.full_name)}</strong></div></td>
         <td>${esc(s.department_name)}</td>
         <td>${esc(s.designation)}</td>
+        <td>${esc(s.staff_category)}</td>
+        ${window.StaffCanViewSalary ? `<td>${esc(formatSalary(s.monthly_salary))}</td>` : ''}
         <td>${esc(s.mobile)}</td>
         <td>${esc(formatDateDisplay(s.join_date))}</td>
         <td><span class="badge ${statusBadge(s.status)}">${esc(statusLabel(s.status))}</span></td>
@@ -65,12 +101,12 @@
         </td>
       </tr>
     `).join('');
-    staffBody.innerHTML = rows || `<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:18px">${esc(t('NoStaffFound'))}</td></tr>`;
+    const columnCount = window.StaffCanViewSalary ? 10 : 9;
+    staffBody.innerHTML = rows || `<tr><td colspan="${columnCount}" style="text-align:center;color:var(--text-muted);padding:18px">${esc(t('NoStaffFound'))}</td></tr>`;
     staffBody.querySelectorAll('[data-edit-staff]').forEach(b => b.addEventListener('click', () => openEdit(b.dataset.editStaff)));
     staffBody.querySelectorAll('[data-delete-staff]').forEach(b => b.addEventListener('click', () => deleteStaff(b.dataset.deleteStaff)));
     staffBody.querySelectorAll('[data-view-staff]').forEach(b => b.addEventListener('click', () => {
-      const s = staff.find(x => x.id === b.dataset.viewStaff);
-      showToast(t('StaffTitle'), t('ViewingProfile', s ? s.full_name : ''), 'info');
+      viewStaff(b.dataset.viewStaff);
     }));
   }
 
@@ -167,7 +203,7 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', join_date: 'JoinDate', gender: 'Gender', shift: 'Shift', status: 'Status' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', staff_category: 'StaffCategory', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
     return map[name] || name;
   }
 
@@ -213,7 +249,10 @@
     document.getElementById('staffGender').value = s.gender || 'Female';
     document.getElementById('staffDepartment').value = s.department_id || '';
     document.getElementById('staffDesignation').value = s.designation || '';
+    document.getElementById('staffCategory').value = s.staff_category || 'General';
     document.getElementById('staffJoinDate').value = s.join_date || '';
+    const salaryInput = document.getElementById('staffMonthlySalary');
+    if (salaryInput) salaryInput.value = s.monthly_salary == null ? '0' : String(s.monthly_salary);
     // shift codes are matched case-insensitively ("Morning" -> "MORNING"); a value not in the Shift table
     // (older records, e.g. "Night") is kept as an extra option so the record can still be saved unchanged
     const shiftSel = document.getElementById('staffShift');
@@ -244,10 +283,16 @@
     else if (new Date(dob.getFullYear() + 18, dob.getMonth(), dob.getDate()) > today) errors.date_of_birth = t('ValMinAge');
     if (!vals.department_id) errors.department_id = t('ValDepartment');
     if (!vals.designation) errors.designation = t('ValDesignation');
+    if (!vals.staff_category || vals.staff_category.length > 100) errors.staff_category = t('ValStaffCategory');
     const join = parseIsoDate(vals.join_date);
     if (!join) errors.join_date = t('ValJoinRequired');
     else if (join > today) errors.join_date = t('ValJoinFuture');
     else if (dob && !errors.date_of_birth && join < new Date(dob.getFullYear() + 18, dob.getMonth(), dob.getDate())) errors.join_date = t('ValJoinAfterDob');
+    if (vals.monthly_salary !== null){
+      const salary = Number(vals.monthly_salary);
+      if (vals.monthly_salary === '' || !Number.isFinite(salary) || salary < 0 || salary > 999999999.99)
+        errors.monthly_salary = t('ValMonthlySalary');
+    }
     return errors;
   }
 
@@ -262,7 +307,9 @@
       gender: v('staffGender'),
       department_id: v('staffDepartment'),
       designation: v('staffDesignation'),
+      staff_category: v('staffCategory'),
       join_date: v('staffJoinDate'),
+      monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
       shift: v('staffShift'),
       status: v('staffStatus'),
     };
@@ -286,7 +333,7 @@
     const body = {
       fullName: vals.full_name, mobile: vals.mobile, email: vals.email,
       dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id,
-      designation: vals.designation, joinDate: vals.join_date, shift: vals.shift
+      designation: vals.designation, staffCategory: vals.staff_category, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
     };
     if (!isCreate) body.status = vals.status;
     const submitBtn = document.getElementById('staffSubmitBtn');
@@ -363,6 +410,8 @@
         department_id: s.departmentId || '',
         department_name: s.departmentName || '',
         designation: s.designation || '',
+        staff_category: s.staffCategory || 'General',
+        monthly_salary: s.monthlySalary,
         mobile: s.mobile || '',
         email: s.email || null,
         date_of_birth: s.dateOfBirth || '',
@@ -429,6 +478,10 @@
     document.getElementById('staffFilterDepartment')?.addEventListener('change', reload);
     document.getElementById('staffFilterStatus')?.addEventListener('change', reload);
 
-    indexData();
+    if (window.StaffOpenCreate) {
+      indexData().then(loaded => { if (loaded) openCreate(); });
+    } else {
+      indexData();
+    }
   });
 })();

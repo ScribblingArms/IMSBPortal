@@ -42,6 +42,14 @@ namespace IMSB.Dto.Models
         public string Designation { get; set; } = string.Empty;
 
         [Required]
+        [MaxLength(100)]
+        [Column("staff_category")]
+        public string StaffCategory { get; set; } = "General";
+
+        [Column("monthly_salary", TypeName = "decimal(18,2)")]
+        public decimal MonthlySalary { get; set; }
+
+        [Required]
         [Column("join_date")]
         public DateTime JoinDate { get; set; }
 

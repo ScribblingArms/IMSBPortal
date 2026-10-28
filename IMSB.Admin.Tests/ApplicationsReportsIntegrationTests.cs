@@ -51,6 +51,14 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
     [InlineData("/Applications/Data", "Admin", HttpStatusCode.OK)]
     [InlineData("/Applications/Export", "Staff", HttpStatusCode.Forbidden)]
     [InlineData("/Reports/Data", "Admin", HttpStatusCode.OK)]
+    [InlineData("/Reports/MonthlyAttendance", "Admin", HttpStatusCode.OK)]
+    [InlineData("/Reports/MonthlyAttendance", "Inventory", HttpStatusCode.Forbidden)]
+    [InlineData("/Reports/AbstractData", "Admin", HttpStatusCode.OK)]
+    [InlineData("/Reports/AbstractData", "Inventory", HttpStatusCode.Forbidden)]
+    [InlineData("/Reports/Salary", "Admin", HttpStatusCode.OK)]
+    [InlineData("/Reports/Salary", "Inventory", HttpStatusCode.Forbidden)]
+    [InlineData("/Reports/SalaryExport", "Admin", HttpStatusCode.OK)]
+    [InlineData("/Reports/SalaryExport", "Inventory", HttpStatusCode.Forbidden)]
     [InlineData("/Reports/Data", "Inventory", HttpStatusCode.Forbidden)]
     [InlineData("/Reports/Export/kpis", "Staff", HttpStatusCode.Forbidden)]
     [InlineData("/Reports/Export/nothing", "Admin", HttpStatusCode.NotFound)]
@@ -102,18 +110,147 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
         Assert.DoesNotContain("₹42.8L", reports);
         Assert.DoesNotContain("April 2025", reports);
         Assert.Contains("window.ReportsI18n", reports);
+        Assert.DoesNotContain("data-tab=\"artisan\"", reports);
+        Assert.DoesNotContain("data-tab=\"monthly\"", reports);
+        Assert.DoesNotContain("data-tab=\"salary\"", reports);
+        Assert.DoesNotContain("id=\"artisanReportSearch\"", reports);
+        Assert.DoesNotContain("id=\"monthlyReportYear\"", reports);
+        Assert.DoesNotContain("id=\"salaryReportYear\"", reports);
+        Assert.Contains("data-page=\"/Reports/ArtisanPerformance\"", reports);
+        Assert.Contains("data-page=\"/Reports/MonthlyReports\"", reports);
+        Assert.Contains("data-page=\"/Reports/SalaryReport\"", reports);
+        Assert.Contains("data-page=\"/Reports/AbstractReport\"", reports);
+        var reportSubmenuStart = reports.IndexOf("id=\"reportsSubmenu\"", StringComparison.Ordinal);
+        Assert.True(reportSubmenuStart >= 0);
+        foreach (var route in new[] { "/Reports/ArtisanPerformance", "/Reports/MonthlyReports", "/Reports/SalaryReport", "/Reports/AbstractReport" })
+            Assert.True(reports.IndexOf($"data-page=\"{route}\"", reportSubmenuStart, StringComparison.Ordinal) >= 0);
+        Assert.Contains("data-tab-target=\"overview\"", reports);
+        Assert.Contains("data-tab-target=\"available\"", reports);
+        Assert.Contains("data-tab-target=\"stall\"", reports);
+        Assert.Contains("location.href='/Reports/Index#overview'", reports);
+        Assert.Contains("location.href='/Reports/Index#available'", reports);
+        Assert.Contains("location.href='/Reports/Index#stall'", reports);
+
+        var artisanPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/ArtisanPerformance"));
+        Assert.Contains("id=\"artisanReportSearch\"", artisanPage);
+        Assert.Contains("id=\"artisanReportStatus\"", artisanPage);
+        Assert.Contains("id=\"reportMonth\"", artisanPage);
+        Assert.Contains("id=\"reportCategory\"", artisanPage);
+        Assert.Contains("class=\"toolbar artisan-report-filters\"", artisanPage);
+        Assert.Contains("id=\"artisanReportReset\"", artisanPage);
+        Assert.Contains("class=\"search-box artisan-report-search\"", artisanPage);
+
+        var monthlyPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/MonthlyReports"));
+        Assert.Contains("id=\"monthlyReportYear\"", monthlyPage);
+        Assert.Contains("id=\"monthlyReportMonth\"", monthlyPage);
+        Assert.Contains("id=\"monthlyReportType\"", monthlyPage);
+        Assert.Contains("id=\"monthlyReportReset\"", monthlyPage);
+        Assert.Contains("id=\"monthlyReportExport\"", monthlyPage);
+
+        var salaryPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/SalaryReport"));
+        Assert.Contains("id=\"salaryReportYear\"", salaryPage);
+        Assert.Contains("id=\"salaryReportMonth\"", salaryPage);
+        Assert.Contains("id=\"salaryReportType\"", salaryPage);
+        Assert.Contains("id=\"salaryReportSearch\"", salaryPage);
+        Assert.Contains("id=\"salaryReportSearchBtn\"", salaryPage);
+        Assert.Contains("id=\"salaryReportClearBtn\"", salaryPage);
+        Assert.Contains("id=\"salaryReportExport\"", salaryPage);
+        Assert.Contains("id=\"salaryReportFoot\"", salaryPage);
+        Assert.Contains("Total salary = monthly salary", salaryPage);
+
+        var abstractPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/AbstractReport"));
+        Assert.Contains("id=\"abstractDate\"", abstractPage);
+        Assert.Contains("id=\"abstractLoadBtn\"", abstractPage);
+        Assert.Contains("id=\"abstractResetBtn\"", abstractPage);
+        Assert.Contains("id=\"abstractExportBtn\"", abstractPage);
+        Assert.Contains("id=\"abstractDetailsPanel\" hidden", abstractPage);
+        Assert.Contains("id=\"abstractDetailTitle\"", abstractPage);
+    }
+
+    [Fact]
+    public async Task Abstract_report_hides_employee_details_until_a_count_is_selected()
+    {
+        var html = WebUtility.HtmlDecode(
+            await _factory.ClientAs("Admin").GetStringAsync("/Reports/AbstractReport"));
+
+        Assert.Contains("id=\"abstractDetailsPanel\" hidden", html);
+        Assert.Contains("id=\"abstractDetailTitle\"", html);
+        Assert.Contains("id=\"abstractExportBtn\"", html);
+        Assert.Contains("class=\"btn btn-outline btn-sm\" id=\"abstractExportBtn\" hidden", html);
+        Assert.DoesNotContain("class=\"btn btn-success\" id=\"abstractExportBtn\"", html);
+        Assert.Contains("id=\"abstractResetBtn\"", html);
+        Assert.Contains("class=\"btn btn-outline btn-sm btn-reset\" id=\"abstractResetBtn\"", html);
+        Assert.Contains("<th>Designation</th>", html);
+        Assert.Contains("<th>Status</th>", html);
+    }
+
+    [Fact]
+    public async Task Report_notes_abstract_date_search_and_monthly_calendar_actions_render()
+    {
+        var client = _factory.ClientAs("Admin");
+        var artisanPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/ArtisanPerformance"));
+        Assert.Contains("class=\"report-info-banner\"", artisanPage);
+        Assert.Contains("Rating compares each artisan", artisanPage);
+
+        var salaryPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/SalaryReport"));
+        Assert.Contains("class=\"report-info-banner\"", salaryPage);
+        Assert.Contains("Total salary = monthly salary", salaryPage);
+        Assert.Contains("id=\"salaryReportFoot\"", salaryPage);
+
+        var abstractPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/AbstractReport"));
+        Assert.Contains("class=\"report-info-banner abstract-artisan-note\"", abstractPage);
+        Assert.Contains("Artisan attendance is not recorded", abstractPage);
+        Assert.Contains("id=\"abstractReportCount\"", abstractPage);
+        Assert.Contains("id=\"abstractLoadBtn\"", abstractPage);
+        Assert.Contains("id=\"abstractDate\"", abstractPage);
+        Assert.Contains("id=\"abstractResetBtn\"", abstractPage);
+
+        var monthlyCalendar = WebUtility.HtmlDecode(await client.GetStringAsync("/Attendance/MonthlyCalendar"));
+        Assert.Contains("id=\"monthlyExportBtn\"", monthlyCalendar);
+        Assert.DoesNotContain("id=\"monthlyPdfBtn\"", monthlyCalendar);
+    }
+
+    [Fact]
+    public async Task Artisan_report_filters_are_grouped_and_have_reset_controls()
+    {
+        var html = WebUtility.HtmlDecode(
+            await _factory.ClientAs("Admin").GetStringAsync("/Reports/ArtisanPerformance"));
+
+        Assert.Contains("class=\"toolbar artisan-report-filters\"", html);
+        Assert.Contains("id=\"reportMonth\"", html);
+        Assert.Contains("id=\"reportCategory\"", html);
+        Assert.Contains("id=\"artisanReportStatus\"", html);
+        Assert.Contains("id=\"artisanReportSearch\"", html);
+        Assert.Contains("id=\"artisanReportReset\"", html);
+    }
+
+    [Theory]
+    [InlineData("year=not-a-year")]
+    [InlineData("month=13")]
+    [InlineData("year=2099")]
+    public async Task Invalid_monthly_attendance_filters_are_rejected(string query)
+    {
+        var response = await _factory.ClientAs("Admin").GetAsync("/Reports/MonthlyAttendance?" + query);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Theory]
     [InlineData("ta-IN", "RptApplications")]
     [InlineData("te-IN", "ExportApproved")]
     [InlineData("hi-IN", "SearchPending")]
+    [InlineData("hi-IN", "SalaryReport")]
     public async Task Pages_are_localized(string culture, string key)
     {
         string text;
         using (new TestHelpers.CultureScope(culture)) text = TestHelpers.SharedLocalizer()[key].Value;
         var client = _factory.ClientAs("Admin", culture);
-        var page = key == "RptApplications" ? "/Reports/Index" : "/Applications/Index";
+        var page = key switch
+        {
+            "RptApplications" => "/Reports/Index",
+            "SalaryReport" => "/Reports/SalaryReport",
+            "AbstractReport" => "/Reports/AbstractReport",
+            _ => "/Applications/Index"
+        };
         var html = WebUtility.HtmlDecode(await client.GetStringAsync(page));
         // the report library labels are rendered by reports.js from ReportsI18n (JSON-escaped)
         Assert.True(html.Contains(text) || html.Contains(JsonSerializer.Serialize(text).Trim('"')), $"{key} not localized on {page}");
@@ -146,8 +283,8 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
         Assert.Contains(search.GetProperty("groups").EnumerateArray(), g => g.GetProperty("type").GetString() == "APPLICATIONS");
 
         var csv = await client.GetAsync("/Applications/Export?status=APPROVED&q=http");
-        Assert.Equal("text/csv", csv.Content.Headers.ContentType!.MediaType);
-        var text = await csv.Content.ReadAsStringAsync();
+        Assert.Equal("application/vnd.ms-excel", csv.Content.Headers.ContentType!.MediaType);
+        var text = ExcelExportTestHelpers.CsvText(await csv.Content.ReadAsStringAsync());
         Assert.Contains($"{id},Http Applicant,", text);
         Assert.DoesNotContain(BazaarTestHelpers.ValidAadhaar(9101), text);
 
@@ -159,9 +296,9 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
     public async Task Report_exports_over_http()
     {
         var client = _factory.ClientAs("Admin");
-        var csv = await client.GetAsync("/Reports/Export/all?format=csv");
-        Assert.Equal("text/csv", csv.Content.Headers.ContentType!.MediaType);
-        Assert.StartsWith("Reports & Analytics,", (await csv.Content.ReadAsStringAsync()).TrimStart('﻿'));
+        var csv = await client.GetAsync("/Reports/Export/all?format=xls");
+        Assert.Equal("application/vnd.ms-excel", csv.Content.Headers.ContentType!.MediaType);
+        Assert.StartsWith("Reports & Analytics,", ExcelExportTestHelpers.CsvText(await csv.Content.ReadAsStringAsync()));
 
         var pdf = await client.GetAsync("/Reports/Export/stalls?format=pdf&status=VACANT");
         Assert.Equal("text/html", pdf.Content.Headers.ContentType!.MediaType);

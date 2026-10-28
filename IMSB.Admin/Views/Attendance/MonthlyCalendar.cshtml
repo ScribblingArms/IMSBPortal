@@ -1,0 +1,64 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["MonthlyAttendanceCalendar"].Value;
+    var jsKeys = new[] {
+        "CouldNotReachServer", "AllTypes", "EmployeeID", "StaffName", "EmployeeType",
+        "NoStaffForAttendance", "Present", "Absent", "Leave", "HalfDay", "NotMarked",
+        "AllStatus", "NotMarkedOption", "SearchStaff"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<main class="page-body">
+  <div class="card att-monthly-report">
+    <div class="card-header att-monthly-report-header">
+      <div class="card-title">
+        <i class="fa-solid fa-calendar-days"></i> @L["MonthlyAttendanceCalendar"]
+        <span class="tab-count" id="monthlyCount">0</span>
+      </div>
+      <div class="att-monthly-report-actions">
+        <button type="button" class="btn btn-outline btn-sm" id="monthlyExportBtn"><i class="fa-solid fa-file-excel"></i> @L["ExportToExcel"]</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="toolbar att-monthly-tools">
+        <div class="search-box att-monthly-search">
+          <i class="fa-solid fa-search"></i>
+          <input type="search" id="monthlySearch" placeholder="@L["SearchStaff"]" aria-label="@L["SearchStaff"]">
+        </div>
+        <select class="form-control" id="monthlyStatus" aria-label="@L["Status"]">
+          <option value="">@L["AllStatus"]</option>
+          <option value="PRESENT">@L["Present"]</option>
+          <option value="ABSENT">@L["Absent"]</option>
+          <option value="LEAVE">@L["Leave"]</option>
+          <option value="HALF_DAY">@L["HalfDay"]</option>
+          <option value="NOT_MARKED">@L["NotMarkedOption"]</option>
+        </select>
+        <select class="form-control" id="monthlyMonth" aria-label="@L["Month"]"></select>
+        <select class="form-control" id="monthlyYear" aria-label="@L["Year"]"></select>
+        <select class="form-control" id="monthlyType" aria-label="@L["EmployeeType"]">
+          <option value="">@L["AllTypes"]</option>
+        </select>
+        <button type="button" class="btn btn-outline btn-sm btn-reset" id="monthlyResetBtn">@L["Reset"]</button>
+      </div>
+      <div class="form-error" id="monthlyError" role="alert"></div>
+      <div class="att-calendar-scroll">
+        <table class="data-table att-monthly-calendar" aria-label="@L["MonthlyAttendanceCalendar"]">
+          <thead id="monthlyHead"></thead>
+          <tbody id="monthlyBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+@section Styles {
+    <link href="~/css/attendance.css" rel="stylesheet" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script>window.AttendanceI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+    <script src="~/js/attendance-monthly.js" asp-append-version="true"></script>
+}

@@ -182,10 +182,13 @@ K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\staticwebassets.build
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\staticwebassets.build.json.cache
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\staticwebassets.development.json
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\staticwebassets.build.endpoints.json
-K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\staticwebassets.upToDateCheck.txt
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\IMSB.Admin.csproj.Up2Date
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\IMSB.Admin.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\refint\IMSB.Admin.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\IMSB.Admin.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\IMSB.Admin.genruntimeconfig.cache
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\ref\IMSB.Admin.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\en-US\IMSB.Admin.resources.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\hi-IN\IMSB.Admin.resources.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\ta-IN\IMSB.Admin.resources.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Release\net8.0\te-IN\IMSB.Admin.resources.cs

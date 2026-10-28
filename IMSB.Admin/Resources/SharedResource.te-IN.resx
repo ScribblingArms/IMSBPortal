@@ -312,6 +312,60 @@
   <data name="History" xml:space="preserve">
     <value>చరిత్ర</value>
   </data>
+  <data name="MonthlyCalendar" xml:space="preserve">
+    <value>నెలవారీ క్యాలెండర్</value>
+  </data>
+  <data name="MonthlyAttendanceCalendar" xml:space="preserve">
+    <value>నెలవారీ హాజరు క్యాలెండర్</value>
+  </data>
+  <data name="EmployeeType" xml:space="preserve">
+    <value>ఉద్యోగి రకం</value>
+  </data>
+  <data name="AllTypes" xml:space="preserve">
+    <value>అన్ని రకాలు</value>
+  </data>
+  <data name="ShowResult" xml:space="preserve">
+    <value>ఫలితాన్ని చూపు</value>
+  </data>
+  <data name="ExportToExcel" xml:space="preserve">
+    <value>Excel‌కు ఎగుమతి చేయి</value>
+  </data>
+  <data name="MonthlyReports" xml:space="preserve">
+    <value>నెలవారీ నివేదికలు</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>క్రమ సంఖ్య</value>
+  </data>
+  <data name="TotalDaysInMonth" xml:space="preserve">
+    <value>నెలలో మొత్తం రోజులు</value>
+  </data>
+  <data name="TotalWorkingDays" xml:space="preserve">
+    <value>మొత్తం పని దినాలు</value>
+  </data>
+  <data name="SalaryReport" xml:space="preserve">
+    <value>జీతాల నివేదిక</value>
+  </data>
+  <data name="SalaryRequestFailed" xml:space="preserve">
+    <value>జీతాల నివేదిక అభ్యర్థన విఫలమైంది ({0}).</value>
+  </data>
+  <data name="MonthlySalary" xml:space="preserve">
+    <value>నెలవారీ జీతం (₹)</value>
+  </data>
+  <data name="WorkedDays" xml:space="preserve">
+    <value>పని చేసిన రోజులు</value>
+  </data>
+  <data name="TotalSalary" xml:space="preserve">
+    <value>మొత్తం జీతం</value>
+  </data>
+  <data name="SalaryProrationNote" xml:space="preserve">
+    <value>మొత్తం జీతం = నెలవారీ జీతం × పని చేసిన రోజులు ÷ నెలలోని రోజులు. హాజరు = 1 రోజు, అర్ధదినం = 0.5; గైర్హాజరు మరియు సెలవు = 0.</value>
+  </data>
+  <data name="SearchSalaryPlaceholder" xml:space="preserve">
+    <value>ఉద్యోగి / శాఖ / హోదా ద్వారా వెతకండి</value>
+  </data>
+  <data name="ValMonthlySalary" xml:space="preserve">
+    <value>0 నుండి 999,999,999.99 మధ్య నెలవారీ జీతాన్ని నమోదు చేయండి.</value>
+  </data>
   <data name="MarkAttendance" xml:space="preserve">
     <value>హాజరును మార్క్ చేయండి</value>
   </data>
@@ -1180,7 +1234,7 @@
     <value>అన్నీ ఎగుమతి చేయండి</value>
   </data>
   <data name="ExportCsv" xml:space="preserve">
-    <value>CSV ఎగుమతి</value>
+    <value>Excel ఎగుమతి</value>
   </data>
   <data name="ExportKPIs" xml:space="preserve">
     <value>KPIలను ఎగుమతి చేయండి</value>
@@ -1307,6 +1361,9 @@
   </data>
   <data name="Month" xml:space="preserve">
     <value>నెల</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>సంవత్సరం</value>
   </data>
   <data name="MonthlyAttendanceRate" xml:space="preserve">
     <value>నెలవారీ హాజరు రేటు</value>
@@ -1790,6 +1847,9 @@
   </data>
   <data name="ToggleSidebar" xml:space="preserve">
     <value>సైడ్‌బార్ మార్చండి</value>
+  </data>
+  <data name="GrandTotal" xml:space="preserve">
+    <value>మొత్తం జీతం</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>మొత్తం</value>
@@ -2571,6 +2631,9 @@
   <data name="ValAttendanceStatus" xml:space="preserve">
     <value>హాజరు, గైర్హాజరు, సెలవు లేదా అర్ధ రోజు ఎంచుకోండి</value>
   </data>
+  <data name="ValMonthlyAttendanceStatus" xml:space="preserve">
+    <value>చెల్లుబాటు అయ్యే నెలవారీ హాజరు స్థితిని ఎంచుకోండి</value>
+  </data>
   <data name="ValInTimeRequired" xml:space="preserve">
     <value>ఇన్-టైమ్ నమోదు చేయండి</value>
   </data>
@@ -2589,4 +2652,61 @@
   <data name="ValTooManyEntries" xml:space="preserve">
     <value>ఒకేసారి గరిష్టంగా {0} నమోదులను సేవ్ చేయవచ్చు</value>
   </data>
+  <data name="AbstractReport" xml:space="preserve"><value>సారాంశ నివేదిక</value></data>
+  <data name="SelectDate" xml:space="preserve"><value>తేదీని ఎంచుకోండి</value></data>
+  <data name="LoadData" xml:space="preserve"><value>డేటాను లోడ్ చేయండి</value></data>
+  <data name="SectionName" xml:space="preserve"><value>విభాగం పేరు</value></data>
+  <data name="StaffCountTotal" xml:space="preserve"><value>సిబ్బంది సంఖ్య (మొత్తం)</value></data>
+  <data name="Attended" xml:space="preserve"><value>హాజరైనవారు</value></data>
+  <data name="NotAttended" xml:space="preserve"><value>హాజరుకాని వారు</value></data>
+  <data name="EmployeeDetails" xml:space="preserve"><value>ఉద్యోగి వివరాలు</value></data>
+  <data name="ArtisansAttendanceUnavailable" xml:space="preserve"><value>ఈ వ్యవస్థలో కళాకారుల హాజరు నమోదు చేయబడదు. వారి హాజరు సంఖ్యలు అందుబాటులో లేవు.</value></data>
+  <data name="NoEmployeesForSection" xml:space="preserve"><value>ఈ విభాగంలో ఉద్యోగులు లేరు.</value></data>
+  <data name="StaffCategory" xml:space="preserve"><value>సిబ్బంది వర్గం</value></data>
+  <data name="StaffProfile" xml:space="preserve"><value>సిబ్బంది ప్రొఫైల్</value></data>
+  <data name="ValStaffCategory" xml:space="preserve"><value>సిబ్బంది వర్గాన్ని నమోదు చేయండి (గరిష్ఠంగా 100 అక్షరాలు)</value></data>
+  <data name="LeaveManagement" xml:space="preserve"><value>సెలవుల నిర్వహణ</value></data>
+  <data name="Update" xml:space="preserve"><value>నవీకరించండి</value></data>
+  <data name="LeaveManagementSubtitle" xml:space="preserve"><value>సిబ్బంది ప్రస్తుత వార్షిక సెలవు నిల్వలను చూడండి.</value></data>
+  <data name="AddLeaveTaken" xml:space="preserve"><value>సెలవుకు దరఖాస్తు చేయండి</value></data>
+  <data name="LeaveEntitlements" xml:space="preserve"><value>సెలవు పరిమితులు</value></data>
+  <data name="LeaveType" xml:space="preserve"><value>సెలవు రకం</value></data>
+  <data name="AnnualQuota" xml:space="preserve"><value>వార్షిక పరిమితి</value></data>
+  <data name="Days" xml:space="preserve"><value>రోజులు</value></data>
+  <data name="SaveEntitlement" xml:space="preserve"><value>పరిమితిని సేవ్ చేయండి</value></data>
+  <data name="NoLeaveEntitlements" xml:space="preserve"><value>ఈ సంవత్సరానికి సెలవు రకాలు సెట్ చేయలేదు.</value></data>
+  <data name="CurrentLeaveBalances" xml:space="preserve"><value>ప్రస్తుత సెలవు నిల్వలు</value></data>
+  <data name="Taken" xml:space="preserve"><value>తీసుకున్నవి</value></data>
+  <data name="Balance" xml:space="preserve"><value>మిగిలినవి</value></data>
+  <data name="NoLeaveBalances" xml:space="preserve"><value>నిల్వలు లేవు. సిబ్బంది వర్గానికి సెలవు పరిమితిని జోడించండి.</value></data>
+  <data name="LeaveEntrySubtitle" xml:space="preserve"><value>ఉద్యోగి తీసుకున్న సెలవును నమోదు చేయండి లేదా సరిచేయండి.</value></data>
+  <data name="DaysTaken" xml:space="preserve"><value>తీసుకున్న రోజులు</value></data>
+  <data name="RecordLeaveTaken" xml:space="preserve"><value>తీసుకున్న సెలవును నమోదు చేయండి</value></data>
+  <data name="SaveLeaveEntry" xml:space="preserve"><value>సెలవు నమోదును సేవ్ చేయండి</value></data>
+  <data name="LeaveEntries" xml:space="preserve"><value>సెలవు నమోదులు</value></data>
+  <data name="NoLeaveEntries" xml:space="preserve"><value>ఈ సంవత్సరంలో సెలవు నమోదులు లేవు.</value></data>
+  <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>సెలవు నమోదు చేసే ముందు కనీసం ఒక పరిమితిని సెట్ చేయండి.</value></data>
+  <data name="ValLeaveEntitlement" xml:space="preserve"><value>చెల్లుబాటు అయ్యే వర్గం, సెలవు రకం మరియు వార్షిక పరిమితిని నమోదు చేయండి.</value></data>
+  <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>ఇప్పటికే తీసుకున్న సెలవు కంటే పరిమితి తక్కువగా ఉండకూడదు.</value></data>
+  <data name="ValLeaveTypeInUse" xml:space="preserve"><value>నమోదులు ఉన్నందున ఈ సెలవు రకాన్ని తొలగించలేరు.</value></data>
+  <data name="ValLeaveEntry" xml:space="preserve"><value>చెల్లుబాటు అయ్యే ఉద్యోగి, సెలవు రకం, తేదీలు మరియు రోజులను నమోదు చేయండి.</value></data>
+  <data name="ValLeaveDates" xml:space="preserve"><value>ప్రస్తుత సంవత్సరంలో సరైన తేదీ పరిధిని నమోదు చేయండి.</value></data>
+  <data name="ValLeaveFutureDate" xml:space="preserve"><value>సెలవు రెండు తేదీలు ఈ రోజు తర్వాత ఉండాలి.</value></data>
+  <data name="ValLeaveDays" xml:space="preserve"><value>రోజులు అర్ధ-రోజు పెరుగుదలలో ఉండాలి మరియు తేదీ పరిధిని మించకూడదు.</value></data>
+  <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>ఉద్యోగి వర్గానికి ఈ సెలవు రకం సెట్ చేయలేదు.</value></data>
+  <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>ఈ తేదీలకు ఉద్యోగికి ఇప్పటికే సెలవు నమోదు ఉంది.</value></data>
+  <data name="ValInsufficientLeaveBalance" xml:space="preserve"><value>ఈ నమోదుకు సరిపడా సెలవు నిల్వ లేదు.</value></data>
+  <data name="LeaveEntitlementSaved" xml:space="preserve"><value>సెలవు పరిమితి సేవ్ చేయబడింది.</value></data>
+  <data name="LeaveEntitlementDeleted" xml:space="preserve"><value>సెలవు పరిమితి తొలగించబడింది.</value></data>
+  <data name="LeaveEntrySaved" xml:space="preserve"><value>సెలవు నమోదు సేవ్ చేయబడింది.</value></data>
+  <data name="LeaveEntryDeleted" xml:space="preserve"><value>సెలవు నమోదు తొలగించబడింది.</value></data>
+  <data name="AttendanceLeaveType" xml:space="preserve"><value>హాజరు సెలవు రకం</value></data>
+  <data name="UseForAttendanceLeave" xml:space="preserve"><value>హాజరు సెలవు మరియు అర్ధ రోజు తగ్గింపులకు ఉపయోగించండి</value></data>
+  <data name="AttendanceLeavePolicyHelp" xml:space="preserve"><value>ప్రతి ఉద్యోగి వర్గానికి గరిష్టంగా ఒక సెలవు రకాన్ని ఎంచుకోండి. సెలవుకు 1 రోజు, అర్ధ రోజుకు 0.5 రోజు తగ్గుతుంది. నిల్వ సరిపోకపోతే హాజరు LOPగా సేవ్ అవుతుంది; సెలవు నిల్వ తగ్గదు. గైర్హాజరుకు సెలవు తగ్గించబడదు.</value></data>
+  <data name="AttendanceLeaveSelected" xml:space="preserve"><value>ఎంచుకున్నారు</value></data>
+  <data name="LeaveWithoutPay" xml:space="preserve"><value>LOP</value></data>
+  <data name="AttendanceLopMessage" xml:space="preserve"><value>{0} హాజరు రికార్డులు LOPగా గుర్తించబడ్డాయి.</value></data>
+  <data name="BalanceRefreshFailed" xml:space="preserve"><value>సెలవు నిల్వలను రిఫ్రెష్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించడానికి పేజీని రీలోడ్ చేయండి.</value></data>
+  <data name="AllStaff" xml:space="preserve"><value>అన్ని సిబ్బంది</value></data>
+  <data name="AllEmployeeTypes" xml:space="preserve"><value>అన్ని ఉద్యోగి రకాలు</value></data>
 </root>

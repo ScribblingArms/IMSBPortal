@@ -11,9 +11,7 @@ using static IMSB.Common.CommonHelpers;
 namespace IMSB.Admin.Controllers
 {
     /// <summary>
-    /// Reports &amp; Analytics for a month (optionally one craft category): KPIs, monthly trends, the stall occupancy
-    /// and artisan performance reports, and CSV / PDF exports of every section. Attendance is not recorded in the
-    /// system yet, so its figures are reported as unavailable rather than invented.
+    /// Reports &amp; Analytics, including the artisan performance, monthly attendance, salary, and abstract reports.
     /// </summary>
     [Authorize(Roles = "Admin")]
     public class ReportsController : Controller
@@ -22,11 +20,19 @@ namespace IMSB.Admin.Controllers
         public const int MonthChoices = 12;
 
         private readonly IReportsInterface _reports;
+        private readonly IAttendanceInterface _attendance;
+        private readonly IArtisansInterface _artisans;
         private readonly IStringLocalizer _L;
 
-        public ReportsController(IReportsInterface reports, IStringLocalizerFactory localizerFactory)
+        public ReportsController(
+            IReportsInterface reports,
+            IAttendanceInterface attendance,
+            IArtisansInterface artisans,
+            IStringLocalizerFactory localizerFactory)
         {
             _reports = reports;
+            _attendance = attendance;
+            _artisans = artisans;
             // Same shared resources the views use (Resources/SharedResource.<culture>.resx)
             _L = localizerFactory.Create("SharedResource", typeof(ReportsController).Assembly.GetName().Name!);
         }
@@ -40,6 +46,44 @@ namespace IMSB.Admin.Controllers
             ViewBag.Categories = (await _reports.CategoriesAsync())
                 .Select(c => new KeyValuePair<string, string>(c.Id.ToString(), c.Name)).ToList();
             return View();
+        }
+
+        public async Task<IActionResult> ArtisanPerformance()
+        {
+            ViewData["Title"] = _L["ArtisanPerformanceReport"].Value;
+            ViewBag.Months = MonthOptions(DateTime.Today);
+            ViewBag.Categories = (await _reports.CategoriesAsync())
+                .Select(c => new KeyValuePair<string, string>(c.Id.ToString(), c.Name)).ToList();
+            return View();
+        }
+
+        public IActionResult MonthlyReports()
+        {
+            ViewData["Title"] = _L["MonthlyReports"].Value;
+            SetAttendanceReportOptions();
+            return View();
+        }
+
+        public IActionResult SalaryReport()
+        {
+            ViewData["Title"] = _L["SalaryReport"].Value;
+            SetAttendanceReportOptions();
+            return View();
+        }
+
+        public IActionResult AbstractReport()
+        {
+            ViewData["Title"] = _L["AbstractReport"].Value;
+            return View();
+        }
+
+        private void SetAttendanceReportOptions()
+        {
+            var today = DateTime.Today;
+            ViewBag.Years = Enumerable.Range(0, 11).Select(i => today.Year - i).ToList();
+            ViewBag.MonthsOfYear = Enumerable.Range(1, 12)
+                .Select(i => new KeyValuePair<int, string>(
+                    i, new DateTime(2000, i, 1).ToString("MMMM", CultureInfo.CurrentCulture))).ToList();
         }
 
         /// <summary>The last twelve months, newest first, as (yyyy-MM, "October 2026" in the current culture).</summary>
@@ -107,6 +151,278 @@ namespace IMSB.Admin.Controllers
             return Ok(new { month = period.Key, rows = await ArtisanRowsAsync(period, q, status, categoryId) });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> MonthlyAttendance([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? type)
+        {
+            if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
+
+            return Ok(await MonthlyAttendanceDataAsync(start, type));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MonthlyAttendanceExport([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? type)
+        {
+            if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
+
+            var report = await MonthlyAttendanceDataAsync(start, type);
+            var rows = new List<string?[]>
+            {
+                new[] { _L["SerialNumber"].Value, _L["EmployeeID"].Value, _L["StaffName"].Value, _L["Designation"].Value,
+                    _L["TotalDaysInMonth"].Value, _L["TotalWorkingDays"].Value }
+            };
+            rows.AddRange(report.Rows.Select((row, index) => new string?[]
+            {
+                (index + 1).ToString(CultureInfo.InvariantCulture),
+                row.EmployeeId,
+                row.Name,
+                row.Designation,
+                row.TotalDaysInMonth.ToString(CultureInfo.InvariantCulture),
+                row.TotalWorkingDays.ToString(CultureInfo.InvariantCulture)
+            }));
+
+            return ExportExcel($"monthly_attendance_{start:yyyyMM}.xls", rows);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AbstractData([FromQuery] string? date)
+        {
+            date ??= DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            if (!TryResolveAbstractDate(date, out var selectedDate))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["date"] = _L["ValDateInvalid"].Value } });
+
+            return Ok(await AbstractDataAsync(selectedDate));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AbstractExport(
+            [FromQuery] string? date, [FromQuery] string? section, [FromQuery] string? metric)
+        {
+            date ??= DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            if (!TryResolveAbstractDate(date, out var selectedDate))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["date"] = _L["ValDateInvalid"].Value } });
+
+            var report = await AbstractDataAsync(selectedDate);
+            if (!string.IsNullOrWhiteSpace(section) && report.Sections.All(item => item.Key != section))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["section"] = _L["ValDateInvalid"].Value } });
+            metric = string.IsNullOrWhiteSpace(metric) ? "total" : metric;
+            if (metric is not ("total" or "attended" or "notAttended"))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["metric"] = _L["ValDateInvalid"].Value } });
+
+            var rows = report.Employees
+                .Where(employee => string.IsNullOrWhiteSpace(section) || employee.SectionKey == section)
+                .Where(employee => MatchesAbstractMetric(employee, metric))
+                .Select((employee, index) => new string?[]
+                {
+                    (index + 1).ToString(CultureInfo.InvariantCulture),
+                    employee.Name,
+                    employee.EmployeeId,
+                    employee.Designation,
+                    employee.AttendanceStatus ?? ""
+                }).ToList();
+            rows.Insert(0, new[]
+            {
+                _L["SerialNumber"].Value, _L["StaffName"].Value, _L["EmployeeID"].Value,
+                _L["Designation"].Value, _L["Status"].Value
+            });
+
+            return ExportExcel($"abstract_report_{selectedDate:yyyyMMdd}.xls", rows);
+        }
+
+        private static bool MatchesAbstractMetric(AbstractEmployee employee, string metric) => metric switch
+        {
+            "attended" => employee.Attended == true,
+            "notAttended" => employee.Attended == false,
+            _ => true
+        };
+
+        private static bool TryResolveAbstractDate(string? date, out DateTime selectedDate) =>
+            DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out selectedDate);
+
+        internal record AbstractSection(string Key, string Name, int Total, int? Attended, int? NotAttended);
+        internal record AbstractEmployee(
+            string SectionKey, string EmployeeId, string Name, string EmployeeType, string Designation,
+            string Gender, string Mobile, bool? Attended, string? AttendanceStatus);
+        internal record AbstractReportData(
+            string Date, List<AbstractSection> Sections, List<AbstractEmployee> Employees);
+
+        private async Task<AbstractReportData> AbstractDataAsync(DateTime date)
+        {
+            var staff = await _attendance.SheetAsync(date);
+            var artisans = await _artisans.FilterAsync(null, null, null, null, null);
+            var sections = new List<AbstractSection>();
+            var employees = new List<AbstractEmployee>();
+
+            foreach (var group in staff
+                .GroupBy(row => string.IsNullOrWhiteSpace(row.DepartmentName) ? _L["StaffHR"].Value : row.DepartmentName.Trim())
+                .OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
+            {
+                var key = "staff:" + group.Key;
+                var rows = group.OrderBy(row => row.Staff.FullName, StringComparer.OrdinalIgnoreCase).ToList();
+                var attended = rows.Count(row => row.Record?.Status is AttendanceStatuses.Present or AttendanceStatuses.HalfDay);
+                sections.Add(new AbstractSection(key, group.Key, rows.Count, attended, rows.Count - attended));
+                employees.AddRange(rows.Select(row =>
+                {
+                    var isAttended = row.Record?.Status is AttendanceStatuses.Present or AttendanceStatuses.HalfDay;
+                    return new AbstractEmployee(
+                        key,
+                        row.Staff.EmployeeId,
+                        row.Staff.FullName,
+                        group.Key,
+                        row.Staff.Designation,
+                        row.Staff.Gender,
+                        row.Staff.Mobile,
+                        isAttended,
+                        row.Record?.Status ?? "NOT_MARKED");
+                }));
+            }
+
+            const string artisanSectionKey = "artisans";
+            if (artisans.Count > 0)
+            {
+                sections.Insert(0, new AbstractSection(artisanSectionKey, _L["Artisans"].Value, artisans.Count, null, null));
+                employees.InsertRange(0, artisans.OrderBy(artisan => artisan.FullName, StringComparer.OrdinalIgnoreCase)
+                    .Select(artisan => new AbstractEmployee(
+                        artisanSectionKey, artisan.ArtisanCode, artisan.FullName, _L["Artisans"].Value, _L["Artisans"].Value,
+                        artisan.Gender, artisan.Mobile, null, null)));
+            }
+
+            return new AbstractReportData(date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), sections, employees);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Salary([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? type, [FromQuery] string? q)
+        {
+            if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
+
+            return Ok(await SalaryDataAsync(start, type, q));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SalaryExport([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? type, [FromQuery] string? q)
+        {
+            if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
+                return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
+
+            var report = await SalaryDataAsync(start, type, q);
+            var rows = new List<string?[]>
+            {
+                new[] { _L["SerialNumber"].Value, _L["EmployeeID"].Value, _L["StaffName"].Value, _L["EmployeeType"].Value,
+                    _L["Designation"].Value, _L["TotalDaysInMonth"].Value, _L["WorkedDays"].Value, _L["TotalSalary"].Value }
+            };
+            rows.AddRange(report.Rows.Select((row, index) => new string?[]
+            {
+                (index + 1).ToString(CultureInfo.InvariantCulture),
+                row.EmployeeId,
+                row.Name,
+                row.Department,
+                row.Designation,
+                row.MonthDays.ToString(CultureInfo.InvariantCulture),
+                row.WorkedDays.ToString("0.##", CultureInfo.InvariantCulture),
+                row.TotalSalary.ToString("0.00", CultureInfo.InvariantCulture)
+            }));
+
+            var totalRow = new string?[8];
+            totalRow[0] = _L["GrandTotal"].Value;
+            totalRow[7] = report.GrandTotalSalary.ToString("0.00", CultureInfo.InvariantCulture);
+            rows.Add(totalRow);
+            return ExportExcel($"salary_report_{start:yyyyMM}.xls", rows);
+        }
+
+        internal record SalaryReportRow(
+            string EmployeeId, string Name, string Department, string Designation,
+            int MonthDays, decimal WorkedDays, decimal TotalSalary);
+        internal record SalaryReportData(int Year, int Month, int MonthDays, List<string> Types, List<SalaryReportRow> Rows, decimal GrandTotalSalary);
+
+        private async Task<SalaryReportData> SalaryDataAsync(DateTime start, string? type, string? query)
+        {
+            var end = start.AddMonths(1).AddDays(-1);
+            var staff = await _attendance.MonthlyStaffAsync(start, end);
+            var departments = await _attendance.DepartmentNamesAsync();
+            var types = departments.Values.OrderBy(name => name, StringComparer.OrdinalIgnoreCase).ToList();
+
+            if (!string.IsNullOrWhiteSpace(type))
+                staff = staff.Where(s => string.Equals(
+                    departments.GetValueOrDefault(s.DepartmentId), type.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+
+            var records = await _attendance.HistoryAsync(null, null, null, start, end);
+            var recordsByStaff = records.ToLookup(r => r.StaffId);
+            var monthDays = DateTime.DaysInMonth(start.Year, start.Month);
+            var rows = staff.Select(s =>
+            {
+                var department = departments.GetValueOrDefault(s.DepartmentId) ?? string.Empty;
+                var workedDays = recordsByStaff[s.Id].Sum(r => r.Status switch
+                {
+                    AttendanceStatuses.Present => 1m,
+                    AttendanceStatuses.HalfDay => 0.5m,
+                    _ => 0m
+                });
+                var totalSalary = Math.Round(s.MonthlySalary * workedDays / monthDays, 2, MidpointRounding.AwayFromZero);
+                return new SalaryReportRow(s.EmployeeId, s.FullName, department, s.Designation, monthDays,
+                    workedDays, totalSalary);
+            }).Where(row => MatchesSalaryQuery(row, query))
+              .OrderBy(row => row.Department, StringComparer.OrdinalIgnoreCase)
+              .ThenBy(row => row.Name, StringComparer.OrdinalIgnoreCase)
+              .ThenBy(row => row.EmployeeId, StringComparer.OrdinalIgnoreCase)
+              .ToList();
+
+            return new SalaryReportData(start.Year, start.Month, monthDays, types, rows, rows.Sum(row => row.TotalSalary));
+        }
+
+        private static bool MatchesSalaryQuery(SalaryReportRow row, string? query)
+        {
+            if (string.IsNullOrWhiteSpace(query)) return true;
+            var value = query.Trim();
+            return row.EmployeeId.Contains(value, StringComparison.OrdinalIgnoreCase)
+                || row.Name.Contains(value, StringComparison.OrdinalIgnoreCase)
+                || row.Department.Contains(value, StringComparison.OrdinalIgnoreCase)
+                || row.Designation.Contains(value, StringComparison.OrdinalIgnoreCase);
+        }
+
+        internal record MonthlyAttendanceRow(string EmployeeId, string Name, string Designation, int TotalDaysInMonth, int TotalWorkingDays);
+        internal record MonthlyAttendanceData(int Year, int Month, int TotalDaysInMonth, List<string> Types, List<MonthlyAttendanceRow> Rows);
+
+        private async Task<MonthlyAttendanceData> MonthlyAttendanceDataAsync(DateTime start, string? type)
+        {
+            var end = start.AddMonths(1).AddDays(-1);
+            var staff = await _attendance.MonthlyStaffAsync(start, end);
+            var types = staff.Select(s => s.Designation.Trim()).Where(s => s.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(s => s).ToList();
+
+            if (!string.IsNullOrWhiteSpace(type))
+                staff = staff.Where(s => string.Equals(s.Designation.Trim(), type.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+
+            var records = await _attendance.HistoryAsync(null, null, null, start, end);
+            var recordsByStaff = records.ToLookup(r => r.StaffId);
+            var rows = staff.Select(s => new MonthlyAttendanceRow(
+                s.EmployeeId,
+                s.FullName,
+                s.Designation,
+                DateTime.DaysInMonth(start.Year, start.Month),
+                recordsByStaff[s.Id].Count(r => r.Status == AttendanceStatuses.Present || r.Status == AttendanceStatuses.HalfDay)))
+                .ToList();
+
+            return new MonthlyAttendanceData(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month), types, rows);
+        }
+
+        private static bool TryResolveAttendanceMonth(int? year, int? month, out DateTime start)
+        {
+            var today = DateTime.Today;
+            var selectedYear = year ?? today.Year;
+            var selectedMonth = month ?? today.Month;
+            if (selectedYear < today.Year - 10 || selectedYear > today.Year || selectedMonth < 1 || selectedMonth > 12)
+            {
+                start = default;
+                return false;
+            }
+
+            start = new DateTime(selectedYear, selectedMonth, 1);
+            return true;
+        }
+
         // ── Calculations (in the Reports backend) ─────────────────────
 
         private async Task<ProductCategory?> CategoryAsync(string? categoryId) =>
@@ -136,7 +452,7 @@ namespace IMSB.Admin.Controllers
         // ── Export ────────────────────────────────────────────────────
 
         /// <summary>
-        /// /Reports/Export/{id}?format=csv|pdf. CSV downloads a file; pdf returns a print-ready page that opens the
+        /// /Reports/Export/{id}?format=xls|pdf. Excel downloads a file; pdf returns a print-ready page that opens the
         /// browser's print dialog (Save as PDF), which renders Tamil, Telugu and Hindi text correctly.
         /// </summary>
         [HttpGet]
@@ -153,7 +469,7 @@ namespace IMSB.Admin.Controllers
                 ViewData["Title"] = doc.Title;
                 return View("Print", doc);
             }
-            return ExportCsv($"report_{reportId}_{period.MonthStart:yyyyMM}_{DateTime.Now:yyyyMMddHHmmss}.csv", ToCsv(doc));
+            return ExportExcel($"report_{reportId}_{period.MonthStart:yyyyMM}_{DateTime.Now:yyyyMMddHHmmss}.xls", ToExcelRows(doc));
         }
 
         internal async Task<ReportDocument> BuildAsync(string id, ReportPeriod period, string? categoryId, string? q, string? status, string? block)
@@ -277,7 +593,7 @@ namespace IMSB.Admin.Controllers
             };
         }
 
-        internal List<string?[]> ToCsv(ReportDocument doc)
+        internal List<string?[]> ToExcelRows(ReportDocument doc)
         {
             var rows = new List<string?[]>
             {

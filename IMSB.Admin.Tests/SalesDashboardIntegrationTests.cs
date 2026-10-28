@@ -174,6 +174,20 @@ public class SalesDashboardIntegrationTests : IClassFixture<SalesAppFactory>
     }
 
     [Fact]
+    public async Task Login_statistics_are_loaded_from_application_data()
+    {
+        var html = WebUtility.HtmlDecode(await _factory.ClientAs(null).GetStringAsync("/Account/Login"));
+        var stats = Regex.Matches(html, "data-stat=\"([^\"]+)\">([^<]+)</div>")
+            .ToDictionary(match => match.Groups[1].Value, match => match.Groups[2].Value);
+
+        Assert.Equal(4, stats.Count);
+        Assert.Equal(IMSBContext.SeedCategories.Length.ToString(), stats["product-categories"]);
+        Assert.DoesNotContain("120+", html);
+        Assert.DoesNotContain("₹42.8L", html);
+        Assert.DoesNotContain(">89<", html);
+    }
+
+    [Fact]
     public async Task Forgot_password_page_is_localized()
     {
         var html = WebUtility.HtmlDecode(await _factory.ClientAs(null, "te-IN").GetStringAsync("/Account/Forgot"));
@@ -208,12 +222,12 @@ public class SalesDashboardIntegrationTests : IClassFixture<SalesAppFactory>
         Assert.Contains(dash.GetProperty("topStalls").EnumerateArray(), s => s.GetProperty("stallCode").GetString() == "H-01");
 
         var csv = await client.GetAsync("/Sales/Export");
-        Assert.Equal("text/csv", csv.Content.Headers.ContentType!.MediaType);
-        Assert.Contains($"{entryNo},", await csv.Content.ReadAsStringAsync());
-        Assert.Equal("text/csv", (await client.GetAsync("/Sales/ExportProductReport?stall=H-01")).Content.Headers.ContentType!.MediaType);
+        Assert.Equal("application/vnd.ms-excel", csv.Content.Headers.ContentType!.MediaType);
+        Assert.Contains($"{entryNo},", ExcelExportTestHelpers.CsvText(await csv.Content.ReadAsStringAsync()));
+        Assert.Equal("application/vnd.ms-excel", (await client.GetAsync("/Sales/ExportProductReport?stall=H-01")).Content.Headers.ContentType!.MediaType);
         var dashCsv = await client.GetAsync("/Dashboard/Export?days=40");
-        Assert.Equal("text/csv", dashCsv.Content.Headers.ContentType!.MediaType);
-        Assert.Contains("Low Stock Alerts", await dashCsv.Content.ReadAsStringAsync());
+        Assert.Equal("application/vnd.ms-excel", dashCsv.Content.Headers.ContentType!.MediaType);
+        Assert.Contains("Low Stock Alerts", ExcelExportTestHelpers.CsvText(await dashCsv.Content.ReadAsStringAsync()));
 
         // edit down to 1: 2 go back to stock
         var update = await client.SendAsync(Post($"/Sales/Update/{entryNo}", token, Sale("PRD001", 1, 950)));

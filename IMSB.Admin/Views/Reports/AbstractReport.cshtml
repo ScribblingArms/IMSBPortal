@@ -1,0 +1,90 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+    var jsKeys = new[] {
+        "CouldNotReachServer", "AbstractReport", "SerialNumber", "SectionName", "StaffCountTotal", "SelectDate",
+        "Attended", "NotAttended", "ArtisansAttendanceUnavailable", "NoEmployeesForSection",
+        "EmployeeID", "StaffName", "Designation", "Status", "Present", "Absent", "Leave", "HalfDay",
+        "NotMarked", "EmployeeDetails", "Gender", "Mobile", "Search"
+    };
+    var jsStrings = jsKeys.ToDictionary(key => key, key => L[key].Value);
+}
+<main class="page-body">
+  <p class="report-info-banner abstract-artisan-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>@L["ArtisansAttendanceUnavailable"]</span></p>
+  <div class="card abstract-report-card">
+    <div class="card-header abstract-report-header">
+      <div class="card-title"><i class="fa-solid fa-clipboard-list"></i> @L["AbstractReport"] <span class="tab-count" id="abstractReportCount">0</span></div>
+    </div>
+    <div class="card-body">
+      <div class="toolbar abstract-report-toolbar">
+        <input type="date" class="form-control" id="abstractDate" value="@today" aria-label="@L["SelectDate"]">
+        <button type="button" class="btn btn-outline btn-sm" id="abstractLoadBtn"><i class="fa-solid fa-magnifying-glass"></i> @L["Search"]</button>
+        <button type="button" class="btn btn-outline btn-sm btn-reset" id="abstractResetBtn">@L["Reset"]</button>
+      </div>
+      <div class="form-error" id="abstractError" role="alert"></div>
+      <div class="table-container">
+        <table class="data-table abstract-summary-table">
+          <thead><tr>
+            <th>@L["SerialNumber"]</th><th>@L["SectionName"]</th><th>@L["StaffCountTotal"]</th>
+            <th>@L["Attended"]</th><th>@L["NotAttended"]</th>
+          </tr></thead>
+          <tbody id="abstractSummaryBody"></tbody>
+        </table>
+      </div>
+      <div class="abstract-details-panel" id="abstractDetailsPanel" hidden>
+        <hr class="abstract-divider">
+        <div class="abstract-detail-header">
+          <h2><span id="abstractDetailTitle">@L["EmployeeDetails"]</span> <span class="tab-count" id="abstractDetailCount">0</span></h2>
+          <button type="button" class="btn btn-outline btn-sm" id="abstractExportBtn" hidden><i class="fa-solid fa-file-excel"></i> @L["ExportToExcel"]</button>
+        </div>
+        <div class="table-container">
+          <table class="data-table abstract-details-table">
+            <thead><tr>
+              <th>@L["SerialNumber"]</th><th>@L["StaffName"]</th><th>@L["Designation"]</th><th>@L["Status"]</th>
+            </tr></thead>
+            <tbody id="abstractDetailsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+@section Styles {
+  <style>
+    .abstract-report-card { border-radius:var(--r-lg); overflow:hidden; }
+    .abstract-report-header { gap:12px; flex-wrap:wrap; border-bottom:1px solid var(--border); }
+    .abstract-report-header .card-title { display:flex; align-items:center; gap:8px; }
+    .abstract-report-header .card-title i { color:var(--primary); }
+    .abstract-report-toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+    .abstract-report-toolbar .form-control { flex:0 1 220px; width:auto; min-width:180px; max-width:260px; height:44px; }
+    .abstract-report-toolbar > .btn { min-width:96px; height:44px; }
+    .abstract-summary-table,.abstract-details-table { min-width:720px; }
+    .abstract-summary-table th,.abstract-details-table th { background:#eff3f9; color:#64748b; font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; }
+    .abstract-summary-table tbody tr,.abstract-details-table tbody tr { border-bottom:1px solid #d5deeb; }
+    .abstract-summary-table td,.abstract-details-table td { font-size:.88rem; font-weight:500; }
+    .abstract-count-link { padding:0; border:0; background:none; color:var(--primary-light); font:inherit; font-weight:700; text-decoration:underline; cursor:pointer; }
+    .abstract-count-link.attended { color:var(--success); }
+    .abstract-count-link.not-attended { color:#f00; }
+    .abstract-count-link:focus-visible { outline:2px solid var(--primary-light); outline-offset:3px; }
+    .abstract-artisan-note { margin:0 0 18px; }
+    .abstract-divider { margin:18px 0 24px; border:0; border-top:1px solid var(--border); }
+    .abstract-detail-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+    .abstract-detail-header h2 { margin:0; font-size:1.15rem; }
+    .abstract-detail-header .btn { min-width:150px; min-height:40px; }
+    .abstract-detail-staff-name { font-weight:700; }
+    .abstract-detail-employee-id { color:var(--text-muted); font-size:.68rem; margin-top:2px; }
+    @@media(max-width:700px) {
+      .abstract-report-toolbar { align-items:stretch; gap:12px; }
+      .abstract-report-toolbar .form-control { flex:1 1 100%; width:100%; max-width:none; }
+      .abstract-report-toolbar > .btn { width:100%; }
+      .abstract-detail-header { align-items:flex-start; flex-direction:column; }
+      .abstract-detail-header .btn { width:100%; }
+    }
+  </style>
+}
+@section Scripts {
+  <script>window.ReportsI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+  <script src="~/js/abstract-report.js" asp-append-version="true"></script>
+}

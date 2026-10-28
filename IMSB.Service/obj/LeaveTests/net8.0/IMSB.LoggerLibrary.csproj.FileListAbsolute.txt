@@ -1,0 +1,12 @@
+K:\ScribblingArms\IMSBPortal\IMSB.Service\bin\LeaveTests\net8.0\IMSB.LoggerLibrary.deps.json
+K:\ScribblingArms\IMSBPortal\IMSB.Service\bin\LeaveTests\net8.0\IMSB.LoggerLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Service\bin\LeaveTests\net8.0\IMSB.LoggerLibrary.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\IMSB.LoggerLibrary.GeneratedMSBuildEditorConfig.editorconfig
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\IMSB.LoggerLibrary.AssemblyInfoInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\IMSB.LoggerLibrary.AssemblyInfo.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\IMSB.LoggerLibrary.csproj.CoreCompileInputs.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\IMSB.LoggerLibrary.sourcelink.json
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\IMSB.LoggerLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\refint\IMSB.LoggerLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\IMSB.LoggerLibrary.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\LeaveTests\net8.0\ref\IMSB.LoggerLibrary.dll

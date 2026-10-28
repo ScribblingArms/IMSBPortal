@@ -24,7 +24,7 @@ namespace IMSB.Admin.Controllers
             _L = localizerFactory.Create("SharedResource", typeof(StaffController).Assembly.GetName().Name!);
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] bool register = false)
         {
             var staffEntities = await _staff.AllAsync();
 
@@ -35,6 +35,7 @@ namespace IMSB.Admin.Controllers
             ViewBag.OnLeave = stats.OnLeave;
             ViewBag.Departments = stats.Departments;
             ViewBag.ContractExpiring = stats.ContractExpiring;
+            ViewBag.RegisterOnLoad = register;
 
             return View(staffEntities);
         }
@@ -70,7 +71,7 @@ namespace IMSB.Admin.Controllers
             {
                 depts = departments.Select(d => new DepartmentItem(d.Id.ToString(), d.Name, perDept.GetValueOrDefault(d.Id), "#2558a8")),
                 shifts = shifts.Select(s => s.ToOption()),
-                staff = filtered.Select(s => s.ToListItem(deptNames)),
+                staff = filtered.Select(s => s.ToListItem(deptNames, User.IsInRole("Admin"))),
                 stats = ComputeStats(allStaff)
             });
         }
@@ -83,14 +84,14 @@ namespace IMSB.Admin.Controllers
 
             var rows = new List<string?[]>
             {
-                new string?[] { "EmployeeId", "FullName", "Department", "Designation", "Mobile", "Email", "DateOfBirth", "Gender", "JoinDate", "Shift", "Status" }
+                new string?[] { "EmployeeId", "FullName", "Department", "Designation", "StaffCategory", "Mobile", "Email", "DateOfBirth", "Gender", "JoinDate", "Shift", "Status" }
             };
             foreach (var s in staff.Select(s => s.ToListItem(depts)))
             {
-                rows.Add(new string?[] { s.EmployeeId, s.FullName, s.DepartmentName, s.Designation, s.Mobile, s.Email, s.DateOfBirth, s.Gender,
+                rows.Add(new string?[] { s.EmployeeId, s.FullName, s.DepartmentName, s.Designation, s.StaffCategory, s.Mobile, s.Email, s.DateOfBirth, s.Gender,
                     s.JoinDate, s.Shift, s.Status });
             }
-            return ExportCsv($"staff_{DateTime.UtcNow:yyyyMMddHHmmss}.csv", rows);
+            return ExportExcel($"staff_{DateTime.UtcNow:yyyyMMddHHmmss}.xls", rows);
         }
 
         [HttpPost]
@@ -110,6 +111,7 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = User.Identity?.Name
             };
             dto.ApplyTo(entity);
+            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
             await _staff.AddAsync(entity);
 
             return Ok(new { employeeId = entity.EmployeeId });
@@ -127,6 +129,7 @@ namespace IMSB.Admin.Controllers
             if (errors.Count > 0) return BadRequest(new { errors });
 
             dto.ApplyTo(entity);
+            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
             if (!string.IsNullOrWhiteSpace(dto.Status)) entity.Status = dto.Status.Trim().ToUpperInvariant();
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = User.Identity?.Name;

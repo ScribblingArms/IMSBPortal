@@ -312,6 +312,60 @@
   <data name="History" xml:space="preserve">
     <value>इतिहास</value>
   </data>
+  <data name="MonthlyCalendar" xml:space="preserve">
+    <value>मासिक कैलेंडर</value>
+  </data>
+  <data name="MonthlyAttendanceCalendar" xml:space="preserve">
+    <value>मासिक उपस्थिति कैलेंडर</value>
+  </data>
+  <data name="EmployeeType" xml:space="preserve">
+    <value>कर्मचारी प्रकार</value>
+  </data>
+  <data name="AllTypes" xml:space="preserve">
+    <value>सभी प्रकार</value>
+  </data>
+  <data name="ShowResult" xml:space="preserve">
+    <value>परिणाम दिखाएँ</value>
+  </data>
+  <data name="ExportToExcel" xml:space="preserve">
+    <value>Excel में निर्यात करें</value>
+  </data>
+  <data name="MonthlyReports" xml:space="preserve">
+    <value>मासिक रिपोर्ट</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>क्रम संख्या</value>
+  </data>
+  <data name="TotalDaysInMonth" xml:space="preserve">
+    <value>महीने के कुल दिन</value>
+  </data>
+  <data name="TotalWorkingDays" xml:space="preserve">
+    <value>कुल कार्य दिवस</value>
+  </data>
+  <data name="SalaryReport" xml:space="preserve">
+    <value>वेतन रिपोर्ट</value>
+  </data>
+  <data name="SalaryRequestFailed" xml:space="preserve">
+    <value>वेतन रिपोर्ट अनुरोध विफल हुआ ({0})।</value>
+  </data>
+  <data name="MonthlySalary" xml:space="preserve">
+    <value>मासिक वेतन (₹)</value>
+  </data>
+  <data name="WorkedDays" xml:space="preserve">
+    <value>कार्य दिवस</value>
+  </data>
+  <data name="TotalSalary" xml:space="preserve">
+    <value>कुल वेतन</value>
+  </data>
+  <data name="SalaryProrationNote" xml:space="preserve">
+    <value>कुल वेतन = मासिक वेतन × कार्य दिवस ÷ महीने के दिन। उपस्थित = 1 दिन, आधा दिन = 0.5; अनुपस्थित और छुट्टी = 0।</value>
+  </data>
+  <data name="SearchSalaryPlaceholder" xml:space="preserve">
+    <value>कर्मचारी / विभाग / पदनाम से खोजें</value>
+  </data>
+  <data name="ValMonthlySalary" xml:space="preserve">
+    <value>0 से 999,999,999.99 तक का मासिक वेतन दर्ज करें।</value>
+  </data>
   <data name="MarkAttendance" xml:space="preserve">
     <value>उपस्थिति चिन्हित करें</value>
   </data>
@@ -1180,7 +1234,7 @@
     <value>सभी निर्यात करें</value>
   </data>
   <data name="ExportCsv" xml:space="preserve">
-    <value>CSV निर्यात करें</value>
+    <value>Excel निर्यात करें</value>
   </data>
   <data name="ExportKPIs" xml:space="preserve">
     <value>KPI निर्यात करें</value>
@@ -1307,6 +1361,9 @@
   </data>
   <data name="Month" xml:space="preserve">
     <value>महीना</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>वर्ष</value>
   </data>
   <data name="MonthlyAttendanceRate" xml:space="preserve">
     <value>मासिक उपस्थिति दर</value>
@@ -1790,6 +1847,9 @@
   </data>
   <data name="ToggleSidebar" xml:space="preserve">
     <value>साइडबार बदलें</value>
+  </data>
+  <data name="GrandTotal" xml:space="preserve">
+    <value>कुल योग</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>कुल</value>
@@ -2571,6 +2631,9 @@
   <data name="ValAttendanceStatus" xml:space="preserve">
     <value>उपस्थित, अनुपस्थित, छुट्टी या आधा दिन चुनें</value>
   </data>
+  <data name="ValMonthlyAttendanceStatus" xml:space="preserve">
+    <value>मान्य मासिक उपस्थिति स्थिति चुनें</value>
+  </data>
   <data name="ValInTimeRequired" xml:space="preserve">
     <value>इन-टाइम दर्ज करें</value>
   </data>
@@ -2589,4 +2652,61 @@
   <data name="ValTooManyEntries" xml:space="preserve">
     <value>एक बार में अधिकतम {0} प्रविष्टियाँ सहेजी जा सकती हैं</value>
   </data>
+  <data name="AbstractReport" xml:space="preserve"><value>सारांश रिपोर्ट</value></data>
+  <data name="SelectDate" xml:space="preserve"><value>तारीख चुनें</value></data>
+  <data name="LoadData" xml:space="preserve"><value>डेटा लोड करें</value></data>
+  <data name="SectionName" xml:space="preserve"><value>अनुभाग का नाम</value></data>
+  <data name="StaffCountTotal" xml:space="preserve"><value>कर्मचारी संख्या (कुल)</value></data>
+  <data name="Attended" xml:space="preserve"><value>उपस्थित</value></data>
+  <data name="NotAttended" xml:space="preserve"><value>अनुपस्थित</value></data>
+  <data name="EmployeeDetails" xml:space="preserve"><value>कर्मचारी विवरण</value></data>
+  <data name="ArtisansAttendanceUnavailable" xml:space="preserve"><value>इस सिस्टम में कारीगरों की उपस्थिति दर्ज नहीं की जाती। उनकी उपस्थिति संख्या उपलब्ध नहीं है।</value></data>
+  <data name="NoEmployeesForSection" xml:space="preserve"><value>इस अनुभाग में कोई कर्मचारी नहीं मिला।</value></data>
+  <data name="StaffCategory" xml:space="preserve"><value>कर्मचारी श्रेणी</value></data>
+  <data name="StaffProfile" xml:space="preserve"><value>कर्मचारी प्रोफ़ाइल</value></data>
+  <data name="ValStaffCategory" xml:space="preserve"><value>कर्मचारी श्रेणी दर्ज करें (अधिकतम 100 अक्षर)</value></data>
+  <data name="LeaveManagement" xml:space="preserve"><value>अवकाश प्रबंधन</value></data>
+  <data name="Update" xml:space="preserve"><value>अपडेट करें</value></data>
+  <data name="LeaveManagementSubtitle" xml:space="preserve"><value>कर्मचारियों की वर्तमान वार्षिक अवकाश शेष राशि देखें।</value></data>
+  <data name="AddLeaveTaken" xml:space="preserve"><value>अवकाश के लिए आवेदन करें</value></data>
+  <data name="LeaveEntitlements" xml:space="preserve"><value>अवकाश पात्रता</value></data>
+  <data name="LeaveType" xml:space="preserve"><value>अवकाश प्रकार</value></data>
+  <data name="AnnualQuota" xml:space="preserve"><value>वार्षिक सीमा</value></data>
+  <data name="Days" xml:space="preserve"><value>दिन</value></data>
+  <data name="SaveEntitlement" xml:space="preserve"><value>पात्रता सहेजें</value></data>
+  <data name="NoLeaveEntitlements" xml:space="preserve"><value>इस वर्ष के लिए अवकाश प्रकार निर्धारित नहीं हैं।</value></data>
+  <data name="CurrentLeaveBalances" xml:space="preserve"><value>वर्तमान अवकाश शेष</value></data>
+  <data name="Taken" xml:space="preserve"><value>लिया गया</value></data>
+  <data name="Balance" xml:space="preserve"><value>शेष</value></data>
+  <data name="NoLeaveBalances" xml:space="preserve"><value>अभी शेष नहीं है। कर्मचारी श्रेणी के लिए अवकाश पात्रता जोड़ें।</value></data>
+  <data name="LeaveEntrySubtitle" xml:space="preserve"><value>कर्मचारी द्वारा लिए गए अवकाश को दर्ज या संशोधित करें।</value></data>
+  <data name="DaysTaken" xml:space="preserve"><value>लिए गए दिन</value></data>
+  <data name="RecordLeaveTaken" xml:space="preserve"><value>लिए गए अवकाश दर्ज करें</value></data>
+  <data name="SaveLeaveEntry" xml:space="preserve"><value>अवकाश प्रविष्टि सहेजें</value></data>
+  <data name="LeaveEntries" xml:space="preserve"><value>अवकाश प्रविष्टियाँ</value></data>
+  <data name="NoLeaveEntries" xml:space="preserve"><value>इस वर्ष कोई अवकाश प्रविष्टि दर्ज नहीं है।</value></data>
+  <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>अवकाश दर्ज करने से पहले कम से कम एक पात्रता निर्धारित करें।</value></data>
+  <data name="ValLeaveEntitlement" xml:space="preserve"><value>मान्य श्रेणी, अवकाश प्रकार और वार्षिक सीमा दर्ज करें।</value></data>
+  <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>सीमा पहले से लिए गए अवकाश से कम नहीं हो सकती।</value></data>
+  <data name="ValLeaveTypeInUse" xml:space="preserve"><value>प्रविष्टियाँ मौजूद हैं, इसलिए यह अवकाश प्रकार हटाया नहीं जा सकता।</value></data>
+  <data name="ValLeaveEntry" xml:space="preserve"><value>मान्य कर्मचारी, अवकाश प्रकार, तारीखें और दिन दर्ज करें।</value></data>
+  <data name="ValLeaveDates" xml:space="preserve"><value>वर्तमान वर्ष के भीतर मान्य तारीख सीमा दर्ज करें।</value></data>
+  <data name="ValLeaveFutureDate" xml:space="preserve"><value>अवकाश की दोनों तारीखें आज के बाद की होनी चाहिए।</value></data>
+  <data name="ValLeaveDays" xml:space="preserve"><value>दिन आधे दिन के गुणक में हों और तारीख सीमा से अधिक न हों।</value></data>
+  <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>कर्मचारी श्रेणी के लिए यह अवकाश प्रकार निर्धारित नहीं है।</value></data>
+  <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>इन तारीखों पर कर्मचारी की अवकाश प्रविष्टि पहले से है।</value></data>
+  <data name="ValInsufficientLeaveBalance" xml:space="preserve"><value>इस प्रविष्टि के लिए पर्याप्त अवकाश शेष नहीं है।</value></data>
+  <data name="LeaveEntitlementSaved" xml:space="preserve"><value>अवकाश पात्रता सहेजी गई।</value></data>
+  <data name="LeaveEntitlementDeleted" xml:space="preserve"><value>अवकाश पात्रता हटाई गई।</value></data>
+  <data name="LeaveEntrySaved" xml:space="preserve"><value>अवकाश प्रविष्टि सहेजी गई।</value></data>
+  <data name="LeaveEntryDeleted" xml:space="preserve"><value>अवकाश प्रविष्टि हटाई गई।</value></data>
+  <data name="AttendanceLeaveType" xml:space="preserve"><value>उपस्थिति अवकाश प्रकार</value></data>
+  <data name="UseForAttendanceLeave" xml:space="preserve"><value>उपस्थिति के अवकाश और आधे दिन की कटौती के लिए उपयोग करें</value></data>
+  <data name="AttendanceLeavePolicyHelp" xml:space="preserve"><value>प्रति कर्मचारी श्रेणी में अधिकतम एक अवकाश प्रकार चुनें। अवकाश से 1 दिन और आधे दिन से 0.5 दिन कटेंगे। शेष उपलब्ध न होने पर उपस्थिति LOP के रूप में सहेजी जाएगी और अवकाश शेष नहीं घटेगा। अनुपस्थिति से अवकाश नहीं कटेगा।</value></data>
+  <data name="AttendanceLeaveSelected" xml:space="preserve"><value>चयनित</value></data>
+  <data name="LeaveWithoutPay" xml:space="preserve"><value>LOP</value></data>
+  <data name="AttendanceLopMessage" xml:space="preserve"><value>{0} उपस्थिति रिकॉर्ड LOP के रूप में चिह्नित किए गए।</value></data>
+  <data name="BalanceRefreshFailed" xml:space="preserve"><value>अवकाश शेष अपडेट नहीं हो सका। पुनः प्रयास के लिए पृष्ठ रीलोड करें।</value></data>
+  <data name="AllStaff" xml:space="preserve"><value>सभी कर्मचारी</value></data>
+  <data name="AllEmployeeTypes" xml:space="preserve"><value>सभी कर्मचारी प्रकार</value></data>
 </root>

@@ -220,7 +220,7 @@ namespace IMSB.Admin.Controllers
                 rows.Add(new string?[] { p.ProductCode, p.Name, catNames.GetValueOrDefault(p.CategoryId), p.StallCode, Int(p.Quantity), Int(p.MinStock),
                     Money(p.UnitPrice), StatusLabels.Stock(_L, p.StockStatus) });
             }
-            return ExportCsv($"inventory_{DateTime.UtcNow:yyyyMMddHHmmss}.csv", rows);
+            return ExportExcel($"inventory_{DateTime.UtcNow:yyyyMMddHHmmss}.xls", rows);
         }
 
         // Errors are keyed by the snake_case field names the forms use for their err_* elements

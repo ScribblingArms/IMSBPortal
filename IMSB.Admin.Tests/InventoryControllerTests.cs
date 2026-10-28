@@ -419,9 +419,9 @@ public class InventoryQueryTests
         using var ctx = SeededContext();
         var file = Assert.IsType<FileContentResult>(await InventoryTestHelpers.CreateController(ctx).Export(null, null, "LOW_STOCK"));
 
-        Assert.Equal("text/csv", file.ContentType);
+        Assert.Equal("application/vnd.ms-excel", file.ContentType);
         Assert.StartsWith("inventory_", file.FileDownloadName);
-        var lines = Encoding.UTF8.GetString(file.FileContents).TrimStart('﻿').Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+        var lines = ExcelExportTestHelpers.CsvText(file).Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
         Assert.Equal("ProductCode,ProductName,Category,Stall,Quantity,MinStock,UnitPrice,Status", lines[0]);
         Assert.Equal("PRD002,Silk Dupatta (Blue),Textiles,A-03,15,20,1200.00,Low Stock", lines[1]);
         Assert.Equal("PRD003,Terracotta Flower Pot,Pottery,C-03,3,25,450.00,Low Stock", lines[2]);
@@ -429,13 +429,13 @@ public class InventoryQueryTests
     }
 
     [Fact]
-    public async Task Export_quotes_commas_and_neutralises_formulas()
+    public async Task Export_keeps_formula_like_product_names_as_text()
     {
         using var ctx = CreateContext();
         AddProduct(ctx, "PRD001", "=HYPERLINK(\"x\"), evil", Textiles, "A-01", 5, 1);
         var file = Assert.IsType<FileContentResult>(await InventoryTestHelpers.CreateController(ctx).Export(null, null, null));
-        var line = Encoding.UTF8.GetString(file.FileContents).Split("\r\n")[1];
-        Assert.StartsWith("PRD001,\"'=HYPERLINK(\"\"x\"\"), evil\",", line);
+        var productRow = ExcelExportTestHelpers.Rows(file.FileContents)[1];
+        Assert.Equal("=HYPERLINK(\"x\"), evil", productRow[1]);
     }
 
     [Theory]
@@ -446,7 +446,7 @@ public class InventoryQueryTests
         using var scope = new TestHelpers.CultureScope(culture);
         using var ctx = SeededContext();
         var file = Assert.IsType<FileContentResult>(await InventoryTestHelpers.CreateController(ctx).Export("PRD002", null, null));
-        Assert.EndsWith("," + expected, Encoding.UTF8.GetString(file.FileContents).Split("\r\n")[1]);
+        Assert.EndsWith("," + expected, ExcelExportTestHelpers.CsvText(file).Split("\r\n")[1]);
     }
 
     [Theory]

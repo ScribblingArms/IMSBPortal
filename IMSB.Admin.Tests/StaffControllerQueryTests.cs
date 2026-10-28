@@ -40,6 +40,8 @@ public class StaffControllerQueryTests
     public async Task IndexData_staff_rows_have_display_fields()
     {
         using var ctx = SeededContext();
+        ctx.Staff.Single(s => s.EmployeeId == "EMP003").MonthlySalary = 27000m;
+        await ctx.SaveChangesAsync();
         var json = TestHelpers.OkJson(await TestHelpers.CreateController(ctx).IndexData("EMP003", null, null));
         var row = json.GetProperty("staff")[0];
 
@@ -47,6 +49,20 @@ public class StaffControllerQueryTests
         Assert.Equal("Admin", row.GetProperty("departmentName").GetString());
         Assert.Equal("1988-03-03", row.GetProperty("dateOfBirth").GetString());
         Assert.Equal("2015-06-01", row.GetProperty("joinDate").GetString());
+        Assert.Equal(27000m, row.GetProperty("monthlySalary").GetDecimal());
+    }
+
+    [Fact]
+    public async Task IndexData_does_not_expose_salary_to_staff_role()
+    {
+        using var ctx = SeededContext();
+        ctx.Staff.Single(s => s.EmployeeId == "EMP003").MonthlySalary = 27000m;
+        await ctx.SaveChangesAsync();
+
+        var json = TestHelpers.OkJson(await TestHelpers.CreateController(ctx, role: "Staff").IndexData(null, null, null));
+
+        Assert.All(json.GetProperty("staff").EnumerateArray(), row =>
+            Assert.Equal(System.Text.Json.JsonValueKind.Null, row.GetProperty("monthlySalary").ValueKind));
     }
 
     [Theory]
@@ -135,12 +151,11 @@ public class StaffControllerQueryTests
         using var ctx = SeededContext();
         var file = Assert.IsType<FileContentResult>(await TestHelpers.CreateController(ctx).Export(null, TestHelpers.AdminDept.ToString(), null));
 
-        Assert.Equal("text/csv", file.ContentType);
-        Assert.EndsWith(".csv", file.FileDownloadName);
-        Assert.Equal(Encoding.UTF8.GetPreamble(), file.FileContents.Take(3));   // BOM so Excel reads UTF-8
-        var lines = Encoding.UTF8.GetString(file.FileContents).TrimStart('﻿').Split("\r\n", StringSplitOptions.RemoveEmptyEntries)
+        Assert.Equal("application/vnd.ms-excel", file.ContentType);
+        Assert.EndsWith(".xls", file.FileDownloadName);
+        var lines = ExcelExportTestHelpers.CsvText(file).Split("\r\n", StringSplitOptions.RemoveEmptyEntries)
             .Select(l => l.TrimEnd('\n', '\r')).ToArray();
-        Assert.Equal("EmployeeId,FullName,Department,Designation,Mobile,Email,DateOfBirth,Gender,JoinDate,Shift,Status", lines[0]);
+        Assert.Equal("EmployeeId,FullName,Department,Designation,StaffCategory,Mobile,Email,DateOfBirth,Gender,JoinDate,Shift,Status", lines[0]);
         Assert.Equal(3, lines.Length);
         Assert.StartsWith("EMP004,Kiran Kumar,Admin,", lines[1]);
     }

@@ -22,6 +22,8 @@ public class IMSBContext : DbContext
     public DbSet<UserSession> UserSessions { get; set; }
     public DbSet<ArtisanApplication> ArtisanApplications { get; set; }
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
+    public DbSet<LeaveEntitlement> LeaveEntitlements { get; set; }
+    public DbSet<StaffLeaveEntry> StaffLeaveEntries { get; set; }
 
     // Fixed ids so the seeded categories are stable across environments
     public static readonly (Guid Id, string Name)[] SeedCategories =
@@ -48,6 +50,7 @@ public class IMSBContext : DbContext
             b.Property(p => p.EmployeeId).HasMaxLength(20);
             b.Property(p => p.Mobile).HasMaxLength(32);
             b.Property(p => p.Email).HasMaxLength(200);
+            b.Property(p => p.StaffCategory).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Department>(b =>
@@ -178,6 +181,28 @@ public class IMSBContext : DbContext
             b.HasIndex(a => a.Status);
             // deleting a staff member removes their attendance (leavers are normally set INACTIVE instead)
             b.HasOne(a => a.Staff).WithMany().HasForeignKey(a => a.StaffId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<LeaveEntitlement>(b =>
+        {
+            b.HasIndex(e => new { e.StaffId, e.LeaveType, e.Year }).IsUnique()
+                .HasFilter("[staff_id] IS NOT NULL");
+            b.HasIndex(e => new { e.StaffId, e.Year }).IsUnique()
+                .HasFilter("[attendance_leave_type] = 1");
+            b.HasOne(e => e.Staff).WithMany().HasForeignKey(e => e.StaffId).OnDelete(DeleteBehavior.Cascade);
+            b.Property(e => e.StaffCategory).HasMaxLength(100).IsRequired();
+            b.Property(e => e.LeaveType).HasMaxLength(100).IsRequired();
+            b.Property(e => e.AnnualQuota).HasColumnType("decimal(8,2)");
+        });
+
+        modelBuilder.Entity<StaffLeaveEntry>(b =>
+        {
+            b.HasIndex(e => new { e.StaffId, e.FromDate });
+            b.HasIndex(e => e.Year);
+            b.Property(e => e.LeaveType).HasMaxLength(100).IsRequired();
+            b.Property(e => e.Days).HasColumnType("decimal(6,2)");
+            b.Property(e => e.Remarks).HasMaxLength(500);
+            b.HasOne(e => e.Staff).WithMany().HasForeignKey(e => e.StaffId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

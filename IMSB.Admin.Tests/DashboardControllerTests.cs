@@ -261,7 +261,7 @@ public class DashboardControllerTests
     {
         using var ctx = SeededContext();
         var file = Assert.IsType<FileContentResult>(await CreateDashboard(ctx).Export(180));
-        Assert.Equal($"dashboard_report_{DateTime.Today:yyyyMMdd}.csv", file.FileDownloadName);
+        Assert.Equal($"dashboard_report_{DateTime.Today:yyyyMMdd}.xls", file.FileDownloadName);
         Assert.Contains("Sales Trend,Last 180 Days", CsvText(file));
     }
 

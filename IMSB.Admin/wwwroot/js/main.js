@@ -15,25 +15,35 @@ function IMSBT(key, ...args) {
 function initSidebar() {
   const sidebar = document.getElementById('sidebar');
   const toggleBtn = document.getElementById('sidebarToggle');
-  if (!sidebar || !toggleBtn) return;
+  if (!sidebar) return;
 
-  const stored = localStorage.getItem('sidebarCollapsed');
-  if (stored === 'true') sidebar.classList.add('collapsed');
+  if (toggleBtn) {
+    const stored = localStorage.getItem('sidebarCollapsed');
+    if (stored === 'true') sidebar.classList.add('collapsed');
 
-  toggleBtn.addEventListener('click', () => {
-    if (window.innerWidth <= 700) {
-      sidebar.classList.toggle('mobile-open');
-    } else {
-      sidebar.classList.toggle('collapsed');
-      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-    }
-  });
+    toggleBtn.addEventListener('click', () => {
+      if (window.innerWidth <= 700) {
+        sidebar.classList.toggle('mobile-open');
+      } else {
+        sidebar.classList.toggle('collapsed');
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+      }
+    });
 
-  // Close mobile sidebar when clicking outside
-  document.addEventListener('click', e => {
-    if (window.innerWidth <= 700 && !sidebar.contains(e.target) && e.target !== toggleBtn) {
-      sidebar.classList.remove('mobile-open');
-    }
+    document.addEventListener('click', e => {
+      if (window.innerWidth <= 700 && !sidebar.contains(e.target) && e.target !== toggleBtn) {
+        sidebar.classList.remove('mobile-open');
+      }
+    });
+  }
+
+  sidebar.querySelectorAll('[data-nav-group]').forEach(group => {
+    const toggle = group.querySelector('.nav-group-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', () => {
+      const isOpen = group.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
   });
 }
 
@@ -143,6 +153,10 @@ function initTabs() {
         if (panel) panel.classList.add('active');
       });
     });
+
+    const initialTab = window.location.hash.slice(1);
+    const matchingTab = [...bar.querySelectorAll('.tab-item')].find(tab => tab.dataset.tab === initialTab);
+    if (matchingTab) matchingTab.click();
   });
 }
 
@@ -213,15 +227,28 @@ function initUrlSearch() {
 
 /* ── Active Nav Item ─────────────────────────────────────────── */
 function setActiveNav() {
-  // match on the controller segment, so /Staff, /Staff/Index and /Staff/Index?x=1 all highlight "/Staff/Index"
-  const controller = (window.location.pathname.split('/').filter(Boolean)[0] || '').toLowerCase();
-  document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-    const page = (item.dataset.page.split('/').filter(Boolean)[0] || '').toLowerCase();
-    if (controller && page === controller) {
-      item.classList.add('active');
-    } else {
-      item.classList.remove('active');
-    }
+  const normalize = path => {
+    const segments = path.split('/').filter(Boolean);
+    if (segments.length > 1 && segments[segments.length - 1].toLowerCase() === 'index') segments.pop();
+    return '/' + segments.join('/').toLowerCase();
+  };
+  const currentPage = normalize(window.location.pathname);
+  const currentTab = window.location.hash.slice(1);
+  const items = [...document.querySelectorAll('.nav-item[data-page]')];
+  const controller = currentPage.split('/').filter(Boolean)[0];
+  const selected = items.find(item => normalize(item.dataset.page) === currentPage &&
+      item.dataset.tabTarget && item.dataset.tabTarget === currentTab) ||
+    items.find(item => normalize(item.dataset.page) === currentPage && !item.dataset.tabTarget) ||
+    items.find(item => normalize(item.dataset.page).split('/').filter(Boolean)[0] === controller);
+  items.forEach(item => {
+    item.classList.toggle('active', item === selected);
+  });
+
+  document.querySelectorAll('[data-nav-group]').forEach(group => {
+    const isActive = group.contains(selected);
+    group.classList.toggle('is-open', isActive);
+    const toggle = group.querySelector('.nav-group-toggle');
+    if (toggle) toggle.setAttribute('aria-expanded', String(isActive));
   });
 }
 

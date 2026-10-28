@@ -52,6 +52,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0ZW5kYW5jZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Attendance/MonthlyCalendar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0ZW5kYW5jZVxNb250aGx5Q2FsZW5kYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Dashboard/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -68,12 +72,36 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Leaves/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGVhdmVzXEFkZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Leaves/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGVhdmVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Reports/AbstractReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xBYnN0cmFjdFJlcG9ydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Reports/ArtisanPerformance.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xBcnRpc2FuUGVyZm9ybWFuY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Reports/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Reports/MonthlyReports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xNb250aGx5UmVwb3J0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Reports/Print.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xQcmludC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Reports/SalaryReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xTYWxhcnlSZXBvcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Sales/Index.cshtml]

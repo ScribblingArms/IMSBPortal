@@ -20,6 +20,9 @@ namespace IMSB.Interfaces
         /// <summary>Status and department of every record dated from..to (inclusive).</summary>
         Task<List<AttendanceStatusRow>> StatusesBetweenAsync(DateTime from, DateTime to);
 
+        /// <summary>Staff employed by the end of the period, including inactive staff marked during it.</summary>
+        Task<List<Staff>> MonthlyStaffAsync(DateTime from, DateTime to);
+
         /// <summary>Tracked staff by employee id.</summary>
         Task<List<Staff>> StaffByEmployeeIdsAsync(List<string> employeeIds);
 

@@ -1,0 +1,68 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    var months = (List<KeyValuePair<string, string>>)ViewBag.Months;
+    var categories = (List<KeyValuePair<string, string>>)ViewBag.Categories;
+    var selectedMonth = DateTime.Today.ToString("yyyy-MM");
+    var jsKeys = new[] { "NoArtisansFound", "CouldNotReachServer", "NoStallAssigned", "RatingOutOf", "Active", "OnLeave", "RenewalPending", "Inactive", "Error", "ExportPdf", "ExportCsv", "RptArtisan", "RptArtisanDesc", "GrandTotal" };
+    var jsStrings = jsKeys.ToDictionary(key => key, key => L[key].Value);
+}
+<main class="page-body">
+  <div class="page-header">
+    <div><div class="page-title">@L["ArtisanPerformanceReport"]</div></div>
+  </div>
+  <div class="report-info-banner"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>@L["RatingNote"]</span></div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa-solid fa-palette"></i> @L["ArtisanPerformanceReport"] <span class="tab-count" id="artisanReportCount">0</span></div>
+      <div style="display:flex;gap:6px">
+        <button type="button" class="btn btn-outline btn-sm" data-report="artisans" data-format="xls"><i class="fa-solid fa-file-excel"></i> @L["ExportCsv"]</button>
+        <button type="button" class="btn btn-outline btn-sm" data-report="artisans" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> @L["ExportPdf"]</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="toolbar artisan-report-filters">
+        <select class="form-control" id="reportMonth" aria-label="@L["Month"]">
+          @foreach (var month in months) { <option value="@month.Key" selected="@(month.Key == selectedMonth)">@month.Value</option> }
+        </select>
+        <select class="form-control" id="reportCategory" aria-label="@L["Category"]">
+          <option value="">@L["AllCategories"]</option>
+          @foreach (var category in categories) { <option value="@category.Key">@category.Value</option> }
+        </select>
+        <select class="form-control" id="artisanReportStatus" aria-label="@L["Status"]">
+          <option value="">@L["AllStatus"]</option>
+          <option value="ACTIVE">@L["Active"]</option>
+          <option value="ON_LEAVE">@L["OnLeave"]</option>
+          <option value="RENEWAL_DUE">@L["RenewalPending"]</option>
+          <option value="INACTIVE">@L["Inactive"]</option>
+        </select>
+        <div class="search-box artisan-report-search"><i class="fa-solid fa-search"></i><input type="search" id="artisanReportSearch" placeholder="@L["SearchArtisans"]" aria-label="@L["SearchArtisans"]"></div>
+        <button type="button" class="btn btn-outline btn-sm btn-reset" id="artisanReportReset">@L["Reset"]</button>
+      </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead><tr><th>@L["Artisan"]</th><th>@L["Category"]</th><th>@L["Stall"]</th><th>@L["MonthlySales"]</th><th>@L["UnitsSoldLabel"]</th><th>@L["Products"]</th><th>@L["SalesShare"]</th><th>@L["Rating"]</th><th>@L["Status"]</th></tr></thead>
+          <tbody id="artisanReportBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+@section Styles {
+  <style>
+    .artisan-report-filters { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+    .artisan-report-filters .form-control { flex:0 1 190px; width:auto; min-width:150px; max-width:220px; height:44px; }
+    .artisan-report-search { flex:1 1 240px; max-width:360px; }
+    .artisan-report-filters > .btn { min-width:82px; height:44px; }
+    @@media(max-width:700px) {
+      .artisan-report-filters { align-items:stretch; }
+      .artisan-report-filters .form-control,.artisan-report-search { flex:1 1 100%; max-width:none; }
+      .artisan-report-filters > .btn { width:100%; }
+    }
+  </style>
+}
+@section Scripts {
+  <script>window.ReportsI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+  <script src="~/js/reports.js" asp-append-version="true"></script>
+}

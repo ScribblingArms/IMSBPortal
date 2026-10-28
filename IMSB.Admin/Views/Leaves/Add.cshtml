@@ -1,0 +1,181 @@
+@model IMSB.Dto.Models.LeaveEntryViewModel
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["AddLeaveTaken"].Value;
+    var minDate = DateTime.Today.AddDays(1).ToString("yyyy-MM-dd");
+    var maxDate = new DateTime(Model.Year, 12, 31).ToString("yyyy-MM-dd");
+}
+
+<main class="page-body">
+  <div class="page-header">
+    <div><div class="page-title">@L["AddLeaveTaken"]</div><div class="page-subtitle">@L["LeaveEntrySubtitle"] (@Model.Year)</div></div>
+    <div class="page-actions"><a class="btn btn-outline btn-sm" href="@Url.Action("Index")"><i class="fa-solid fa-scale-balanced"></i> @L["CurrentLeaveBalances"]</a></div>
+  </div>
+
+  @if (TempData["LeaveMessage"] is string message)
+  {
+    <div class="alert alert-success" role="status">@message</div>
+  }
+  @if (TempData["LeaveError"] is string error)
+  {
+    <div class="alert alert-danger" role="alert">@error</div>
+  }
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header"><div class="card-title"><i class="fa-solid fa-calendar-plus"></i> @L["RecordLeaveTaken"]</div></div>
+    <div class="card-body">
+      @if (Model.Entitlements.Count == 0)
+      {
+        <div class="alert alert-warning">@L["ConfigureLeaveEntitlementsFirst"] <a href="@Url.Action("Index")">@L["LeaveEntitlements"]</a>.</div>
+      }
+      <form asp-action="Record" method="post" class="leave-entry-form">
+        @Html.AntiForgeryToken()
+        <div class="form-grid col-2">
+          <div class="form-group">
+            <label class="form-label" for="leaveStaff">@L["StaffName"]</label>
+            <select id="leaveStaff" name="StaffId" class="form-control" required>
+              <option value="">@L["SelectPlaceholder"]</option>
+              @foreach (var person in Model.Staff)
+              {
+                <option value="@person.Id" data-category="@person.StaffCategory">@person.EmployeeId – @person.FullName (@person.StaffCategory)</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leaveType">@L["LeaveType"]</label>
+            <select id="leaveType" name="LeaveType" class="form-control" required>
+              <option value="">@L["SelectPlaceholder"]</option>
+              @foreach (var entitlement in Model.Entitlements)
+              {
+                <option value="@entitlement.LeaveType" data-staff-id="@entitlement.StaffId">@entitlement.LeaveType</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leaveFrom">@L["FromDate"]</label>
+            <input id="leaveFrom" name="FromDate" type="date" class="form-control" min="@minDate" max="@maxDate" value="@Model.Form.FromDate" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leaveTo">@L["ToDate"]</label>
+            <input id="leaveTo" name="ToDate" type="date" class="form-control" min="@minDate" max="@maxDate" value="@Model.Form.ToDate" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leaveDays">@L["DaysTaken"]</label>
+            <input id="leaveDays" name="Days" type="number" class="form-control" min="1" step="1" max="366" value="1" readonly required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leaveRemarks">@L["Remarks"]</label>
+            <input id="leaveRemarks" name="Remarks" class="form-control" maxlength="500" />
+          </div>
+        </div>
+        <div class="leave-entry-actions">
+          <button type="submit" class="btn btn-primary btn-sm" disabled="@(Model.Entitlements.Count == 0)"><i class="fa-solid fa-floppy-disk"></i> @L["SaveLeaveEntry"]</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> @L["LeaveEntries"] (@Model.Year)</div></div>
+    <div class="card-body">
+      <div class="table-container">
+        <table class="data-table">
+          <thead><tr><th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["LeaveType"]</th><th>@L["FromDate"]</th><th>@L["ToDate"]</th><th>@L["DaysTaken"]</th><th>@L["Remarks"]</th><th>@L["Actions"]</th></tr></thead>
+          <tbody>
+          @foreach (var entry in Model.Entries)
+          {
+            <tr>
+              <td><code>@entry.Staff?.EmployeeId</code></td><td>@entry.Staff?.FullName</td><td>@entry.LeaveType</td>
+              <td colspan="4">
+                <form asp-action="UpdateEntry" method="post" class="leave-edit-form" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="id" value="@entry.Id" />
+                  <input name="fromDate" type="date" min="@minDate" max="@maxDate" value="@entry.FromDate.ToString("yyyy-MM-dd")" class="form-control leave-from-date" style="width:150px" aria-label="@L["FromDate"]" required />
+                  <input name="toDate" type="date" min="@minDate" max="@maxDate" value="@entry.ToDate.ToString("yyyy-MM-dd")" class="form-control leave-to-date" style="width:150px" aria-label="@L["ToDate"]" required />
+                  <input name="daysDisplay" type="number" min="1" max="366" step="1" value="@((entry.ToDate.Date - entry.FromDate.Date).Days + 1)" class="form-control leave-days" style="width:90px" aria-label="@L["DaysTaken"]" readonly />
+                  <input name="remarks" value="@entry.Remarks" maxlength="500" class="form-control" style="width:150px" aria-label="@L["Remarks"]" />
+                  <button type="submit" class="btn btn-outline btn-sm">@L["Update"]</button>
+                </form>
+              </td>
+              <td>
+                <form asp-action="DeleteEntry" method="post">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="id" value="@entry.Id" />
+                  <button type="submit" class="btn btn-ghost btn-sm" aria-label="@L["Delete"]" title="@L["Delete"]"><i class="fa-solid fa-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+          }
+          @if (Model.Entries.Count == 0)
+          {
+            <tr><td colspan="8" style="text-align:center">@L["NoLeaveEntries"]</td></tr>
+          }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+@section Scripts {
+<script>
+(() => {
+  const staff = document.getElementById('leaveStaff');
+  const types = document.getElementById('leaveType');
+  const from = document.getElementById('leaveFrom');
+  const to = document.getElementById('leaveTo');
+  const days = document.getElementById('leaveDays');
+  function updateDays(start, end, output) {
+    if (!start.value || !end.value || end.value < start.value) {
+      output.value = '';
+      return;
+    }
+    const fromDate = new Date(`${start.value}T00:00:00Z`);
+    const toDate = new Date(`${end.value}T00:00:00Z`);
+    output.value = String(Math.floor((toDate - fromDate) / 86400000) + 1);
+  }
+  function filterTypes() {
+    const staffId = staff.value;
+    types.value = '';
+    Array.from(types.options).forEach(option => {
+      option.hidden = Boolean(option.value) && option.dataset.staffId !== staffId;
+      option.disabled = option.hidden;
+    });
+  }
+  staff.addEventListener('change', filterTypes);
+  from.addEventListener('change', () => {
+    to.min = from.value || from.min;
+    if (to.value && to.value < to.min) to.value = to.min;
+    updateDays(from, to, days);
+  });
+  to.addEventListener('change', () => updateDays(from, to, days));
+  to.min = from.value || from.min;
+  updateDays(from, to, days);
+  document.querySelectorAll('.leave-edit-form').forEach(form => {
+    const editFrom = form.querySelector('.leave-from-date');
+    const editTo = form.querySelector('.leave-to-date');
+    const editDays = form.querySelector('.leave-days');
+    const refresh = () => updateDays(editFrom, editTo, editDays);
+    editFrom.addEventListener('change', () => {
+      editTo.min = editFrom.value || editFrom.min;
+      if (editTo.value && editTo.value < editTo.min) editTo.value = editTo.min;
+      refresh();
+    });
+    editTo.min = editFrom.value || editFrom.min;
+    editTo.addEventListener('change', refresh);
+    refresh();
+  });
+  filterTypes();
+})();
+</script>
+}
+
+@section Styles {
+<style>
+  .leave-entry-form { display: grid; gap: 16px; }
+  .leave-entry-actions { display: flex; justify-content: flex-start; padding-top: 2px; }
+  .leave-entry-actions .btn { min-width: 0; }
+</style>
+}

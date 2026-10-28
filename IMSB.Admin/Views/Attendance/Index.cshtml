@@ -11,9 +11,10 @@
         "Success", "Error", "CouldNotReachServer", "CheckForm", "DiscardChanges", "View", "Edit", "Delete",
         "Present", "Absent", "Leave", "HalfDay", "NotMarked", "NotMarkedOption", "NotMarkedCount", "WeekOf",
         "AttendanceSaved", "AttendanceSavedMsg", "AttendanceUpdated", "AttendanceDeleted", "ConfirmDeleteAttendance", "AttendanceNotFound",
+        "LeaveWithoutPay", "AttendanceLopMessage",
         "NothingToSave", "NoStaffForAttendance", "NoStaffInDepartment", "NoAttendanceRecords", "HistoryTotals", "MonthToDate",
         "AttendanceRatio", "AttendancePercent", "OpenInEntry", "AttendanceDetails", "EmployeeID", "Department", "Designation", "Shift",
-        "Date", "InTime", "OutTime", "Hours", "OTHours", "Status", "Remarks", "UpdatedBy",
+        "Date", "InTime", "OutTime", "Hours", "OTHours", "Status", "Remarks", "UpdatedBy", "StaffName", "EmployeeType", "AllTypes",
         "ValInTimeRequired", "ValOutBeforeIn", "ValAttendanceStatus", "ValTime", "ValDateFuture", "ValRemarks"
     };
     var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
@@ -105,7 +106,7 @@
             </div>
             <div class="card-footer">
               <span class="att-unsaved" id="unsavedNote" style="display:none"><i class="fa-solid fa-circle"></i> @L["UnsavedChanges"]</span>
-              <button type="button" class="btn btn-outline" id="resetSheetBtn"><i class="fa-solid fa-rotate-left"></i> @L["Reset"]</button>
+              <button type="button" class="btn btn-outline btn-sm btn-reset" id="resetSheetBtn">@L["Reset"]</button>
               <button type="button" class="btn btn-success" id="saveSheetBtn"><i class="fa-solid fa-floppy-disk"></i> @L["SaveAttendance"]</button>
             </div>
           </div>
@@ -138,8 +139,8 @@
                   <option value="LEAVE">@L["Leave"]</option>
                   <option value="HALF_DAY">@L["HalfDay"]</option>
                 </select>
-                <button type="button" class="btn btn-outline btn-sm" id="histResetBtn">@L["Reset"]</button>
-                <button type="button" class="btn btn-outline btn-sm" id="histExportBtn" title="@L["Export"]" aria-label="@L["Export"]"><i class="fa-solid fa-download"></i></button>
+                <button type="button" class="btn btn-outline btn-sm btn-reset" id="histResetBtn">@L["Reset"]</button>
+                <button type="button" class="btn btn-outline btn-sm" id="histExportBtn" title="@L["Export"]"><i class="fa-solid fa-download"></i> @L["Export"]</button>
               </div>
               <div class="form-error" id="hist_err"></div>
               <div class="table-container">
@@ -151,6 +152,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </main>
 

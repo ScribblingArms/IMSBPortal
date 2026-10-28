@@ -1,0 +1,136 @@
+@model IMSB.Dto.Models.LeaveManagementViewModel
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    ViewData["Title"] = L["LeaveManagement"].Value;
+}
+
+<main class="page-body">
+  <div class="page-header">
+    <div><div class="page-title">@L["LeaveManagement"] – @Model.Year</div><div class="page-subtitle">@L["LeaveManagementSubtitle"]</div></div>
+    <div class="page-actions">
+      <a class="btn btn-outline btn-sm" href="@Url.Action("Index", "Staff", new { register = true })"><i class="fa-solid fa-user-plus"></i> @L["RegisterStaff"]</a>
+      <a class="btn btn-primary btn-sm" href="@Url.Action("Add")"><i class="fa-solid fa-plus"></i> @L["AddLeaveTaken"]</a>
+    </div>
+  </div>
+
+  @if (TempData["LeaveMessage"] is string message)
+  {
+    <div class="alert alert-success" role="status">@message</div>
+  }
+  @if (TempData["LeaveError"] is string error)
+  {
+    <div class="alert alert-danger" role="alert">@error</div>
+  }
+
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa-solid fa-scale-balanced"></i> @L["CurrentLeaveBalances"] (@Model.Year)</div></div>
+    <div class="card-body">
+      <div id="leaveBalanceRefreshStatus" class="form-hint" role="status" aria-live="polite"></div>
+      <div class="form-grid col-3" style="margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label" for="balanceStaffFilter">@L["StaffName"]</label>
+          <select id="balanceStaffFilter" class="form-control">
+            <option value="">@L["AllStaff"]</option>
+            @foreach (var person in Model.Staff)
+            {
+              <option value="@person.EmployeeId">@person.EmployeeId – @person.FullName</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="balanceLeaveTypeFilter">@L["LeaveType"]</label>
+          <select id="balanceLeaveTypeFilter" class="form-control">
+            <option value="">@L["AllTypes"]</option>
+            @foreach (var leaveType in Model.Entitlements.Select(item => item.LeaveType).Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(value => value))
+            {
+              <option value="@leaveType">@leaveType</option>
+            }
+          </select>
+        </div>
+        <div class="form-group" style="align-self:end">
+          <button type="button" id="searchLeaveBalances" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> @L["Search"]</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead><tr><th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["StaffCategory"]</th><th>@L["LeaveType"]</th><th>@L["AnnualQuota"]</th><th>@L["Taken"]</th><th>@L["Balance"]</th></tr></thead>
+          <tbody id="leaveBalancesBody" data-empty-message="@L["NoLeaveBalances"]" data-refresh-error="@L["BalanceRefreshFailed"]">
+          @foreach (var row in Model.Balances)
+          {
+            <tr data-staff-id="@row.EmployeeId" data-leave-type="@row.LeaveType" data-employee-type="@row.StaffCategory">
+              <td><code>@row.EmployeeId</code></td><td>@row.StaffName</td><td>@row.StaffCategory</td><td>@row.LeaveType</td>
+              <td>@row.Entitlement.ToString("0.##")</td><td>@row.Taken.ToString("0.##")</td><td><strong>@row.Balance.ToString("0.##")</strong></td>
+            </tr>
+          }
+          @if (Model.Balances.Count == 0)
+          {
+            <tr><td colspan="7" style="text-align:center">@L["NoLeaveBalances"]</td></tr>
+          }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+@section Scripts {
+<script>
+(() => {
+  const body = document.getElementById('leaveBalancesBody');
+  const status = document.getElementById('leaveBalanceRefreshStatus');
+  const staffFilter = document.getElementById('balanceStaffFilter');
+  const leaveTypeFilter = document.getElementById('balanceLeaveTypeFilter');
+  const searchButton = document.getElementById('searchLeaveBalances');
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+  const formatDays = value => Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const attendanceChannel = 'BroadcastChannel' in window ? new BroadcastChannel('imsb-leave-balances') : null;
+  let appliedEmployeeId = '';
+  let appliedLeaveType = '';
+  let refreshSequence = 0;
+  async function refreshBalances() {
+    if (document.hidden) return;
+    const sequence = ++refreshSequence;
+    try {
+      const url = new URL('@Url.Action("CurrentBalances")', window.location.origin);
+      if (appliedEmployeeId) url.searchParams.set('employeeId', appliedEmployeeId);
+      if (appliedLeaveType) url.searchParams.set('leaveType', appliedLeaveType);
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`Balance refresh failed (${response.status})`);
+      const result = await response.json();
+      if (sequence !== refreshSequence) return;
+      body.innerHTML = result.rows.length
+        ? result.rows.map(row => `<tr data-staff-id="${escapeHtml(row.employeeId)}"
+            data-leave-type="${escapeHtml(row.leaveType)}" data-employee-type="${escapeHtml(row.staffCategory)}">
+            <td><code>${escapeHtml(row.employeeId)}</code></td>
+            <td>${escapeHtml(row.staffName)}</td>
+            <td>${escapeHtml(row.staffCategory)}</td>
+            <td>${escapeHtml(row.leaveType)}</td>
+            <td>${formatDays(row.entitlement)}</td>
+            <td>${formatDays(row.taken)}</td>
+            <td><strong>${formatDays(row.balance)}</strong></td>
+          </tr>`).join('')
+        : `<tr><td colspan="7" style="text-align:center">${escapeHtml(body.dataset.emptyMessage)}</td></tr>`;
+      status.textContent = '';
+    } catch (error) {
+      if (sequence !== refreshSequence) return;
+      console.error(error);
+      status.textContent = body.dataset.refreshError;
+    }
+  }
+  searchButton.addEventListener('click', () => {
+    appliedEmployeeId = staffFilter.value;
+    appliedLeaveType = leaveTypeFilter.value;
+    refreshBalances();
+  });
+  attendanceChannel?.addEventListener('message', event => {
+    if (event.data === 'attendance-saved') refreshBalances();
+  });
+  refreshBalances();
+  window.setInterval(refreshBalances, 15000);
+  document.addEventListener('visibilitychange', refreshBalances);
+})();
+</script>
+}

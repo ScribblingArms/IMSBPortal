@@ -7,9 +7,11 @@ wwwroot\css\sales.css
 wwwroot\css\site.css
 wwwroot\css\style.css
 wwwroot\favicon.ico
+wwwroot\js\abstract-report.js
 wwwroot\js\applications.js
 wwwroot\js\artisans.js
 wwwroot\js\attendance.js
+wwwroot\js\attendance-monthly.js
 wwwroot\js\charts.js
 wwwroot\js\dashboard.js
 wwwroot\js\header.js
