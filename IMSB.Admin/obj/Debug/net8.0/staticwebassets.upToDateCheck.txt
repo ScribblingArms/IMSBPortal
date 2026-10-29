@@ -7,6 +7,7 @@ wwwroot\css\sales.css
 wwwroot\css\site.css
 wwwroot\css\style.css
 wwwroot\favicon.ico
+wwwroot\images\imsb-logo.jpg
 wwwroot\js\abstract-report.js
 wwwroot\js\applications.js
 wwwroot\js\artisans.js
