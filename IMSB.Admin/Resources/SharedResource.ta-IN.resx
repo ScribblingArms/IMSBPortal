@@ -2577,6 +2577,27 @@
   <data name="Today" xml:space="preserve">
     <value>இன்று</value>
   </data>
+  <data name="PayBillTitle" xml:space="preserve"><value>ஊதியப் பட்டியல்</value></data>
+  <data name="PayBillSubtitle" xml:space="preserve"><value>பணியாளர் ஊதியத்தை உருவாக்கி, மாதாந்திர மொத்தங்களையும் முந்தைய ஊதிய வரலாற்றையும் காண்க.</value></data>
+  <data name="GeneratePayBill" xml:space="preserve"><value>ஊதியப் பட்டியலை உருவாக்கு</value></data>
+  <data name="EmployeeSalaryStatement" xml:space="preserve"><value>பணியாளர் வாரியான ஊதிய அறிக்கை</value></data>
+  <data name="MonthlyConsolidatedPayBill" xml:space="preserve"><value>மாதாந்திர ஒருங்கிணைந்த ஊதியப் பட்டியல்</value></data>
+  <data name="PreviousSalaryHistory" xml:space="preserve"><value>முந்தைய மாத ஊதிய வரலாறு</value></data>
+  <data name="SelectEmployee" xml:space="preserve"><value>பணியாளரைத் தேர்ந்தெடுக்கவும்</value></data>
+  <data name="PaidDays" xml:space="preserve"><value>ஊதிய நாட்கள்</value></data>
+  <data name="BasicPay" xml:space="preserve"><value>அடிப்படை ஊதியம்</value></data>
+  <data name="Allowances" xml:space="preserve"><value>படிகள்</value></data>
+  <data name="OvertimeAmount" xml:space="preserve"><value>கூடுதல் நேரத் தொகை</value></data>
+  <data name="Deductions" xml:space="preserve"><value>பிடித்தங்கள்</value></data>
+  <data name="NetPay" xml:space="preserve"><value>நிகர ஊதியம்</value></data>
+  <data name="PayrollSaved" xml:space="preserve"><value>ஊதியப் பட்டியல் உருவாக்கப்பட்டு சேமிக்கப்பட்டது.</value></data>
+  <data name="PayrollLoadFailed" xml:space="preserve"><value>ஊதியப் பட்டியல் தரவை ஏற்ற முடியவில்லை.</value></data>
+  <data name="PayrollSaveFailed" xml:space="preserve"><value>ஊதியப் பட்டியலை உருவாக்க முடியவில்லை.</value></data>
+  <data name="NoPayrollHistory" xml:space="preserve"><value>இந்தப் பணியாளருக்கு முந்தைய ஊதியப் பட்டியல் இல்லை.</value></data>
+  <data name="ConfirmGeneratePayBill" xml:space="preserve"><value>தேர்ந்தெடுத்த மாதத்திற்கான ஊதியப் பட்டியலை உருவாக்கவோ புதுப்பிக்கவோ வேண்டுமா?</value></data>
+  <data name="Employees" xml:space="preserve"><value>பணியாளர்கள்</value></data>
+  <data name="Print" xml:space="preserve"><value>அச்சிடு</value></data>
+  <data name="Draft" xml:space="preserve"><value>வரைவு</value></data>
   <data name="NothingToSave" xml:space="preserve">
     <value>சேமிக்க எதுவும் இல்லை — முதலில் குறைந்தது ஒரு பணியாளரைக் குறிக்கவும் அல்லது மாற்றவும்.</value>
   </data>

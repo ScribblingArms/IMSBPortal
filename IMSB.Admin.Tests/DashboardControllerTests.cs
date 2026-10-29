@@ -54,6 +54,27 @@ public class DashboardControllerTests
     }
 
     [Fact]
+    public async Task Widget_popup_lists_the_applications_behind_each_count()
+    {
+        using var ctx = SeededContext();
+        ApplicationTestHelpers.AddApplication(ctx, "APP-0001", ApplicationStatuses.Pending);
+        ApplicationTestHelpers.AddApplication(ctx, "APP-0002", ApplicationStatuses.UnderReview);
+        ApplicationTestHelpers.AddApplication(ctx, "APP-0003", ApplicationStatuses.Approved, decidedAt: DateTime.UtcNow);
+        ApplicationTestHelpers.AddApplication(ctx, "APP-0004", ApplicationStatuses.Approved, decidedAt: DateTime.UtcNow.AddMonths(-2));
+        ApplicationTestHelpers.AddApplication(ctx, "APP-0005", ApplicationStatuses.Rejected, decidedAt: DateTime.UtcNow);
+
+        async Task<string?[]> Ids(string status) =>
+            TestHelpers.OkJson(await CreateDashboard(ctx).Applications(status)).EnumerateArray().Select(a => a.GetProperty("id").GetString()).ToArray();
+
+        // approved matches the widget: this month's approvals only
+        Assert.Equal(new[] { "APP-0003" }, await Ids("APPROVED"));
+        Assert.Equal(new[] { "APP-0002" }, await Ids("under_review"));
+        Assert.Equal(new[] { "APP-0001" }, await Ids("PENDING"));
+        Assert.IsType<BadRequestResult>(await CreateDashboard(ctx).Applications("REJECTED"));
+        Assert.IsType<BadRequestResult>(await CreateDashboard(ctx).Applications(null));
+    }
+
+    [Fact]
     public async Task Occupied_stalls_ignore_case_and_never_exceed_capacity()
     {
         using var ctx = InventoryTestHelpers.CreateContext();

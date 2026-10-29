@@ -24,6 +24,7 @@ public class IMSBContext : DbContext
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
     public DbSet<LeaveEntitlement> LeaveEntitlements { get; set; }
     public DbSet<StaffLeaveEntry> StaffLeaveEntries { get; set; }
+    public DbSet<PayBillEntry> PayBillEntries { get; set; }
 
     // Fixed ids so the seeded categories are stable across environments
     public static readonly (Guid Id, string Name)[] SeedCategories =
@@ -203,6 +204,12 @@ public class IMSBContext : DbContext
             b.Property(e => e.Days).HasColumnType("decimal(6,2)");
             b.Property(e => e.Remarks).HasMaxLength(500);
             b.HasOne(e => e.Staff).WithMany().HasForeignKey(e => e.StaffId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PayBillEntry>(b =>
+        {
+            b.HasIndex(e => new { e.StaffId, e.Year, e.Month }).IsUnique();
+            b.HasIndex(e => new { e.Year, e.Month });
         });
     }
 }

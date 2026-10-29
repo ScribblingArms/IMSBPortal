@@ -547,6 +547,99 @@ namespace IMSB.Dto.Migrations
                     b.ToTable("password_reset_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("IMSB.Dto.Models.PayBillEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Allowances")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("allowances");
+
+                    b.Property<decimal>("BasicPay")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("basic_pay");
+
+                    b.Property<decimal>("Deductions")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("deductions");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("department");
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("designation");
+
+                    b.Property<string>("EmployeeId")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("employee_id");
+
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("employee_name");
+
+                    b.Property<DateTime>("GeneratedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("generated_at");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int")
+                        .HasColumnName("month");
+
+                    b.Property<int>("MonthDays")
+                        .HasColumnType("int")
+                        .HasColumnName("month_days");
+
+                    b.Property<decimal>("MonthlySalary")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("monthly_salary");
+
+                    b.Property<decimal>("NetPay")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("net_pay");
+
+                    b.Property<decimal>("OvertimeAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("overtime_amount");
+
+                    b.Property<decimal>("OvertimeHours")
+                        .HasColumnType("decimal(8,2)")
+                        .HasColumnName("overtime_hours");
+
+                    b.Property<decimal>("PaidDays")
+                        .HasColumnType("decimal(6,2)")
+                        .HasColumnName("paid_days");
+
+                    b.Property<Guid>("StaffId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("staff_id");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Year", "Month");
+
+                    b.HasIndex("StaffId", "Year", "Month")
+                        .IsUnique();
+
+                    b.ToTable("pay_bill_entries");
+                });
+
             modelBuilder.Entity("IMSB.Dto.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")

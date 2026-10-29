@@ -79,3 +79,13 @@ K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Debug\net8.0\refint\IMSB.Dto.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Debug\net8.0\IMSB.Dto.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Debug\net8.0\IMSB.Dto.genruntimeconfig.cache
 K:\ScribblingArms\IMSBPortal\IMSB.Dto\obj\Debug\net8.0\ref\IMSB.Dto.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Dto.appsettings.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Dto.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Dto.runtimeconfig.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Dto.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Dto.pdb
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Dto.appsettings.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Dto.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Dto.runtimeconfig.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Dto.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Dto.pdb

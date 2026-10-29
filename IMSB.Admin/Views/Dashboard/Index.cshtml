@@ -16,7 +16,10 @@
         "ModuleNotConnected", "AttendanceNotConnected", "ApplicationsNotConnected",
         "ActSale", "ActSaleDesc", "ActStockAdd", "ActStockReduce", "ActStockCorrection", "ActStockInitial", "ActStockDesc",
         "ActStaffAdded", "ActStaffDesc", "JustNow", "UnitsSold", "Critical", "Moderate", "CategoryMonthSubtitle", "LastNDays",
-        "OccupiedPct", "DailySalesOverDays", "Error", "CouldNotReachServer"
+        "OccupiedPct", "DailySalesOverDays", "Error", "CouldNotReachServer",
+        "ApprovedLabel", "UnderReviewLabel", "ToBeProcessed", "ApprovedThisMonth", "BeingProcessed", "NewlySubmitted",
+        "AppID", "Applicant", "Category", "District", "ArtisanID", "StallAssigned", "ApprovedDate", "Submitted", "DaysPending",
+        "Reviewer", "Mobile", "DaysWaiting", "NoApplicationsFound"
     };
     var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
 }
@@ -48,46 +51,39 @@
   </div>
 
   <!-- ── STAT CARDS ── -->
-  <div class="stat-grid">
+  <div class="stat-grid dashboard-stat-grid">
     <div class="stat-card blue">
-      <div class="stat-icon"><i class="fa-solid fa-store"></i></div>
-      <div class="stat-value" id="stat-stalls">@s.TotalStalls</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-store"></i></div><div class="stat-value" id="stat-stalls">@s.TotalStalls</div></div>
       <div class="stat-label">@L["TotalStalls"]</div>
       <div class="stat-change up"><i class="fa-solid fa-chart-pie"></i> <span id="stat-occ-pct">@string.Format(L["OccupiedPct"].Value, s.OccupancyPct)</span></div>
     </div>
     <div class="stat-card orange">
-      <div class="stat-icon"><i class="fa-solid fa-door-open"></i></div>
-      <div class="stat-value" id="stat-occupied">@s.OccupiedStalls</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-door-open"></i></div><div class="stat-value" id="stat-occupied">@s.OccupiedStalls</div></div>
       <div class="stat-label">@L["OccupiedStalls"]</div>
       <div class="stat-change up"><i class="fa-solid fa-circle-check"></i> @L["Active"]</div>
     </div>
     <div class="stat-card green">
-      <div class="stat-icon"><i class="fa-solid fa-door-closed"></i></div>
-      <div class="stat-value" id="stat-vacant">@s.VacantStalls</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-door-closed"></i></div><div class="stat-value" id="stat-vacant">@s.VacantStalls</div></div>
       <div class="stat-label">@L["VacantStalls"]</div>
       <div class="stat-change up"><i class="fa-solid fa-clock"></i> @L["Available"]</div>
     </div>
     <div class="stat-card indigo">
-      <div class="stat-icon"><i class="fa-solid fa-palette"></i></div>
-      <div class="stat-value" id="stat-artisans">@(s.TotalArtisans?.ToString() ?? "—")</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-palette"></i></div><div class="stat-value" id="stat-artisans">@(s.TotalArtisans?.ToString() ?? "—")</div></div>
       <div class="stat-label">@L["TotalArtisans"]</div>
       <div class="stat-change" id="stat-artisans-note"><i class="fa-solid fa-circle-info"></i> @(s.TotalArtisans == null ? L["ModuleNotConnected"].Value : L["Registered"].Value)</div>
     </div>
     <div class="stat-card green">
-      <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-      <div class="stat-value" id="stat-sales">@Money(s.TodaySales)</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div><div class="stat-value" id="stat-sales">@Money(s.TodaySales)</div></div>
       <div class="stat-label">@L["TodaysSales"]</div>
       <div class="stat-change @(s.SalesChangePct < 0 ? "down" : "up")" id="stat-sales-change">@(s.SalesChangePct == null ? L["NoComparison"].Value : string.Format(L["VsYesterday"].Value, (s.SalesChangePct >= 0 ? "+" : "") + s.SalesChangePct.Value.ToString("0.0", CultureInfo.InvariantCulture) + "%"))</div>
     </div>
     <div class="stat-card red">
-      <div class="stat-icon"><i class="fa-solid fa-box-open"></i></div>
-      <div class="stat-value" id="stat-lowstock">@s.LowStockItems</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-box-open"></i></div><div class="stat-value" id="stat-lowstock">@s.LowStockItems</div></div>
       <div class="stat-label">@L["LowStockItems"]</div>
       <div class="stat-change down"><i class="fa-solid fa-triangle-exclamation"></i> @L["NeedsRestock"]</div>
     </div>
     <div class="stat-card orange">
-      <div class="stat-icon"><i class="fa-solid fa-file-circle-exclamation"></i></div>
-      <div class="stat-value" id="stat-pending">@(s.PendingApplications?.ToString() ?? "—")</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-file-circle-exclamation"></i></div><div class="stat-value" id="stat-pending">@(s.PendingApplications?.ToString() ?? "—")</div></div>
       <div class="stat-label">@L["PendingApplications"]</div>
       <div class="stat-change" id="stat-pending-note"><i class="fa-solid fa-clock"></i> @(s.PendingApplications == null ? L["ModuleNotConnected"].Value : L["AwaitingReview"].Value)</div>
     </div>
@@ -98,7 +94,7 @@
     @L["ArtisanApplicationsOverview"]
   </div>
   <div class="app-widget-grid" style="margin-bottom:8px">
-    <div class="app-widget green">
+    <div class="app-widget green" data-app-status="APPROVED" role="button" tabindex="0">
       <div class="app-widget-header">
         <span class="app-widget-label">@L["ApprovedLabel"]</span>
         <i class="fa-solid fa-circle-check" style="color:var(--success);font-size:.9rem"></i>
@@ -107,7 +103,7 @@
       <div class="app-widget-bar"><div class="app-widget-bar-fill" id="aw-approved-bar" style="width:0%"></div></div>
       <div class="app-widget-sub">@L["ApprovedThisMonth"]</div>
     </div>
-    <div class="app-widget amber">
+    <div class="app-widget amber" data-app-status="UNDER_REVIEW" role="button" tabindex="0">
       <div class="app-widget-header">
         <span class="app-widget-label">@L["UnderReviewLabel"]</span>
         <i class="fa-solid fa-magnifying-glass" style="color:var(--warning);font-size:.9rem"></i>
@@ -116,7 +112,7 @@
       <div class="app-widget-bar"><div class="app-widget-bar-fill" id="aw-review-bar" style="width:0%"></div></div>
       <div class="app-widget-sub">@L["BeingProcessed"]</div>
     </div>
-    <div class="app-widget blue">
+    <div class="app-widget blue" data-app-status="PENDING" role="button" tabindex="0">
       <div class="app-widget-header">
         <span class="app-widget-label">@L["ToBeProcessed"]</span>
         <i class="fa-solid fa-inbox" style="color:var(--primary-light);font-size:.9rem"></i>
@@ -243,32 +239,32 @@
   <div class="dash-bottom-grid">
 
     <!-- Low Stock -->
-    <div class="card">
+    <div class="card dash-panel-card">
       <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i> @L["LowStockAlerts"]</div>
         <a href="/Inventory" style="font-size:.72rem;color:var(--primary-light);font-weight:600">@L["ViewAll"]</a>
       </div>
-      <div class="card-body" style="padding-top:8px">
+      <div class="card-body dash-panel-scroll">
         <div id="lowStockList"></div>
       </div>
     </div>
 
     <!-- Activity -->
-    <div class="card">
+    <div class="card dash-panel-card">
       <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> @L["RecentActivity"]</div>
       </div>
-      <div class="card-body" style="padding-top:8px">
+      <div class="card-body dash-panel-scroll">
         <div class="activity-feed" id="activityFeed"></div>
       </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="card">
+    <div class="card dash-panel-card">
       <div class="card-header">
         <div class="card-title"><i class="fa-solid fa-bolt"></i> @L["QuickActions"]</div>
       </div>
-      <div class="card-body">
+      <div class="card-body dash-panel-scroll">
         <div class="quick-actions-grid">
           <a class="quick-action-btn" href="/Stalls"><i class="fa-solid fa-store-slash"></i><span>@L["AllocateStall"]</span></a>
           <a class="quick-action-btn" href="/Inventory"><i class="fa-solid fa-plus-circle"></i><span>@L["AddProduct"]</span></a>
@@ -284,14 +280,50 @@
 
 </div>
 
+<!-- Applications behind an overview widget -->
+<div class="modal-overlay" id="appListModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="appListTitle" style="max-width:900px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="appListTitle"></div>
+        <div class="dash-note" id="appListSubtitle"></div>
+      </div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="table-container">
+        <table class="data-table">
+          <thead><tr id="appListHead"></tr></thead>
+          <tbody id="appListBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a class="btn btn-outline btn-sm" id="appListViewAll" href="/Applications/Index">@L["ViewAll"]</a>
+      <button type="button" class="btn btn-primary btn-sm" data-modal-close>@L["Close"]</button>
+    </div>
+  </div>
+</div>
+
 @section Styles {
   <style>
-    .dash-bottom-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+    .dashboard-stat-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; }
+    .dashboard-stat-grid .stat-card { min-width: 0; min-height: 122px; padding: 12px 14px; }
+    .dashboard-stat-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+    .dashboard-stat-grid .stat-icon { width: 34px; height: 34px; flex:none; font-size: .9rem; margin: 0; }
+    .dashboard-stat-grid .stat-value { font-size: 1.55rem; text-align:right; margin:0; overflow-wrap:anywhere; }
+    .dashboard-stat-grid .stat-label { font-size: .78rem; }
+    .dashboard-stat-grid .stat-change { margin-top: 5px; font-size: .7rem; line-height:1.25; }
+    @@media (max-width: 1399px) { .dashboard-stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    @@media (max-width: 700px) { .dashboard-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @@media (max-width: 480px) { .dashboard-stat-grid { grid-template-columns: 1fr; } }
     .dash-note { font-size:.72rem; color:var(--text-muted); }
     .chart-canvas-wrap { position:relative; }
     .chart-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px; font-size:.78rem; color:var(--text-muted); }
     .empty-state { text-align:center; padding:18px 8px; color:var(--text-muted); font-size:.78rem; }
     a.quick-action-btn { text-decoration:none; color:inherit; }
+    .app-widget[data-app-status] { cursor:pointer; transition: box-shadow .15s, transform .15s; }
+    .app-widget[data-app-status]:hover, .app-widget[data-app-status]:focus-visible { box-shadow: 0 6px 18px rgba(15,23,42,.1); transform: translateY(-1px); }
     @@media (max-width: 900px) { .chart-col-8, .chart-col-6, .chart-col-4 { grid-column: span 12; } }
   </style>
 }

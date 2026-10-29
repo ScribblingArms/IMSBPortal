@@ -49,3 +49,9 @@ K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Debug\net8.0\IMSB.LoggerLibrary.dl
 K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Debug\net8.0\refint\IMSB.LoggerLibrary.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Debug\net8.0\IMSB.LoggerLibrary.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Debug\net8.0\ref\IMSB.LoggerLibrary.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.LoggerLibrary.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.LoggerLibrary.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.LoggerLibrary.pdb
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.LoggerLibrary.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.LoggerLibrary.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.LoggerLibrary.pdb

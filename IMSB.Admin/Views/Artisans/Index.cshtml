@@ -37,9 +37,9 @@
     <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-rotate"></i></div><div class="stat-value" id="statRenewal">@stats.RenewalPending</div><div class="stat-label">@L["RenewalPending"]</div></div>
   </div>
 
-  <!-- Chart + Directory -->
+  <!-- Chart (hidden for now; artisans.js still fills it) + Directory -->
   <div class="artisan-layout">
-    <div class="card">
+    <div class="card" style="display:none">
       <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-pie"></i> @L["StatusOverview"]</div></div>
       <div class="card-body">
         <div style="height:220px;position:relative"><canvas id="artisanStatusChart" aria-label="@L["StatusOverview"]"></canvas>
@@ -172,8 +172,7 @@
 
 @section Styles {
   <style>
-    .artisan-layout { display:grid; grid-template-columns:300px minmax(0,1fr); gap:18px; margin-bottom:20px; }
-    @@media (max-width: 1100px) { .artisan-layout { grid-template-columns:minmax(0,1fr); } }
+    .artisan-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:18px; margin-bottom:20px; }
     .artisan-layout .toolbar .form-control { flex:1 1 140px; }
     .empty-state { text-align:center; padding:24px 12px; color:var(--text-muted); font-size:.8rem; }
   </style>

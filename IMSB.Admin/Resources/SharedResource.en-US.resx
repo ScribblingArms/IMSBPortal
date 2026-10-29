@@ -2577,6 +2577,27 @@
   <data name="Today" xml:space="preserve">
     <value>Today</value>
   </data>
+  <data name="PayBillTitle" xml:space="preserve"><value>Pay Bill</value></data>
+  <data name="PayBillSubtitle" xml:space="preserve"><value>Generate employee pay, review monthly totals, and view previous salary history.</value></data>
+  <data name="GeneratePayBill" xml:space="preserve"><value>Generate Pay Bill</value></data>
+  <data name="EmployeeSalaryStatement" xml:space="preserve"><value>Employee-wise Salary Statement</value></data>
+  <data name="MonthlyConsolidatedPayBill" xml:space="preserve"><value>Monthly Consolidated Pay Bill</value></data>
+  <data name="PreviousSalaryHistory" xml:space="preserve"><value>Previous-month Salary History</value></data>
+  <data name="SelectEmployee" xml:space="preserve"><value>Select Employee</value></data>
+  <data name="PaidDays" xml:space="preserve"><value>Paid Days</value></data>
+  <data name="BasicPay" xml:space="preserve"><value>Basic Pay</value></data>
+  <data name="Allowances" xml:space="preserve"><value>Allowances</value></data>
+  <data name="OvertimeAmount" xml:space="preserve"><value>Overtime Amount</value></data>
+  <data name="Deductions" xml:space="preserve"><value>Deductions</value></data>
+  <data name="NetPay" xml:space="preserve"><value>Net Pay</value></data>
+  <data name="PayrollSaved" xml:space="preserve"><value>Pay bill generated and saved.</value></data>
+  <data name="PayrollLoadFailed" xml:space="preserve"><value>Could not load pay bill data.</value></data>
+  <data name="PayrollSaveFailed" xml:space="preserve"><value>Could not generate the pay bill.</value></data>
+  <data name="NoPayrollHistory" xml:space="preserve"><value>No previous pay bills found for this employee.</value></data>
+  <data name="ConfirmGeneratePayBill" xml:space="preserve"><value>Generate or update the pay bill for the selected month?</value></data>
+  <data name="Employees" xml:space="preserve"><value>Employees</value></data>
+  <data name="Print" xml:space="preserve"><value>Print</value></data>
+  <data name="Draft" xml:space="preserve"><value>Draft</value></data>
   <data name="NothingToSave" xml:space="preserve">
     <value>Nothing to save — mark or change at least one staff member first.</value>
   </data>

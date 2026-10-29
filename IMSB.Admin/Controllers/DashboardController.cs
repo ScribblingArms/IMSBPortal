@@ -1,3 +1,4 @@
+using IMSB.Admin.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -78,6 +79,15 @@ namespace IMSB.Admin.Controllers
                 lowStock = await LowStockAsync(),
                 activity = await RecentActivityAsync()
             });
+        }
+
+        /// <summary>The applications behind an overview widget: this month's approvals, under review, or new (PENDING).</summary>
+        [HttpGet]
+        public async Task<IActionResult> Applications([FromQuery] string? status)
+        {
+            var st = status?.Trim().ToUpperInvariant();
+            if (st != ApplicationStatuses.Approved && st != ApplicationStatuses.UnderReview && st != ApplicationStatuses.Pending) return BadRequest();
+            return Ok((await _dashboard.ApplicationsAsync(st)).Select(a => a.ToListItem()));
         }
 
         internal static int NormalizePeriod(int? days) => days != null && TrendPeriods.Contains(days.Value) ? days.Value : TrendPeriods[0];

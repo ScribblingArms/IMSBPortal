@@ -18,6 +18,7 @@ wwwroot\js\header.js
 wwwroot\js\inventory.js
 wwwroot\js\Login.js
 wwwroot\js\main.js
+wwwroot\js\payroll.js
 wwwroot\js\reports.js
 wwwroot\js\sales.js
 wwwroot\js\site.js

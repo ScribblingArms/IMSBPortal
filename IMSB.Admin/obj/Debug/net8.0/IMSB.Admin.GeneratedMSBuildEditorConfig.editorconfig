@@ -80,6 +80,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGVhdmVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Payroll/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5cm9sbFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Payroll/Print.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5cm9sbFxQcmludC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Reports/AbstractReport.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xBYnN0cmFjdFJlcG9ydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

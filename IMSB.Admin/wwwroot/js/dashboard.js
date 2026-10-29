@@ -88,6 +88,46 @@
     });
   }
 
+  // ── Application list popup ────────────────────────────────────
+  // columns per widget: [header key, cell]
+  const APP_LISTS = {
+    APPROVED: { title: 'ApprovedLabel', sub: 'ApprovedThisMonth', tab: 'approved', cols: [
+      ['ArtisanID', a => esc(a.artisanCode || '—')], ['StallAssigned', a => esc(a.stallCode || '—')], ['ApprovedDate', a => esc(shortDate(a.decidedDate) || '—')]] },
+    UNDER_REVIEW: { title: 'UnderReviewLabel', sub: 'BeingProcessed', tab: 'review', cols: [
+      ['Submitted', a => esc(shortDate(a.submittedDate))], ['DaysPending', a => esc(a.daysWaiting ?? '—')], ['Reviewer', a => esc(a.reviewer || '—')]] },
+    PENDING: { title: 'ToBeProcessed', sub: 'NewlySubmitted', tab: 'pending', cols: [
+      ['Mobile', a => esc(a.mobile)], ['Submitted', a => esc(shortDate(a.submittedDate))], ['DaysWaiting', a => esc(a.daysWaiting ?? '—')]] }
+  };
+  const APP_COMMON = [
+    ['AppID', a => `<strong>${esc(a.id)}</strong>`], ['Applicant', a => esc(a.fullName)],
+    ['Category', a => esc(a.categoryName || '—')], ['District', a => esc(a.district)]
+  ];
+  let appListSeq = 0;
+
+  async function showApplications(status){
+    const cfg = APP_LISTS[status]; if (!cfg) return;
+    const cols = APP_COMMON.concat(cfg.cols);
+    const seq = ++appListSeq;
+    setEl('appListTitle', t(cfg.title));
+    setEl('appListSubtitle', t(cfg.sub));
+    $('appListViewAll').href = '/Applications/Index?tab=' + cfg.tab;
+    $('appListHead').innerHTML = cols.map(([k]) => `<th>${esc(t(k))}</th>`).join('');
+    $('appListBody').innerHTML = `<tr><td colspan="${cols.length}" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    if (typeof openModal === 'function') openModal('appListModal');
+    try {
+      const res = await fetch('/Dashboard/Applications?status=' + encodeURIComponent(status));
+      if (!res.ok) throw new Error('Dashboard: applications request failed ' + res.status);
+      const list = await res.json();
+      if (seq !== appListSeq) return;
+      $('appListBody').innerHTML = list.length
+        ? list.map(a => `<tr>${cols.map(([, cell]) => `<td>${cell(a)}</td>`).join('')}</tr>`).join('')
+        : `<tr><td colspan="${cols.length}" class="empty-state">${esc(t('NoApplicationsFound'))}</td></tr>`;
+    } catch (e) {
+      console.error(e);
+      if (seq === appListSeq) $('appListBody').innerHTML = `<tr><td colspan="${cols.length}" class="empty-state">${esc(t('CouldNotReachServer'))}</td></tr>`;
+    }
+  }
+
   // ── Charts ────────────────────────────────────────────────────
   function renderSalesTrend(trend, period){
     setEl('salesTrendSubtitle', t('DailySalesOverDays', period));
@@ -256,6 +296,12 @@
   document.addEventListener('DOMContentLoaded', () => {
     setEl('dashDate', new Date().toLocaleDateString(lang(), { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
     $('trendPeriod')?.addEventListener('change', load);
+    document.querySelectorAll('[data-app-status]').forEach(w => {
+      w.addEventListener('click', () => showApplications(w.dataset.appStatus));
+      w.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); showApplications(w.dataset.appStatus); }
+      });
+    });
     $('dashboardExportBtn')?.addEventListener('click', () => {
       window.location.href = '/Dashboard/Export?days=' + encodeURIComponent(period());
     });

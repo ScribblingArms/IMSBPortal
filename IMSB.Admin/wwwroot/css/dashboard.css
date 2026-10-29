@@ -199,6 +199,39 @@
 }
 
 /* ── Quick Actions ─────────────────────────────────────────── */
+.dash-bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 18px;
+}
+.dash-panel-card {
+  height: 350px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.dash-panel-card .card-header {
+  flex: none;
+  padding: 14px 16px 10px;
+}
+.dash-panel-card .card-body.dash-panel-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 14px 12px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.dash-panel-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.dash-panel-scroll::-webkit-scrollbar { width: 8px; }
+.dash-panel-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+.dash-panel-scroll::-webkit-scrollbar-track { background: transparent; }
+
 .quick-actions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -208,7 +241,7 @@
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--r);
-  padding: 16px 12px;
+  padding: 12px 8px;
   text-align: center;
   cursor: pointer;
   transition: all var(--transition);
@@ -236,4 +269,10 @@
 @media (max-width: 580px) {
   .charts-grid { grid-template-columns: 1fr; }
   .app-widget-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .dash-bottom-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 580px) {
+  .dash-bottom-grid { grid-template-columns: 1fr; }
 }

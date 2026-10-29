@@ -8,6 +8,9 @@ namespace IMSB.Interfaces
         Task<DashboardStats> StatsAsync(BazaarOptions bazaar);
 
         Task<ApplicationStats> ApplicationStatsAsync();
+
+        /// <summary>Applications (with category) in one status; approved ones only when decided this month, like the overview widget.</summary>
+        Task<List<ArtisanApplication>> ApplicationsAsync(string status);
         Task<List<(DateTime Day, decimal Revenue)>> DailyTrendAsync(DateTime lastDay, int days);
         Task<List<(string Category, decimal Revenue, int Quantity)>> ByCategoryAsync(DateTime from, DateTime to);
         Task<List<SalesAnalytics.StallPerformance>> StallPerformanceAsync(DateTime from, DateTime to);

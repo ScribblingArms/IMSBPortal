@@ -1,0 +1,41 @@
+@model IMSB.Admin.Controllers.PayrollController.PayBillPrintModel
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    Layout = null;
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+}
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@Model.Title - @Model.Period</title>
+  <style>
+    body { font:12px Arial,sans-serif; color:#1e293b; margin:24px; }
+    header { border-bottom:3px solid #1a3c6e; margin-bottom:18px; padding-bottom:10px; }
+    h1 { color:#1a3c6e; font-size:20px; margin:0 0 6px; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { border:1px solid #d6dce8; padding:6px; text-align:right; }
+    th { background:#e8f0fb; }
+    th:first-child,td:first-child,th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3) { text-align:left; }
+    .actions { display:flex; justify-content:flex-end; margin-bottom:14px; }
+    .actions button { padding:8px 14px; }
+    @@media print { body { margin:0; } .actions { display:none; } @@page { size:A4 landscape; margin:12mm; } }
+  </style>
+</head>
+<body>
+  <div class="actions"><button type="button" onclick="window.print()">@L["PrintSavePdf"]</button></div>
+  <header><h1>@Model.Title</h1><div>@Model.Period</div><div>@L["GeneratedOn"]: @DateTime.Now.ToString("dd MMM yyyy HH:mm")</div></header>
+  <table>
+    <thead><tr><th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["Department"]</th><th>@L["Designation"]</th><th>@L["PaidDays"]</th><th>@L["BasicPay"]</th><th>@L["Allowances"]</th><th>@L["OvertimeAmount"]</th><th>@L["Deductions"]</th><th>@L["NetPay"]</th></tr></thead>
+    <tbody>
+      @foreach (var row in Model.Rows)
+      {
+        <tr><td>@row.EmployeeId</td><td>@row.EmployeeName</td><td>@row.Department</td><td>@row.Designation</td><td>@row.PaidDays.ToString("0.##")</td><td>@row.BasicPay.ToString("N2")</td><td>@row.Allowances.ToString("N2")</td><td>@row.OvertimeAmount.ToString("N2")</td><td>@row.Deductions.ToString("N2")</td><td>@row.NetPay.ToString("N2")</td></tr>
+      }
+    </tbody>
+    <tfoot><tr><td colspan="9"><strong>@L["GrandTotal"]</strong></td><td><strong>@Model.TotalNetPay.ToString("N2")</strong></td></tr></tfoot>
+  </table>
+</body>
+</html>

@@ -2577,6 +2577,27 @@
   <data name="Today" xml:space="preserve">
     <value>आज</value>
   </data>
+  <data name="PayBillTitle" xml:space="preserve"><value>वेतन बिल</value></data>
+  <data name="PayBillSubtitle" xml:space="preserve"><value>कर्मचारी वेतन बनाएँ, मासिक कुल देखें और पिछला वेतन इतिहास देखें।</value></data>
+  <data name="GeneratePayBill" xml:space="preserve"><value>वेतन बिल बनाएँ</value></data>
+  <data name="EmployeeSalaryStatement" xml:space="preserve"><value>कर्मचारी-वार वेतन विवरण</value></data>
+  <data name="MonthlyConsolidatedPayBill" xml:space="preserve"><value>मासिक समेकित वेतन बिल</value></data>
+  <data name="PreviousSalaryHistory" xml:space="preserve"><value>पिछले महीने का वेतन इतिहास</value></data>
+  <data name="SelectEmployee" xml:space="preserve"><value>कर्मचारी चुनें</value></data>
+  <data name="PaidDays" xml:space="preserve"><value>वेतन दिवस</value></data>
+  <data name="BasicPay" xml:space="preserve"><value>मूल वेतन</value></data>
+  <data name="Allowances" xml:space="preserve"><value>भत्ते</value></data>
+  <data name="OvertimeAmount" xml:space="preserve"><value>ओवरटाइम राशि</value></data>
+  <data name="Deductions" xml:space="preserve"><value>कटौतियाँ</value></data>
+  <data name="NetPay" xml:space="preserve"><value>शुद्ध वेतन</value></data>
+  <data name="PayrollSaved" xml:space="preserve"><value>वेतन बिल बनाया और सहेजा गया।</value></data>
+  <data name="PayrollLoadFailed" xml:space="preserve"><value>वेतन बिल डेटा लोड नहीं हो सका।</value></data>
+  <data name="PayrollSaveFailed" xml:space="preserve"><value>वेतन बिल नहीं बनाया जा सका।</value></data>
+  <data name="NoPayrollHistory" xml:space="preserve"><value>इस कर्मचारी के लिए पिछला वेतन बिल नहीं मिला।</value></data>
+  <data name="ConfirmGeneratePayBill" xml:space="preserve"><value>चयनित महीने के लिए वेतन बिल बनाएँ या अपडेट करें?</value></data>
+  <data name="Employees" xml:space="preserve"><value>कर्मचारी</value></data>
+  <data name="Print" xml:space="preserve"><value>प्रिंट</value></data>
+  <data name="Draft" xml:space="preserve"><value>मसौदा</value></data>
   <data name="NothingToSave" xml:space="preserve">
     <value>सहेजने के लिए कुछ नहीं — पहले कम से कम एक स्टाफ सदस्य को चिह्नित करें या बदलें।</value>
   </data>

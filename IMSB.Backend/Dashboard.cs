@@ -34,6 +34,20 @@ namespace IMSB.Backend
 
         public Task<ApplicationStats> ApplicationStatsAsync() => Applications.StatsAsync(_context);
 
+        public Task<List<ArtisanApplication>> ApplicationsAsync(string status)
+        {
+            var query = _context.ArtisanApplications.AsNoTracking().Include(a => a.Category).Where(a => a.Status == status);
+            if (status == ApplicationStatuses.Approved)
+            {
+                // same window as ApplicationStats.ApprovedThisMonth
+                var monthStartUtc = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToUniversalTime();
+                return query.Where(a => a.DecidedAt >= monthStartUtc)
+                    .OrderByDescending(a => a.DecidedAt).ThenBy(a => a.ApplicationNo).ToListAsync();
+            }
+            // open applications: longest waiting first
+            return query.OrderBy(a => a.SubmittedDate).ThenBy(a => a.ApplicationNo).ToListAsync();
+        }
+
         public Task<List<(DateTime Day, decimal Revenue)>> DailyTrendAsync(DateTime lastDay, int days) =>
             SalesAnalytics.DailyTrendAsync(_context, lastDay, days);
 

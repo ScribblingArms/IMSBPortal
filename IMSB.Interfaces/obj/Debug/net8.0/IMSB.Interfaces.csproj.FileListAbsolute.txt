@@ -67,3 +67,11 @@ K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\Debug\net8.0\IMSB.Interfaces.dl
 K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\Debug\net8.0\refint\IMSB.Interfaces.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\Debug\net8.0\IMSB.Interfaces.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Interfaces\obj\Debug\net8.0\ref\IMSB.Interfaces.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Dto.appsettings.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Interfaces.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Interfaces.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Interfaces.pdb
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Dto.appsettings.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Interfaces.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Interfaces.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Interfaces.pdb

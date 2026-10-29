@@ -50,3 +50,9 @@ K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\IMSB.Common.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\refint\IMSB.Common.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\IMSB.Common.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\ref\IMSB.Common.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Common.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Common.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.Common.pdb
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Common.deps.json
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Common.dll
+C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Common.pdb
