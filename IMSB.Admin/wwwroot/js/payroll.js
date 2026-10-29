@@ -44,7 +44,6 @@
       hasUnsavedChanges = false;
       $('payBillPeriod').textContent = `${new Date(+data.year, +data.month - 1, 1).toLocaleDateString(document.documentElement.lang, { month: 'long', year: 'numeric' })} · ${data.monthDays} days${data.isGenerated ? '' : ' · ' + t('Draft')}`;
       render();
-      $('payBillExcel').disabled = $('payBillPrint').disabled = !isGenerated;
     } catch (error) {
       console.error(error);
       setError(t('CouldNotReachServer'));
@@ -72,12 +71,6 @@
       <td>${input(row, 'deductions')}</td><td class="net-pay"><strong>${money(row.netPay)}</strong></td>
     </tr>`).join('') : `<tr><td colspan="12" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
     renderSummary(rows);
-    const selection = $('payBillHistoryEmployee');
-    const previous = selection.value;
-    selection.innerHTML = `<option value="">${esc(t('SelectEmployee'))}</option>` + currentRows.map(row =>
-      `<option value="${esc(row.staffId)}">${esc(row.employeeName)} (${esc(row.employeeId)})</option>`).join('');
-    if (currentRows.some(row => row.staffId === previous)) selection.value = previous;
-    if (selection.value) loadHistory();
   }
 
   function renderSummary(rows = visibleRows()) {
@@ -90,10 +83,21 @@
       departments.set(key, summary);
     });
     const summaries = Array.from(departments.entries());
-    $('payBillSummaryBody').innerHTML = summaries.length ? summaries.map(([department, row]) => `<tr>
-      <td>${esc(department)}</td><td>${row.employees}</td><td>${money(row.basicPay)}</td><td>${money(row.allowances)}</td>
-      <td>${money(row.overtimeAmount)}</td><td>${money(row.deductions)}</td><td><strong>${money(row.netPay)}</strong></td>
-    </tr>`).join('') : `<tr><td colspan="7" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
+    // a card per department, led by an overall total card
+    const card = (name, row, total) => `<div class="pay-dept-card${total ? ' total' : ''}">
+      <div class="pay-dept-head">
+        <div class="pay-dept-name" title="${esc(name)}">${esc(name)}</div>
+        <span class="pay-dept-emp" title="${esc(t('Employees'))}"><i class="fa-solid fa-user"></i>${row.employees}</span>
+      </div>
+      <div><div class="pay-dept-net-label">${esc(t('NetPay'))}</div><div class="pay-dept-net">${money(row.netPay)}</div></div>
+    </div>`;
+    const overall = summaries.reduce((sum, [, row]) => {
+      ['employees', 'basicPay', 'allowances', 'overtimeAmount', 'deductions', 'netPay'].forEach(field => sum[field] += row[field]);
+      return sum;
+    }, { employees: 0, basicPay: 0, allowances: 0, overtimeAmount: 0, deductions: 0, netPay: 0 });
+    $('payBillSummaryBody').innerHTML = summaries.length
+      ? card(t('GrandTotal'), overall, true) + summaries.map(([department, row]) => card(department, row, false)).join('')
+      : `<div class="empty-state" style="grid-column:1/-1">${esc(t('NoStaffForAttendance'))}</div>`;
     $('payBillFoot').innerHTML = `<tr><td colspan="6"><strong>${esc(t('GrandTotal'))}</strong></td><td>${money(rows.reduce((sum, row) => sum + Number(row.basicPay || 0), 0))}</td>
       <td>${money(rows.reduce((sum, row) => sum + Number(row.allowances || 0), 0))}</td><td></td>
       <td>${money(rows.reduce((sum, row) => sum + Number(row.overtimeAmount || 0), 0))}</td>
@@ -111,28 +115,6 @@
     const line = event.target.closest('tr');
     line.querySelector('.net-pay').innerHTML = `<strong>${money(row.netPay)}</strong>`;
     renderSummary();
-    $('payBillExcel').disabled = $('payBillPrint').disabled = !isGenerated || hasUnsavedChanges;
-  }
-
-  async function loadHistory() {
-    const staffId = $('payBillHistoryEmployee').value;
-    if (!staffId) {
-      $('payBillHistoryBody').innerHTML = `<tr><td colspan="7" class="empty-state">${esc(t('SelectEmployee'))}</td></tr>`;
-      return;
-    }
-    try {
-      const response = await fetch('/Payroll/EmployeeHistory?' + qs(Object.assign(period(), { staffId })));
-      const data = await response.json();
-      if (!response.ok) throw new Error(Object.values(data.errors || {})[0] || t('PayrollLoadFailed'));
-      $('payBillHistoryBody').innerHTML = data.rows.length ? data.rows.map(row => `<tr>
-        <td>${new Date(+row.year, +row.month - 1, 1).toLocaleDateString(document.documentElement.lang, { month: 'long', year: 'numeric' })}</td>
-        <td>${Number(row.paidDays).toLocaleString(document.documentElement.lang, { maximumFractionDigits: 2 })}</td>
-        <td>${money(row.basicPay)}</td><td>${money(row.allowances)}</td><td>${money(row.overtimeAmount)}</td><td>${money(row.deductions)}</td><td><strong>${money(row.netPay)}</strong></td>
-      </tr>`).join('') : `<tr><td colspan="7" class="empty-state">${esc(t('NoPayrollHistory'))}</td></tr>`;
-    } catch (error) {
-      console.error(error);
-      setError(error.message || t('PayrollLoadFailed'));
-    }
   }
 
   async function generate() {
@@ -168,10 +150,7 @@
     ['payBillMonth', 'payBillYear'].forEach(id => $(id).addEventListener('change', load));
     $('payBillStaffFilter').addEventListener('change', render);
     $('payBillBody').addEventListener('input', updateAdjustment);
-    $('payBillHistoryEmployee').addEventListener('change', loadHistory);
     $('payBillGenerate').addEventListener('click', generate);
-    $('payBillExcel').addEventListener('click', () => { window.location.href = '/Payroll/Export?' + qs(Object.assign(period(), { q: $('payBillStaffFilter').value.trim() })); });
-    $('payBillPrint').addEventListener('click', () => { window.open('/Payroll/Print?' + qs(Object.assign(period(), { q: $('payBillStaffFilter').value.trim() })), '_blank', 'noopener'); });
     load();
   });
 })();

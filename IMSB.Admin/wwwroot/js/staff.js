@@ -89,19 +89,15 @@
         <td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary-xlight);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--primary)">${esc((s.full_name||'').split(' ').map(x=>x[0]||'').join('').slice(0,2))}</div><strong>${esc(s.full_name)}</strong></div></td>
         <td>${esc(s.department_name)}</td>
         <td>${esc(s.designation)}</td>
-        <td>${esc(s.staff_category)}</td>
-        ${window.StaffCanViewSalary ? `<td>${esc(formatSalary(s.monthly_salary))}</td>` : ''}
-        <td>${esc(s.mobile)}</td>
-        <td>${esc(formatDateDisplay(s.join_date))}</td>
-        <td><span class="badge ${statusBadge(s.status)}">${esc(statusLabel(s.status))}</span></td>
+        <td>${esc(s.shift || '—')}</td>
         <td style="white-space:nowrap">
-          <button type="button" class="btn btn-ghost btn-sm btn-icon" data-view-staff="${esc(s.id)}" title="${esc(t('View'))}"><i class="fa-solid fa-eye"></i></button>
+          <button type="button" class="btn btn-ghost btn-sm btn-icon" data-view-staff="${esc(s.id)}" title="${esc(t('StaffProfile'))}" aria-label="${esc(t('StaffProfile'))}" style="color:var(--primary-light)"><i class="fa-solid fa-circle-info"></i></button>
           <button type="button" class="btn btn-ghost btn-sm btn-icon" data-edit-staff="${esc(s.id)}" title="${esc(t('Edit'))}"><i class="fa-solid fa-pen"></i></button>
           <button type="button" class="btn btn-ghost btn-sm btn-icon" data-delete-staff="${esc(s.id)}" title="${esc(t('Delete'))}" style="color:var(--danger)"><i class="fa-solid fa-trash"></i></button>
         </td>
       </tr>
     `).join('');
-    const columnCount = window.StaffCanViewSalary ? 10 : 9;
+    const columnCount = 6;
     staffBody.innerHTML = rows || `<tr><td colspan="${columnCount}" style="text-align:center;color:var(--text-muted);padding:18px">${esc(t('NoStaffFound'))}</td></tr>`;
     staffBody.querySelectorAll('[data-edit-staff]').forEach(b => b.addEventListener('click', () => openEdit(b.dataset.editStaff)));
     staffBody.querySelectorAll('[data-delete-staff]').forEach(b => b.addEventListener('click', () => deleteStaff(b.dataset.deleteStaff)));
@@ -113,15 +109,20 @@
   function renderDeptCards(){
     const deptCards = document.getElementById('deptCards');
     if (!deptCards) return;
+    if (!depts.length){ deptCards.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:.78rem;padding:12px">${esc(t('NoDepartmentsConfigured'))}</div>`; return; }
+    // one bar row per department: bar length relative to the largest department, % of all staff alongside
     const total = depts.reduce((sum, d) => sum + (d.count || 0), 0);
-    deptCards.innerHTML = depts.map(d=>`
-      <div class="card" style="border-top:3px solid ${esc(d.color)}">
-        <div class="card-body" style="text-align:center;padding:18px 12px">
-          <div style="font-size:1.6rem;font-weight:800;color:${esc(d.color)}">${d.count}</div>
-          <div style="font-size:.78rem;font-weight:600;color:var(--text);margin-top:4px">${esc(d.name)}</div>
-          <div style="font-size:.7rem;color:var(--text-muted);margin-top:2px">${esc(t('PercentOfTotal', total ? Math.round(d.count/total*100) : 0))}</div>
-        </div>
-      </div>`).join('');
+    const max = Math.max(...depts.map(d => d.count || 0), 1);
+    deptCards.innerHTML = depts.map(d => {
+      const pct = total ? Math.round(d.count / total * 100) : 0;
+      return `
+      <div class="dept-bar-row" title="${esc(t('PercentOfTotal', pct))}">
+        <div class="dept-bar-name">${esc(d.name)}</div>
+        <div class="dept-bar-track"><div class="dept-bar-fill" style="width:${Math.round((d.count || 0) / max * 100)}%;background:${esc(d.color)}"></div></div>
+        <div class="dept-bar-count">${d.count}</div>
+        <div class="dept-bar-pct">${pct}%</div>
+      </div>`;
+    }).join('');
   }
 
   function renderStats(stats){

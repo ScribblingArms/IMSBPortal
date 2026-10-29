@@ -27,41 +27,34 @@
           <div class="page-subtitle">@L["AttendanceSubtitle"]</div>
         </div>
         <div class="page-actions">
-          <button type="button" class="btn btn-outline btn-sm" id="attExportBtn" title="@L["ExportDayHint"]"><i class="fa-solid fa-download"></i> @L["Export"]</button>
-          <button type="button" class="btn btn-primary btn-sm" id="saveAttendanceBtn"><i class="fa-solid fa-floppy-disk"></i> @L["SaveAttendance"]</button>
-        </div>
+          <input type="date" class="form-control" id="attDate" style="width:160px" aria-label="@L["Date"]">
+          <button type="button" class="btn btn-outline btn-sm" id="todayBtn">@L["Today"]</button>        </div>
       </div>
 
       <!-- Stat Cards (selected day, all departments) -->
-      <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
-        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-          <div class="stat-value" id="statTotal">0</div><div class="stat-label">@L["TotalStaff"]</div>
+      <div class="stat-grid att-stat-grid">
+        <div class="stat-card blue"><div class="att-stat-head"><div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+          <div class="stat-value" id="statTotal">0</div></div><div class="stat-label">@L["TotalStaff"]</div>
           <div class="stat-change up" id="statNotMarked"></div></div>
-        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
-          <div class="stat-value" id="statPresent">0</div><div class="stat-label">@L["Present"]</div>
+        <div class="stat-card green"><div class="att-stat-head"><div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+          <div class="stat-value" id="statPresent">0</div></div><div class="stat-label">@L["Present"]</div>
           <div class="stat-change up" id="statPercent"></div></div>
-        <div class="stat-card red"><div class="stat-icon"><i class="fa-solid fa-user-xmark"></i></div>
-          <div class="stat-value" id="statAbsent">0</div><div class="stat-label">@L["Absent"]</div></div>
-        <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
-          <div class="stat-value" id="statLeave">0</div><div class="stat-label">@L["OnLeave"]</div></div>
-        <div class="stat-card teal"><div class="stat-icon"><i class="fa-solid fa-circle-half-stroke"></i></div>
-          <div class="stat-value" id="statHalfDay">0</div><div class="stat-label">@L["HalfDay"]</div></div>
-        <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-          <div class="stat-value" id="statOvertime">0</div><div class="stat-label">@L["WithOvertime"]</div></div>
+        <div class="stat-card red"><div class="att-stat-head"><div class="stat-icon"><i class="fa-solid fa-user-xmark"></i></div>
+          <div class="stat-value" id="statAbsent">0</div></div><div class="stat-label">@L["Absent"]</div></div>
+        <div class="stat-card orange"><div class="att-stat-head"><div class="stat-icon"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
+          <div class="stat-value" id="statLeave">0</div></div><div class="stat-label">@L["OnLeave"]</div></div>
+        <div class="stat-card teal"><div class="att-stat-head"><div class="stat-icon"><i class="fa-solid fa-circle-half-stroke"></i></div>
+          <div class="stat-value" id="statHalfDay">0</div></div><div class="stat-label">@L["HalfDay"]</div></div>
+        <div class="stat-card indigo"><div class="att-stat-head"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-value" id="statOvertime">0</div></div><div class="stat-label">@L["WithOvertime"]</div></div>
       </div>
 
-      <!-- Week Calendar Strip -->
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-body" style="padding:16px 20px">
-          <div class="att-week-head">
-            <div style="font-size:.82rem;font-weight:700;color:var(--text)" id="weekLabel"></div>
-            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-              <button type="button" class="btn btn-ghost btn-sm btn-icon" id="weekPrev" title="@L["PreviousWeek"]" aria-label="@L["PreviousWeek"]"><i class="fa-solid fa-chevron-left"></i></button>
-              <input type="date" class="form-control" id="attDate" style="width:160px" aria-label="@L["Date"]">
-              <button type="button" class="btn btn-ghost btn-sm btn-icon" id="weekNext" title="@L["NextWeek"]" aria-label="@L["NextWeek"]"><i class="fa-solid fa-chevron-right"></i></button>
-              <button type="button" class="btn btn-outline btn-sm" id="todayBtn">@L["Today"]</button>
-            </div>
-          </div>
+      <!-- Week Calendar Strip (hidden; attendance.js still fills it). The date picker lives in the page header. -->
+      <div class="card" style="display:none" aria-hidden="true">
+        <div class="card-body">
+          <div id="weekLabel"></div>
+          <button type="button" id="weekPrev" tabindex="-1"></button>
+          <button type="button" id="weekNext" tabindex="-1"></button>
           <div class="week-calendar" id="weekCalendar"></div>
         </div>
       </div>
@@ -221,6 +214,18 @@
 @section Styles {
     <link href="~/css/applications.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/attendance.css" rel="stylesheet" asp-append-version="true" />
+    <style>
+      /* compact stat cards: icon and count on one line, label below */
+      .att-stat-grid { grid-template-columns:repeat(6, minmax(0,1fr)); gap:12px; }
+      .att-stat-grid .stat-card { min-width:0; padding:12px 14px; }
+      .att-stat-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+      .att-stat-grid .stat-icon { width:32px; height:32px; flex:none; font-size:.85rem; margin:0; }
+      .att-stat-grid .stat-value { font-size:1.45rem; margin:0; }
+      .att-stat-grid .stat-label { font-size:.76rem; }
+      .att-stat-grid .stat-change { margin-top:4px; font-size:.68rem; line-height:1.25; }
+      @@media (max-width: 1200px) { .att-stat-grid { grid-template-columns:repeat(3, minmax(0,1fr)); } }
+      @@media (max-width: 600px) { .att-stat-grid { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+    </style>
 }
 
 @section Scripts {

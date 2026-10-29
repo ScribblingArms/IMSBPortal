@@ -29,18 +29,27 @@
         </div>
       </div>
 
-      <!-- Stats -->
-      <div class="stat-grid" style="grid-template-columns:repeat(5,1fr)">
-        <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-value" id="statTotalStaff">@ViewBag.TotalStaff</div><div class="stat-label">@L["TotalStaff"]</div></div>
-        <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-value" id="statActiveStaff">@ViewBag.ActiveStaff</div><div class="stat-label">@L["Active"]</div></div>
-        <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div><div class="stat-value" id="statOnLeave">@ViewBag.OnLeave</div><div class="stat-label">@L["OnLeave"]</div></div>
-        <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-building"></i></div><div class="stat-value" id="statDepartments">@ViewBag.Departments</div><div class="stat-label">@L["Departments"]</div></div>
-        <div class="stat-card red"><div class="stat-icon"><i class="fa-solid fa-calendar-times"></i></div><div class="stat-value" id="statContractExpiring">@ViewBag.ContractExpiring</div><div class="stat-label">@L["ContractExpiring"]</div></div>
+      <!-- Stats + Dept-wise counts in one row -->
+      <div class="staff-overview">
+        <div class="stat-grid staff-stat-grid">
+          <div class="stat-card blue"><div class="staff-stat-head"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-value" id="statTotalStaff">@ViewBag.TotalStaff</div></div><div class="stat-label">@L["TotalStaff"]</div></div>
+          <div class="stat-card green"><div class="staff-stat-head"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-value" id="statActiveStaff">@ViewBag.ActiveStaff</div></div><div class="stat-label">@L["Active"]</div></div>
+          <div class="stat-card orange"><div class="staff-stat-head"><div class="stat-icon"><i class="fa-solid fa-clock"></i></div><div class="stat-value" id="statOnLeave">@ViewBag.OnLeave</div></div><div class="stat-label">@L["OnLeave"]</div></div>
+          <div class="stat-card indigo"><div class="staff-stat-head"><div class="stat-icon"><i class="fa-solid fa-building"></i></div><div class="stat-value" id="statDepartments">@ViewBag.Departments</div></div><div class="stat-label">@L["Departments"]</div></div>
+          <div class="stat-card red"><div class="staff-stat-head"><div class="stat-icon"><i class="fa-solid fa-calendar-times"></i></div><div class="stat-value" id="statContractExpiring">@ViewBag.ContractExpiring</div></div><div class="stat-label">@L["ContractExpiring"]</div></div>
+        </div>
+
+        <div class="card staff-dept-card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-building"></i> @L["DeptWiseStaffCount"]</div></div>
+          <div class="card-body">
+            <div class="staff-dept-grid" id="deptCards"></div>
+          </div>
+        </div>
       </div>
 
-      <!-- Chart + Staff list -->
-      <div style="display:grid;grid-template-columns:280px 1fr;gap:18px;margin-bottom:20px">
-        <div class="card">
+      <!-- Chart (hidden for now; staff.js still fills it) + Staff list -->
+      <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-bottom:20px">
+        <div class="card" style="display:none">
           <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-pie"></i> @L["DeptDistribution"]</div></div>
           <div class="card-body"><div style="height:230px"><canvas id="staffDeptChart"></canvas></div></div>
         </div>
@@ -59,21 +68,13 @@
                 <option value="INACTIVE">@L["Inactive"]</option>
               </select>
             </div>
-            <div class="table-container">
+            <div class="table-container staff-table-scroll">
               <table class="data-table" id="staffTable">
-                <thead><tr><th>@L["StaffID"]</th><th>@L["Name"]</th><th>@L["Department"]</th><th>@L["Designation"]</th><th>@L["StaffCategory"]</th>@if (canViewSalary) { <th>@L["MonthlySalary"]</th> }<th>@L["Mobile"]</th><th>@L["JoinDate"]</th><th>@L["Status"]</th><th>@L["Actions"]</th></tr></thead>
+                <thead><tr><th>@L["StaffID"]</th><th>@L["Name"]</th><th>@L["Department"]</th><th>@L["Designation"]</th><th>@L["Shift"]</th><th>@L["Actions"]</th></tr></thead>
                 <tbody id="staffBody"></tbody>
               </table>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Dept-wise section -->
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fa-solid fa-building"></i> @L["DeptWiseStaffCount"]</div></div>
-        <div class="card-body">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px" id="deptCards"></div>
         </div>
       </div>
     </main>
@@ -196,6 +197,49 @@
     </div>
   </div>
 </div>
+
+@section Styles {
+  <style>
+    .staff-overview { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; margin-bottom:20px; align-items:stretch; }
+    /* Total Staff is a tall card on the left; the other four sit in a 2x2 block beside it */
+    .staff-stat-grid { grid-template-columns:repeat(3, minmax(0,1fr)); grid-auto-rows:1fr; gap:12px; margin:0; }
+    .staff-stat-grid .stat-card { min-width:0; padding:12px 14px; display:flex; flex-direction:column; justify-content:center; }
+    .staff-stat-grid .stat-card:first-child { grid-row:span 2; }
+    /* Total Staff: icon, then label, then the count stacked underneath */
+    .staff-stat-grid .stat-card:first-child { align-items:center; text-align:center; gap:14px; }
+    .staff-stat-grid .stat-card:first-child .staff-stat-head { display:contents; }
+    .staff-stat-grid .stat-card:first-child .stat-icon { order:0; }
+    .staff-stat-grid .stat-card:first-child .stat-label { order:1; }
+    .staff-stat-grid .stat-card:first-child .stat-value { order:2; font-size:2.4rem; line-height:1.1; }
+    .staff-stat-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+    .staff-stat-grid .stat-icon { width:34px; height:34px; flex:none; font-size:.9rem; margin:0; }
+    .staff-stat-grid .stat-value { font-size:1.55rem; margin:0; }
+    .staff-stat-grid .stat-label { font-size:.78rem; line-height:1.25; }
+    .staff-dept-card { margin:0; }
+    .staff-dept-card .card-header { padding:12px 18px; }
+    .staff-dept-card .card-body { padding:10px 18px 14px; }
+    .staff-dept-grid { display:flex; flex-direction:column; gap:10px; }
+    .dept-bar-row { display:grid; grid-template-columns:minmax(90px,130px) 1fr 28px 40px; align-items:center; gap:12px; font-size:.8rem; }
+    .dept-bar-name { font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .dept-bar-track { height:8px; border-radius:99px; background:var(--border, #e2e8f0); overflow:hidden; }
+    .dept-bar-fill { height:100%; border-radius:99px; transition:width .3s; }
+    .dept-bar-count { font-weight:800; text-align:right; color:var(--text); }
+    .dept-bar-pct { font-size:.72rem; color:var(--text-muted); text-align:right; }
+    /* Staff Directory: about 7 rows visible, the rest scroll under a fixed header */
+    .staff-table-scroll { max-height:340px; overflow-y:auto; }
+    .staff-table-scroll thead th { position:sticky; top:0; z-index:1; padding:8px 12px; }
+    /* compact rows */
+    #staffTable td { padding:6px 12px; font-size:.78rem; }
+    #staffTable td strong { font-size:.8rem; }
+    #staffTable td > div > div:first-child { width:24px !important; height:24px !important; font-size:.58rem !important; }
+    #staffTable .btn-icon { padding:3px 6px; font-size:.75rem; }
+    @@media (max-width: 1300px) { .staff-overview { grid-template-columns:minmax(0,1fr); } }
+    @@media (max-width: 600px) {
+      .staff-stat-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+      .staff-stat-grid .stat-card:first-child { grid-row:auto; grid-column:span 2; }
+    }
+  </style>
+}
 
 @section Scripts {
     <script>window.StaffI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings)); window.StaffCanViewSalary = @canViewSalary.ToString().ToLowerInvariant(); window.StaffOpenCreate = @((bool)(ViewBag.RegisterOnLoad ?? false) ? "true" : "false");</script>

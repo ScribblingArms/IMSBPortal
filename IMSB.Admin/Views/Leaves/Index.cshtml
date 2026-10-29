@@ -54,26 +54,35 @@
         </div>
       </div>
       <div class="table-container">
-        <table class="data-table">
-          <thead><tr><th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["StaffCategory"]</th><th>@L["LeaveType"]</th><th>@L["AnnualQuota"]</th><th>@L["Taken"]</th><th>@L["Balance"]</th></tr></thead>
-          <tbody id="leaveBalancesBody" data-empty-message="@L["NoLeaveBalances"]" data-refresh-error="@L["BalanceRefreshFailed"]">
-          @foreach (var row in Model.Balances)
-          {
-            <tr data-staff-id="@row.EmployeeId" data-leave-type="@row.LeaveType" data-employee-type="@row.StaffCategory">
-              <td><code>@row.EmployeeId</code></td><td>@row.StaffName</td><td>@row.StaffCategory</td><td>@row.LeaveType</td>
-              <td>@row.Entitlement.ToString("0.##")</td><td>@row.Taken.ToString("0.##")</td><td><strong>@row.Balance.ToString("0.##")</strong></td>
-            </tr>
-          }
-          @if (Model.Balances.Count == 0)
-          {
-            <tr><td colspan="7" style="text-align:center">@L["NoLeaveBalances"]</td></tr>
-          }
-          </tbody>
+        <!-- Tree: one row per employee (totals), its leave types nested underneath. Filled by the script below. -->
+        <table class="data-table leave-tree">
+          <thead><tr><th>@L["StaffName"] / @L["LeaveType"]</th><th>@L["StaffCategory"]</th><th>@L["AnnualQuota"]</th><th>@L["Taken"]</th><th>@L["Balance"]</th></tr></thead>
+          <tbody id="leaveBalancesBody" data-empty-message="@L["NoLeaveBalances"]" data-refresh-error="@L["BalanceRefreshFailed"]"></tbody>
         </table>
       </div>
     </div>
   </div>
 </main>
+
+@section Styles {
+  <style>
+    .leave-tree-parent { cursor:pointer; background:var(--card, #fff); }
+    .leave-tree-parent:hover { background:var(--bg); }
+    .leave-tree-parent td { font-weight:500; }
+    .leave-tree-parent code { margin:0 6px 0 2px; }
+    .leave-tree-toggle { display:inline-flex; width:18px; justify-content:center; color:var(--text-muted); }
+    .leave-tree-toggle i { font-size:.7rem; transition:transform .15s; }
+    .leave-tree-parent.open .leave-tree-toggle i { transform:rotate(90deg); color:var(--primary); }
+    .leave-tree-count { margin-left:6px; font-size:.65rem; font-weight:700; padding:1px 7px; border-radius:20px; background:var(--primary-xlight); color:var(--primary); }
+    .leave-tree-child td { font-size:.8rem; color:var(--text-muted); padding-top:7px; padding-bottom:7px; }
+    .leave-tree-child td:first-child { color:var(--text); }
+    /* tree connector: vertical line from the parent, elbow into each leave type */
+    .leave-tree-branch { position:relative; display:inline-block; width:22px; height:1em; margin-left:8px; margin-right:6px; vertical-align:middle; }
+    .leave-tree-branch::before { content:""; position:absolute; left:0; top:-14px; bottom:50%; border-left:2px solid var(--border); }
+    .leave-tree-branch::after { content:""; position:absolute; left:0; right:2px; top:50%; border-top:2px solid var(--border); }
+    .leave-tree-child:not(.last) .leave-tree-branch::before { bottom:-14px; }
+  </style>
+}
 
 @section Scripts {
 <script>
@@ -90,6 +99,62 @@
   let appliedEmployeeId = '';
   let appliedLeaveType = '';
   let refreshSequence = 0;
+  const expanded = new Set();   // employee ids opened by the user; kept across the periodic refresh
+
+  // Groups the flat balance rows by employee: a parent row with totals, then one child row per leave type
+  function renderTree(rows) {
+    if (!rows.length) {
+      body.innerHTML = `<tr><td colspan="5" style="text-align:center">${escapeHtml(body.dataset.emptyMessage)}</td></tr>`;
+      return;
+    }
+    const groups = new Map();
+    rows.forEach(row => {
+      if (!groups.has(row.employeeId)) groups.set(row.employeeId, { employeeId: row.employeeId, staffName: row.staffName, staffCategory: row.staffCategory, items: [] });
+      groups.get(row.employeeId).items.push(row);
+    });
+    const sum = (items, key) => items.reduce((total, item) => total + Number(item[key] || 0), 0);
+    body.innerHTML = [...groups.values()].map(g => {
+      const open = expanded.has(g.employeeId);   // closed unless the user opened it
+      const parent = `<tr class="leave-tree-parent${open ? ' open' : ''}" data-staff-id="${escapeHtml(g.employeeId)}" tabindex="0" aria-expanded="${open}">
+          <td><span class="leave-tree-toggle"><i class="fa-solid fa-chevron-right"></i></span>
+            <code>${escapeHtml(g.employeeId)}</code> <strong>${escapeHtml(g.staffName)}</strong>
+            <span class="leave-tree-count">${g.items.length}</span></td>
+          <td>${escapeHtml(g.staffCategory)}</td>
+          <td>${formatDays(sum(g.items, 'entitlement'))}</td>
+          <td>${formatDays(sum(g.items, 'taken'))}</td>
+          <td><strong>${formatDays(sum(g.items, 'balance'))}</strong></td>
+        </tr>`;
+      const children = g.items.map((row, i) => `<tr class="leave-tree-child${i === g.items.length - 1 ? ' last' : ''}" data-parent="${escapeHtml(g.employeeId)}"
+            data-leave-type="${escapeHtml(row.leaveType)}"${open ? '' : ' hidden'}>
+          <td><span class="leave-tree-branch"></span>${escapeHtml(row.leaveType)}</td>
+          <td></td>
+          <td>${formatDays(row.entitlement)}</td>
+          <td>${formatDays(row.taken)}</td>
+          <td><strong>${formatDays(row.balance)}</strong></td>
+        </tr>`).join('');
+      return parent + children;
+    }).join('');
+  }
+
+  function toggle(parentRow) {
+    const id = parentRow.dataset.staffId;
+    const open = !parentRow.classList.contains('open');
+    parentRow.classList.toggle('open', open);
+    parentRow.setAttribute('aria-expanded', open);
+    if (open) expanded.add(id); else expanded.delete(id);
+    body.querySelectorAll('tr[data-parent]').forEach(child => { if (child.dataset.parent === id) child.hidden = !open; });
+  }
+  body.addEventListener('click', event => {
+    const row = event.target.closest('tr.leave-tree-parent');
+    if (row) toggle(row);
+  });
+  body.addEventListener('keydown', event => {
+    const row = event.target.closest('tr.leave-tree-parent');
+    if (row && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); toggle(row); }
+  });
+
+  renderTree(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Balances, new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web))));
+
   async function refreshBalances() {
     if (document.hidden) return;
     const sequence = ++refreshSequence;
@@ -101,18 +166,7 @@
       if (!response.ok) throw new Error(`Balance refresh failed (${response.status})`);
       const result = await response.json();
       if (sequence !== refreshSequence) return;
-      body.innerHTML = result.rows.length
-        ? result.rows.map(row => `<tr data-staff-id="${escapeHtml(row.employeeId)}"
-            data-leave-type="${escapeHtml(row.leaveType)}" data-employee-type="${escapeHtml(row.staffCategory)}">
-            <td><code>${escapeHtml(row.employeeId)}</code></td>
-            <td>${escapeHtml(row.staffName)}</td>
-            <td>${escapeHtml(row.staffCategory)}</td>
-            <td>${escapeHtml(row.leaveType)}</td>
-            <td>${formatDays(row.entitlement)}</td>
-            <td>${formatDays(row.taken)}</td>
-            <td><strong>${formatDays(row.balance)}</strong></td>
-          </tr>`).join('')
-        : `<tr><td colspan="7" style="text-align:center">${escapeHtml(body.dataset.emptyMessage)}</td></tr>`;
+      renderTree(result.rows);
       status.textContent = '';
     } catch (error) {
       if (sequence !== refreshSequence) return;

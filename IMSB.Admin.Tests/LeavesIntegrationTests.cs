@@ -128,7 +128,8 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         var balance = await client.GetStringAsync("/Leaves/Index");
         Assert.Contains("Leave entry saved.", balance);
-        Assert.Contains(">3<", balance);
+        // balances reach the page as JSON for the tree table
+        Assert.Matches(@"""balance"":3(\.0+)?[,}]", balance);
     }
 
     private static string ReadStaffId(string html)

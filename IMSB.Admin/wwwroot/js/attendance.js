@@ -109,7 +109,7 @@
     $('attDate').value = data.date;
     $('attDate').max = data.today;
     $('futureNote').style.display = data.isFuture ? '' : 'none';
-    ['saveAttendanceBtn', 'saveSheetBtn', 'markAllPresentBtn'].forEach(id => { $(id).disabled = data.isFuture; });
+    ['saveSheetBtn', 'markAllPresentBtn'].forEach(id => { $(id).disabled = data.isFuture; });
   }
 
   function renderWeek(){
@@ -297,7 +297,7 @@
 
   function setSaving(on){
     saving = on;
-    ['saveAttendanceBtn', 'saveSheetBtn'].forEach(id => { $(id).disabled = on || !!data?.isFuture; });
+    ['saveSheetBtn'].forEach(id => { $(id).disabled = on || !!data?.isFuture; });
   }
 
   async function save(){
@@ -611,14 +611,10 @@
       updateDirty();
     });
     rows.addEventListener('click', onAction);
-    $('saveAttendanceBtn').addEventListener('click', save);
     $('saveSheetBtn').addEventListener('click', save);
     $('resetSheetBtn').addEventListener('click', () => {
       if (dirty && !confirm(t('DiscardChanges'))) return;
       if (data) renderSheet();
-    });
-    $('attExportBtn').addEventListener('click', () => {
-      window.location.href = '/Attendance/Export?' + qs({ from: day, to: day, departmentId: $('entryDept').value });
     });
 
     $('deptAttCards').addEventListener('click', e => {
