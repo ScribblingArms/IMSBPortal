@@ -34,7 +34,7 @@ internal static class AttendanceTestHelpers
     }
 
     public static AttendanceController Create(IMSBContext ctx, string userName = "admin@imsb") =>
-        new(new IMSB.Backend.Attendance(ctx), ctx, TestHelpers.LocalizerFactory())
+        new(new IMSB.Backend.Attendance(ctx), TestHelpers.LocalizerFactory())
         {
             ControllerContext = new ControllerContext
             {
@@ -145,7 +145,7 @@ public class AttendanceControllerTests
 
     private static async Task<LeaveBalanceRow> Balance(IMSBContext context, string employeeId = "EMP001")
     {
-        var result = Assert.IsType<ViewResult>(await new LeavesController(context, TestHelpers.LocalizerFactory()).Index());
+        var result = Assert.IsType<ViewResult>(await new LeavesController(new IMSB.Backend.Leaves(context), TestHelpers.LocalizerFactory()).Index());
         var model = Assert.IsType<LeaveManagementViewModel>(result.Model);
         return Assert.Single(model.Balances.Where(row => row.EmployeeId == employeeId));
     }
@@ -459,7 +459,8 @@ public class AttendanceControllerTests
         Assert.Equal(AttendanceStatuses.Absent, ravi.GetProperty("days")[Day.Day - 1].GetString());
         var oldTimer = rows.Single(r => r.GetProperty("employeeId").GetString() == "EMP003");
         Assert.Equal(AttendanceStatuses.Absent, oldTimer.GetProperty("days")[Day.Day - 1].GetString());
-        Assert.Equal(JsonValueKind.Null, oldTimer.GetProperty("days")[Day.Day - 2].ValueKind);
+        // the day before, when it is in the same month
+        if (Day.Day > 1) Assert.Equal(JsonValueKind.Null, oldTimer.GetProperty("days")[Day.Day - 2].ValueKind);
 
         var filtered = TestHelpers.OkJson(await c.Monthly(Day.ToString("yyyy-MM"), "executive"));
         Assert.Equal(4, filtered.GetProperty("rows").GetArrayLength());

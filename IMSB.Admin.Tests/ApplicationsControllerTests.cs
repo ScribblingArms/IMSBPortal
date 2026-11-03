@@ -46,7 +46,7 @@ public class ApplicationsControllerTests
     [InlineData("mobile", "9876543210", "Mobile already registered")]          // Kamala (ART-0001)
     [InlineData("district", "Chennai", "Select a district")]
     [InlineData("gender", "Unknown", "Select a gender")]
-    [InlineData("category_id", "not-a-guid", "Select a craft category")]
+    [InlineData("category_id", "not-a-guid", "Select an agency")]
     [InlineData("date_of_birth", "2015-01-01", "Artisan must be at least 18 years old")]
     [InlineData("submitted_date", "2999-01-01", "Date cannot be in the future")]
     [InlineData("submitted_date", "01/02/2026", "Invalid date")]
@@ -155,6 +155,30 @@ public class ApplicationsControllerTests
         var app = Get(ctx, "APP-0001");
         Assert.Equal(("boss", (string?)null), (app.Reviewer, app.StallCode));
         Assert.Equal(5, ctx.Artisans.Count());
+    }
+
+    [Fact]
+    public async Task From_and_to_dates_are_validated_saved_and_carried_to_the_artisan_on_approval()
+    {
+        using var ctx = Seeded();
+        var dto = NewApplication();
+        dto.FromDate = "2026-12-01";
+        dto.ToDate = "2026-11-30";
+        Assert.Equal("The end date must be on or after the start date", TestHelpers.Errors(await Applications(ctx).Create(dto))["to_date"]);
+        dto.ToDate = "bad-date";
+        Assert.Equal("Invalid date", TestHelpers.Errors(await Applications(ctx).Create(dto))["to_date"]);
+        Assert.Empty(ctx.ArtisanApplications);
+
+        dto.ToDate = "2026-12-31";
+        await Applications(ctx).Create(dto);
+        var app = Get(ctx, "APP-0001");
+        Assert.Equal((new DateTime(2026, 12, 1), new DateTime(2026, 12, 31)), (app.FromDate!.Value, app.ToDate!.Value));
+        var details = TestHelpers.OkJson(await Applications(ctx).Get("APP-0001"));
+        Assert.Equal(("2026-12-01", "2026-12-31"), (details.GetProperty("fromDate").GetString(), details.GetProperty("toDate").GetString()));
+
+        await Applications(ctx).Approve("APP-0001", null);
+        var artisan = ctx.Artisans.AsNoTracking().Single(a => a.ArtisanCode == Get(ctx, "APP-0001").ArtisanCode);
+        Assert.Equal((app.FromDate, app.ToDate), (artisan.FromDate, artisan.ToDate));
     }
 
     [Theory]

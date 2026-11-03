@@ -81,6 +81,13 @@ namespace IMSB.Dto.Models
         [Column("joined_date", TypeName = "date")]
         public DateTime JoinedDate { get; set; }
 
+        /// <summary>Optional period entered on the registration / edit form.</summary>
+        [Column("from_date", TypeName = "date")]
+        public DateTime? FromDate { get; set; }
+
+        [Column("to_date", TypeName = "date")]
+        public DateTime? ToDate { get; set; }
+
         [Column("remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }

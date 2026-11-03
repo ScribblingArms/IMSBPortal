@@ -77,3 +77,5 @@ C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Dto.appsettings
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Backend.deps.json
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Backend.dll
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.Backend.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Backend\bin\Debug\net8.0\IMSB.Common.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Backend\bin\Debug\net8.0\IMSB.Common.pdb

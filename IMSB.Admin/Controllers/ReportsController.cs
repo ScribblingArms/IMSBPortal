@@ -1,4 +1,4 @@
-using IMSB.Admin.Mappers;
+﻿using IMSB.Backend.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -21,18 +21,15 @@ namespace IMSB.Admin.Controllers
 
         private readonly IReportsInterface _reports;
         private readonly IAttendanceInterface _attendance;
-        private readonly IArtisansInterface _artisans;
         private readonly IStringLocalizer _L;
 
         public ReportsController(
             IReportsInterface reports,
             IAttendanceInterface attendance,
-            IArtisansInterface artisans,
             IStringLocalizerFactory localizerFactory)
         {
             _reports = reports;
             _attendance = attendance;
-            _artisans = artisans;
             // Same shared resources the views use (Resources/SharedResource.<culture>.resx)
             _L = localizerFactory.Create("SharedResource", typeof(ReportsController).Assembly.GetName().Name!);
         }
@@ -157,7 +154,7 @@ namespace IMSB.Admin.Controllers
             if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
                 return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
 
-            return Ok(await MonthlyAttendanceDataAsync(start, type));
+            return Ok(await _attendance.MonthlyAttendanceReportAsync(start, type));
         }
 
         [HttpGet]
@@ -166,11 +163,12 @@ namespace IMSB.Admin.Controllers
             if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
                 return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
 
-            var report = await MonthlyAttendanceDataAsync(start, type);
+            var report = await _attendance.MonthlyAttendanceReportAsync(start, type);
             var rows = new List<string?[]>
             {
                 new[] { _L["SerialNumber"].Value, _L["EmployeeID"].Value, _L["StaffName"].Value, _L["Designation"].Value,
-                    _L["TotalDaysInMonth"].Value, _L["TotalWorkingDays"].Value }
+                    _L["TotalDaysInMonth"].Value, _L["TotalWorkingDays"].Value, _L["WeekOffs"].Value, _L["Present"].Value,
+                    _L["Absent"].Value, _L["Leaves"].Value, _L["OTHours"].Value }
             };
             rows.AddRange(report.Rows.Select((row, index) => new string?[]
             {
@@ -179,7 +177,12 @@ namespace IMSB.Admin.Controllers
                 row.Name,
                 row.Designation,
                 row.TotalDaysInMonth.ToString(CultureInfo.InvariantCulture),
-                row.TotalWorkingDays.ToString(CultureInfo.InvariantCulture)
+                row.TotalWorkingDays.ToString(CultureInfo.InvariantCulture),
+                row.WeekOffs.ToString(CultureInfo.InvariantCulture),
+                row.Present.ToString(CultureInfo.InvariantCulture),
+                row.Absent.ToString(CultureInfo.InvariantCulture),
+                row.Leaves.ToString(CultureInfo.InvariantCulture),
+                row.OtHours.ToString("0.##", CultureInfo.InvariantCulture)
             }));
 
             return ExportExcel($"monthly_attendance_{start:yyyyMM}.xls", rows);
@@ -194,6 +197,9 @@ namespace IMSB.Admin.Controllers
 
             return Ok(await AbstractDataAsync(selectedDate));
         }
+
+        private Task<AbstractReportData> AbstractDataAsync(DateTime date) =>
+            _attendance.AbstractReportAsync(date, _L["StaffHR"].Value, _L["Artisans"].Value);
 
         [HttpGet]
         public async Task<IActionResult> AbstractExport(
@@ -241,64 +247,13 @@ namespace IMSB.Admin.Controllers
             DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture,
                 DateTimeStyles.None, out selectedDate);
 
-        internal record AbstractSection(string Key, string Name, int Total, int? Attended, int? NotAttended);
-        internal record AbstractEmployee(
-            string SectionKey, string EmployeeId, string Name, string EmployeeType, string Designation,
-            string Gender, string Mobile, bool? Attended, string? AttendanceStatus);
-        internal record AbstractReportData(
-            string Date, List<AbstractSection> Sections, List<AbstractEmployee> Employees);
-
-        private async Task<AbstractReportData> AbstractDataAsync(DateTime date)
-        {
-            var staff = await _attendance.SheetAsync(date);
-            var artisans = await _artisans.FilterAsync(null, null, null, null, null);
-            var sections = new List<AbstractSection>();
-            var employees = new List<AbstractEmployee>();
-
-            foreach (var group in staff
-                .GroupBy(row => string.IsNullOrWhiteSpace(row.DepartmentName) ? _L["StaffHR"].Value : row.DepartmentName.Trim())
-                .OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
-            {
-                var key = "staff:" + group.Key;
-                var rows = group.OrderBy(row => row.Staff.FullName, StringComparer.OrdinalIgnoreCase).ToList();
-                var attended = rows.Count(row => row.Record?.Status is AttendanceStatuses.Present or AttendanceStatuses.HalfDay);
-                sections.Add(new AbstractSection(key, group.Key, rows.Count, attended, rows.Count - attended));
-                employees.AddRange(rows.Select(row =>
-                {
-                    var isAttended = row.Record?.Status is AttendanceStatuses.Present or AttendanceStatuses.HalfDay;
-                    return new AbstractEmployee(
-                        key,
-                        row.Staff.EmployeeId,
-                        row.Staff.FullName,
-                        group.Key,
-                        row.Staff.Designation,
-                        row.Staff.Gender,
-                        row.Staff.Mobile,
-                        isAttended,
-                        row.Record?.Status ?? "NOT_MARKED");
-                }));
-            }
-
-            const string artisanSectionKey = "artisans";
-            if (artisans.Count > 0)
-            {
-                sections.Insert(0, new AbstractSection(artisanSectionKey, _L["Artisans"].Value, artisans.Count, null, null));
-                employees.InsertRange(0, artisans.OrderBy(artisan => artisan.FullName, StringComparer.OrdinalIgnoreCase)
-                    .Select(artisan => new AbstractEmployee(
-                        artisanSectionKey, artisan.ArtisanCode, artisan.FullName, _L["Artisans"].Value, _L["Artisans"].Value,
-                        artisan.Gender, artisan.Mobile, null, null)));
-            }
-
-            return new AbstractReportData(date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), sections, employees);
-        }
-
         [HttpGet]
         public async Task<IActionResult> Salary([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? type, [FromQuery] string? q)
         {
             if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
                 return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
 
-            return Ok(await SalaryDataAsync(start, type, q));
+            return Ok(await _attendance.SalaryReportAsync(start, type, q));
         }
 
         [HttpGet]
@@ -307,7 +262,7 @@ namespace IMSB.Admin.Controllers
             if (!ModelState.IsValid || !TryResolveAttendanceMonth(year, month, out var start))
                 return BadRequest(new { errors = new Dictionary<string, string> { ["period"] = _L["ValDateInvalid"] } });
 
-            var report = await SalaryDataAsync(start, type, q);
+            var report = await _attendance.SalaryReportAsync(start, type, q);
             var rows = new List<string?[]>
             {
                 new[] { _L["SerialNumber"].Value, _L["EmployeeID"].Value, _L["StaffName"].Value, _L["EmployeeType"].Value,
@@ -330,82 +285,6 @@ namespace IMSB.Admin.Controllers
             totalRow[7] = report.GrandTotalSalary.ToString("0.00", CultureInfo.InvariantCulture);
             rows.Add(totalRow);
             return ExportExcel($"salary_report_{start:yyyyMM}.xls", rows);
-        }
-
-        internal record SalaryReportRow(
-            string EmployeeId, string Name, string Department, string Designation,
-            int MonthDays, decimal WorkedDays, decimal TotalSalary);
-        internal record SalaryReportData(int Year, int Month, int MonthDays, List<string> Types, List<SalaryReportRow> Rows, decimal GrandTotalSalary);
-
-        private async Task<SalaryReportData> SalaryDataAsync(DateTime start, string? type, string? query)
-        {
-            var end = start.AddMonths(1).AddDays(-1);
-            var staff = await _attendance.MonthlyStaffAsync(start, end);
-            var departments = await _attendance.DepartmentNamesAsync();
-            var types = departments.Values.OrderBy(name => name, StringComparer.OrdinalIgnoreCase).ToList();
-
-            if (!string.IsNullOrWhiteSpace(type))
-                staff = staff.Where(s => string.Equals(
-                    departments.GetValueOrDefault(s.DepartmentId), type.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
-
-            var records = await _attendance.HistoryAsync(null, null, null, start, end);
-            var recordsByStaff = records.ToLookup(r => r.StaffId);
-            var monthDays = DateTime.DaysInMonth(start.Year, start.Month);
-            var rows = staff.Select(s =>
-            {
-                var department = departments.GetValueOrDefault(s.DepartmentId) ?? string.Empty;
-                var workedDays = recordsByStaff[s.Id].Sum(r => r.Status switch
-                {
-                    AttendanceStatuses.Present => 1m,
-                    AttendanceStatuses.HalfDay => 0.5m,
-                    _ => 0m
-                });
-                var totalSalary = Math.Round(s.MonthlySalary * workedDays / monthDays, 2, MidpointRounding.AwayFromZero);
-                return new SalaryReportRow(s.EmployeeId, s.FullName, department, s.Designation, monthDays,
-                    workedDays, totalSalary);
-            }).Where(row => MatchesSalaryQuery(row, query))
-              .OrderBy(row => row.Department, StringComparer.OrdinalIgnoreCase)
-              .ThenBy(row => row.Name, StringComparer.OrdinalIgnoreCase)
-              .ThenBy(row => row.EmployeeId, StringComparer.OrdinalIgnoreCase)
-              .ToList();
-
-            return new SalaryReportData(start.Year, start.Month, monthDays, types, rows, rows.Sum(row => row.TotalSalary));
-        }
-
-        private static bool MatchesSalaryQuery(SalaryReportRow row, string? query)
-        {
-            if (string.IsNullOrWhiteSpace(query)) return true;
-            var value = query.Trim();
-            return row.EmployeeId.Contains(value, StringComparison.OrdinalIgnoreCase)
-                || row.Name.Contains(value, StringComparison.OrdinalIgnoreCase)
-                || row.Department.Contains(value, StringComparison.OrdinalIgnoreCase)
-                || row.Designation.Contains(value, StringComparison.OrdinalIgnoreCase);
-        }
-
-        internal record MonthlyAttendanceRow(string EmployeeId, string Name, string Designation, int TotalDaysInMonth, int TotalWorkingDays);
-        internal record MonthlyAttendanceData(int Year, int Month, int TotalDaysInMonth, List<string> Types, List<MonthlyAttendanceRow> Rows);
-
-        private async Task<MonthlyAttendanceData> MonthlyAttendanceDataAsync(DateTime start, string? type)
-        {
-            var end = start.AddMonths(1).AddDays(-1);
-            var staff = await _attendance.MonthlyStaffAsync(start, end);
-            var types = staff.Select(s => s.Designation.Trim()).Where(s => s.Length > 0)
-                .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(s => s).ToList();
-
-            if (!string.IsNullOrWhiteSpace(type))
-                staff = staff.Where(s => string.Equals(s.Designation.Trim(), type.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
-
-            var records = await _attendance.HistoryAsync(null, null, null, start, end);
-            var recordsByStaff = records.ToLookup(r => r.StaffId);
-            var rows = staff.Select(s => new MonthlyAttendanceRow(
-                s.EmployeeId,
-                s.FullName,
-                s.Designation,
-                DateTime.DaysInMonth(start.Year, start.Month),
-                recordsByStaff[s.Id].Count(r => r.Status == AttendanceStatuses.Present || r.Status == AttendanceStatuses.HalfDay)))
-                .ToList();
-
-            return new MonthlyAttendanceData(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month), types, rows);
         }
 
         private static bool TryResolveAttendanceMonth(int? year, int? month, out DateTime start)

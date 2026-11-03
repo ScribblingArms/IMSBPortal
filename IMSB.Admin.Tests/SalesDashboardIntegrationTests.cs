@@ -101,9 +101,12 @@ public class SalesDashboardIntegrationTests : IClassFixture<SalesAppFactory>
     public async Task Dashboard_page_has_real_cards_and_real_export()
     {
         var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Dashboard/Index"));
-        Assert.Matches(@"id=""stat-stalls"">\d+<", html);
-        Assert.Matches(@"id=""stat-occupied"">\d+<", html);
-        Assert.Contains("id=\"stat-artisans\">0<", html);    // counted from the artisans table
+        // only today's staff attendance summary is shown; the stall / sales / stock / application cards are hidden
+        Assert.Matches(@"id=""stat-total-staff"">\d+<", html);
+        Assert.Matches(@"id=""stat-present"">\d+<", html);
+        Assert.Matches(@"id=""stat-absent"">\d+<", html);
+        Assert.Matches(@"id=""stat-onleave"">\d+<", html);
+        Assert.DoesNotContain("id=\"stat-stalls\"", html);
         Assert.DoesNotContain("+3 this month", html);
         Assert.DoesNotContain("data-export", html);
         Assert.Contains("id=\"dashboardExportBtn\"", html);

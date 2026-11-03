@@ -81,6 +81,10 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasColumnName("email");
 
+                    b.Property<DateTime?>("FromDate")
+                        .HasColumnType("date")
+                        .HasColumnName("from_date");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -118,6 +122,10 @@ namespace IMSB.Dto.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("status");
+
+                    b.Property<DateTime?>("ToDate")
+                        .HasColumnType("date")
+                        .HasColumnName("to_date");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -232,6 +240,10 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasColumnName("email");
 
+                    b.Property<DateTime?>("FromDate")
+                        .HasColumnType("date")
+                        .HasColumnName("from_date");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -283,6 +295,10 @@ namespace IMSB.Dto.Migrations
                     b.Property<DateTime>("SubmittedDate")
                         .HasColumnType("date")
                         .HasColumnName("submitted_date");
+
+                    b.Property<DateTime?>("ToDate")
+                        .HasColumnType("date")
+                        .HasColumnName("to_date");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -994,6 +1010,14 @@ namespace IMSB.Dto.Migrations
                     b.Property<decimal>("MonthlySalary")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("monthly_salary");
+
+                    b.Property<TimeSpan?>("OtFromTime")
+                        .HasColumnType("time")
+                        .HasColumnName("ot_from_time");
+
+                    b.Property<TimeSpan?>("OtToTime")
+                        .HasColumnType("time")
+                        .HasColumnName("ot_to_time");
 
                     b.Property<string>("Shift")
                         .IsRequired()

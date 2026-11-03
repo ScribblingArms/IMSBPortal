@@ -2233,7 +2233,7 @@
     <value>Block is required (letters, digits, space, -)</value>
   </data>
   <data name="ValCraftCategory" xml:space="preserve">
-    <value>Select a craft category</value>
+    <value>Select an agency</value>
   </data>
   <data name="ValDistrict" xml:space="preserve">
     <value>Select a district</value>
@@ -2730,4 +2730,15 @@
   <data name="AllEmployeeTypes" xml:space="preserve"><value>All employee types</value></data>
   <data name="LeaveEntrySaved" xml:space="preserve"><value>Leave entry saved.</value></data>
   <data name="LeaveEntryDeleted" xml:space="preserve"><value>Leave entry deleted.</value></data>
+  <data name="TotalStaffPresent" xml:space="preserve"><value>Total Staff Present</value></data>
+  <data name="OTAssignment" xml:space="preserve"><value>OT Assignment</value></data>
+  <data name="OTFromTime" xml:space="preserve"><value>OT From</value></data>
+  <data name="OTToTime" xml:space="preserve"><value>OT To</value></data>
+  <data name="ValOtTimes" xml:space="preserve"><value>Enter both OT From and OT To times</value></data>
+  <data name="Agency" xml:space="preserve"><value>Agency</value></data>
+  <data name="FromDateLabel" xml:space="preserve"><value>From Date</value></data>
+  <data name="ToDateLabel" xml:space="preserve"><value>To Date</value></data>
+  <data name="WeekOffs" xml:space="preserve"><value>Week Offs</value></data>
+  <data name="Leaves" xml:space="preserve"><value>Leaves</value></data>
+  <data name="ValOtToAfterFrom" xml:space="preserve"><value>OT To time must be later than OT From time</value></data>
 </root>

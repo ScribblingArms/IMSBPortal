@@ -69,7 +69,10 @@
       ['Shift', s.shift],
       ['Status', statusLabel(s.status)]
     ];
-    if (window.StaffCanViewSalary) fields.push(['MonthlySalary', formatSalary(s.monthly_salary)]);
+    if (window.StaffCanViewSalary){
+      fields.push(['MonthlySalary', formatSalary(s.monthly_salary)]);
+      fields.push(['OTAssignment', s.ot_from_time && s.ot_to_time ? `${s.ot_from_time} – ${s.ot_to_time}` : '']);
+    }
     document.getElementById('staffProfileBody').innerHTML = `
       <div class="form-grid col-2">
         ${fields.map(([label, value]) => `<div class="form-group"><div class="form-label">${esc(t(label))}</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(value || '—')}</div></div>`).join('')}
@@ -204,7 +207,7 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', staff_category: 'StaffCategory', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', staff_category: 'StaffCategory', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', ot_from_time: 'OtFrom', ot_to_time: 'OtTo', gender: 'Gender', shift: 'Shift', status: 'Status' };
     return map[name] || name;
   }
 
@@ -212,8 +215,10 @@
     clearFormErrors();
     populateDeptAndShifts();
     const today = new Date();
-    const iso = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    document.getElementById('staffDOB').setAttribute('max', iso);
+    const isoOf = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const iso = isoOf(today);
+    // staff must be 18+, so the picker stops at 18 years ago
+    document.getElementById('staffDOB').setAttribute('max', isoOf(new Date(today.getFullYear() - 18, today.getMonth(), today.getDate())));
     document.getElementById('staffJoinDate').setAttribute('max', iso);
   }
 
@@ -254,6 +259,10 @@
     document.getElementById('staffJoinDate').value = s.join_date || '';
     const salaryInput = document.getElementById('staffMonthlySalary');
     if (salaryInput) salaryInput.value = s.monthly_salary == null ? '0' : String(s.monthly_salary);
+    const otFrom = document.getElementById('staffOtFrom');
+    if (otFrom) otFrom.value = s.ot_from_time || '';
+    const otTo = document.getElementById('staffOtTo');
+    if (otTo) otTo.value = s.ot_to_time || '';
     // shift codes are matched case-insensitively ("Morning" -> "MORNING"); a value not in the Shift table
     // (older records, e.g. "Night") is kept as an extra option so the record can still be saved unchanged
     const shiftSel = document.getElementById('staffShift');
@@ -294,7 +303,24 @@
       if (vals.monthly_salary === '' || !Number.isFinite(salary) || salary < 0 || salary > 999999999.99)
         errors.monthly_salary = t('ValMonthlySalary');
     }
+    // OT assignment: both times or neither, and To later than From (HH:mm compares as text)
+    if (vals.ot_from_time || vals.ot_to_time){
+      if (!vals.ot_from_time) errors.ot_from_time = t('ValOtTimes');
+      else if (!vals.ot_to_time) errors.ot_to_time = t('ValOtTimes');
+      else if (vals.ot_to_time <= vals.ot_from_time) errors.ot_to_time = t('ValOtToAfterFrom');
+    }
     return errors;
+  }
+
+  // re-checks the given fields as soon as one changes, without waiting for Save
+  function liveCheck(fields){
+    const errors = validateClient(getFormValues());
+    fields.forEach(f => {
+      const el = document.getElementById('err_' + f);
+      if (!el) return;
+      el.textContent = errors[f] || '';
+      el.closest('.form-group')?.classList.toggle('has-error', !!errors[f]);
+    });
   }
 
   function getFormValues(){
@@ -311,6 +337,8 @@
       staff_category: v('staffCategory'),
       join_date: v('staffJoinDate'),
       monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
+      ot_from_time: document.getElementById('staffOtFrom') ? v('staffOtFrom') : null,
+      ot_to_time: document.getElementById('staffOtTo') ? v('staffOtTo') : null,
       shift: v('staffShift'),
       status: v('staffStatus'),
     };
@@ -334,7 +362,8 @@
     const body = {
       fullName: vals.full_name, mobile: vals.mobile, email: vals.email,
       dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id,
-      designation: vals.designation, staffCategory: vals.staff_category, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
+      designation: vals.designation, staffCategory: vals.staff_category, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift,
+      otFromTime: vals.ot_from_time || null, otToTime: vals.ot_to_time || null
     };
     if (!isCreate) body.status = vals.status;
     const submitBtn = document.getElementById('staffSubmitBtn');
@@ -413,6 +442,8 @@
         designation: s.designation || '',
         staff_category: s.staffCategory || 'General',
         monthly_salary: s.monthlySalary,
+        ot_from_time: s.otFromTime || '',
+        ot_to_time: s.otToTime || '',
         mobile: s.mobile || '',
         email: s.email || null,
         date_of_birth: s.dateOfBirth || '',
@@ -470,6 +501,9 @@
     form.addEventListener('submit', submitCreateOrUpdate);
     form.addEventListener('input', () => { formDirty = true; });
     form.addEventListener('change', () => { formDirty = true; });
+    document.getElementById('staffDOB').addEventListener('change', () => liveCheck(['date_of_birth']));
+    ['staffOtFrom', 'staffOtTo'].forEach(id =>
+      document.getElementById(id)?.addEventListener('change', () => liveCheck(['ot_from_time', 'ot_to_time'])));
     document.getElementById('staffModalClose').addEventListener('click', tryClose);
     document.getElementById('staffCancelBtn').addEventListener('click', e => { e.preventDefault(); tryClose(); });
     document.getElementById('staffExportBtn')?.addEventListener('click', e => { e.preventDefault(); exportData(); });

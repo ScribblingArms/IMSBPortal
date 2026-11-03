@@ -120,11 +120,12 @@ namespace IMSB.Backend
 
         public async Task<string> NextEntryNoAsync()
         {
-            var existing = await _context.SalesEntries.AsNoTracking().Select(e => e.EntryNo).ToListAsync();
-            var next = existing
-                .Select(c => Regex.Match(c, @"(\d+)$"))
-                .Select(m => m.Success && int.TryParse(m.Value, out var n) ? n : 0)
-                .DefaultIfEmpty(0).Max() + 1;
+            // only the highest number is fetched: longer SAL-nnn sorts higher, then text order within a length
+            var last = await _context.SalesEntries.AsNoTracking().Where(e => e.EntryNo.StartsWith("SAL-"))
+                .OrderByDescending(e => e.EntryNo.Length).ThenByDescending(e => e.EntryNo)
+                .Select(e => e.EntryNo).FirstOrDefaultAsync();
+            var match = Regex.Match(last ?? "", @"(\d+)$");
+            var next = (match.Success && int.TryParse(match.Value, out var n) ? n : 0) + 1;
             return $"SAL-{next:D6}";
         }
 

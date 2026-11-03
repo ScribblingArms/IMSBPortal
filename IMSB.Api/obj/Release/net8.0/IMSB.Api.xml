@@ -1,0 +1,284 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IMSB.Api</name>
+    </assembly>
+    <members>
+        <member name="P:IMSB.Api.Auth.JwtOptions.SigningKey">
+            <summary>HMAC-SHA256 key, at least 32 characters. Set it outside source control (user secrets / environment).</summary>
+        </member>
+        <member name="T:IMSB.Api.Auth.ApiClaims">
+            <summary>Claim types in the bearer token (inbound claim mapping is off, so they arrive as written).</summary>
+        </member>
+        <member name="T:IMSB.Api.Auth.JwtTokens">
+            <summary>
+            Issues bearer tokens for the mobile app. Each token carries a server-side session id (<see cref="T:IMSB.Backend.SessionService"/>),
+            so signing out, revoking a session or disabling the account ends the token before it expires.
+            </summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.ApiControllerBase">
+            <summary>
+            JSON endpoints for the mobile app. Errors use the admin portal's shape: 400 { errors: { field_name: message } },
+            with messages in the request's language (Accept-Language: en-US, ta-IN, te-IN, hi-IN).
+            </summary>
+        </member>
+        <member name="P:IMSB.Api.Controllers.ApiControllerBase.L">
+            <summary>The shared translations (IMSB.Admin/Resources).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApiControllerBase.FromResult(IMSB.Interfaces.BackendResult,System.String,System.Func{Microsoft.AspNetCore.Mvc.IActionResult})">
+            <summary>404 when not found, 400 { errors: { key: reason } } when refused, otherwise the success result.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.ApplicationsController">
+            <summary>
+            Artisan applications: new (PENDING) -> process (UNDER_REVIEW) -> approve (registers the artisan, optionally
+            allotting a vacant stall) or reject. Open applications can be edited; any but approved ones deleted.
+            </summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApplicationsController.Data(System.String,System.String,System.String,System.String)">
+            <summary>Stats, the filtered applications (all, or one status) and the form pickers.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApplicationsController.Get(System.String)">
+            <summary>One application with every field (Aadhaar masked).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApplicationsController.Delete(System.String)">
+            <summary>Approved applications stay as the artisan's registration record; the rest can be deleted.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApplicationsController.Process(System.String)">
+            <summary>Takes a new application up for review by the current admin.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApplicationsController.Approve(System.String,IMSB.Dto.Models.ApproveApplicationDto)">
+            <summary>Registers the applicant as an ACTIVE artisan and, when a vacant stall is chosen, allots it.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApplicationsController.Reject(System.String,IMSB.Dto.Models.DecisionDto)">
+            <summary>Rejects an open application; remarks are required.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ApplicationsController.ValidateAsync(IMSB.Dto.Models.ApplicationDto,IMSB.Dto.Models.ArtisanApplication)">
+            <summary>
+            Same rules as an artisan registration. The mobile and Aadhaar must not belong to a registered artisan or to
+            another open application (a rejected applicant may apply again).
+            </summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.ArtisansController">
+            <summary>The artisan directory and profiles; the Aadhaar number is never returned (masked).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ArtisansController.Data(System.String,System.String,System.String,System.String,System.String)">
+            <summary>Stats, the status chart, the filtered directory and the form pickers. stall = assigned / unassigned.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ArtisansController.Get(System.String)">
+            <summary>Profile: details, stall, and this month's sales at that stall.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ArtisansController.Delete(System.String)">
+            <summary>An artisan holding a stall cannot be deleted; open reallocation requests naming them are closed.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.AttendanceController">
+            <summary>
+            Staff attendance: a day's sheet (saved in bulk), department-wise figures, history with edit / delete of single
+            records, and the monthly calendar. Dates are yyyy-MM-dd, months yyyy-MM, times HH:mm.
+            </summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AttendanceController.Data(System.String,System.String)">
+            <summary>A day's sheet (default today), its counts, the week strip and each department's figures.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AttendanceController.Save(IMSB.Dto.Models.AttendanceSheetDto)">
+            <summary>Saves the marked rows of a day's sheet: a record already saved for that staff and date is updated, others are added.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AttendanceController.History(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>Saved records for from..to when given, otherwise the month (yyyy-MM), otherwise the current month.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AttendanceController.Monthly(System.String,System.String,System.String,System.String)">
+            <summary>The month's calendar (default this month); type = designation, status = a status or NOT_MARKED.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AttendanceController.WeekAsync(System.DateTime)">
+            <summary>Monday to Sunday around the day, with each day's attendance % of the records marked that day.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AttendanceController.ValidateEntry(System.String,System.String,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>Checks status and times; absent / leave keep no times. Errors are keyed prefix + status | in_time | out_time.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.AuthController">
+            <summary>Sign-in for the mobile app: a bearer token per device, backed by a server-side session.</summary>
+        </member>
+        <member name="P:IMSB.Api.Controllers.AuthController.LoginRequest.Role">
+            <summary>admin, staff or inventory: the role the account signs in with.</summary>
+        </member>
+        <member name="P:IMSB.Api.Controllers.AuthController.LoginRequest.RememberMe">
+            <summary>true: the token lasts Session:RememberMeDays; false: Session:AbsoluteTimeoutHours, ended early by inactivity.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.Login(IMSB.Api.Controllers.AuthController.LoginRequest)">
+            <summary>Signs in and returns the bearer token to send as "Authorization: Bearer {token}".</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.Logout">
+            <summary>Ends this device's session; the token stops working.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.Me">
+            <summary>The signed-in user and how long the session has left.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.KeepAlive">
+            <summary>"Stay signed in": counts as activity and returns how long the session now has left.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.Sessions">
+            <summary>The user's own sessions; an admin also gets everyone's active sessions.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.RevokeSession(System.Guid)">
+            <summary>Ends one session: any of your own, or (admins) anyone's.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.RevokeOtherSessions">
+            <summary>Signs out every other device and browser where this account is signed in.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.Forgot(IMSB.Api.Controllers.AuthController.ForgotRequest)">
+            <summary>Starts a password reset. The answer is the same whether or not the account exists.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.AuthController.Reset(IMSB.Dto.Models.ResetPasswordViewModel)">
+            <summary>Sets a new password with the emailed token; every session of the account is signed out.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.DashboardController">
+            <summary>The operations dashboard.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.DashboardController.Data(System.Nullable{System.Int32})">
+            <summary>Header cards, sales trend (days = 40, 90 or 180), occupancy, category sales, stall ranking, low stock and recent activity.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.DashboardController.Applications(System.String)">
+            <summary>The applications behind an overview widget: APPROVED (this month), UNDER_REVIEW or PENDING.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.DashboardController.RankStalls(System.Collections.Generic.List{IMSB.Dto.Models.SalesAnalytics.StallPerformance})">
+            <summary>Best = highest revenue first; low = the remaining stalls, lowest first (a stall never appears in both lists).</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.InventoryController">
+            <summary>Products, stock levels and the stock history.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.InventoryController.Data(System.String,System.String,System.String)">
+            <summary>Stats, categories, the filtered products, low-stock alerts and recent stock movements.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.InventoryController.Delete(System.String)">
+            <summary>The stock history and sale lines keep their code / name snapshot of the product.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.InventoryController.UpdateStock(IMSB.Dto.Models.StockUpdateDto)">
+            <summary>ADD / REDUCE by a quantity, or CORRECTION to the counted quantity.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.LeavesController">
+            <summary>Leave management for the current year: entitlements per employee, leave taken, and balances.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.LeavesController.Balances(System.String,System.String)">
+            <summary>Entitlement, taken and balance per employee and leave type.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.LeavesController.Entitlements">
+            <summary>Staff (with categories) and the year's entitlements, for the entitlement form.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.LeavesController.SaveEntitlement(IMSB.Dto.Models.LeaveEntitlementForm)">
+            <summary>Adds or changes an employee's quota for a leave type (in steps of 0.5 days).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.LeavesController.Entries">
+            <summary>Active staff, entitlements and the year's leave entries, for the leave-taken form.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.LeavesController.Record(IMSB.Dto.Models.LeaveEntryForm)">
+            <summary>Records future leave (dates yyyy-MM-dd, this year) against the employee's balance.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.NotificationsController">
+            <summary>
+            Alerts worked out from the current data for the modules the user's role can open: open applications, pending
+            reallocations, agreements and contracts running out, renewals and low stock. The app builds the text from type + count.
+            </summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.PayrollController">
+            <summary>Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.PayrollController.Data(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+            <summary>The month's pay bill; q matches employee name or id.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.PayrollController.Generate(IMSB.Dto.Models.GeneratePayBillDto)">
+            <summary>Saves the month's pay bill with the allowances, overtime amounts and deductions given per employee.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.PayrollController.History(System.Guid,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>The employee's saved pay bills before the month, newest first.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.ReportsController">
+            <summary>Reports &amp; analytics. month = yyyy-MM (default this month).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ReportsController.Data(System.String,System.String)">
+            <summary>KPIs and the overview charts, optionally for one category.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ReportsController.Artisans(System.String,System.String,System.String,System.String)">
+            <summary>Sales at each artisan's stall: share of all sales and a 1-5 rating against the best seller.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ReportsController.MonthlyAttendance(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+            <summary>Days worked per staff member; type = designation. Year within the last ten years, default this month.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ReportsController.Salary(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String)">
+            <summary>Salary prorated by days worked; type = department, q matches id, name, department or designation.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.ReportsController.Abstract(System.String)">
+            <summary>The day's head count (default today): artisans, then staff per department with who attended.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.SalesController">
+            <summary>Daily sales entries; saving, editing or deleting one moves the products' stock to match.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.Data(System.String,System.String)">
+            <summary>One day (yyyy-MM-dd, default today): summary, entries, charts and the product / stall pickers.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.ProductReport(System.String,System.String,System.String,System.String,System.String)">
+            <summary>Product-wise sales: one row per product per day.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.DeductionLog(System.String)">
+            <summary>The stock movements written by sales (deductions and reversals), newest first.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.Update(System.String,IMSB.Dto.Models.SalesEntryDto)">
+            <summary>Only the net change per product touches stock: more sold -> SALE, fewer sold -> SALE_REVERSAL.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.Delete(System.String)">
+            <summary>Deletes the entry and puts the sold quantities back into stock.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.ValidateAsync(IMSB.Dto.Models.SalesEntryDto,IMSB.Dto.Models.SalesEntry)">
+            <summary>Validates a submission; for an edit, the quantities already sold by that entry count as available again.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.SoldPerProduct(IMSB.Dto.Models.SalesEntry)">
+            <summary>Quantity per product on an entry's lines (lines of deleted products are skipped).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.Move(IMSB.Dto.Models.Product,System.String,System.Int32,System.DateTime,System.String)">
+            <summary>Changes the product's quantity and returns the matching stock history row (saved by the backend).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SalesController.TryParseDay(System.String,System.DateTime@)">
+            <summary>yyyy-MM-dd; an empty value means today.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.SearchController">
+            <summary>Global search, limited to the modules the signed-in role can open.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.SearchController.Hit">
+            <summary>A hit: Key identifies the record for the matching endpoint (e.g. GET /api/artisans/{key}).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SearchController.Hit.#ctor(System.String,System.String,System.String)">
+            <summary>A hit: Key identifies the record for the matching endpoint (e.g. GET /api/artisans/{key}).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.SearchController.Query(System.String)">
+            <summary>At least two characters; three or more digits also match mobile numbers.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.StaffController">
+            <summary>Staff / HR: the directory with its figures, and register / edit / delete. Salaries are visible to admins only.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.List(System.String,System.String,System.String)">
+            <summary>Departments, shifts, the filtered staff list and the totals.</summary>
+        </member>
+        <member name="T:IMSB.Api.Controllers.StallsController">
+            <summary>Stalls: the list and map, allocation to artisans, vacating, and reallocation requests.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.Data(System.String,System.String,System.String,System.String)">
+            <summary>Stats, the filtered list, the full map, pickers and reallocation requests.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.Update(System.String,IMSB.Dto.Models.StallDto)">
+            <summary>Edits the details; the code is fixed, and an occupied stall stays OCCUPIED (vacate or reallocate instead).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.Delete(System.String)">
+            <summary>Only a vacant stall without products can be deleted; its reallocation requests go with it.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.Allocate(IMSB.Dto.Models.AllocateStallDto)">
+            <summary>Allots a vacant stall to an artisan who holds none.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.Vacate(System.String)">
+            <summary>Frees an occupied stall; any open reallocation request for it is closed.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.RequestReallocation(IMSB.Dto.Models.ReallocationDto)">
+            <summary>Asks for an occupied stall to move to another artisan (or to be vacated when none is named).</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.ApproveReallocation(System.String,IMSB.Dto.Models.DecisionDto)">
+            <summary>Approving moves the stall to the requested artisan, or vacates it when none was named.</summary>
+        </member>
+    </members>
+</doc>

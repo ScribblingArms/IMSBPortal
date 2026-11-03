@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- XML docs feed Swagger; not every public member needs one -->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IMSB.Backend\IMSB.Backend.csproj" />
+    <ProjectReference Include="..\IMSB.Common\IMSB.Common.csproj" />
+    <ProjectReference Include="..\IMSB.Interfaces\IMSB.Interfaces.csproj" />
+    <ProjectReference Include="..\IMSB.Dto\IMSB.Dto.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.31" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- the same translated messages as the admin portal (IMSB.Admin/Resources/SharedResource.<culture>.resx) -->
+    <!-- named explicitly: by convention they would take the namespace of IMSB.Admin/Resources/SharedResource.cs -->
+    <EmbeddedResource Include="..\IMSB.Admin\Resources\SharedResource.*.resx" Link="Resources\%(Filename)%(Extension)"
+                      LogicalName="IMSB.Api.Resources.%(Filename).resources" />
+  </ItemGroup>
+
+</Project>

@@ -272,6 +272,21 @@ public class StaffControllerUpdateTests
     };
 
     [Fact]
+    public async Task Editing_to_an_under_18_dob_is_rejected()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var original = staff.DateOfBirth;
+        var dto = DtoFor(staff);
+        dto.DateOfBirth = DateTime.Today.AddYears(-17).ToString("yyyy-MM-dd");
+
+        var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+
+        Assert.Equal("Staff must be at least 18 years old", errors["date_of_birth"]);
+        Assert.Equal(original, (await ctx.Staff.SingleAsync()).DateOfBirth);
+    }
+
+    [Fact]
     public async Task Update_changes_fields_and_audit_columns()
     {
         var (ctx, staff) = await SeedOne();
@@ -310,6 +325,61 @@ public class StaffControllerUpdateTests
 
         Assert.IsType<OkObjectResult>(update);
         Assert.Equal(18000m, (await ctx.Staff.SingleAsync()).MonthlySalary);
+    }
+
+    [Fact]
+    public async Task Admin_assigns_and_clears_ot_timings()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var dto = DtoFor(staff);
+        dto.OtFromTime = "18:00";
+        dto.OtToTime = "21:30";
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        var saved = await ctx.Staff.SingleAsync();
+        Assert.Equal((new TimeSpan(18, 0, 0), new TimeSpan(21, 30, 0)), (saved.OtFromTime!.Value, saved.OtToTime!.Value));
+        var row = TestHelpers.OkJson(await TestHelpers.CreateController(ctx).IndexData(null, null, null)).GetProperty("staff")[0];
+        Assert.Equal(("18:00", "21:30"), (row.GetProperty("otFromTime").GetString(), row.GetProperty("otToTime").GetString()));
+
+        dto.OtFromTime = dto.OtToTime = null;
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        saved = await ctx.Staff.SingleAsync();
+        Assert.Equal((null, null), (saved.OtFromTime, saved.OtToTime));
+    }
+
+    [Theory]
+    [InlineData("18:00", null, "ot_to_time", "Enter both OT From and OT To times")]
+    [InlineData(null, "21:00", "ot_from_time", "Enter both OT From and OT To times")]
+    [InlineData("18:00", "18:00", "ot_to_time", "OT To time must be later than OT From time")]
+    [InlineData("21:00", "18:00", "ot_to_time", "OT To time must be later than OT From time")]
+    [InlineData("25:00", "21:00", "ot_from_time", "Enter a valid time (HH:mm)")]
+    public async Task Ot_timings_need_both_times_with_to_after_from(string? from, string? to, string field, string message)
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var dto = DtoFor(staff);
+        dto.OtFromTime = from;
+        dto.OtToTime = to;
+
+        var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Equal(message, errors[field]);
+        Assert.Null((await ctx.Staff.SingleAsync()).OtFromTime);
+    }
+
+    [Fact]
+    public async Task Staff_role_cannot_set_ot_timings()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var dto = DtoFor(staff);
+        dto.OtFromTime = "18:00";
+        dto.OtToTime = "21:00";
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx, userName: "staff@imsb", role: "Staff").Update("EMP001", dto));
+        var row = TestHelpers.OkJson(await TestHelpers.CreateController(ctx, role: "Staff").IndexData(null, null, null)).GetProperty("staff")[0];
+        Assert.Null((await ctx.Staff.SingleAsync()).OtFromTime);
+        Assert.Equal(System.Text.Json.JsonValueKind.Null, row.GetProperty("otFromTime").ValueKind);
     }
 
     [Fact]

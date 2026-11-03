@@ -1,4 +1,4 @@
-using IMSB.Admin.Mappers;
+using IMSB.Backend.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -111,7 +111,11 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = User.Identity?.Name
             };
             dto.ApplyTo(entity);
-            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
+            if (User.IsInRole("Admin"))
+            {
+                entity.MonthlySalary = dto.MonthlySalary;
+                dto.ApplyOvertimeTo(entity);
+            }
             await _staff.AddAsync(entity);
 
             return Ok(new { employeeId = entity.EmployeeId });
@@ -129,7 +133,11 @@ namespace IMSB.Admin.Controllers
             if (errors.Count > 0) return BadRequest(new { errors });
 
             dto.ApplyTo(entity);
-            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
+            if (User.IsInRole("Admin"))
+            {
+                entity.MonthlySalary = dto.MonthlySalary;
+                dto.ApplyOvertimeTo(entity);
+            }
             if (!string.IsNullOrWhiteSpace(dto.Status)) entity.Status = dto.Status.Trim().ToUpperInvariant();
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = User.Identity?.Name;
@@ -166,6 +174,8 @@ namespace IMSB.Admin.Controllers
 
             if (!Guid.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
                 errors["department_id"] = _L["ValDepartment"];
+
+            if (User.IsInRole("Admin") && dto.ValidateOvertime() is { } ot) errors[ot.Field] = _L[ot.Key];
 
             // an unchanged shift is accepted so records holding older values (e.g. "Night") can still be edited
             var shiftUnchanged = currentShift != null && string.Equals(currentShift, dto.Shift, StringComparison.OrdinalIgnoreCase);

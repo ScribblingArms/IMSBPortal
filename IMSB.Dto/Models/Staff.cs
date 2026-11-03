@@ -49,6 +49,13 @@ namespace IMSB.Dto.Models
         [Column("monthly_salary", TypeName = "decimal(18,2)")]
         public decimal MonthlySalary { get; set; }
 
+        /// <summary>OT assignment set by an admin: the window this staff member may work overtime (null = none assigned).</summary>
+        [Column("ot_from_time")]
+        public TimeSpan? OtFromTime { get; set; }
+
+        [Column("ot_to_time")]
+        public TimeSpan? OtToTime { get; set; }
+
         [Required]
         [Column("join_date")]
         public DateTime JoinDate { get; set; }

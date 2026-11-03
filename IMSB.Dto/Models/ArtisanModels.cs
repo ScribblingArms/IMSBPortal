@@ -47,6 +47,11 @@ namespace IMSB.Dto.Models
         /// <summary>Defaults to today.</summary>
         public string? JoinedDate { get; set; }
 
+        /// <summary>Optional, yyyy-MM-dd; To may not be before From.</summary>
+        public string? FromDate { get; set; }
+
+        public string? ToDate { get; set; }
+
         [StringLength(500, ErrorMessage = "ValRemarks")]
         public string? Remarks { get; set; }
     }

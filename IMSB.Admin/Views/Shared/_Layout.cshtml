@@ -1,4 +1,4 @@
-﻿@using IMSB.Admin.Resources
+@using IMSB.Admin.Resources
 @inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
 @inject Microsoft.Extensions.Options.IOptions<IMSB.Dto.Models.UserSessionOptions> SessionSettings
 @{
@@ -16,7 +16,7 @@
     };
     var commonStrings = commonKeys.ToDictionary(k => k, k => L[k].Value);
     // idle timer for main.js; "Remember me" sessions are not ended by inactivity
-    var persistent = User.FindFirst(IMSB.Admin.Services.SessionService.PersistentClaimType)?.Value == "1";
+    var persistent = User.FindFirst(IMSB.Backend.SessionService.PersistentClaimType)?.Value == "1";
     var idleSeconds = persistent ? 0 : SessionSettings.Value.IdleTimeoutMinutes * 60;
 }
 <!DOCTYPE html>

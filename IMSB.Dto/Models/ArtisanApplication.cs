@@ -87,6 +87,13 @@ namespace IMSB.Dto.Models
         [Column("submitted_date", TypeName = "date")]
         public DateTime SubmittedDate { get; set; }
 
+        /// <summary>Optional period entered on the form; carried over to the artisan on approval.</summary>
+        [Column("from_date", TypeName = "date")]
+        public DateTime? FromDate { get; set; }
+
+        [Column("to_date", TypeName = "date")]
+        public DateTime? ToDate { get; set; }
+
         /// <summary>The admin who processed it (moved it to UNDER_REVIEW).</summary>
         [Column("reviewer")]
         [MaxLength(100)]

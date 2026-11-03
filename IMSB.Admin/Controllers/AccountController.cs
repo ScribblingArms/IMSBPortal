@@ -1,8 +1,7 @@
 ﻿using IMSB.Dto.Models;
-using IMSB.Admin.Services;
+using IMSB.Backend;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Security.Claims;
@@ -103,24 +102,14 @@ namespace IMSB.Admin.Controllers
         public async Task<IActionResult> Reset(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
-            var prt = await _account.ValidatePasswordResetTokens(model.Token);
-            if (prt == null || prt.ExpiresAt < DateTime.UtcNow)
+            var (loginId, error) = await _account.ResetPasswordAsync(model.Token, model.NewPassword);
+            if (error != null)
             {
-                ModelState.AddModelError(string.Empty, _L["InvalidOrExpiredToken"]);
+                ModelState.AddModelError(string.Empty, _L[error]);
                 return View(model);
             }
-            var login = prt.Login;
-            if (login == null)
-            {
-                ModelState.AddModelError(string.Empty, _L["AccountNotFound"]);
-                return View(model);
-            }
-            var hasher = new PasswordHasher<Login>();
-            login.PasswordHash = hasher.HashPassword(login, model.NewPassword);
-            // remove every outstanding token for this account (this also saves the new password hash)
-            await _account.PasswordResetTokensID(login.Id);
             // a new password signs the account out everywhere
-            await _sessions.RevokeAllAsync(login.Id, SessionEndReasons.PasswordReset);
+            await _sessions.RevokeAllAsync(loginId!.Value, SessionEndReasons.PasswordReset);
             TempData["Message"] = _L["PasswordResetDone"].Value;
             return RedirectToAction("Login");
         }
@@ -167,54 +156,12 @@ namespace IMSB.Admin.Controllers
                 return await LoginViewAsync(model);
             }
 
-            // Lookup user by username or email
-            var lookup = model.Username.Trim().ToLower();
-            var login = await _account.ValidateLogincredentials(lookup);
+            // username or email, password, active account and the role chosen on the page
+            var (login, normalizedSelected, error) = await _account.CheckSignInAsync(model.Username, model.Password, model.SelectedRole);
             if (login == null)
             {
-                ModelState.AddModelError(string.Empty, _L["InvalidCredentials"]);
+                ModelState.AddModelError(string.Empty, _L[error!]);
                 return await LoginViewAsync(model);
-            }
-
-            // verify password before revealing anything else about the account
-            var hasher = new PasswordHasher<Login>();
-            var verify = hasher.VerifyHashedPassword(login, login.PasswordHash, model.Password);
-            if (verify == PasswordVerificationResult.Failed)
-            {
-                ModelState.AddModelError(string.Empty, _L["InvalidCredentials"]);
-                return await LoginViewAsync(model);
-            }
-
-            if (!login.IsActive)
-            {
-                ModelState.AddModelError(string.Empty, _L["AccountDisabled"]);
-                return await LoginViewAsync(model);
-            }
-
-            // validate selected role
-            var selected = (model.SelectedRole ?? string.Empty).Trim().ToLowerInvariant();
-            string normalizedSelected = selected switch
-            {
-                "admin" => "Admin",
-                "staff" => "Staff",
-                "inventory" => "Inventory",
-                _ => string.Empty
-            };
-            if (string.IsNullOrEmpty(normalizedSelected))
-            {
-                ModelState.AddModelError(string.Empty, _L["InvalidRoleSelected"]);
-                return await LoginViewAsync(model);
-            }
-
-            if (!string.Equals(login.Role, normalizedSelected, StringComparison.OrdinalIgnoreCase))
-            {
-                ModelState.AddModelError(string.Empty, _L["RoleNotAuthorized"]);
-                return await LoginViewAsync(model);
-            }
-
-            if (verify == PasswordVerificationResult.SuccessRehashNeeded)
-            {
-                login.PasswordHash = hasher.HashPassword(login, model.Password);
             }
 
             var session = await _sessions.StartAsync(login, normalizedSelected, model.RememberMe,

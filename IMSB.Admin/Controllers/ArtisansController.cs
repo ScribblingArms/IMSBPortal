@@ -1,4 +1,4 @@
-using IMSB.Admin.Mappers;
+using IMSB.Backend.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -98,6 +98,8 @@ namespace IMSB.Admin.Controllers
                 skills = a.Skills,
                 status = a.Status,
                 joinedDate = Date(a.JoinedDate),
+                fromDate = Date(a.FromDate),
+                toDate = Date(a.ToDate),
                 remarks = a.Remarks,
                 stallCode = stall?.StallCode,
                 allottedDate = stall?.AllottedDate == null ? null : Date(stall.AllottedDate),
@@ -158,7 +160,8 @@ namespace IMSB.Admin.Controllers
             return Ok(new { code = id });
         }
 
-        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, string Status, DateTime JoinedDate, string District, string Gender);
+        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, string Status, DateTime JoinedDate, string District, string Gender,
+            DateTime? FromDate, DateTime? ToDate);
 
         private async Task<(Dictionary<string, string> Errors, Validated V)> ValidateAsync(ArtisanDto dto, Artisan? existing)
         {
@@ -220,7 +223,9 @@ namespace IMSB.Admin.Controllers
                 else if (!errors.ContainsKey("date_of_birth") && joined < dob) errors["joined_date"] = _L["ValJoinInvalid"];
             }
 
-            return (errors, new Validated(dob, mobile, aadhaar, categoryId, status, joined, district ?? "", gender ?? ""));
+            if (ParsePeriod(dto.FromDate, dto.ToDate, out var from, out var to) is { } period) errors[period.Field] = _L[period.Key];
+
+            return (errors, new Validated(dob, mobile, aadhaar, categoryId, status, joined, district ?? "", gender ?? "", from, to));
         }
 
         private static void Apply(Artisan a, ArtisanDto dto, Validated v)
@@ -242,6 +247,8 @@ namespace IMSB.Admin.Controllers
             a.Skills = Clean(dto.Skills);
             a.Status = v.Status;
             a.JoinedDate = v.JoinedDate;
+            a.FromDate = v.FromDate;
+            a.ToDate = v.ToDate;
             a.Remarks = Clean(dto.Remarks);
         }
 
@@ -257,13 +264,13 @@ namespace IMSB.Admin.Controllers
             var rows = new List<string?[]>
             {
                 new string?[] { _L["ArtisanID"], _L["FullName"], _L["Gender"], _L["DateOfBirth"], _L["Mobile"], _L["Email"], _L["AadhaarNumber"],
-                    _L["District"], _L["CraftCategory"], _L["YearsOfExperience"], _L["Stall"], _L["Status"], _L["Joined"] }
+                    _L["District"], _L["Agency"], _L["YearsOfExperience"], _L["Stall"], _L["Status"], _L["Joined"], _L["FromDateLabel"], _L["ToDateLabel"] }
             };
             foreach (var a in artisans)
             {
                 rows.Add(new string?[] { a.ArtisanCode, a.FullName, a.Gender, Date(a.DateOfBirth), a.Mobile, a.Email, a.MaskedAadhaar,
                     a.District, a.Category?.Name, Int(a.YearsOfExperience),
-                    stalls.GetValueOrDefault(a.Id), StatusLabels.Artisan(_L, a.Status), Date(a.JoinedDate) });
+                    stalls.GetValueOrDefault(a.Id), StatusLabels.Artisan(_L, a.Status), Date(a.JoinedDate), Date(a.FromDate), Date(a.ToDate) });
             }
             return ExportExcel($"artisans_{DateTime.Now:yyyyMMddHHmmss}.xls", rows);
         }

@@ -26,7 +26,8 @@ public class StaffAppFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("Testing");   // skips the Development-only demo-user seeding
+        builder.UseEnvironment("Testing");
+        builder.UseSetting("SeedDemoData", "false");   // tests seed their own data
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<DbContextOptions<IMSBContext>>();
@@ -158,6 +159,12 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
         Assert.Contains("StaffCanViewSalary = true", html);
         Assert.DoesNotContain("id=\"staffMonthlySalary\"", staffHtml);
         Assert.Contains("StaffCanViewSalary = false", staffHtml);
+        // OT Assignment: admin only, placed after Employment Details
+        Assert.Contains("OT Assignment", html);
+        Assert.Contains("id=\"staffOtFrom\"", html);
+        Assert.Contains("id=\"staffOtTo\"", html);
+        Assert.True(html.IndexOf("Employment Details", StringComparison.Ordinal) < html.IndexOf("id=\"staffOtFrom\"", StringComparison.Ordinal));
+        Assert.DoesNotContain("id=\"staffOtFrom\"", staffHtml);
         Assert.Single(Regex.Matches(html, "id=\"toast-container\""));
         Assert.Single(Regex.Matches(html, "/js/main\\.js"));
     }

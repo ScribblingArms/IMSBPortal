@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMSB.Backend", "IMSB.Backen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMSB.DbLibrary", "IMSB.DbLibrary\IMSB.DbLibrary.csproj", "{4FA0DB6C-1018-4120-9309-B173D24B420A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMSB.Api", "IMSB.Api\IMSB.Api.csproj", "{830FDB86-CB64-46C3-A1CC-F6AB3205C760}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,18 @@ Global
 		{4FA0DB6C-1018-4120-9309-B173D24B420A}.Release|x64.Build.0 = Release|Any CPU
 		{4FA0DB6C-1018-4120-9309-B173D24B420A}.Release|x86.ActiveCfg = Release|Any CPU
 		{4FA0DB6C-1018-4120-9309-B173D24B420A}.Release|x86.Build.0 = Release|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Debug|x64.Build.0 = Debug|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Debug|x86.Build.0 = Debug|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Release|x64.ActiveCfg = Release|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Release|x64.Build.0 = Release|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Release|x86.ActiveCfg = Release|Any CPU
+		{830FDB86-CB64-46C3-A1CC-F6AB3205C760}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -87,6 +87,36 @@ public class DashboardControllerTests
     }
 
     [Fact]
+    public async Task Attendance_cards_count_todays_present_absent_and_on_leave()
+    {
+        using var ctx = SeededContext();
+        var staff = new[]
+        {
+            TestHelpers.ExistingStaff("EMP-0001", "Meena", "9000000001"),
+            TestHelpers.ExistingStaff("EMP-0002", "Radha", "9000000002"),
+            TestHelpers.ExistingStaff("EMP-0003", "Lakshmi", "9000000003"),
+            TestHelpers.ExistingStaff("EMP-0004", "Kavya", "9000000004"),
+            TestHelpers.ExistingStaff("EMP-0005", "Divya", "9000000005"),
+            TestHelpers.ExistingStaff("EMP-0006", "Sita", "9000000006")
+        };
+        ctx.Staff.AddRange(staff);
+        var today = DateTime.Today;
+        AttendanceRecord Mark(Staff s, string status, DateTime? day = null) => new() { StaffId = s.Id, AttendanceDate = day ?? today, Status = status };
+        ctx.AttendanceRecords.AddRange(
+            Mark(staff[0], AttendanceStatuses.Present),
+            Mark(staff[1], AttendanceStatuses.HalfDay),          // came in: counts as present
+            Mark(staff[2], AttendanceStatuses.Absent),
+            Mark(staff[3], AttendanceStatuses.Leave),
+            Mark(staff[4], AttendanceStatuses.Absent, today.AddDays(-1)));   // yesterday: not counted
+        // a leave entry covering today, nothing marked yet
+        ctx.StaffLeaveEntries.Add(new StaffLeaveEntry { StaffId = staff[5].Id, LeaveType = "Casual", Year = today.Year, FromDate = today.AddDays(-1), ToDate = today.AddDays(1), Days = 3 });
+        ctx.SaveChanges();
+
+        var s = await CreateDashboard(ctx).ComputeStatsAsync();
+        Assert.Equal((6, 2, 1, 2), (s.TotalStaff, s.PresentToday, s.AbsentToday, s.OnLeaveToday));
+    }
+
+    [Fact]
     public async Task Empty_database_gives_zeros_not_errors()
     {
         using var ctx = TestHelpers.CreateContext(seedReferenceData: false);

@@ -23,5 +23,15 @@ namespace IMSB.Interfaces
 
         /// <summary>Stamps the tracked login's last sign-in and saves it (with a rehashed password, if any).</summary>
         Task RecordLoginAsync(Login login);
+
+        /// <summary>
+        /// Checks the credentials and the role chosen at sign-in ("admin" / "staff" / "inventory"). Returns the tracked
+        /// login with its role (Admin / Staff / Inventory), or the shared resource key of the reason sign-in is refused.
+        /// An outdated password hash is upgraded on the login, saved by <see cref="RecordLoginAsync"/>.
+        /// </summary>
+        Task<(Login? Login, string Role, string? ErrorKey)> CheckSignInAsync(string usernameOrEmail, string password, string? selectedRole);
+
+        /// <summary>Sets a new password with a reset token and removes the login's tokens. Returns the login id, or the resource key of the error.</summary>
+        Task<(Guid? LoginId, string? ErrorKey)> ResetPasswordAsync(string token, string newPassword);
     }
 }

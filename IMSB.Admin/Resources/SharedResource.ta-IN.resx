@@ -2233,7 +2233,7 @@
     <value>தொகுதி தேவை (எழுத்துகள், இலக்கங்கள், இடைவெளி, -)</value>
   </data>
   <data name="ValCraftCategory" xml:space="preserve">
-    <value>கைவினை வகையைத் தேர்ந்தெடுக்கவும்</value>
+    <value>முகமையைத் தேர்ந்தெடுக்கவும்</value>
   </data>
   <data name="ValDistrict" xml:space="preserve">
     <value>மாவட்டத்தைத் தேர்ந்தெடுக்கவும்</value>
@@ -2730,4 +2730,15 @@
   <data name="BalanceRefreshFailed" xml:space="preserve"><value>விடுப்பு இருப்பைப் புதுப்பிக்க முடியவில்லை. மீண்டும் முயற்சிக்கப் பக்கத்தை ஏற்றவும்.</value></data>
   <data name="AllStaff" xml:space="preserve"><value>அனைத்து பணியாளர்களும்</value></data>
   <data name="AllEmployeeTypes" xml:space="preserve"><value>அனைத்து பணியாளர் வகைகளும்</value></data>
+  <data name="TotalStaffPresent" xml:space="preserve"><value>மொத்த வருகை ஊழியர்கள்</value></data>
+  <data name="OTAssignment" xml:space="preserve"><value>மிகைநேர ஒதுக்கீடு</value></data>
+  <data name="OTFromTime" xml:space="preserve"><value>மிகைநேரம் முதல்</value></data>
+  <data name="OTToTime" xml:space="preserve"><value>மிகைநேரம் வரை</value></data>
+  <data name="ValOtTimes" xml:space="preserve"><value>மிகைநேரம் முதல், வரை ஆகிய இரு நேரங்களையும் உள்ளிடவும்</value></data>
+  <data name="Agency" xml:space="preserve"><value>முகமை</value></data>
+  <data name="FromDateLabel" xml:space="preserve"><value>தொடக்கத் தேதி</value></data>
+  <data name="ToDateLabel" xml:space="preserve"><value>முடிவுத் தேதி</value></data>
+  <data name="WeekOffs" xml:space="preserve"><value>வார விடுமுறைகள்</value></data>
+  <data name="Leaves" xml:space="preserve"><value>விடுப்புகள்</value></data>
+  <data name="ValOtToAfterFrom" xml:space="preserve"><value>மிகைநேரம் வரை நேரம், முதல் நேரத்திற்குப் பின் இருக்க வேண்டும்</value></data>
 </root>

@@ -20,7 +20,7 @@ public class PayrollControllerTests
             new AttendanceRecord { Status = AttendanceStatuses.Absent }
         };
 
-        Assert.Equal(2.5m, PayrollController.PaidDays(records));
+        Assert.Equal(2.5m, IMSB.Backend.Payroll.PaidDays(records));
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class PayrollControllerTests
         Assert.Equal(expectedEmployeeId, Assert.Single(model.Rows).EmployeeId);
     }
 
-    private static PayrollController Controller(IMSBContext context) => new(context, TestHelpers.LocalizerFactory())
+    private static PayrollController Controller(IMSBContext context) => new(new IMSB.Backend.Payroll(context), TestHelpers.LocalizerFactory())
     {
         ControllerContext = new ControllerContext
         {

@@ -25,6 +25,30 @@ namespace IMSB.Common
         public static bool TryParseDate(string? value, out DateTime date) =>
             DateTime.TryParseExact(value?.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
 
+        /// <summary>
+        /// An optional From/To date pair (yyyy-MM-dd, empty = not set) where To may not be before From.
+        /// Returns the failing field ("from_date" / "to_date") and its SharedResource key, or null when valid.
+        /// </summary>
+        public static (string Field, string Key)? ParsePeriod(string? from, string? to, out DateTime? fromDate, out DateTime? toDate)
+        {
+            fromDate = toDate = null;
+            if (!string.IsNullOrWhiteSpace(from))
+            {
+                if (!TryParseDate(from, out var f)) return ("from_date", "ValDateInvalid");
+                fromDate = f;
+            }
+            if (!string.IsNullOrWhiteSpace(to))
+            {
+                if (!TryParseDate(to, out var t)) return ("to_date", "ValDateInvalid");
+                toDate = t;
+            }
+            return fromDate > toDate ? ("to_date", "ValDateRange") : null;
+        }
+
+        /// <summary>HH:mm within one day.</summary>
+        public static bool TryParseTime(string? value, out TimeSpan time) =>
+            TimeSpan.TryParseExact(value?.Trim(), @"hh\:mm", CultureInfo.InvariantCulture, out time) && time < TimeSpan.FromDays(1);
+
         private static readonly Regex Whitespace = new(@"\s+", RegexOptions.Compiled);
         private static readonly Regex TrailingNumber = new(@"(\d+)$", RegexOptions.Compiled);
         private static readonly Regex IndexSegment = new(@"\[(\d+)\]", RegexOptions.Compiled);

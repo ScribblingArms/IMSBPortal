@@ -1,6 +1,10 @@
 namespace IMSB.Dto.Models
 {
-    /// <summary>Dashboard header cards. Null = the module behind it (artisans, applications) has no data yet.</summary>
+    /// <summary>
+    /// Dashboard figures. Null = the module behind it (artisans, applications) has no data yet.
+    /// The header cards show the staff attendance summary for today: present (incl. half day), absent and on leave
+    /// (a LEAVE record, or a leave entry covering today with nothing marked).
+    /// </summary>
     public record DashboardStats(
         int TotalStalls,
         int OccupiedStalls,
@@ -13,5 +17,8 @@ namespace IMSB.Dto.Models
         int OutOfStockItems,
         int? PendingApplications,
         int TotalStaff,
-        int ActiveStaff);
+        int ActiveStaff,
+        int PresentToday = 0,
+        int AbsentToday = 0,
+        int OnLeaveToday = 0);
 }

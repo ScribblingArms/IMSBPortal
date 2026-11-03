@@ -15,7 +15,7 @@
         "ApplicationApprovedWithStall", "ApplicationRejectedMsg", "ApplicationApproved", "ApplicationRejected", "NoStallNow", "NoVacantStalls",
         "AadhaarKeepHint", "AadhaarStoredHint", "Female", "Male", "Other", "YearsCount", "ApplicationReview", "ApplicationDetails",
         "ValFullName", "ValDobRequired", "ValDobFuture", "ValArtisanMinAge", "ValArtisanMobile", "ValEmail", "ValAddress", "ValAadhaar",
-        "ValDistrict", "ValCraftCategory", "ValExperience", "ValDateFuture", "ValRejectRemarks"
+        "ValDistrict", "ValCraftCategory", "ValExperience", "ValDateFuture", "ValRejectRemarks", "ValDateRange"
     };
     var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
 }
@@ -151,10 +151,14 @@
             <select class="form-control" id="apDistrict" required><option value="">@L["SelectDistrict"]</option></select><div class="form-error" id="err_district"></div></div>
           <div class="form-group"><label class="form-label" for="apSubmitted">@L["SubmittedOn"]</label>
             <input type="date" class="form-control" id="apSubmitted"><div class="form-error" id="err_submitted_date"></div></div>
+          <div class="form-group"><label class="form-label" for="apFromDate">@L["FromDateLabel"]</label>
+            <input type="date" class="form-control" id="apFromDate"><div class="form-error" id="err_from_date"></div></div>
+          <div class="form-group"><label class="form-label" for="apToDate">@L["ToDateLabel"]</label>
+            <input type="date" class="form-control" id="apToDate"><div class="form-error" id="err_to_date"></div></div>
         </div>
         <div class="form-section-title" style="margin-top:20px"><i class="fa-solid fa-palette"></i> @L["CategorySkills"]</div>
         <div class="form-grid col-2">
-          <div class="form-group"><label class="form-label" for="apCategory">@L["CraftCategory"] <span class="req">*</span></label>
+          <div class="form-group"><label class="form-label" for="apCategory">@L["Agency"] <span class="req">*</span></label>
             <select class="form-control" id="apCategory" required><option value="">@L["SelectPlaceholder"]</option></select><div class="form-error" id="err_category_id"></div></div>
           <div class="form-group"><label class="form-label" for="apYears">@L["YearsOfExperience"]</label>
             <input type="number" class="form-control" id="apYears" min="0" max="80" step="1" value="0"><div class="form-error" id="err_years_of_experience"></div></div>

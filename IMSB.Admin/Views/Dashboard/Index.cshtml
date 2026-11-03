@@ -7,7 +7,6 @@
     var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
     ViewData["Title"] = L["OperationsDashboard"].Value;
     var s = (IMSB.Dto.Models.DashboardStats)ViewBag.Stats;
-    string Money(decimal v) => "₹" + v.ToString("#,##0.##", CultureInfo.GetCultureInfo("en-IN"));
 
     // Strings used by dashboard.js (cards, charts, lists, relative times)
     var jsKeys = new[] {
@@ -50,42 +49,27 @@
       <a href="/Inventory" style="color:var(--warning);font-weight:600">@L["ViewInventory"] →</a></div>
   </div>
 
-  <!-- ── STAT CARDS ── -->
+  <!-- ── STAT CARDS: today's staff attendance summary (stall, sales, stock and application cards are hidden) ── -->
   <div class="stat-grid dashboard-stat-grid">
     <div class="stat-card blue">
-      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-store"></i></div><div class="stat-value" id="stat-stalls">@s.TotalStalls</div></div>
-      <div class="stat-label">@L["TotalStalls"]</div>
-      <div class="stat-change up"><i class="fa-solid fa-chart-pie"></i> <span id="stat-occ-pct">@string.Format(L["OccupiedPct"].Value, s.OccupancyPct)</span></div>
-    </div>
-    <div class="stat-card orange">
-      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-door-open"></i></div><div class="stat-value" id="stat-occupied">@s.OccupiedStalls</div></div>
-      <div class="stat-label">@L["OccupiedStalls"]</div>
-      <div class="stat-change up"><i class="fa-solid fa-circle-check"></i> @L["Active"]</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-users"></i></div><div class="stat-value" id="stat-total-staff">@s.TotalStaff</div></div>
+      <div class="stat-label">@L["TotalStaff"]</div>
+      <div class="stat-change"><i class="fa-solid fa-circle-info"></i> @L["Registered"]</div>
     </div>
     <div class="stat-card green">
-      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-door-closed"></i></div><div class="stat-value" id="stat-vacant">@s.VacantStalls</div></div>
-      <div class="stat-label">@L["VacantStalls"]</div>
-      <div class="stat-change up"><i class="fa-solid fa-clock"></i> @L["Available"]</div>
-    </div>
-    <div class="stat-card indigo">
-      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-palette"></i></div><div class="stat-value" id="stat-artisans">@(s.TotalArtisans?.ToString() ?? "—")</div></div>
-      <div class="stat-label">@L["TotalArtisans"]</div>
-      <div class="stat-change" id="stat-artisans-note"><i class="fa-solid fa-circle-info"></i> @(s.TotalArtisans == null ? L["ModuleNotConnected"].Value : L["Registered"].Value)</div>
-    </div>
-    <div class="stat-card green">
-      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div><div class="stat-value" id="stat-sales">@Money(s.TodaySales)</div></div>
-      <div class="stat-label">@L["TodaysSales"]</div>
-      <div class="stat-change @(s.SalesChangePct < 0 ? "down" : "up")" id="stat-sales-change">@(s.SalesChangePct == null ? L["NoComparison"].Value : string.Format(L["VsYesterday"].Value, (s.SalesChangePct >= 0 ? "+" : "") + s.SalesChangePct.Value.ToString("0.0", CultureInfo.InvariantCulture) + "%"))</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-user-check"></i></div><div class="stat-value" id="stat-present">@s.PresentToday</div></div>
+      <div class="stat-label">@L["TotalStaffPresent"]</div>
+      <div class="stat-change up"><i class="fa-solid fa-calendar-day"></i> @L["Today"]</div>
     </div>
     <div class="stat-card red">
-      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-box-open"></i></div><div class="stat-value" id="stat-lowstock">@s.LowStockItems</div></div>
-      <div class="stat-label">@L["LowStockItems"]</div>
-      <div class="stat-change down"><i class="fa-solid fa-triangle-exclamation"></i> @L["NeedsRestock"]</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-user-xmark"></i></div><div class="stat-value" id="stat-absent">@s.AbsentToday</div></div>
+      <div class="stat-label">@L["Absent"]</div>
+      <div class="stat-change down"><i class="fa-solid fa-calendar-day"></i> @L["Today"]</div>
     </div>
     <div class="stat-card orange">
-      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-file-circle-exclamation"></i></div><div class="stat-value" id="stat-pending">@(s.PendingApplications?.ToString() ?? "—")</div></div>
-      <div class="stat-label">@L["PendingApplications"]</div>
-      <div class="stat-change" id="stat-pending-note"><i class="fa-solid fa-clock"></i> @(s.PendingApplications == null ? L["ModuleNotConnected"].Value : L["AwaitingReview"].Value)</div>
+      <div class="dashboard-stat-head"><div class="stat-icon"><i class="fa-solid fa-umbrella-beach"></i></div><div class="stat-value" id="stat-onleave">@s.OnLeaveToday</div></div>
+      <div class="stat-label">@L["OnLeave"]</div>
+      <div class="stat-change"><i class="fa-solid fa-calendar-day"></i> @L["Today"]</div>
     </div>
   </div>
 
@@ -307,14 +291,13 @@
 
 @section Styles {
   <style>
-    .dashboard-stat-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; }
+    .dashboard-stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .dashboard-stat-grid .stat-card { min-width: 0; min-height: 122px; padding: 12px 14px; }
     .dashboard-stat-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
     .dashboard-stat-grid .stat-icon { width: 34px; height: 34px; flex:none; font-size: .9rem; margin: 0; }
     .dashboard-stat-grid .stat-value { font-size: 1.55rem; text-align:right; margin:0; overflow-wrap:anywhere; }
     .dashboard-stat-grid .stat-label { font-size: .78rem; }
     .dashboard-stat-grid .stat-change { margin-top: 5px; font-size: .7rem; line-height:1.25; }
-    @@media (max-width: 1399px) { .dashboard-stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
     @@media (max-width: 700px) { .dashboard-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @@media (max-width: 480px) { .dashboard-stat-grid { grid-template-columns: 1fr; } }
     .dash-note { font-size:.72rem; color:var(--text-muted); }

@@ -16,6 +16,13 @@ namespace IMSB.Backend
             var yesterday = await SalesAnalytics.RevenueBetweenAsync(_context, today.AddDays(-1), today);
             var apps = await Applications.StatsAsync(_context);
 
+            var marked = await _context.AttendanceRecords.AsNoTracking().Where(r => r.AttendanceDate == today)
+                .Select(r => new { r.StaffId, r.Status }).ToListAsync();
+            var markedIds = marked.Select(r => r.StaffId).ToList();
+            var onLeaveUnmarked = await _context.StaffLeaveEntries.AsNoTracking()
+                .Where(e => e.FromDate <= today && e.ToDate >= today && !markedIds.Contains(e.StaffId))
+                .Select(e => e.StaffId).Distinct().CountAsync();
+
             return new DashboardStats(
                 TotalStalls: total,
                 OccupiedStalls: occupied,
@@ -29,7 +36,10 @@ namespace IMSB.Backend
                 OutOfStockItems: await _context.Products.CountAsync(p => p.Quantity <= 0),
                 PendingApplications: apps.Pending + apps.UnderReview,
                 TotalStaff: await _context.Staff.CountAsync(),
-                ActiveStaff: await _context.Staff.CountAsync(s => s.Status == "ACTIVE"));
+                ActiveStaff: await _context.Staff.CountAsync(s => s.Status == "ACTIVE"),
+                PresentToday: marked.Count(r => AttendanceStatuses.Worked(r.Status)),
+                AbsentToday: marked.Count(r => r.Status == AttendanceStatuses.Absent),
+                OnLeaveToday: marked.Count(r => r.Status == AttendanceStatuses.Leave) + onLeaveUnmarked);
         }
 
         public Task<ApplicationStats> ApplicationStatsAsync() => Applications.StatsAsync(_context);

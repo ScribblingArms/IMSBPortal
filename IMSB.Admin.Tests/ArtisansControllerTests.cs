@@ -90,13 +90,30 @@ public class ArtisansControllerTests
         Assert.Equal("XXXX XXXX " + dto.Aadhaar[^4..], a.MaskedAadhaar);
     }
 
+    [Fact]
+    public async Task From_and_to_dates_are_saved_and_to_may_not_precede_from()
+    {
+        using var ctx = Seeded();
+        var dto = NewArtisan();
+        dto.FromDate = "2026-11-10";
+        dto.ToDate = "2026-11-01";
+        Assert.Equal("The end date must be on or after the start date", TestHelpers.Errors(await Artisans(ctx).Create(dto))["to_date"]);
+
+        dto.ToDate = "2026-11-20";
+        await Artisans(ctx).Create(dto);
+        var a = Get(ctx, "ART-0005");
+        Assert.Equal((new DateTime(2026, 11, 10), new DateTime(2026, 11, 20)), (a.FromDate!.Value, a.ToDate!.Value));
+        var json = TestHelpers.OkJson(await Artisans(ctx).Get("ART-0005"));
+        Assert.Equal(("2026-11-10", "2026-11-20"), (json.GetProperty("fromDate").GetString(), json.GetProperty("toDate").GetString()));
+    }
+
     [Theory]
     [InlineData("mobile", "12345", "Enter a valid 10-digit mobile number")]
     [InlineData("mobile", "5123456789", "Enter a valid 10-digit mobile number")]
     [InlineData("mobile", "9876543210", "Mobile already registered")]
     [InlineData("district", "Chennai", "Select a district")]
     [InlineData("gender", "Unknown", "Select a gender")]
-    [InlineData("category_id", "not-a-guid", "Select a craft category")]
+    [InlineData("category_id", "not-a-guid", "Select an agency")]
     [InlineData("status", "RETIRED", "Invalid status")]
     [InlineData("date_of_birth", "2015-01-01", "Artisan must be at least 18 years old")]
     [InlineData("date_of_birth", "1990/01/01", "Invalid date of birth")]
@@ -241,9 +258,9 @@ public class ArtisansControllerTests
         using var ctx = Seeded();
         var csv = SalesTestHelpers.CsvText(await Artisans(ctx).Export(null, null, null, null, "assigned"));
         var lines = csv.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-        Assert.Equal("Artisan ID,Full Name,Gender,Date of Birth,Mobile,Email,Aadhaar Number,District,Craft Category,Years of Experience,Stall,Status,Joined", lines[0]);
+        Assert.Equal("Artisan ID,Full Name,Gender,Date of Birth,Mobile,Email,Aadhaar Number,District,Agency,Years of Experience,Stall,Status,Joined,From Date,To Date", lines[0]);
         var a = Get(ctx, "ART-0001");
-        Assert.Equal($"ART-0001,Kamala Rajendran,Female,1985-05-05,9876543210,,XXXX XXXX {a.AadhaarLast4},Hyderabad,Textiles,0,A-01,Active,2024-01-15", lines[1]);
+        Assert.Equal($"ART-0001,Kamala Rajendran,Female,1985-05-05,9876543210,,XXXX XXXX {a.AadhaarLast4},Hyderabad,Textiles,0,A-01,Active,2024-01-15,,", lines[1]);
         Assert.Equal(2, lines.Length);
 
         using var _ = new TestHelpers.CultureScope("hi-IN");

@@ -29,7 +29,7 @@ public class LeavesControllerTests
                 new Claim(ClaimTypes.Role, "Staff")
             }, "Test"))
         };
-        var controller = new LeavesController(context, TestHelpers.LocalizerFactory())
+        var controller = new LeavesController(new IMSB.Backend.Leaves(context), TestHelpers.LocalizerFactory())
         {
             ControllerContext = new ControllerContext { HttpContext = http },
             TempData = new TempDataDictionary(http, new TestTempDataProvider())

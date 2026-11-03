@@ -2,10 +2,8 @@ using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
-using System.Text;
 using static IMSB.Common.CommonHelpers;
 
 namespace IMSB.Admin.Controllers
@@ -20,13 +18,11 @@ namespace IMSB.Admin.Controllers
         public const int MaxEntriesPerSave = 1000;
 
         private readonly IAttendanceInterface _attendance;
-        private readonly IMSBContext _context;
         private readonly IStringLocalizer _L;
 
-        public AttendanceController(IAttendanceInterface attendance, IMSBContext context, IStringLocalizerFactory localizerFactory)
+        public AttendanceController(IAttendanceInterface attendance, IStringLocalizerFactory localizerFactory)
         {
             _attendance = attendance;
-            _context = context;
             // Same shared resources the views use (Resources/SharedResource.<culture>.resx)
             _L = localizerFactory.Create("SharedResource", typeof(AttendanceController).Assembly.GetName().Name!);
         }
@@ -181,20 +177,11 @@ namespace IMSB.Admin.Controllers
             }
             if (errors.Count > 0) return BadRequest(new { errors });
 
-            var staffIds = lines.Select(l => l.Staff.Id).ToList();
-            var existing = await _attendance.RecordsOnAsync(day, staffIds);
-            var year = day.Year;
-            var yearEntries = await _context.StaffLeaveEntries.AsNoTracking()
-                .Where(entry => entry.Year == year && staffIds.Contains(entry.StaffId)).ToListAsync();
-            var yearAttendance = await _context.AttendanceRecords.AsNoTracking()
-                .Where(record => record.AttendanceDate.Year == year && staffIds.Contains(record.StaffId)).ToListAsync();
-            var yearPolicies = await _context.LeaveEntitlements.AsNoTracking()
-                .Where(entitlement => entitlement.Year == year && entitlement.IsAttendanceLeaveType
-                    && entitlement.StaffId.HasValue && staffIds.Contains(entitlement.StaffId.Value)).ToListAsync();
+            var existing = await _attendance.RecordsOnAsync(day, lines.Select(l => l.Staff.Id).ToList());
             var user = User.Identity?.Name;
             var created = new List<AttendanceRecord>();
+            var saved = new List<AttendanceRecord>();
             int updated = 0;
-            int lopCount = 0;
             foreach (var l in lines)
             {
                 if (!existing.TryGetValue(l.Staff.Id, out var record))
@@ -209,10 +196,9 @@ namespace IMSB.Admin.Controllers
                     updated++;
                 }
                 Apply(record, l.Status, l.In, l.Out, l.Remarks, shifts.GetValueOrDefault(l.Staff.Shift.Trim().ToUpperInvariant()));
-                var policy = yearPolicies.FirstOrDefault(item => item.StaffId == l.Staff.Id);
-                ApplyLeavePolicy(record, policy, yearEntries, yearAttendance);
-                if (record.LeaveWithoutPay) lopCount++;
+                saved.Add(record);
             }
+            var lopCount = await _attendance.ApplyLeavePolicyAsync(saved);
             await _attendance.SaveSheetAsync(created);
             return Ok(new
             {
@@ -247,7 +233,7 @@ namespace IMSB.Admin.Controllers
 
             var shifts = await _attendance.ShiftNamesAsync();
             Apply(record, status, inTime, outTime, CleanRemarks(dto.Remarks), shifts.GetValueOrDefault(record.Staff!.Shift.Trim().ToUpperInvariant()));
-            await ApplyLeavePolicyAsync(record, record.Staff);
+            await _attendance.ApplyLeavePolicyAsync(new[] { record });
             record.UpdatedAt = DateTime.UtcNow;
             record.UpdatedBy = User.Identity?.Name;
             await _attendance.UpdateAsync(record);
@@ -312,9 +298,6 @@ namespace IMSB.Admin.Controllers
             return records.Select(r => ToHistoryRow(r, depts)).ToList();
         }
 
-        internal record MonthlyRow(string EmployeeId, string Name, string Type, List<string?> Days);
-        internal record MonthlyData(string Month, List<int> Days, List<string> Types, List<MonthlyRow> Rows);
-
         [HttpGet]
         public async Task<IActionResult> Monthly(
             [FromQuery] string? month,
@@ -327,7 +310,7 @@ namespace IMSB.Admin.Controllers
             if (!TryNormalizeMonthlyStatus(status, out var normalizedStatus))
                 return BadRequest(new { errors = new Dictionary<string, string> { ["status"] = _L["ValMonthlyAttendanceStatus"].Value } });
 
-            return Ok(await MonthlyDataAsync(key, start, type, q, normalizedStatus));
+            return Ok(await _attendance.MonthlyCalendarAsync(start, type, q, normalizedStatus));
         }
 
         [HttpGet]
@@ -342,7 +325,7 @@ namespace IMSB.Admin.Controllers
             if (!TryNormalizeMonthlyStatus(status, out var normalizedStatus))
                 return BadRequest(new { errors = new Dictionary<string, string> { ["status"] = _L["ValMonthlyAttendanceStatus"].Value } });
 
-            var calendar = await MonthlyDataAsync(key, start, type, q, normalizedStatus);
+            var calendar = await _attendance.MonthlyCalendarAsync(start, type, q, normalizedStatus);
             var rows = new List<string?[]>
             {
                 new[] { _L["EmployeeID"].Value, _L["StaffName"].Value, _L["EmployeeType"].Value }
@@ -365,38 +348,6 @@ namespace IMSB.Admin.Controllers
             }
 
             return ExportExcel($"attendance_calendar_{key}.xls", rows);
-        }
-
-        private async Task<MonthlyData> MonthlyDataAsync(string key, DateTime start, string? type, string? q = null, string? status = null)
-        {
-            var end = start.AddMonths(1).AddDays(-1);
-            var staff = await _attendance.MonthlyStaffAsync(start, end);
-            var records = await _attendance.HistoryAsync(null, null, null, start, end);
-            var types = staff.Select(s => s.Designation.Trim()).Where(s => s.Length > 0)
-                .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(s => s).ToList();
-
-            if (!string.IsNullOrWhiteSpace(type))
-                staff = staff.Where(s => string.Equals(s.Designation.Trim(), type.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
-
-            if (!string.IsNullOrWhiteSpace(q))
-            {
-                var search = q.Trim();
-                staff = staff.Where(s =>
-                    s.EmployeeId.Contains(search, StringComparison.OrdinalIgnoreCase)
-                    || s.FullName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                    || s.Designation.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-
-            var staffIds = staff.Select(s => s.Id).ToHashSet();
-            var recordsByStaffAndDay = records.Where(r => staffIds.Contains(r.StaffId))
-                .ToLookup(r => (r.StaffId, r.AttendanceDate.Day));
-            var days = Enumerable.Range(1, DateTime.DaysInMonth(start.Year, start.Month)).ToList();
-            var rows = staff.Select(s => new MonthlyRow(s.EmployeeId, s.FullName, s.Designation,
-                    days.Select(day => recordsByStaffAndDay[(s.Id, day)].Select(r => r.Status).FirstOrDefault()).ToList()))
-                .Where(row => status == null || row.Days.Any(day => status == "NOT_MARKED" ? day == null : day == status))
-                .ToList();
-
-            return new MonthlyData(key, days, types, rows);
         }
 
         private static bool TryNormalizeMonthlyStatus(string? status, out string? normalizedStatus)
@@ -547,43 +498,6 @@ namespace IMSB.Admin.Controllers
             remarks = r.Remarks,
             by = r.UpdatedBy ?? r.CreatedBy
         };
-
-        private async Task ApplyLeavePolicyAsync(AttendanceRecord record, Staff staff)
-        {
-            var year = record.AttendanceDate.Year;
-            var manualEntries = await _context.StaffLeaveEntries.AsNoTracking()
-                .Where(entry => entry.StaffId == staff.Id && entry.Year == year).ToListAsync();
-            var entitlement = await _context.LeaveEntitlements.AsNoTracking().FirstOrDefaultAsync(e =>
-                e.Year == year && e.StaffId == staff.Id && e.IsAttendanceLeaveType);
-            var attendance = await _context.AttendanceRecords.AsNoTracking().Where(other =>
-                other.StaffId == staff.Id && other.AttendanceDate.Year == year && other.Id != record.Id).ToListAsync();
-            ApplyLeavePolicy(record, entitlement, manualEntries, attendance);
-        }
-
-        private static void ApplyLeavePolicy(AttendanceRecord record, LeaveEntitlement? entitlement,
-            List<StaffLeaveEntry> manualEntries, List<AttendanceRecord> attendance)
-        {
-            var days = LeaveBalanceRules.AttendanceDays(record);
-            if (days == 0m)
-            {
-                record.LeaveWithoutPay = false;
-                return;
-            }
-            if (manualEntries.Any(entry => entry.FromDate.Date <= record.AttendanceDate.Date
-                    && entry.ToDate.Date >= record.AttendanceDate.Date))
-            {
-                record.LeaveWithoutPay = false;
-                return;
-            }
-            if (entitlement == null)
-            {
-                record.LeaveWithoutPay = true;
-                return;
-            }
-            var taken = LeaveBalanceRules.Taken(record.StaffId, record.AttendanceDate.Year, entitlement.LeaveType,
-                true, manualEntries, attendance.Where(other => other.Id != record.Id));
-            record.LeaveWithoutPay = taken + days > entitlement.AnnualQuota;
-        }
 
         private static string? CleanRemarks(string? remarks) => string.IsNullOrWhiteSpace(remarks) ? null : remarks.Trim();
 

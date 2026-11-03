@@ -2233,7 +2233,7 @@
     <value>ब्लॉक आवश्यक है (अक्षर, अंक, स्पेस, -)</value>
   </data>
   <data name="ValCraftCategory" xml:space="preserve">
-    <value>शिल्प श्रेणी चुनें</value>
+    <value>एजेंसी चुनें</value>
   </data>
   <data name="ValDistrict" xml:space="preserve">
     <value>ज़िला चुनें</value>
@@ -2730,4 +2730,15 @@
   <data name="BalanceRefreshFailed" xml:space="preserve"><value>अवकाश शेष अपडेट नहीं हो सका। पुनः प्रयास के लिए पृष्ठ रीलोड करें।</value></data>
   <data name="AllStaff" xml:space="preserve"><value>सभी कर्मचारी</value></data>
   <data name="AllEmployeeTypes" xml:space="preserve"><value>सभी कर्मचारी प्रकार</value></data>
+  <data name="TotalStaffPresent" xml:space="preserve"><value>कुल उपस्थित स्टाफ</value></data>
+  <data name="OTAssignment" xml:space="preserve"><value>ओटी असाइनमेंट</value></data>
+  <data name="OTFromTime" xml:space="preserve"><value>ओटी से</value></data>
+  <data name="OTToTime" xml:space="preserve"><value>ओटी तक</value></data>
+  <data name="ValOtTimes" xml:space="preserve"><value>ओटी से और ओटी तक दोनों समय दर्ज करें</value></data>
+  <data name="Agency" xml:space="preserve"><value>एजेंसी</value></data>
+  <data name="FromDateLabel" xml:space="preserve"><value>प्रारंभ तिथि</value></data>
+  <data name="ToDateLabel" xml:space="preserve"><value>अंतिम तिथि</value></data>
+  <data name="WeekOffs" xml:space="preserve"><value>साप्ताहिक अवकाश</value></data>
+  <data name="Leaves" xml:space="preserve"><value>छुट्टियाँ</value></data>
+  <data name="ValOtToAfterFrom" xml:space="preserve"><value>ओटी तक का समय ओटी से के समय के बाद होना चाहिए</value></data>
 </root>

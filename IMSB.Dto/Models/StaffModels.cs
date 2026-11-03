@@ -48,6 +48,11 @@ namespace IMSB.Dto.Models
         public string StaffCategory { get; set; } = "";
         [Range(typeof(decimal), "0", "999999999.99", ErrorMessage = "ValMonthlySalary")]
         public decimal MonthlySalary { get; set; }
+        // OT assignment (admin only): both times or neither, HH:mm
+        [RegularExpression("^([01][0-9]|2[0-3]):[0-5][0-9]$", ErrorMessage = "ValTime")]
+        public string? OtFromTime { get; set; }
+        [RegularExpression("^([01][0-9]|2[0-3]):[0-5][0-9]$", ErrorMessage = "ValTime")]
+        public string? OtToTime { get; set; }
         [Required(ErrorMessage = "ValJoinRequired")]
         public string JoinDate { get; set; } = "";
         public string Shift { get; set; } = "";

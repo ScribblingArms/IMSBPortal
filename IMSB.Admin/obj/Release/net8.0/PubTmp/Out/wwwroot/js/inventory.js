@@ -493,6 +493,12 @@
     document.getElementById('productSearch').addEventListener('input', debounce(load, 300));
     document.getElementById('productFilterCategory').addEventListener('change', load);
     document.getElementById('productFilterStatus').addEventListener('change', load);
+    document.getElementById('productFilterResetBtn').addEventListener('click', () => {
+      document.getElementById('productSearch').value = '';
+      document.getElementById('productFilterCategory').value = '';
+      document.getElementById('productFilterStatus').value = '';
+      load();
+    });
 
     const stockForm = document.getElementById('stockUpdateForm');
     stockForm.addEventListener('submit', submitStock);

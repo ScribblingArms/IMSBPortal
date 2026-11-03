@@ -42,5 +42,23 @@ namespace IMSB.Interfaces
         Task UpdateAsync(AttendanceRecord record);
 
         Task RemoveAsync(AttendanceRecord record);
+
+        /// <summary>
+        /// Marks each Leave / Half Day record as loss of pay when it is not covered by recorded leave and the staff
+        /// member's attendance leave policy has no balance left. Returns how many records are loss of pay.
+        /// </summary>
+        Task<int> ApplyLeavePolicyAsync(IReadOnlyCollection<AttendanceRecord> records);
+
+        /// <summary>The month's calendar; type = designation, status = a status code or NOT_MARKED (rows with such a day).</summary>
+        Task<MonthlyCalendar> MonthlyCalendarAsync(DateTime monthStart, string? type, string? q, string? status);
+
+        /// <summary>Days worked (present or half day) per staff member in the month; type = designation.</summary>
+        Task<MonthlyAttendanceData> MonthlyAttendanceReportAsync(DateTime monthStart, string? type);
+
+        /// <summary>Salary prorated by days worked; type = department name, q matches id, name, department or designation.</summary>
+        Task<SalaryReportData> SalaryReportAsync(DateTime monthStart, string? type, string? q);
+
+        /// <summary>The day's head count: artisans, then staff per department with who attended.</summary>
+        Task<AbstractReportData> AbstractReportAsync(DateTime date, string staffFallbackSection, string artisansLabel);
     }
 }

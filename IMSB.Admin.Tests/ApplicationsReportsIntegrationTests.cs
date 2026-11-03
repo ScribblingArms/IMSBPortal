@@ -70,6 +70,21 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
         Assert.Equal(expected, (await _factory.ClientAs(role).GetAsync(url)).StatusCode);
     }
 
+    [Theory]   // Edit Artisan / registration and the New Application form
+    [InlineData("/Artisans/Index", "arCategory", "arFromDate", "arToDate")]
+    [InlineData("/Applications/Index", "apCategory", "apFromDate", "apToDate")]
+    public async Task Artisan_forms_show_agency_and_from_to_date_pickers(string page, string category, string from, string to)
+    {
+        var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync(page));
+        Assert.Matches($"<label class=\"form-label\" for=\"{category}\">Agency <span", html);
+        Assert.DoesNotContain("Craft Category", html);
+        Assert.Matches($"<label class=\"form-label\" for=\"{from}\">From Date</label>", html);
+        Assert.Matches($"<label class=\"form-label\" for=\"{to}\">To Date</label>", html);
+        Assert.Contains($"<input type=\"date\" class=\"form-control\" id=\"{from}\">", html);
+        Assert.Contains($"<input type=\"date\" class=\"form-control\" id=\"{to}\">", html);
+        Assert.Contains("id=\"err_to_date\"", html);
+    }
+
     [Fact]
     public async Task Mutations_require_antiforgery_token()
     {
@@ -124,12 +139,10 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
         Assert.True(reportSubmenuStart >= 0);
         foreach (var route in new[] { "/Reports/ArtisanPerformance", "/Reports/MonthlyReports", "/Reports/SalaryReport", "/Reports/AbstractReport" })
             Assert.True(reports.IndexOf($"data-page=\"{route}\"", reportSubmenuStart, StringComparison.Ordinal) >= 0);
-        Assert.Contains("data-tab-target=\"overview\"", reports);
-        Assert.Contains("data-tab-target=\"available\"", reports);
-        Assert.Contains("data-tab-target=\"stall\"", reports);
-        Assert.Contains("location.href='/Reports/Index#overview'", reports);
-        Assert.Contains("location.href='/Reports/Index#available'", reports);
-        Assert.Contains("location.href='/Reports/Index#stall'", reports);
+        // Overview Charts, Report Library and Stall Report are not in the menu (still tabs on the Reports page)
+        Assert.DoesNotContain("data-tab-target=", reports);
+        Assert.DoesNotContain("location.href='/Reports/Index#", reports);
+        Assert.Contains("data-tab=\"overview\"", reports);
 
         var artisanPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/ArtisanPerformance"));
         Assert.Contains("id=\"artisanReportSearch\"", artisanPage);
@@ -140,7 +153,15 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
         Assert.Contains("id=\"artisanReportReset\"", artisanPage);
         Assert.Contains("class=\"search-box artisan-report-search\"", artisanPage);
 
+        // submenu order: Artisan Performance, Abstract, Monthly Reports, Monthly Calendar, Salary
+        var order = new[] { "/Reports/ArtisanPerformance", "/Reports/AbstractReport", "/Reports/MonthlyReports", "/Attendance/MonthlyCalendar", "/Reports/SalaryReport" }
+            .Select(route => reports.IndexOf($"data-page=\"{route}\"", reportSubmenuStart, StringComparison.Ordinal)).ToList();
+        Assert.DoesNotContain(-1, order);
+        Assert.Equal(order.OrderBy(i => i), order);
+
         var monthlyPage = WebUtility.HtmlDecode(await client.GetStringAsync("/Reports/MonthlyReports"));
+        var headers = Regex.Matches(monthlyPage, "<th[^>]*>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()).ToList();
+        Assert.Equal(new[] { "S.No", "Staff Name", "Designation", "Total Days in Month", "Total Working Days", "Week Offs", "Present", "Absent", "Leaves", "OT Hrs" }, headers);
         Assert.Contains("id=\"monthlyReportYear\"", monthlyPage);
         Assert.Contains("id=\"monthlyReportMonth\"", monthlyPage);
         Assert.Contains("id=\"monthlyReportType\"", monthlyPage);

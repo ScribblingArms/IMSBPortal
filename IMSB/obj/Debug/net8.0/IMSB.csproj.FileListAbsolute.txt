@@ -29,10 +29,10 @@ K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\staticwebassets.build.json
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\staticwebassets.build.json.cache
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\staticwebassets.development.json
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\IMSB.csproj.Up2Date
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\IMSB.dll
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\refint\IMSB.dll
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\IMSB.pdb
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\IMSB.genruntimeconfig.cache
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\ref\IMSB.dll
+K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

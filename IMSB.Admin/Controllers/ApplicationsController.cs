@@ -1,4 +1,4 @@
-using IMSB.Admin.Mappers;
+using IMSB.Backend.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -209,7 +209,8 @@ namespace IMSB.Admin.Controllers
 
         // ── Validation ────────────────────────────────────────────────
 
-        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, DateTime SubmittedDate, string District, string Gender);
+        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, DateTime SubmittedDate, string District, string Gender,
+            DateTime? FromDate, DateTime? ToDate);
 
         /// <summary>
         /// Same rules as an artisan registration. The mobile and Aadhaar must not belong to a registered artisan or to
@@ -269,7 +270,9 @@ namespace IMSB.Admin.Controllers
                 else if (submitted > DateTime.Today) errors["submitted_date"] = _L["ValDateFuture"];
             }
 
-            return (errors, new Validated(dob, mobile, aadhaar, categoryId, submitted, district ?? "", gender ?? ""));
+            if (ParsePeriod(dto.FromDate, dto.ToDate, out var from, out var to) is { } period) errors[period.Field] = _L[period.Key];
+
+            return (errors, new Validated(dob, mobile, aadhaar, categoryId, submitted, district ?? "", gender ?? "", from, to));
         }
 
         private static void Apply(ArtisanApplication a, ApplicationDto dto, Validated v)
@@ -290,6 +293,8 @@ namespace IMSB.Admin.Controllers
             a.YearsOfExperience = dto.YearsOfExperience;
             a.Skills = Clean(dto.Skills);
             a.SubmittedDate = v.SubmittedDate;
+            a.FromDate = v.FromDate;
+            a.ToDate = v.ToDate;
             a.Remarks = Clean(dto.Remarks);
         }
 

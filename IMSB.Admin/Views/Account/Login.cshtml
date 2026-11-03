@@ -64,6 +64,19 @@
 
             <!-- ── Right Panel (Form) ── -->
             <div class="login-right">
+                @* the language can be chosen before signing in (same form as the header's) *@
+                <form asp-controller="Language" asp-action="SetLanguage" method="post" class="language-form" style="text-align:right;margin-bottom:12px">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                    <select name="culture" id="languageSelect" aria-label="@L["Language"]" onchange="this.form.submit()"
+                            class="form-control" style="display:inline-block;padding:6px 10px;font-size:.78rem;width:auto">
+                        <option value="en-US" selected="@(lang == "en")">English</option>
+                        <option value="ta-IN" selected="@(lang == "ta")">தமிழ்</option>
+                        <option value="te-IN" selected="@(lang == "te")">తెలుగు</option>
+                        <option value="hi-IN" selected="@(lang == "hi")">हिन्दी</option>
+                    </select>
+                </form>
+
                 <div class="login-form-header">
                     <h1>@L["WelcomeBack"]</h1>
                     <p>@L["SignInToContinue"]</p>

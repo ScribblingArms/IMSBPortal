@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IMSB.Common\IMSB.Common.csproj" />
     <ProjectReference Include="..\IMSB.Dto\IMSB.Dto.csproj" />
     <ProjectReference Include="..\IMSB.Interfaces\IMSB.Interfaces.csproj" />
   </ItemGroup>

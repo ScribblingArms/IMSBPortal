@@ -51,6 +51,18 @@ public class SalesControllerTests
         Assert.Equal("SAL-000002", await Sell(c, null, "00:00", Item("PRD001", 1, 100)));
     }
 
+    [Theory]
+    [InlineData(new[] { "SAL-000009", "SAL-000010", "SAL-000002" }, "SAL-000011")]
+    [InlineData(new[] { "SAL-999999", "SAL-1000000" }, "SAL-1000001")]   // past six digits the longer number wins
+    public async Task Next_entry_number_follows_the_highest_saved_one(string[] saved, string expected)
+    {
+        using var ctx = SeededContext();
+        ctx.SalesEntries.AddRange(saved.Select(no => new SalesEntry { EntryNo = no, SoldAt = DateTime.Today }));
+        await ctx.SaveChangesAsync();
+
+        Assert.Equal(expected, await new IMSB.Backend.Sales(ctx).NextEntryNoAsync());
+    }
+
     [Fact]
     public async Task Selling_the_whole_stock_is_allowed_but_not_more()
     {

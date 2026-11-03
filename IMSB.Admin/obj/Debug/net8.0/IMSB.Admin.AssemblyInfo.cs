@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.Admin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9225e711f9f2e88d847f58bdc71105b1afd8d10d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c464d2d4bc39a74c4caadcdc43ae51382690498e")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.Admin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.Admin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

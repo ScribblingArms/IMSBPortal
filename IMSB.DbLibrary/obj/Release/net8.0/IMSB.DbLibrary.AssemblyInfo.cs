@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.DbLibrary")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bba62cdd7ddae84224516f4762f670674de7d9e2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c464d2d4bc39a74c4caadcdc43ae51382690498e")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.DbLibrary")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.DbLibrary")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

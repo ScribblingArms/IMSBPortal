@@ -1,6 +1,6 @@
 // Reports & Analytics: KPIs and charts for the selected month / category, the stall occupancy and artisan
-// performance reports, the report library, and CSV / PDF exports (/Reports/Export/{id}?format=csv|pdf).
-// Localized strings come from window.ReportsI18n (Views/Reports/Index.cshtml).
+// performance, attendance and salary reports, the report library, and Excel / PDF exports.
+// Localized strings come from window.ReportsI18n on each report page.
 (function ReportsModule(){
   const I18N = window.ReportsI18n || {};
   function t(key, ...args){
@@ -23,11 +23,26 @@
   // the app's chart colors: primary blue for the measured series, a muted tone for the comparison / remainder
   const C = { primary: '#2558a8', muted: '#94a3b8', light: '#c7d6ee' };
   const charts = {};
-  let loadSeq = 0;
+  let loadSeq = 0, monthlyReportSeq = 0, salaryReportSeq = 0;
 
   const page = () => ({ month: $('reportMonth').value, categoryId: $('reportCategory').value });
   const stallFilters = () => ({ q: $('stallReportSearch').value.trim(), status: $('stallReportStatus').value, block: $('stallReportBlock').value });
   const artisanFilters = () => ({ q: $('artisanReportSearch').value.trim(), status: $('artisanReportStatus').value });
+  const monthlyAttendanceFilters = () => ({
+    year: $('monthlyReportYear').value,
+    month: $('monthlyReportMonth').value,
+    type: $('monthlyReportType').value
+  });
+  const salaryReportFilters = () => ({
+    year: $('salaryReportYear').value,
+    month: $('salaryReportMonth').value,
+    type: $('salaryReportType').value,
+    q: $('salaryReportSearch').value.trim()
+  });
+  const salaryMoney = value => '₹' + Number(value || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
   function exportUrl(id, format){
     const extra = id === 'stalls' ? stallFilters() : id === 'artisans' ? artisanFilters() : {};
@@ -189,6 +204,112 @@
     } catch (e) { console.error(e); }
   }
 
+  // ── Monthly attendance report ─────────────────────────────────
+  async function loadMonthlyAttendance(){
+    const seq = ++monthlyReportSeq;
+    const error = $('monthlyReportError');
+    error.textContent = '';
+    error.style.display = '';
+    try {
+      const res = await fetch('/Reports/MonthlyAttendance?' + qs(monthlyAttendanceFilters()));
+      if (seq !== monthlyReportSeq) return;
+      if (!res.ok){
+        const json = res.status === 400 ? await res.json().catch(() => ({})) : {};
+        error.textContent = Object.values(json.errors || {})[0] || `${t('CouldNotReachServer')} (${res.status})`;
+        error.style.display = 'block';
+        return;
+      }
+
+      const report = await res.json();
+      if (seq !== monthlyReportSeq) return;
+      const selectedType = $('monthlyReportType').value;
+      const availableTypes = report.types || [];
+      $('monthlyReportType').innerHTML = `<option value="">${esc(t('AllTypes'))}</option>` +
+        availableTypes.map(value => `<option value="${esc(value)}">${esc(value)}</option>`).join('');
+
+      if (selectedType && !availableTypes.some(value => value.toLowerCase() === selectedType.toLowerCase())){
+        $('monthlyReportType').value = '';
+        return loadMonthlyAttendance();
+      }
+      $('monthlyReportType').value = selectedType;
+      renderMonthlyAttendance(report);
+    } catch (e) {
+      console.error(e);
+      error.textContent = t('CouldNotReachServer');
+      error.style.display = 'block';
+    }
+  }
+
+  function renderMonthlyAttendance(report){
+    const body = $('monthlyReportBody');
+    if (!report.rows.length){
+      body.innerHTML = `<tr><td colspan="5" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
+      return;
+    }
+    body.innerHTML = report.rows.map((row, index) => `<tr>
+      <td class="monthly-report-number">${index + 1}</td>
+      <td><strong class="monthly-report-staff-name">${esc(row.name)}</strong><div class="monthly-report-employee-id">${esc(row.employeeId)}</div></td>
+      <td>${esc(row.designation)}</td>
+      <td>${row.totalDaysInMonth}</td>
+      <td><strong>${row.totalWorkingDays}</strong></td>
+    </tr>`).join('');
+  }
+
+  // ── Salary report ────────────────────────────────────────────
+  async function loadSalaryReport(){
+    const seq = ++salaryReportSeq;
+    const error = $('salaryReportError');
+    error.textContent = '';
+    error.style.display = 'none';
+    try {
+      const res = await fetch('/Reports/Salary?' + qs(salaryReportFilters()));
+      if (seq !== salaryReportSeq) return;
+      if (!res.ok){
+        const json = res.status === 400 ? await res.json().catch(() => ({})) : {};
+        error.textContent = Object.values(json.errors || {})[0] || t('SalaryRequestFailed', res.status);
+        error.style.display = 'block';
+        return;
+      }
+
+      const report = await res.json();
+      if (seq !== salaryReportSeq) return;
+      const selectedType = $('salaryReportType').value;
+      const availableTypes = report.types || [];
+      $('salaryReportType').innerHTML = `<option value="">${esc(t('AllDepartments'))}</option>` +
+        availableTypes.map(value => `<option value="${esc(value)}">${esc(value)}</option>`).join('');
+      if (selectedType && !availableTypes.some(value => value.toLowerCase() === selectedType.toLowerCase())){
+        $('salaryReportType').value = '';
+        return loadSalaryReport();
+      }
+      $('salaryReportType').value = selectedType;
+      renderSalaryReport(report);
+    } catch (e) {
+      console.error(e);
+      error.textContent = t('CouldNotReachServer');
+      error.style.display = 'block';
+    }
+  }
+
+  function renderSalaryReport(report){
+    const body = $('salaryReportBody');
+    $('salaryReportCount').textContent = report.rows.length;
+    $('salaryReportFoot').innerHTML = `<tr><td colspan="7" class="salary-report-total-label">${esc(t('GrandTotal'))}</td><td><strong>${salaryMoney(report.grandTotalSalary)}</strong></td></tr>`;
+    if (!report.rows.length){
+      body.innerHTML = `<tr><td colspan="8" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
+      return;
+    }
+    body.innerHTML = report.rows.map((row, index) => `<tr>
+      <td>${index + 1}</td>
+      <td>${esc(row.employeeId)}</td>
+      <td class="salary-report-name">${esc(row.name)}</td>
+      <td>${esc(row.department || '—')}</td>
+      <td>${esc(row.designation || '—')}</td>
+      <td>${row.monthDays}</td>
+      <td>${Number(row.workedDays).toLocaleString(lang(), { maximumFractionDigits: 2 })}</td>
+      <td><strong>${salaryMoney(row.totalSalary)}</strong></td>
+    </tr>`).join('');
+  }
+
   // ── Report library ────────────────────────────────────────────
   const LIBRARY = [
     { id: 'stalls', icon: 'fa-store', color: '#2558a8', bg: 'var(--primary-xlight)', title: 'RptStallOccupancy', desc: 'RptStallOccupancyDesc' },
@@ -207,33 +328,97 @@
         <div class="report-card-title">${esc(t(r.title))}</div>
         <div class="report-card-desc">${esc(t(r.desc))}</div>
         ${r.id ? `<div class="report-card-footer">
-          <button type="button" class="btn btn-primary btn-sm" style="flex:1" data-report="${r.id}" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> ${esc(t('ExportPdf'))}</button>
-          <button type="button" class="btn btn-outline btn-sm" style="flex:1" data-report="${r.id}" data-format="csv"><i class="fa-solid fa-file-csv"></i> ${esc(t('ExportCsv'))}</button>
+          <button type="button" class="btn btn-primary btn-sm" data-report="${r.id}" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> ${esc(t('ExportPdf'))}</button>
+          <button type="button" class="btn btn-outline btn-sm" data-report="${r.id}" data-format="xls"><i class="fa-solid fa-file-excel"></i> ${esc(t('ExportCsv'))}</button>
         </div>` : `<div class="report-card-footer"><span class="badge badge-neutral">${esc(t('ModuleNotConnected'))}</span></div>`}
       </div>`).join('');
   }
 
   // ── Wiring ────────────────────────────────────────────────────
-  function loadAll(){ loadOverview(); loadStalls(); loadArtisans(); }
+  function loadAll(){ loadOverview(); loadStalls(); }
 
   document.addEventListener('DOMContentLoaded', () => {
     if (typeof Chart !== 'undefined') Chart.defaults.font.family = "'Poppins', sans-serif";
-    renderLibrary();
-    // every export button on the page, including the library cards
-    document.querySelector('.page-body').addEventListener('click', e => {
-      const btn = e.target.closest('[data-report]');
-      if (btn) runExport(btn.dataset.report, btn.dataset.format || 'csv');
+    if ($('reportCards')) renderLibrary();
+    const pageBody = document.querySelector('.page-body');
+    pageBody?.addEventListener('click', event => {
+      const btn = event.target.closest('[data-report]');
+      if (btn) runExport(btn.dataset.report, btn.dataset.format || 'xls');
     });
-    ['reportMonth', 'reportCategory'].forEach(id => $(id).addEventListener('change', loadAll));
 
-    $('stallReportSearch').addEventListener('input', debounce(loadStalls, 250));
-    ['stallReportStatus', 'stallReportBlock'].forEach(id => $(id).addEventListener('change', loadStalls));
-    $('stallReportReset').addEventListener('click', () => { ['stallReportSearch', 'stallReportStatus', 'stallReportBlock'].forEach(id => { $(id).value = ''; }); loadStalls(); });
+    if ($('reportMonth')){
+      ['reportMonth', 'reportCategory'].forEach(id => $(id).addEventListener('change', loadAll));
+      loadAll();
+    }
 
-    $('artisanReportSearch').addEventListener('input', debounce(loadArtisans, 250));
-    $('artisanReportStatus').addEventListener('change', loadArtisans);
-    $('artisanReportReset').addEventListener('click', () => { ['artisanReportSearch', 'artisanReportStatus'].forEach(id => { $(id).value = ''; }); loadArtisans(); });
+    if ($('stallReportSearch')){
+      $('stallReportSearch').addEventListener('input', debounce(loadStalls, 250));
+      ['stallReportStatus', 'stallReportBlock'].forEach(id => $(id).addEventListener('change', loadStalls));
+      $('stallReportReset').addEventListener('click', () => {
+        ['stallReportSearch', 'stallReportStatus', 'stallReportBlock'].forEach(id => { $(id).value = ''; });
+        loadStalls();
+      });
+    }
 
-    loadAll();
+    if ($('artisanReportSearch')){
+      const defaultArtisanFilters = {
+        month: $('reportMonth').value,
+        category: $('reportCategory').value,
+        status: $('artisanReportStatus').value
+      };
+      $('artisanReportSearch').addEventListener('input', debounce(loadArtisans, 250));
+      ['artisanReportStatus', 'reportMonth', 'reportCategory'].filter(id => $(id))
+        .forEach(id => $(id).addEventListener('change', loadArtisans));
+      $('artisanReportReset').addEventListener('click', () => {
+        $('artisanReportSearch').value = '';
+        $('reportMonth').value = defaultArtisanFilters.month;
+        $('reportCategory').value = defaultArtisanFilters.category;
+        $('artisanReportStatus').value = defaultArtisanFilters.status;
+        loadArtisans();
+      });
+      loadArtisans();
+    }
+
+    if ($('monthlyReportYear')){
+      ['monthlyReportYear', 'monthlyReportMonth', 'monthlyReportType'].forEach(id =>
+        $(id).addEventListener('change', loadMonthlyAttendance));
+      const defaultMonthlyYear = $('monthlyReportYear').value;
+      const defaultMonthlyMonth = $('monthlyReportMonth').value;
+      $('monthlyReportReset').addEventListener('click', () => {
+        $('monthlyReportYear').value = defaultMonthlyYear;
+        $('monthlyReportMonth').value = defaultMonthlyMonth;
+        $('monthlyReportType').value = '';
+        loadMonthlyAttendance();
+      });
+      $('monthlyReportExport').addEventListener('click', () => {
+        window.location.href = '/Reports/MonthlyAttendanceExport?' + qs(monthlyAttendanceFilters());
+      });
+      loadMonthlyAttendance();
+    }
+
+    if ($('salaryReportYear')){
+      ['salaryReportYear', 'salaryReportMonth', 'salaryReportType'].forEach(id =>
+        $(id).addEventListener('change', loadSalaryReport));
+      const defaultSalaryYear = $('salaryReportYear').value;
+      const defaultSalaryMonth = $('salaryReportMonth').value;
+      $('salaryReportSearchBtn').addEventListener('click', loadSalaryReport);
+      $('salaryReportSearch').addEventListener('keydown', event => {
+        if (event.key === 'Enter'){
+          event.preventDefault();
+          loadSalaryReport();
+        }
+      });
+      $('salaryReportClearBtn').addEventListener('click', () => {
+        $('salaryReportYear').value = defaultSalaryYear;
+        $('salaryReportMonth').value = defaultSalaryMonth;
+        $('salaryReportType').value = '';
+        $('salaryReportSearch').value = '';
+        loadSalaryReport();
+      });
+      $('salaryReportExport').addEventListener('click', () => {
+        window.location.href = '/Reports/SalaryExport?' + qs(salaryReportFilters());
+      });
+      loadSalaryReport();
+    }
   });
 })();

@@ -1,5 +1,6 @@
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -53,6 +54,45 @@ namespace IMSB.Backend
         {
             login.LastLogin = DateTime.UtcNow;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<(Login? Login, string Role, string? ErrorKey)> CheckSignInAsync(string usernameOrEmail, string password, string? selectedRole)
+        {
+            var login = await ValidateLogincredentials(usernameOrEmail.Trim().ToLower());
+            if (login == null) return (null, "", "InvalidCredentials");
+
+            // verify the password before revealing anything else about the account
+            var hasher = new PasswordHasher<Login>();
+            var verify = hasher.VerifyHashedPassword(login, login.PasswordHash, password);
+            if (verify == PasswordVerificationResult.Failed) return (null, "", "InvalidCredentials");
+            if (!login.IsActive) return (null, "", "AccountDisabled");
+
+            var role = (selectedRole ?? string.Empty).Trim().ToLowerInvariant() switch
+            {
+                "admin" => "Admin",
+                "staff" => "Staff",
+                "inventory" => "Inventory",
+                _ => string.Empty
+            };
+            if (role.Length == 0) return (null, "", "InvalidRoleSelected");
+            if (!string.Equals(login.Role, role, StringComparison.OrdinalIgnoreCase)) return (null, "", "RoleNotAuthorized");
+
+            if (verify == PasswordVerificationResult.SuccessRehashNeeded)
+                login.PasswordHash = hasher.HashPassword(login, password);
+            return (login, role, null);
+        }
+
+        public async Task<(Guid? LoginId, string? ErrorKey)> ResetPasswordAsync(string token, string newPassword)
+        {
+            var prt = await ValidatePasswordResetTokens(token);
+            if (prt == null || prt.ExpiresAt < DateTime.UtcNow) return (null, "InvalidOrExpiredToken");
+            var login = prt.Login;
+            if (login == null) return (null, "AccountNotFound");
+
+            login.PasswordHash = new PasswordHasher<Login>().HashPassword(login, newPassword);
+            // remove every outstanding token for this account (this also saves the new password hash)
+            await PasswordResetTokensID(login.Id);
+            return (login.Id, null);
         }
     }
 }

@@ -1,4 +1,4 @@
-using IMSB.Admin.Mappers;
+using IMSB.Backend.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;

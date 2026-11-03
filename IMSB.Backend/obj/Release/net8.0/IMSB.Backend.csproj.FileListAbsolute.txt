@@ -17,3 +17,5 @@ K:\ScribblingArms\IMSBPortal\IMSB.Backend\obj\Release\net8.0\IMSB.Backend.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Backend\obj\Release\net8.0\refint\IMSB.Backend.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Backend\obj\Release\net8.0\IMSB.Backend.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Backend\obj\Release\net8.0\ref\IMSB.Backend.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Backend\bin\Release\net8.0\IMSB.Common.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Backend\bin\Release\net8.0\IMSB.Common.pdb

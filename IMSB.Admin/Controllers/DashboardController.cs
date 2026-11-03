@@ -1,4 +1,4 @@
-using IMSB.Admin.Mappers;
+using IMSB.Backend.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -39,7 +39,7 @@ namespace IMSB.Admin.Controllers
         }
 
         /// <summary>
-        /// Header cards. Attendance has no table yet, so its figures are null (shown as "—") rather than invented.
+        /// Dashboard figures; the header cards show today's staff attendance summary (see <see cref="DashboardStats"/>).
         /// Pending applications = new + under review.
         /// </summary>
         internal Task<DashboardStats> ComputeStatsAsync() => _dashboard.StatsAsync(_bazaar);
@@ -169,7 +169,10 @@ namespace IMSB.Admin.Controllers
                 new string?[] { _L["LowStockItems"], Int(s.LowStockItems) },
                 new string?[] { _L["OutOfStock"], Int(s.OutOfStockItems) },
                 new string?[] { _L["PendingApplications"], Na(s.PendingApplications) },
-                new string?[] { _L["TotalStaff"], Int(s.TotalStaff) }
+                new string?[] { _L["TotalStaff"], Int(s.TotalStaff) },
+                new string?[] { _L["TotalStaffPresent"], Int(s.PresentToday) },
+                new string?[] { _L["Absent"], Int(s.AbsentToday) },
+                new string?[] { _L["OnLeave"], Int(s.OnLeaveToday) }
             };
 
             rows.Add(Array.Empty<string?>());

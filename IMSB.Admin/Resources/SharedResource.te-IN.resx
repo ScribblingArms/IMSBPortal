@@ -2233,7 +2233,7 @@
     <value>బ్లాక్ అవసరం (అక్షరాలు, అంకెలు, ఖాళీ, -)</value>
   </data>
   <data name="ValCraftCategory" xml:space="preserve">
-    <value>హస్తకళ వర్గాన్ని ఎంచుకోండి</value>
+    <value>ఏజెన్సీని ఎంచుకోండి</value>
   </data>
   <data name="ValDistrict" xml:space="preserve">
     <value>జిల్లాను ఎంచుకోండి</value>
@@ -2730,4 +2730,15 @@
   <data name="BalanceRefreshFailed" xml:space="preserve"><value>సెలవు నిల్వలను రిఫ్రెష్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించడానికి పేజీని రీలోడ్ చేయండి.</value></data>
   <data name="AllStaff" xml:space="preserve"><value>అన్ని సిబ్బంది</value></data>
   <data name="AllEmployeeTypes" xml:space="preserve"><value>అన్ని ఉద్యోగి రకాలు</value></data>
+  <data name="TotalStaffPresent" xml:space="preserve"><value>మొత్తం హాజరైన స్టాఫ్</value></data>
+  <data name="OTAssignment" xml:space="preserve"><value>ఓటీ కేటాయింపు</value></data>
+  <data name="OTFromTime" xml:space="preserve"><value>ఓటీ నుండి</value></data>
+  <data name="OTToTime" xml:space="preserve"><value>ఓటీ వరకు</value></data>
+  <data name="ValOtTimes" xml:space="preserve"><value>ఓటీ నుండి, ఓటీ వరకు రెండు సమయాలను నమోదు చేయండి</value></data>
+  <data name="Agency" xml:space="preserve"><value>ఏజెన్సీ</value></data>
+  <data name="FromDateLabel" xml:space="preserve"><value>ప్రారంభ తేదీ</value></data>
+  <data name="ToDateLabel" xml:space="preserve"><value>ముగింపు తేదీ</value></data>
+  <data name="WeekOffs" xml:space="preserve"><value>వారాంతపు సెలవులు</value></data>
+  <data name="Leaves" xml:space="preserve"><value>సెలవులు</value></data>
+  <data name="ValOtToAfterFrom" xml:space="preserve"><value>ఓటీ వరకు సమయం ఓటీ నుండి సమయం తర్వాత ఉండాలి</value></data>
 </root>

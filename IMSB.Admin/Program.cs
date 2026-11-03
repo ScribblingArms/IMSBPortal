@@ -2,7 +2,6 @@
 using IMSB.Dto.Models;
 using IMSB.Admin.Services;
 using IMSB.Backend;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -48,11 +47,9 @@ builder.Services
         options.DataAnnotationLocalizerProvider = (_, factory) =>
             factory.Create("SharedResource", typeof(Program).Assembly.GetName().Name!));
 
-// Server-side sessions: the cookie carries a session id that is checked on every request (Services/SessionService)
+// Server-side sessions: the cookie carries a session id that is checked on every request (IMSB.Backend/SessionService)
 var sessionOptions = builder.Configuration.GetSection(UserSessionOptions.Section).Get<UserSessionOptions>() ?? new UserSessionOptions();
 builder.Services.Configure<UserSessionOptions>(builder.Configuration.GetSection(UserSessionOptions.Section));
-builder.Services.TryAddSingleton(TimeProvider.System);
-builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<SessionCookieEvents>();
 
 // Cookie Authentication
@@ -114,10 +111,10 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Seed demo users (one per role) for local development only
-// if (app.Environment.IsDevelopment())
-// {
-using var scope1 = app.Services.CreateScope();
+// Seed demo users (one per role) and demo stalls / products when "SeedDemoData" is on (default: Development only)
+if (app.Configuration.GetValue("SeedDemoData", app.Environment.IsDevelopment()))
+{
+    using var scope1 = app.Services.CreateScope();
     var logger = scope1.ServiceProvider.GetRequiredService<ILogger<Program>>();
     try
     {
@@ -139,7 +136,7 @@ using var scope1 = app.Services.CreateScope();
     {
         logger.LogWarning(ex, "Could not seed demo data; is the database migrated?");
     }
-//}
+}
 
 if (!app.Environment.IsDevelopment())
 {
