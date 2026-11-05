@@ -82,6 +82,9 @@ namespace IMSB.Backend
             var existing = await _context.LeaveEntitlements.FirstOrDefaultAsync(e => e.Year == year
                 && e.StaffId == staff.Id && e.LeaveType.ToUpper() == type.ToUpper());
             var wasAttendancePolicy = existing?.IsAttendanceLeaveType == true;
+            var departmentName = (await StaffCategoryNamesAsync()).GetValueOrDefault(staff.DepartmentId);
+            var category = string.IsNullOrWhiteSpace(departmentName) ? staff.StaffCategory
+                : departmentName.Length > 100 ? departmentName[..100] : departmentName;
 
             var manualEntries = await _context.StaffLeaveEntries.AsNoTracking()
                 .Where(entry => entry.Year == year && entry.StaffId == staff.Id).ToListAsync();
@@ -113,7 +116,7 @@ namespace IMSB.Backend
                 entitlement = new LeaveEntitlement
                 {
                     StaffId = staff.Id,
-                    StaffCategory = staff.StaffCategory,
+                    StaffCategory = category,
                     LeaveType = type,
                     Year = year,
                     AnnualQuota = annualQuota,
@@ -124,7 +127,7 @@ namespace IMSB.Backend
             else
             {
                 existing.AnnualQuota = annualQuota;
-                existing.StaffCategory = staff.StaffCategory;
+                existing.StaffCategory = category;
                 entitlement = existing;
             }
             var attendancePolicy = wasAttendancePolicy || entitlement.IsAttendanceLeaveType

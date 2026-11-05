@@ -25,6 +25,14 @@ namespace IMSB.Dto.Models
 
     }
 
+    /// <summary>The values of the staff form's Employee Type dropdown.</summary>
+    public static class EmployeeTypes
+    {
+        public const string Department = "Department";
+        public const string Agency = "Agency";
+        public const string Pattern = "^(Department|Agency)$";
+    }
+
     public class CreateStaffDto
     {
         // ErrorMessage values are SharedResource keys, translated by the DataAnnotations localizer (Program.cs)
@@ -43,6 +51,8 @@ namespace IMSB.Dto.Models
         public string Gender { get; set; } = "Female";
         [Required(ErrorMessage = "ValDepartment")]
         public string DepartmentId { get; set; } = "";
+        [RegularExpression(EmployeeTypes.Pattern, ErrorMessage = "ValEmployeeType")]
+        public string? EmployeeType { get; set; }
         [Required(ErrorMessage = "ValDesignation"), StringLength(100, ErrorMessage = "ValDesignation")]
         public string Designation { get; set; } = "";
         [Range(typeof(decimal), "0", "999999999.99", ErrorMessage = "ValMonthlySalary")]

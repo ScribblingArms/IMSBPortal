@@ -2578,8 +2578,7 @@
     <value>आज</value>
   </data>
   <data name="PayBillTitle" xml:space="preserve"><value>वेतन बिल</value></data>
-  <data name="PayBillSubtitle" xml:space="preserve"><value>कर्मचारी वेतन बनाएँ, मासिक कुल देखें और पिछला वेतन इतिहास देखें।</value></data>
-  <data name="GeneratePayBill" xml:space="preserve"><value>वेतन बिल बनाएँ</value></data>
+  <data name="PayBillSubtitle" xml:space="preserve"><value>स्टाफ श्रेणी और कर्मचारी के अनुसार मासिक वेतन कुल देखें और वेतन बिल निर्यात करें।</value></data>
   <data name="EmployeeSalaryStatement" xml:space="preserve"><value>कर्मचारी-वार वेतन विवरण</value></data>
   <data name="MonthlyConsolidatedPayBill" xml:space="preserve"><value>मासिक समेकित वेतन बिल</value></data>
   <data name="PreviousSalaryHistory" xml:space="preserve"><value>पिछले महीने का वेतन इतिहास</value></data>
@@ -2592,12 +2591,9 @@
   <data name="NetPay" xml:space="preserve"><value>शुद्ध वेतन</value></data>
   <data name="PayrollSaved" xml:space="preserve"><value>वेतन बिल बनाया और सहेजा गया।</value></data>
   <data name="PayrollLoadFailed" xml:space="preserve"><value>वेतन बिल डेटा लोड नहीं हो सका।</value></data>
-  <data name="PayrollSaveFailed" xml:space="preserve"><value>वेतन बिल नहीं बनाया जा सका।</value></data>
   <data name="NoPayrollHistory" xml:space="preserve"><value>इस कर्मचारी के लिए पिछला वेतन बिल नहीं मिला।</value></data>
-  <data name="ConfirmGeneratePayBill" xml:space="preserve"><value>चयनित महीने के लिए वेतन बिल बनाएँ या अपडेट करें?</value></data>
   <data name="Employees" xml:space="preserve"><value>कर्मचारी</value></data>
   <data name="Print" xml:space="preserve"><value>प्रिंट</value></data>
-  <data name="Draft" xml:space="preserve"><value>मसौदा</value></data>
   <data name="NothingToSave" xml:space="preserve">
     <value>सहेजने के लिए कुछ नहीं — पहले कम से कम एक स्टाफ सदस्य को चिह्नित करें या बदलें।</value>
   </data>
@@ -2753,4 +2749,7 @@
   <data name="NoOTAssignments" xml:space="preserve"><value>अभी कोई ओटी असाइनमेंट नहीं है।</value></data>
   <data name="ValOtSelectStaff" xml:space="preserve"><value>कोई कर्मचारी चुनें</value></data>
   <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>इस कर्मचारी का ओटी असाइनमेंट पहले से है। उसे ही संपादित करें।</value></data>
+  <data name="ValEmployeeType" xml:space="preserve"><value>मान्य कर्मचारी प्रकार चुनें</value></data>
+  <data name="EmployeeTypeDepartment" xml:space="preserve"><value>विभाग</value></data>
+  <data name="EmployeeTypeAgency" xml:space="preserve"><value>एजेंसी</value></data>
 </root>

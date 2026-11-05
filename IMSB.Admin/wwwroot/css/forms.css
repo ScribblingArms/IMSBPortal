@@ -36,8 +36,9 @@
   box-shadow: 0 0 0 3px rgba(37,88,168,.12);
 }
 .form-control::placeholder { color: var(--text-light); }
-/* no "dd-mm-yyyy" in an empty date field until it is focused; main.js sets .date-empty */
-input.date-empty:not(:focus) { color: transparent; }
+/* no "dd-mm-yyyy" in an empty date field, focused or not; main.js sets .date-empty. Opacity, not visibility, as the hidden part must keep taking keyboard focus */
+input.date-empty { color: transparent; }
+input.date-empty::-webkit-datetime-edit { opacity: 0; }
 .form-control:disabled {
   background: var(--bg);
   color: var(--text-muted);

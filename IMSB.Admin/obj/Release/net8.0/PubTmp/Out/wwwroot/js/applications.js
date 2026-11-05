@@ -128,7 +128,7 @@
       <td>${a.artisanCode ? `<code style="font-size:.7rem">${esc(a.artisanCode)}</code>` : '—'}</td>
       <td>${a.stallCode ? `<span class="badge badge-primary">${esc(a.stallCode)}</span>` : '—'}</td>
       <td>${esc(formatDate(a.decidedDate))}</td><td>${esc(a.decidedBy || '—')}</td>
-      <td style="white-space:nowrap">${iconBtn('view', a.id, 'fa-eye', t('View'))}</td></tr>`,
+      <td style="white-space:nowrap">${iconBtn('view', a.id, 'fa-eye', t('View'))}${iconBtn('delete-approved', a.id, 'fa-trash', t('Delete'), 'color:var(--danger)')}</td></tr>`,
     UNDER_REVIEW: a => `<tr>${idCell(a)}${nameCells(a)}
       <td>${esc(formatDate(a.submittedDate))}</td>
       <td><span style="color:var(--warning);font-weight:600">${esc(t('DaysCount', a.daysWaiting))}</span></td>
@@ -250,8 +250,8 @@
     }
   }
 
-  async function remove(id){
-    if (!confirm(t('ConfirmDeleteApplication', id))) return;
+  async function remove(id, confirmKey){
+    if (!confirm(t(confirmKey, id))) return;
     try {
       const { res, json } = await post('/Applications/Delete/' + encodeURIComponent(id));
       if (res.status === 404){ toast(t('Error'), t('ApplicationNotFound'), 'error'); load(); return; }
@@ -340,7 +340,7 @@
     };
   }
 
-  // mirrors the server rules; the server has the final say (duplicates, Aadhaar checksum)
+  // mirrors the server rules; the server has the final say (duplicates)
   function validate(v, editing){
     const e = {};
     if (v.fullName.length < 2 || v.fullName.length > 100) e.full_name = t('ValFullName');
@@ -428,7 +428,8 @@
         case 'view': case 'review': openReview(id); break;
         case 'process': processApp(id); break;
         case 'edit': edit(id); break;
-        case 'delete': remove(id); break;
+        case 'delete': remove(id, 'ConfirmDeleteApplication'); break;
+        case 'delete-approved': remove(id, 'ConfirmDeleteApprovedApplication'); break;
       }
     });
     document.querySelectorAll('[data-export-status]').forEach(b =>

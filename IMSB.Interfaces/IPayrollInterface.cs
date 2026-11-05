@@ -10,6 +10,9 @@ namespace IMSB.Interfaces
 
         Task<bool> IsGeneratedAsync(DateTime monthStart);
 
+        /// <summary>Every staff category name, so the pay bill can show the ones with nobody on it.</summary>
+        Task<List<string>> DepartmentsAsync();
+
         /// <summary>Saves the month's pay bill with the given adjustments; false when a row names staff outside the month's pay bill.</summary>
         Task<bool> GenerateAsync(DateTime monthStart, IReadOnlyCollection<PayBillAdjustmentDto> rows);
 

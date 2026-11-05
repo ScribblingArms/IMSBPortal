@@ -12,7 +12,7 @@
       <div class="page-subtitle">@L["PayBillSubtitle"]</div>
     </div>
     <div class="page-actions">
-      <button type="button" class="btn btn-primary btn-sm" id="payBillGenerate"><i class="fa-solid fa-calculator"></i> @L["GeneratePayBill"]</button>
+      <button type="button" class="btn btn-outline btn-sm" id="payBillExportBtn"><i class="fa-solid fa-download"></i> @L["Export"]</button>
     </div>
   </div>
 
@@ -58,8 +58,6 @@
       </table>
     </div>
   </section>
-
-  @Html.AntiForgeryToken()
 </main>
 @section Styles {
   <style>
@@ -74,6 +72,8 @@
     .pay-bill-table th:nth-child(2),.pay-bill-table td:nth-child(2),
     .pay-bill-table th:nth-child(3),.pay-bill-table td:nth-child(3),
     .pay-bill-table th:nth-child(4),.pay-bill-table td:nth-child(4) { text-align:left; }
+    /* the total's cell is only the 2nd in its row (the label spans six), but it sits under Net Pay */
+    .pay-bill-table tfoot td:last-child { text-align:right; }
     /* every card on a single row; scrolls sideways only if the screen is too narrow */
     .pay-dept-grid { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(140px, 1fr); gap:12px; overflow-x:auto; padding-bottom:4px; margin-bottom:18px; }
     .pay-dept-card { min-width:0; border:1px solid var(--border); border-top:3px solid var(--primary-light); border-radius:12px; padding:12px 14px; background:var(--card, #fff); box-shadow:var(--shadow-sm, 0 1px 3px rgba(15,23,42,.06)); display:flex; flex-direction:column; gap:8px; }
@@ -97,9 +97,7 @@
       NetPay = L["NetPay"].Value,
       Employees = L["Employees"].Value, GrandTotal = L["GrandTotal"].Value, SelectEmployee = L["SelectEmployee"].Value,
       NoStaffForAttendance = L["NoStaffForAttendance"].Value, NoPayrollHistory = L["NoPayrollHistory"].Value,
-      PayrollSaved = L["PayrollSaved"].Value, PayrollLoadFailed = L["PayrollLoadFailed"].Value,
-      PayrollSaveFailed = L["PayrollSaveFailed"].Value, CouldNotReachServer = L["CouldNotReachServer"].Value,
-      ConfirmGeneratePayBill = L["ConfirmGeneratePayBill"].Value, Draft = L["Draft"].Value,
+      PayrollLoadFailed = L["PayrollLoadFailed"].Value, CouldNotReachServer = L["CouldNotReachServer"].Value,
       AllStaff = L["AllStaff"].Value
     }));
   </script>

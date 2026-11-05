@@ -1015,6 +1015,10 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("Code");
 
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("DisplayOrder");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -1079,6 +1083,11 @@ namespace IMSB.Dto.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("EmployeeId");
+
+                    b.Property<string>("EmployeeType")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("EmployeeType");
 
                     b.Property<string>("FullName")
                         .IsRequired()

@@ -31,8 +31,8 @@ internal static class TestHelpers
                 new Department { Id = SalesDept, Name = "Sales" },
                 new Department { Id = AdminDept, Name = "Admin" });
             ctx.Shifts.AddRange(
-                new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)" },
-                new Shift { Code = "EVENING", Name = "Evening (4PM-10PM)" });
+                new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)", DisplayOrder = 1 },
+                new Shift { Code = "EVENING", Name = "Evening (4PM-10PM)", DisplayOrder = 2 });
             ctx.SaveChanges();
         }
         return ctx;

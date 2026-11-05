@@ -99,7 +99,7 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
             factory.Seed(ctx =>
             {
                 ctx.Departments.Add(new Department { Id = TestHelpers.SalesDept, Name = "Sales" });
-                ctx.Shifts.Add(new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)" });
+                ctx.Shifts.Add(new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)", DisplayOrder = 1 });
                 ctx.Staff.Add(TestHelpers.ExistingStaff("EMP001", "Seeded Person", "900000001"));
             });
             _seeded = true;
@@ -140,6 +140,19 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
     {
         var res = await _factory.ClientAs(role).GetAsync("/Staff/IndexData");
         Assert.Equal(expected, res.StatusCode);
+    }
+
+    [Fact]
+    public async Task Staff_add_form_has_staff_category_and_a_separate_optional_employee_type()
+    {
+        var html = System.Net.WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Staff/Index"));
+
+        Assert.Matches(@"for=""staffDepartment"">Staff Category\s*<span class=""req"">", html);
+        Assert.Matches(@"for=""staffEmployeeType"">Employee Type</label>", html);
+        var options = Regex.Match(html, @"<select id=""staffEmployeeType""[\s\S]*?</select>").Value;
+        Assert.Equal(new[] { "-- Select --", "Department", "Agency" },
+            Regex.Matches(options, @"<option[^>]*>([^<]*)</option>").Select(m => m.Groups[1].Value));
+        Assert.DoesNotContain("required", Regex.Match(options, @"<select[^>]*>").Value);
     }
 
     [Fact]

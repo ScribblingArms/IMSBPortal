@@ -11,6 +11,10 @@ namespace IMSB.Backend
         public Task<bool> IsGeneratedAsync(DateTime monthStart) =>
             _context.PayBillEntries.AnyAsync(e => e.Year == monthStart.Year && e.Month == monthStart.Month);
 
+        public async Task<List<string>> DepartmentsAsync() =>
+            (await _context.Departments.AsNoTracking().Select(department => department.Name).Distinct().ToListAsync())
+                .OrderBy(name => name, StringComparer.CurrentCultureIgnoreCase).ToList();
+
         public async Task<List<PayBillRow>> RowsAsync(DateTime monthStart, string? query = null)
         {
             var saved = await _context.PayBillEntries.AsNoTracking()

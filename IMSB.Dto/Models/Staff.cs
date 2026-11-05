@@ -46,11 +46,16 @@ namespace IMSB.Dto.Models
         [Column("DepartmentId")]
         public Guid DepartmentId { get; set; }
 
+        /// <summary>Optional: one of <see cref="EmployeeTypes"/>. Separate from the department, which is "Staff Category" on screen.</summary>
+        [MaxLength(20)]
+        [Column("EmployeeType")]
+        public string? EmployeeType { get; set; }
+
         [Required]
         [Column("Designation")]
         public string Designation { get; set; } = string.Empty;
 
-        /// <summary>Retired free-text column, kept so existing data is not dropped. "Staff Category" on screen is the department.</summary>
+        /// <summary>The name of the department, copied here whenever the staff member is saved. "Staff Category" on screen is the department.</summary>
         [Required]
         [MaxLength(100)]
         [Column("StaffCategory")]

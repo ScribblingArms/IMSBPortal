@@ -535,6 +535,203 @@ public class StaffControllerUpdateTests
         Assert.Equal("Invalid shift", errors["shift"]);
     }
 
+    // ── Shift timings ─────────────────────────────────────────────
+
+    private static readonly string[] NewShifts =
+    {
+        "06:00 AM to 02:00 PM", "02:00 PM to 10:00 PM", "10:00 PM to 06:00 AM", "08:00 AM to 04:00 PM", "01:00 PM to 09:00 PM"
+    };
+
+    private static async Task<IMSB.Dto.Models.IMSBContext> ContextWithNewShifts()
+    {
+        var ctx = TestHelpers.CreateContext();
+        foreach (var old in ctx.Shifts) old.DisplayOrder = 0;
+        ctx.Shifts.AddRange(NewShifts.Reverse().Select((name, i) => new Shift { Code = name, Name = name, DisplayOrder = NewShifts.Length - i }));
+        await ctx.SaveChangesAsync();
+        return ctx;
+    }
+
+    [Fact]
+    public async Task Dropdown_offers_the_new_shifts_in_order_and_not_the_old_ones()
+    {
+        using var ctx = await ContextWithNewShifts();
+
+        var shifts = await new IMSB.Backend.StaffDetails(ctx).ShiftsAsync();
+
+        Assert.Equal(NewShifts, shifts.Select(s => s.Name));
+    }
+
+    [Theory]
+    [InlineData("06:00 AM to 02:00 PM")]
+    [InlineData("10:00 PM to 06:00 AM")]
+    public async Task New_staff_can_take_a_new_shift(string shift)
+    {
+        using var ctx = await ContextWithNewShifts();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.Shift = shift;
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(dto));
+
+        Assert.Equal(shift, (await ctx.Staff.SingleAsync()).Shift);
+    }
+
+    [Fact]
+    public async Task New_staff_cannot_take_a_shift_no_longer_offered()
+    {
+        using var ctx = await ContextWithNewShifts();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.Shift = "MORNING";
+
+        Assert.Equal("Invalid shift", TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(dto))["shift"]);
+    }
+
+    [Fact]
+    public async Task Staff_on_an_old_shift_keep_it_when_edited_and_can_move_to_a_new_one()
+    {
+        using var ctx = await ContextWithNewShifts();
+        var staff = TestHelpers.ExistingStaff("EMP001", "Older Record", "9876500009", shift: "MORNING");
+        ctx.Staff.Add(staff);
+        await ctx.SaveChangesAsync();
+        var dto = DtoFor(staff);
+        dto.Designation = "Guard";
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Equal("MORNING", (await ctx.Staff.AsNoTracking().SingleAsync()).Shift);
+
+        dto.Shift = "02:00 PM to 10:00 PM";
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Equal("02:00 PM to 10:00 PM", (await ctx.Staff.AsNoTracking().SingleAsync()).Shift);
+    }
+
+    [Fact]
+    public async Task Attendance_still_knows_the_length_of_a_shift_no_longer_offered()
+    {
+        using var ctx = await ContextWithNewShifts();
+
+        var names = await new IMSB.Backend.Attendance(ctx).ShiftNamesAsync();
+
+        Assert.Equal(6m, AttendanceRules.ShiftHours(names["EVENING"]));
+        Assert.Equal(8m, AttendanceRules.ShiftHours(names["10:00 PM TO 06:00 AM"]));
+    }
+
+    // ── Staff category (the department's name) ────────────────────
+
+    [Fact]
+    public async Task Staff_category_is_the_name_of_the_chosen_department()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.DepartmentId = TestHelpers.AdminDept.ToString();
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(dto));
+
+        Assert.Equal("Admin", (await ctx.Staff.SingleAsync()).StaffCategory);
+    }
+
+    [Fact]
+    public async Task Changing_the_department_changes_the_staff_category()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        Assert.NotEqual("Admin", staff.StaffCategory);
+        var dto = DtoFor(staff);
+
+        dto.DepartmentId = TestHelpers.AdminDept.ToString();
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Equal("Admin", (await ctx.Staff.AsNoTracking().SingleAsync()).StaffCategory);
+
+        dto.DepartmentId = TestHelpers.SalesDept.ToString();
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Equal("Sales", (await ctx.Staff.AsNoTracking().SingleAsync()).StaffCategory);
+    }
+
+    [Fact]
+    public async Task Leave_quota_saves_the_department_as_the_category()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var staff = TestHelpers.ExistingStaff("EMP001", "Older Record", "9876500009", dept: TestHelpers.AdminDept);
+        staff.StaffCategory = "General";
+        ctx.Staff.Add(staff);
+        await ctx.SaveChangesAsync();
+        var leaves = new IMSB.Backend.Leaves(ctx);
+
+        await leaves.SaveEntitlementAsync(staff.Id, "Casual", 5m);
+        Assert.Equal("Admin", (await ctx.LeaveEntitlements.SingleAsync()).StaffCategory);
+
+        var stale = await ctx.LeaveEntitlements.SingleAsync();
+        stale.StaffCategory = "Operators";
+        await ctx.SaveChangesAsync();
+        await leaves.SaveEntitlementAsync(staff.Id, "Casual", 6m);
+        Assert.Equal("Admin", (await ctx.LeaveEntitlements.SingleAsync()).StaffCategory);
+    }
+
+    // ── Employee type (separate from the staff category) ──────────
+
+    private static string ColumnOf(string property) =>
+        typeof(Staff).GetProperty(property)!
+            .GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.Schema.ColumnAttribute), false)
+            .Cast<System.ComponentModel.DataAnnotations.Schema.ColumnAttribute>().Single().Name!;
+
+    [Fact]
+    public void Staff_table_keeps_DepartmentId_and_has_its_own_EmployeeType_column()
+    {
+        Assert.Equal("DepartmentId", ColumnOf(nameof(Staff.DepartmentId)));
+        Assert.Equal("EmployeeType", ColumnOf(nameof(Staff.EmployeeType)));
+    }
+
+    [Theory]
+    [InlineData("Department", "Department")]
+    [InlineData("Agency", "Agency")]
+    [InlineData(null, null)]
+    [InlineData("", null)]
+    public async Task Employee_type_is_optional_and_saved_beside_the_category(string? sent, string? saved)
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.EmployeeType = sent;
+
+        var controller = TestHelpers.CreateController(ctx);
+        TestHelpers.BindModelState(controller, dto);
+        Assert.IsType<OkObjectResult>(await controller.Create(dto));
+
+        var staff = await ctx.Staff.SingleAsync();
+        Assert.Equal(saved, staff.EmployeeType);
+        Assert.Equal(Guid.Parse(dto.DepartmentId), staff.DepartmentId);
+    }
+
+    [Fact]
+    public async Task Unknown_employee_type_is_refused()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.EmployeeType = "Permanent";
+
+        var controller = TestHelpers.CreateController(ctx);
+        TestHelpers.BindModelState(controller, dto);
+        var errors = TestHelpers.Errors(await controller.Create(dto));
+
+        Assert.Equal("ValEmployeeType", errors["employee_type"]);
+        Assert.Empty(ctx.Staff);
+    }
+
+    [Fact]
+    public async Task Employee_type_can_be_changed_and_cleared_and_is_returned_to_the_form()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var dto = DtoFor(staff);
+
+        dto.EmployeeType = "Agency";
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Equal("Agency", (await ctx.Staff.AsNoTracking().SingleAsync()).EmployeeType);
+        var row = TestHelpers.OkJson(await TestHelpers.CreateController(ctx).IndexData(null, null, null)).GetProperty("staff")[0];
+        Assert.Equal("Agency", row.GetProperty("employeeType").GetString());
+
+        dto.EmployeeType = null;
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Null((await ctx.Staff.AsNoTracking().SingleAsync()).EmployeeType);
+    }
+
     [Fact]
     public async Task Update_unknown_employee_returns_404()
     {

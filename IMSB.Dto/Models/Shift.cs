@@ -16,5 +16,9 @@ namespace IMSB.Dto.Models
         [Required]
         [Column("Name")]
         public string Name { get; set; } = string.Empty;
+
+        /// <summary>Position in the staff form's dropdown. 0 = no longer offered: staff already on it keep it, and attendance still reads its length.</summary>
+        [Column("DisplayOrder")]
+        public int DisplayOrder { get; set; }
     }
 }

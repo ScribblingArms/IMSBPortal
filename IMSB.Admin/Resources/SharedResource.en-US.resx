@@ -2578,8 +2578,7 @@
     <value>Today</value>
   </data>
   <data name="PayBillTitle" xml:space="preserve"><value>Pay Bill</value></data>
-  <data name="PayBillSubtitle" xml:space="preserve"><value>Generate employee pay, review monthly totals, and view previous salary history.</value></data>
-  <data name="GeneratePayBill" xml:space="preserve"><value>Generate Pay Bill</value></data>
+  <data name="PayBillSubtitle" xml:space="preserve"><value>Review monthly pay totals by staff category and employee, and export the pay bill.</value></data>
   <data name="EmployeeSalaryStatement" xml:space="preserve"><value>Employee-wise Salary Statement</value></data>
   <data name="MonthlyConsolidatedPayBill" xml:space="preserve"><value>Monthly Consolidated Pay Bill</value></data>
   <data name="PreviousSalaryHistory" xml:space="preserve"><value>Previous-month Salary History</value></data>
@@ -2592,12 +2591,9 @@
   <data name="NetPay" xml:space="preserve"><value>Net Pay</value></data>
   <data name="PayrollSaved" xml:space="preserve"><value>Pay bill generated and saved.</value></data>
   <data name="PayrollLoadFailed" xml:space="preserve"><value>Could not load pay bill data.</value></data>
-  <data name="PayrollSaveFailed" xml:space="preserve"><value>Could not generate the pay bill.</value></data>
   <data name="NoPayrollHistory" xml:space="preserve"><value>No previous pay bills found for this employee.</value></data>
-  <data name="ConfirmGeneratePayBill" xml:space="preserve"><value>Generate or update the pay bill for the selected month?</value></data>
   <data name="Employees" xml:space="preserve"><value>Employees</value></data>
   <data name="Print" xml:space="preserve"><value>Print</value></data>
-  <data name="Draft" xml:space="preserve"><value>Draft</value></data>
   <data name="NothingToSave" xml:space="preserve">
     <value>Nothing to save — mark or change at least one staff member first.</value>
   </data>
@@ -2753,4 +2749,7 @@
   <data name="NoOTAssignments" xml:space="preserve"><value>No OT assignments yet.</value></data>
   <data name="ValOtSelectStaff" xml:space="preserve"><value>Select a staff member</value></data>
   <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>This staff member already has an OT assignment. Edit it instead.</value></data>
+  <data name="ValEmployeeType" xml:space="preserve"><value>Select a valid employee type</value></data>
+  <data name="EmployeeTypeDepartment" xml:space="preserve"><value>Department</value></data>
+  <data name="EmployeeTypeAgency" xml:space="preserve"><value>Agency</value></data>
 </root>

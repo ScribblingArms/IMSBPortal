@@ -40,7 +40,8 @@ namespace IMSB.Backend
         public Task<Dictionary<Guid, string>> DepartmentNamesAsync() =>
             _context.Departments.AsNoTracking().ToDictionaryAsync(d => d.Id, d => d.Name);
 
-        public Task<List<Shift>> ShiftsAsync() => _context.Shifts.AsNoTracking().ToListAsync();
+        public Task<List<Shift>> ShiftsAsync() =>
+            _context.Shifts.AsNoTracking().Where(s => s.DisplayOrder > 0).OrderBy(s => s.DisplayOrder).ThenBy(s => s.Name).ToListAsync();
 
         public Task<List<string>> EmployeeIdsAsync() => _context.Staff.AsNoTracking().Select(s => s.EmployeeId).ToListAsync();
 
@@ -50,7 +51,7 @@ namespace IMSB.Backend
 
         public Task<bool> AnyShiftsAsync() => _context.Shifts.AnyAsync();
 
-        public Task<bool> ShiftExistsAsync(string code) => _context.Shifts.AnyAsync(s => s.Code == code);
+        public Task<bool> ShiftExistsAsync(string code) => _context.Shifts.AnyAsync(s => s.Code == code && s.DisplayOrder > 0);
 
         public Task<bool> MobileExistsAsync(string mobile, Guid? exceptId) =>
             _context.Staff.AnyAsync(s => s.Mobile == mobile && s.Id != exceptId);
@@ -63,11 +64,23 @@ namespace IMSB.Backend
 
         public async Task AddAsync(Staff staff)
         {
+            await CopyCategoryFromDepartmentAsync(staff);
             _context.Staff.Add(staff);
             await _context.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(Staff staff) => _context.SaveChangesAsync();
+        public async Task UpdateAsync(Staff staff)
+        {
+            await CopyCategoryFromDepartmentAsync(staff);
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>The Staff Category column holds the name of the staff member's department.</summary>
+        private async Task CopyCategoryFromDepartmentAsync(Staff staff)
+        {
+            var name = await _context.Departments.AsNoTracking().Where(d => d.Id == staff.DepartmentId).Select(d => d.Name).FirstOrDefaultAsync();
+            if (!string.IsNullOrWhiteSpace(name)) staff.StaffCategory = name.Length > 100 ? name[..100] : name;
+        }
 
         public async Task RemoveAsync(Staff staff)
         {

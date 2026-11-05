@@ -88,7 +88,7 @@ namespace IMSB.Dto.Models
         public const decimal DefaultShiftHours = 8m;
 
         private static readonly Regex ShiftRange = new(
-            @"(\d{1,2})(?::(\d{2}))?\s*(AM|PM)\s*[-–]\s*(\d{1,2})(?::(\d{2}))?\s*(AM|PM)", RegexOptions.IgnoreCase);
+            @"(\d{1,2})(?::(\d{2}))?\s*(AM|PM)\s*(?:[-–]|to)\s*(\d{1,2})(?::(\d{2}))?\s*(AM|PM)", RegexOptions.IgnoreCase);
 
         /// <summary>Start and end of a shift read from its name, e.g. "Morning (8AM-4PM)" → 08:00–16:00; null when the name has no times.</summary>
         public static (TimeSpan Start, TimeSpan End)? ShiftTimes(string? shiftName)

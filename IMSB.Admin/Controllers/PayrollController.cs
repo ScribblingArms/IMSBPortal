@@ -45,31 +45,10 @@ public class PayrollController : Controller
             month = start.Month,
             monthDays = DateTime.DaysInMonth(start.Year, start.Month),
             isGenerated = await _payroll.IsGeneratedAsync(start),
+            departments = await _payroll.DepartmentsAsync(),
             rows,
             totalNetPay = rows.Sum(row => row.NetPay)
         });
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Generate([FromBody] GeneratePayBillDto? dto)
-    {
-        if (dto == null) return ErrorResult("request", _L["CheckForm"].Value);
-
-        if (!TryResolvePeriod(dto.Year, dto.Month, out var start))
-            ModelState.AddModelError("period", _L["ValDateInvalid"].Value);
-
-        if (!ModelState.IsValid)
-            return BadRequest(new { errors = ModelState.ToDictionary(
-                entry => entry.Key,
-                entry => entry.Value?.Errors.FirstOrDefault()?.ErrorMessage ?? _L["CheckForm"].Value) });
-
-        if (dto.Rows.Select(row => row.StaffId).Distinct().Count() != dto.Rows.Count
-            || dto.Rows.Any(row => row.StaffId == Guid.Empty)
-            || !await _payroll.GenerateAsync(start, dto.Rows))
-            return ErrorResult("rows", _L["CheckForm"].Value);
-
-        return Ok(new { success = true, message = _L["PayrollSaved"].Value });
     }
 
     [HttpGet]
@@ -81,21 +60,26 @@ public class PayrollController : Controller
         return Ok(new { rows = await _payroll.HistoryAsync(staffId.Value, start, HistoryMonths) });
     }
 
+    /// <summary>The month's pay bill as on screen: employeeId is the staff filter (exact), q matches name or id.</summary>
     [HttpGet]
-    public async Task<IActionResult> Export([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q)
+    public async Task<IActionResult> Export([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q, [FromQuery] string? employeeId = null)
     {
         if (!TryResolvePeriod(year, month, out var start)) return BadRequest();
         var rows = await _payroll.RowsAsync(start, q);
+        if (!string.IsNullOrWhiteSpace(employeeId))
+            rows = rows.Where(row => string.Equals(row.EmployeeId, employeeId.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+
         var output = new List<string?[]>
         {
             new[] { _L["EmployeeID"].Value, _L["StaffName"].Value, _L["Department"].Value, _L["Designation"].Value,
-                _L["PaidDays"].Value, _L["BasicPay"].Value, _L["Allowances"].Value, _L["OTHours"].Value,
+                _L["PaidDays"].Value, _L["MonthlySalary"].Value, _L["BasicPay"].Value, _L["Allowances"].Value, _L["OTHours"].Value,
                 _L["OvertimeAmount"].Value, _L["Deductions"].Value, _L["NetPay"].Value }
         };
         output.AddRange(rows.Select(row => new string?[]
         {
             row.EmployeeId, row.EmployeeName, row.Department, row.Designation,
             row.PaidDays.ToString("0.##", CultureInfo.InvariantCulture),
+            Money(row.MonthlySalary),
             Money(row.BasicPay),
             Money(row.Allowances),
             row.OvertimeHours.ToString("0.##", CultureInfo.InvariantCulture),
@@ -103,6 +87,7 @@ public class PayrollController : Controller
             Money(row.Deductions),
             Money(row.NetPay)
         }));
+        output.Add(new string?[] { _L["GrandTotal"].Value, null, null, null, null, null, null, null, null, null, null, Money(rows.Sum(row => row.NetPay)) });
         return ExportExcel($"pay_bill_{start:yyyyMM}.xls", output);
     }
 

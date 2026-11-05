@@ -2578,8 +2578,7 @@
     <value>ఈరోజు</value>
   </data>
   <data name="PayBillTitle" xml:space="preserve"><value>జీతం బిల్లు</value></data>
-  <data name="PayBillSubtitle" xml:space="preserve"><value>ఉద్యోగి జీతాన్ని రూపొందించి, నెలవారీ మొత్తాలు మరియు మునుపటి జీత చరిత్రను చూడండి.</value></data>
-  <data name="GeneratePayBill" xml:space="preserve"><value>జీతం బిల్లును రూపొందించు</value></data>
+  <data name="PayBillSubtitle" xml:space="preserve"><value>సిబ్బంది వర్గం మరియు ఉద్యోగి వారీగా నెలవారీ జీత మొత్తాలను చూసి, జీతం బిల్లును ఎగుమతి చేయండి.</value></data>
   <data name="EmployeeSalaryStatement" xml:space="preserve"><value>ఉద్యోగి వారీ జీతం స్టేట్‌మెంట్</value></data>
   <data name="MonthlyConsolidatedPayBill" xml:space="preserve"><value>నెలవారీ సమగ్ర జీతం బిల్లు</value></data>
   <data name="PreviousSalaryHistory" xml:space="preserve"><value>మునుపటి నెల జీతం చరిత్ర</value></data>
@@ -2592,12 +2591,9 @@
   <data name="NetPay" xml:space="preserve"><value>నికర జీతం</value></data>
   <data name="PayrollSaved" xml:space="preserve"><value>జీతం బిల్లు రూపొందించి సేవ్ చేయబడింది.</value></data>
   <data name="PayrollLoadFailed" xml:space="preserve"><value>జీతం బిల్లు డేటాను లోడ్ చేయలేకపోయాము.</value></data>
-  <data name="PayrollSaveFailed" xml:space="preserve"><value>జీతం బిల్లును రూపొందించలేకపోయాము.</value></data>
   <data name="NoPayrollHistory" xml:space="preserve"><value>ఈ ఉద్యోగికి మునుపటి జీతం బిల్లులు లేవు.</value></data>
-  <data name="ConfirmGeneratePayBill" xml:space="preserve"><value>ఎంచుకున్న నెలకు జీతం బిల్లును రూపొందించాలా లేదా నవీకరించాలా?</value></data>
   <data name="Employees" xml:space="preserve"><value>ఉద్యోగులు</value></data>
   <data name="Print" xml:space="preserve"><value>ముద్రించు</value></data>
-  <data name="Draft" xml:space="preserve"><value>చిత్తుప్రతి</value></data>
   <data name="NothingToSave" xml:space="preserve">
     <value>సేవ్ చేయడానికి ఏమీ లేదు — ముందుగా కనీసం ఒక సిబ్బందిని గుర్తించండి లేదా మార్చండి.</value>
   </data>
@@ -2753,4 +2749,7 @@
   <data name="NoOTAssignments" xml:space="preserve"><value>ఇంకా ఓటీ కేటాయింపులు లేవు.</value></data>
   <data name="ValOtSelectStaff" xml:space="preserve"><value>సిబ్బందిని ఎంచుకోండి</value></data>
   <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>ఈ సిబ్బందికి ఇప్పటికే ఓటీ కేటాయింపు ఉంది. దానినే సవరించండి.</value></data>
+  <data name="ValEmployeeType" xml:space="preserve"><value>సరైన ఉద్యోగి రకాన్ని ఎంచుకోండి</value></data>
+  <data name="EmployeeTypeDepartment" xml:space="preserve"><value>విభాగం</value></data>
+  <data name="EmployeeTypeAgency" xml:space="preserve"><value>ఏజెన్సీ</value></data>
 </root>

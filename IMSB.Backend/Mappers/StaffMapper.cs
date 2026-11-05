@@ -4,7 +4,7 @@ using IMSB.Dto.Models;
 namespace IMSB.Backend.Mappers
 {
     public record StaffListItem(string EmployeeId, string FullName, string DepartmentId, string DepartmentName, string Designation, string Mobile,
-        string? Email, string DateOfBirth, string Gender, string JoinDate, string Shift, string Status, decimal? MonthlySalary, string? AadhaarMasked);
+        string? Email, string DateOfBirth, string Gender, string JoinDate, string Shift, string Status, decimal? MonthlySalary, string? AadhaarMasked, string? EmployeeType);
 
     public record DepartmentItem(string Id, string Name, int Count, string Color);
 
@@ -14,7 +14,7 @@ namespace IMSB.Backend.Mappers
         public static StaffListItem ToListItem(this Staff s, IReadOnlyDictionary<Guid, string> departmentNames, bool includeSalary = false) => new(
             s.EmployeeId, s.FullName, s.DepartmentId.ToString(), departmentNames.GetValueOrDefault(s.DepartmentId) ?? string.Empty, s.Designation,
             s.Mobile, s.Email, s.DateOfBirth.ToString("yyyy-MM-dd"), s.Gender, s.JoinDate.ToString("yyyy-MM-dd"), s.Shift, s.Status,
-            includeSalary ? s.MonthlySalary : null, s.MaskedAadhaar);
+            includeSalary ? s.MonthlySalary : null, s.MaskedAadhaar, s.EmployeeType);
 
         public static OptionItem ToOption(this Shift s) => new(s.Code, s.Name);
 
@@ -32,6 +32,7 @@ namespace IMSB.Backend.Mappers
             entity.DateOfBirth = DateTime.ParseExact(dto.DateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             entity.Gender = dto.Gender;
             entity.DepartmentId = Guid.Parse(dto.DepartmentId);
+            entity.EmployeeType = string.IsNullOrWhiteSpace(dto.EmployeeType) ? null : dto.EmployeeType;
             entity.Designation = dto.Designation.Trim();
             entity.JoinDate = DateTime.ParseExact(dto.JoinDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             entity.Shift = dto.Shift;

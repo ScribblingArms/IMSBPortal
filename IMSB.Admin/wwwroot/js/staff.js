@@ -59,6 +59,7 @@
       ['EmployeeID', s.id],
       ['FullName', s.full_name],
       ['Department', s.department_name],
+      ['EmployeeType', s.employee_type ? t('EmployeeType' + s.employee_type) : ''],
       ['Designation', s.designation],
       ['Mobile', s.mobile],
       ['Email', s.email],
@@ -204,7 +205,7 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', aadhaar: 'Aadhaar', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', aadhaar: 'Aadhaar', date_of_birth: 'DOB', department_id: 'Department', employee_type: 'EmployeeType', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
     return map[name] || name;
   }
 
@@ -260,6 +261,7 @@
     document.getElementById('staffDOB').value = s.date_of_birth || '';
     document.getElementById('staffGender').value = s.gender || 'Female';
     document.getElementById('staffDepartment').value = s.department_id || '';
+    document.getElementById('staffEmployeeType').value = s.employee_type || '';
     document.getElementById('staffDesignation').value = s.designation || '';
     document.getElementById('staffJoinDate').value = s.join_date || '';
     const salaryInput = document.getElementById('staffMonthlySalary');
@@ -332,6 +334,7 @@
       date_of_birth: v('staffDOB'),
       gender: v('staffGender'),
       department_id: v('staffDepartment'),
+      employee_type: v('staffEmployeeType') || null,
       designation: v('staffDesignation'),
       join_date: v('staffJoinDate'),
       monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
@@ -357,7 +360,7 @@
     const url = isCreate ? '/Staff/Create' : '/Staff/Update/' + encodeURIComponent(vals.id);
     const body = {
       fullName: vals.full_name, mobile: vals.mobile, email: vals.email, aadhaar: vals.aadhaar,
-      dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id,
+      dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id, employeeType: vals.employee_type,
       designation: vals.designation, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
     };
     if (!isCreate) body.status = vals.status;
@@ -434,6 +437,7 @@
         full_name: s.fullName || '',
         department_id: s.departmentId || '',
         department_name: s.departmentName || '',
+        employee_type: s.employeeType || '',
         designation: s.designation || '',
         monthly_salary: s.monthlySalary,
         mobile: s.mobile || '',

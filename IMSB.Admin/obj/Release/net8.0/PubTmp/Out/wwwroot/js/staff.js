@@ -290,7 +290,7 @@
     const saved = vals.id ? staff.find(x => x.id === vals.id) : null;
     if (vals.mobile !== saved?.mobile && !IMSBValidate.mobile(vals.mobile)) errors.mobile = t('ValMobile');
     if (vals.email && !IMSBValidate.email(vals.email)) errors.email = t('ValEmail');
-    // the server has the final say (checksum, duplicates)
+    // the server has the final say (duplicates)
     if ((!vals.id || vals.aadhaar) && !IMSBValidate.aadhaar(vals.aadhaar)) errors.aadhaar = t('ValAadhaar');
     const dob = parseIsoDate(vals.date_of_birth);
     if (!dob) errors.date_of_birth = t('ValDobRequired');

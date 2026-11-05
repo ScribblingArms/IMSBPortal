@@ -103,6 +103,23 @@ public class ContactValidationTests
         Assert.Contains("IMSBValidate.aadhaar(", js);
     }
 
+    // ── Date fields ───────────────────────────────────────────────
+    [Fact]
+    public void Empty_date_fields_show_no_placeholder_even_when_focused()
+    {
+        var css = AdminFile("wwwroot", "css", "forms.css");
+        Assert.Contains("input.date-empty { color: transparent; }", css);
+        Assert.Contains("input.date-empty::-webkit-datetime-edit { opacity: 0; }", css);
+        Assert.DoesNotContain("input.date-empty:not(:focus)", css);
+        Assert.Contains("e.target.classList.remove('date-empty')", AdminFile("wwwroot", "js", "main.js"));   // typing shows from the first key
+    }
+
+    [Theory]
+    [InlineData("staffDOB")]
+    [InlineData("staffJoinDate")]
+    public void Staff_popup_date_fields_have_no_placeholder_text(string id) =>
+        Assert.Matches($"<input id=\"{id}\"(?![^>]*placeholder)[^>]*type=\"date\"", AdminFile("Views", "Staff", "Index.cshtml"));
+
     // ── Staff mobile, which has records from the older 9-12 digit rule ──
     [Theory]
     [InlineData("987654321")]

@@ -25,7 +25,7 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
             factory.Seed(ctx =>
             {
                 ctx.Departments.AddRange(new Department { Id = TestHelpers.SalesDept, Name = "Sales" }, new Department { Id = TestHelpers.AdminDept, Name = "Admin" });
-                ctx.Shifts.Add(new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)" });
+                ctx.Shifts.Add(new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)", DisplayOrder = 1 });
                 var meena = TestHelpers.ExistingStaff("EMP101", "Http Meena", "900000101", dept: TestHelpers.SalesDept);
                 meena.StaffCategory = "Operators";
                 ctx.Staff.Add(meena);
@@ -117,6 +117,54 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
 
         var headers = Regex.Matches(html, "<th>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()).ToList();
         Assert.Equal(new[] { "Employee ID", "Staff Name", "Staff Category", "Designation", "Paid Days", "Monthly Salary (₹)", "Net Pay" }, headers);
+    }
+
+    [Fact]
+    public async Task Pay_bill_page_offers_export_instead_of_generate()
+    {
+        var client = _factory.ClientAs("Admin");
+        var html = WebUtility.HtmlDecode(await client.GetStringAsync("/Payroll/Index"));
+
+        Assert.Contains("id=\"payBillExportBtn\"", html);
+        Assert.DoesNotContain("payBillGenerate", html);
+        Assert.DoesNotContain("Generate Pay Bill", html);
+        Assert.DoesNotContain("/Payroll/Generate", await client.GetStringAsync("/js/payroll.js"));
+
+        var generate = await client.PostAsync("/Payroll/Generate", new StringContent("{}", System.Text.Encoding.UTF8, "application/json"));
+        Assert.Equal(HttpStatusCode.NotFound, generate.StatusCode);
+
+        var export = await client.GetAsync("/Payroll/Export?year=2026&month=10&employeeId=");
+        Assert.Equal(HttpStatusCode.OK, export.StatusCode);
+        Assert.Equal("application/vnd.ms-excel", export.Content.Headers.ContentType?.MediaType);
+        Assert.Equal("pay_bill_202610.xls", export.Content.Headers.ContentDisposition?.FileNameStar ?? export.Content.Headers.ContentDisposition?.FileName);
+    }
+
+    [Fact]
+    public async Task Report_library_exports_do_not_need_filters_from_other_report_pages()
+    {
+        var client = _factory.ClientAs("Admin");
+        var js = await client.GetStringAsync("/js/reports.js");
+        var library = await client.GetStringAsync("/Reports/Index");
+
+        // the Artisan Performance card sits on /Reports/Index, whose page has no artisan filters
+        Assert.Contains("id: 'artisans'", js);
+        Assert.DoesNotContain("id=\"artisanReportSearch\"", library);
+        Assert.Contains("const artisanFilters = () => $('artisanReportSearch') ?", js);
+        Assert.Contains("const stallFilters = () => $('stallReportSearch') ?", js);
+    }
+
+    [Fact]
+    public async Task Pay_bill_grand_total_lines_up_with_the_net_pay_column()
+    {
+        var html = await _factory.ClientAs("Admin").GetStringAsync("/Payroll/Index");
+        Assert.Contains(".pay-bill-table tfoot td:last-child { text-align:right; }", html);
+    }
+
+    [Fact]
+    public async Task Pay_bill_export_is_refused_for_inventory_users()
+    {
+        var export = await _factory.ClientAs("Inventory").GetAsync("/Payroll/Export?year=2026&month=10");
+        Assert.Equal(HttpStatusCode.Forbidden, export.StatusCode);
     }
 
     [Fact]

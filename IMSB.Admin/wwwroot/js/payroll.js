@@ -6,9 +6,8 @@
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const qs = values => Object.entries(values).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
   const money = value => '₹' + Number(value || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const token = () => document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
   let currentRows = [];
-  let isGenerated = false;
+  let allDepartments = [];
 
   function period() {
     return { year: $('payBillYear').value, month: $('payBillMonth').value };
@@ -39,8 +38,8 @@
         return;
       }
       currentRows = data.rows || [];
-      isGenerated = data.isGenerated;
-      $('payBillPeriod').textContent = `${new Date(+data.year, +data.month - 1, 1).toLocaleDateString(document.documentElement.lang, { month: 'long', year: 'numeric' })} · ${data.monthDays} days${data.isGenerated ? '' : ' · ' + t('Draft')}`;
+      allDepartments = data.departments || [];
+      $('payBillPeriod').textContent = `${new Date(+data.year, +data.month - 1, 1).toLocaleDateString(document.documentElement.lang, { month: 'long', year: 'numeric' })} · ${data.monthDays} days`;
       render();
     } catch (error) {
       console.error(error);
@@ -66,7 +65,8 @@
   }
 
   function renderSummary(rows = visibleRows()) {
-    const departments = new Map();
+    // every staff category gets a card, showing zero when it has nobody on this bill
+    const departments = new Map(allDepartments.map(name => [name, { employees: 0, netPay: 0 }]));
     rows.forEach(row => {
       const key = row.department || '—';
       const summary = departments.get(key) || { employees: 0, netPay: 0 };
@@ -88,47 +88,21 @@
       sum.netPay += row.netPay;
       return sum;
     }, { employees: 0, netPay: 0 });
-    $('payBillSummaryBody').innerHTML = summaries.length
-      ? card(t('GrandTotal'), overall, true) + summaries.map(([department, row]) => card(department, row, false)).join('')
-      : `<div class="empty-state" style="grid-column:1/-1">${esc(t('NoStaffForAttendance'))}</div>`;
+    $('payBillSummaryBody').innerHTML = card(t('GrandTotal'), overall, true)
+      + summaries.map(([department, row]) => card(department, row, false)).join('');
     $('payBillFoot').innerHTML = `<tr><td colspan="6"><strong>${esc(t('GrandTotal'))}</strong></td>
       <td><strong>${money(rows.reduce((sum, row) => sum + Number(row.netPay || 0), 0))}</strong></td></tr>`;
   }
 
-  async function generate() {
-    if (!confirm(t('ConfirmGeneratePayBill'))) return;
-    setError('');
-    try {
-      const response = await fetch('/Payroll/Generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', RequestVerificationToken: token() },
-        // no longer editable here, but amounts already saved on a bill are sent back so regenerating keeps them
-        body: JSON.stringify(Object.assign(period(), {
-          rows: currentRows.map(row => ({
-            staffId: row.staffId,
-            allowances: Number(row.allowances || 0),
-            overtimeAmount: Number(row.overtimeAmount || 0),
-            deductions: Number(row.deductions || 0)
-          }))
-        }))
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setError(Object.values(data.errors || {})[0] || t('PayrollSaveFailed'));
-        return;
-      }
-      await load();
-      if (typeof showToast === 'function') showToast(t('Success'), data.message || t('PayrollSaved'), 'success');
-    } catch (error) {
-      console.error(error);
-      setError(t('CouldNotReachServer'));
-    }
+  // the same month and staff member as on screen
+  function exportBill() {
+    window.location.href = '/Payroll/Export?' + qs(Object.assign(period(), { employeeId: staffFilter() }));
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     ['payBillMonth', 'payBillYear'].forEach(id => $(id).addEventListener('change', load));
     $('payBillStaffFilter').addEventListener('change', render);
-    $('payBillGenerate').addEventListener('click', generate);
+    $('payBillExportBtn').addEventListener('click', exportBill);
     load();
   });
 })();

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fd90560dce491692d12a9303b1262fcff685cd3b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fcd67ff1959c46fa75db22b9eef3a468947ef5da")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
