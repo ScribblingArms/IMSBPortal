@@ -139,10 +139,10 @@ public class ArtisansControllerTests
 
     [Theory]
     [InlineData(null)]
-    [InlineData("1234 5678 9012")]   // starts with 1
-    [InlineData("2234 5678 901")]    // 11 digits
+    [InlineData("2234 5678 901")]      // 11 digits
+    [InlineData("2234 5678 90123")]    // 13 digits
     [InlineData("abcd efgh ijkl")]
-    public async Task Aadhaar_is_required_and_checked(string? aadhaar)
+    public async Task Aadhaar_is_required_and_must_be_12_digits(string? aadhaar)
     {
         using var ctx = Seeded();
         var dto = NewArtisan();
@@ -150,14 +150,17 @@ public class ArtisansControllerTests
         Assert.Equal("Enter a valid 12-digit Aadhaar number", TestHelpers.Errors(await Artisans(ctx).Create(dto))["aadhaar"]);
     }
 
-    [Fact]
-    public async Task Aadhaar_checksum_typo_is_caught()
+    [Theory]
+    [InlineData("1111-1111-1111")]
+    [InlineData("0123-4567-8901")]
+    [InlineData("234123412347")]
+    public async Task Any_12_digit_aadhaar_is_accepted(string aadhaar)
     {
         using var ctx = Seeded();
         var dto = NewArtisan();
-        var digits = dto.Aadhaar!;
-        dto.Aadhaar = digits[..11] + (char)('0' + (digits[11] - '0' + 1) % 10);   // wrong check digit
-        Assert.True(TestHelpers.Errors(await Artisans(ctx).Create(dto)).ContainsKey("aadhaar"));
+        dto.Aadhaar = aadhaar;
+        Assert.IsType<OkObjectResult>(await Artisans(ctx).Create(dto));
+        Assert.Contains(ctx.Artisans, a => a.AadhaarHash == Aadhaar.Hash(aadhaar) && a.AadhaarLast4 == aadhaar[^4..]);
     }
 
     [Fact]
@@ -267,19 +270,4 @@ public class ArtisansControllerTests
         Assert.Contains(",अवकाश पर,",SalesTestHelpers.CsvText(await Artisans(ctx).Export(null, "ON_LEAVE", null, null, null)));
     }
 
-    // ── Aadhaar helper ────────────────────────────────────────────
-
-    [Theory]
-    [InlineData("234123412346", true)]    // Verhoeff-valid sample
-    [InlineData("2341-2341-2346", true)]
-    [InlineData("234123412347", false)]
-    [InlineData("034123412346", false)]
-    [InlineData("23412341234", false)]
-    public void Aadhaar_validation(string value, bool valid) => Assert.Equal(valid, Aadhaar.IsValid(value));
-
-    [Fact]
-    public void Check_digit_round_trips()
-    {
-        for (int i = 1; i < 200; i++) Assert.True(Aadhaar.IsValid(ValidAadhaar(i)), ValidAadhaar(i));
-    }
 }

@@ -310,8 +310,34 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
         Assert.Contains($"{id},Http Applicant,", text);
         Assert.DoesNotContain(BazaarTestHelpers.ValidAadhaar(9101), text);
 
-        // an approved application stays on record
-        Assert.Equal(HttpStatusCode.BadRequest, (await client.SendAsync(Post($"/Applications/Delete/{id}", token))).StatusCode);
+        // deleting the approved application keeps the artisan registered
+        Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Applications/Delete/{id}", token))).StatusCode);
+        var remaining = await client.GetFromJsonAsync<JsonElement>("/Applications/Data?status=APPROVED&q=http");
+        Assert.Empty(remaining.GetProperty("applications").EnumerateArray());
+        artisans = await client.GetFromJsonAsync<JsonElement>("/Artisans/Data?q=http");
+        Assert.Equal("Q-01", artisans.GetProperty("artisans").EnumerateArray().Single().GetProperty("stallCode").GetString());
+        Assert.Equal(HttpStatusCode.NotFound, (await client.SendAsync(Post($"/Applications/Delete/{id}", token))).StatusCode);
+    }
+
+    [Theory]
+    [InlineData(null, HttpStatusCode.Unauthorized)]
+    [InlineData("Staff", HttpStatusCode.Forbidden)]
+    [InlineData("Inventory", HttpStatusCode.Forbidden)]
+    public async Task Only_admins_can_delete_applications(string? role, HttpStatusCode expected) =>
+        Assert.Equal(expected, (await _factory.ClientAs(role).PostAsync("/Applications/Delete/APP-0001", null)).StatusCode);
+
+    [Fact]
+    public async Task Every_applications_tab_offers_delete_with_the_right_warning()
+    {
+        var page = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Applications/Index"));
+        Assert.Contains("will stay registered", page);
+
+        var js = await _factory.ClientAs("Admin").GetStringAsync("/js/applications.js");
+        var rows = js[js.IndexOf("const ROW = {", StringComparison.Ordinal)..js.IndexOf("function renderTab", StringComparison.Ordinal)];
+        Assert.Contains("iconBtn('delete-approved'", rows[..rows.IndexOf("UNDER_REVIEW:", StringComparison.Ordinal)]);
+        Assert.Equal(2, Regex.Matches(rows, @"\$\{editDelete\(a\)\}").Count);   // under review and pending
+        Assert.Contains("iconBtn('delete'", rows[rows.IndexOf("REJECTED:", StringComparison.Ordinal)..]);
+        Assert.Contains("case 'delete-approved': remove(id, 'ConfirmDeleteApprovedApplication')", js);
     }
 
     [Fact]

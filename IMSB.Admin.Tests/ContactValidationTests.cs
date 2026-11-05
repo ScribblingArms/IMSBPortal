@@ -59,15 +59,20 @@ public class ContactValidationTests
     [InlineData("2341-2341-2346", true)]
     [InlineData("234123412346", true)]
     [InlineData(" 2341-2341-2346 ", true)]
-    [InlineData("2341 2341 2346", false)]    // only hyphens separate the groups
-    [InlineData("2341-23412346", false)]     // hyphens all or none
-    [InlineData("23-4123-412346", false)]
+    [InlineData("2341 2341 2346", true)]     // separators do not count towards the length
+    [InlineData("2341-23412346", true)]
+    [InlineData("23-4123-412346", true)]
+    [InlineData("2341-2341-2347", true)]     // the digits themselves are not checked
+    [InlineData("1111-1111-1111", true)]
+    [InlineData("0000-0000-0000", true)]
     [InlineData("2341-2341-234", false)]     // 11 digits
     [InlineData("2341-2341-23461", false)]   // 13 digits
-    [InlineData("2341-2341-2347", false)]    // fails the checksum
-    [InlineData("1111-1111-1111", false)]    // Aadhaar numbers do not start with 0 or 1
     [InlineData("abcd-efgh-ijkl", false)]
-    public void Aadhaar_is_12_digits_in_groups_of_four(string aadhaar, bool valid) => Assert.Equal(valid, Aadhaar.IsValid(aadhaar));
+    [InlineData("2341-2341-234a", false)]    // 11 digits and a letter
+    [InlineData("2341-2341-234a6", false)]   // 12 digits and a letter
+    [InlineData("", false)]
+    [InlineData(null, false)]
+    public void Aadhaar_only_has_to_be_12_digits(string? aadhaar, bool valid) => Assert.Equal(valid, Aadhaar.IsValid(aadhaar));
 
     [Fact]
     public void Hyphens_do_not_change_what_is_stored_for_a_number() =>
@@ -77,6 +82,10 @@ public class ContactValidationTests
     [Fact]
     public void Browser_email_rule_is_identical_to_the_server_rule() =>
         Assert.Contains($"\"{EmailAddresses.Pattern}\"", AdminFile("wwwroot", "js", "main.js"));
+
+    [Fact]
+    public void Browser_aadhaar_rule_only_checks_the_length() =>
+        Assert.Contains(@"aadhaar: v => /^[0-9]{12}$/.test((v || '').replace(/[-\s]/g, ''))", AdminFile("wwwroot", "js", "main.js"));
 
     [Theory]
     [InlineData("Staff", "staff.js", "staffMobile", "staffAadhaar")]

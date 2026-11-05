@@ -2379,6 +2379,9 @@
   <data name="ConfirmDeleteApplication" xml:space="preserve">
     <value>Delete application {0}? This cannot be undone.</value>
   </data>
+  <data name="ConfirmDeleteApprovedApplication" xml:space="preserve">
+    <value>Delete approved application {0}? The artisan will stay registered, but this registration record cannot be recovered.</value>
+  </data>
   <data name="ApplicationProcessed" xml:space="preserve">
     <value>Application {0} moved to Under Review</value>
   </data>
@@ -2402,9 +2405,6 @@
   </data>
   <data name="ValApplicationDecided" xml:space="preserve">
     <value>This application has already been decided</value>
-  </data>
-  <data name="ValApplicationApprovedDelete" xml:space="preserve">
-    <value>An approved application is kept as the artisan&apos;s registration record and cannot be deleted</value>
   </data>
   <data name="ValApplicationNotPending" xml:space="preserve">
     <value>Only a new application can be processed</value>

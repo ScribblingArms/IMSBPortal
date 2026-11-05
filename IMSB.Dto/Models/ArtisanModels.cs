@@ -58,46 +58,19 @@ namespace IMSB.Dto.Models
 
     public record ArtisanStats(int Total, int Active, int OnLeave, int RenewalPending, int Inactive, int WithStall);
 
-    /// <summary>Aadhaar handling: format + Verhoeff checksum validation, and the hash/last-4 that are stored instead of the number.</summary>
+    /// <summary>Aadhaar handling: the length check, and the hash/last-4 that are stored instead of the number.</summary>
     public static class Aadhaar
     {
-        private static readonly int[,] D =
-        {
-            {0,1,2,3,4,5,6,7,8,9},{1,2,3,4,0,6,7,8,9,5},{2,3,4,0,1,7,8,9,5,6},{3,4,0,1,2,8,9,5,6,7},{4,0,1,2,3,9,5,6,7,8},
-            {5,9,8,7,6,0,4,3,2,1},{6,5,9,8,7,1,0,4,3,2},{7,6,5,9,8,2,1,0,4,3},{8,7,6,5,9,3,2,1,0,4},{9,8,7,6,5,4,3,2,1,0}
-        };
-        private static readonly int[,] P =
-        {
-            {0,1,2,3,4,5,6,7,8,9},{1,5,7,6,2,8,3,0,9,4},{5,8,0,3,7,9,6,1,4,2},{8,9,1,6,0,4,3,5,2,7},
-            {9,4,5,3,1,2,6,8,7,0},{4,2,8,6,5,7,3,9,0,1},{2,7,9,3,8,0,6,4,1,5},{7,0,4,6,9,1,3,2,5,8}
-        };
-        private static readonly int[] Inv = { 0, 4, 3, 2, 1, 5, 6, 7, 8, 9 };
-
         /// <summary>Digits only ("1234 5678 9012" -> "123456789012").</summary>
         public static string Normalize(string? value) => new((value ?? "").Where(char.IsDigit).ToArray());
 
         /// <summary>
-        /// 1111-1111-1111 or 12 plain digits, not starting with 0 or 1, with a valid Verhoeff check digit (as issued by UIDAI).
-        /// main.js IMSBValidate.aadhaar is the browser copy of the format check.
+        /// Exactly 12 digits; hyphens and spaces between them are ignored. The digits themselves are not checked.
+        /// main.js IMSBValidate.aadhaar is the browser copy.
         /// </summary>
-        public static bool IsValid(string? value)
-        {
-            if (!System.Text.RegularExpressions.Regex.IsMatch((value ?? "").Trim(), @"^[2-9][0-9]{3}(-?)[0-9]{4}\1[0-9]{4}\z")) return false;
-            var digits = Normalize(value);
-            var c = 0;
-            for (int i = 0; i < digits.Length; i++)
-                c = D[c, P[i % 8, digits[digits.Length - 1 - i] - '0']];
-            return c == 0;
-        }
-
-        /// <summary>Check digit to append to 11 digits (used to build valid test/demo numbers).</summary>
-        public static char CheckDigit(string elevenDigits)
-        {
-            var c = 0;
-            for (int i = 0; i < elevenDigits.Length; i++)
-                c = D[c, P[(i + 1) % 8, elevenDigits[elevenDigits.Length - 1 - i] - '0']];
-            return (char)('0' + Inv[c]);
-        }
+        public static bool IsValid(string? value) =>
+            System.Text.RegularExpressions.Regex.IsMatch(
+                System.Text.RegularExpressions.Regex.Replace(value ?? "", @"[-\s]", ""), @"^[0-9]{12}\z");
 
         public static string Hash(string value) =>
             Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("IMSB-Aadhaar:" + Normalize(value))));

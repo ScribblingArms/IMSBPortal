@@ -31,7 +31,7 @@
         <member name="T:IMSB.Api.Controllers.ApplicationsController">
             <summary>
             Artisan applications: new (PENDING) -> process (UNDER_REVIEW) -> approve (registers the artisan, optionally
-            allotting a vacant stall) or reject. Open applications can be edited; any but approved ones deleted.
+            allotting a vacant stall) or reject. Open applications can be edited; any application can be deleted.
             </summary>
         </member>
         <member name="M:IMSB.Api.Controllers.ApplicationsController.Data(System.String,System.String,System.String,System.String)">
@@ -41,7 +41,7 @@
             <summary>One application with every field (Aadhaar masked).</summary>
         </member>
         <member name="M:IMSB.Api.Controllers.ApplicationsController.Delete(System.String)">
-            <summary>Approved applications stay as the artisan's registration record; the rest can be deleted.</summary>
+            <summary>Removes the application only: an artisan registered from it, and their stall, are not touched.</summary>
         </member>
         <member name="M:IMSB.Api.Controllers.ApplicationsController.Process(System.String)">
             <summary>Takes a new application up for review by the current admin.</summary>

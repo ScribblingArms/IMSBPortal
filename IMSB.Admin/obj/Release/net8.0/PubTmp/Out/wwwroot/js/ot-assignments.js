@@ -34,6 +34,9 @@
     }
   }
 
+  // yyyy-MM-ddTHH:mm as shown to the user
+  const stamp = v => String(v || '').replace('T', ' ');
+
   function actionButtons(id){
     return [['view', 'fa-eye', t('View'), ''], ['edit', 'fa-pen', t('Edit'), ''], ['delete', 'fa-trash', t('Delete'), 'color:var(--danger)']]
       .map(([act, icon, label, style]) => `<button type="button" class="btn btn-ghost btn-sm btn-icon" data-act="${act}" data-id="${esc(id)}"
@@ -50,15 +53,15 @@
       <td><strong>${esc(r.staffName)}</strong></td>
       <td>${esc(r.staffCategory || '—')}</td>
       <td>${esc(r.designation || '—')}</td>
-      <td>${esc(r.fromTime)}</td>
-      <td>${esc(r.toTime)}</td>
+      <td style="white-space:nowrap">${esc(stamp(r.fromDateTime))}</td>
+      <td style="white-space:nowrap">${esc(stamp(r.toDateTime))}</td>
       <td style="white-space:nowrap">${actionButtons(r.id)}</td>
     </tr>`).join('') : `<tr><td colspan="7" class="empty-state" style="text-align:center">${esc(t('NoOTAssignments'))}</td></tr>`;
   }
 
   // ── Add / edit form ───────────────────────────────────────────
   function clearErrors(){
-    ['request', 'staff_id', 'from_time', 'to_time'].forEach(k => {
+    ['request', 'staff_id', 'from_datetime', 'to_datetime'].forEach(k => {
       const el = $('err_' + k);
       el.textContent = '';
       el.style.display = '';
@@ -85,25 +88,25 @@
       : `<option value="">${esc(t('SelectPlaceholder'))}</option>` +
         staff.map(s => `<option value="${esc(s.id)}">${esc(s.employeeId)} – ${esc(s.fullName)}</option>`).join('');
     select.disabled = !!row;
-    $('otFrom').value = row ? row.fromTime : '';
-    $('otTo').value = row ? row.toTime : '';
+    $('otFrom').value = row ? row.fromDateTime : '';
+    $('otTo').value = row ? row.toDateTime : '';
     openModal('otFormModal');
   }
 
-  // same rules as OtAssignmentMapper.ValidateTimes on the server (HH:mm compares as text)
+  // same rules as OtAssignmentMapper.ValidateTimes on the server (yyyy-MM-ddTHH:mm compares as text)
   function validate(body){
     const errors = {};
     if (!editingId && !body.staffId) errors.staff_id = t('ValOtSelectStaff');
-    if (!body.fromTime) errors.from_time = t('ValOtTimes');
-    else if (!body.toTime) errors.to_time = t('ValOtTimes');
-    else if (body.toTime <= body.fromTime) errors.to_time = t('ValOtToAfterFrom');
+    if (!body.fromDateTime) errors.from_datetime = t('ValOtTimes');
+    else if (!body.toDateTime) errors.to_datetime = t('ValOtTimes');
+    else if (body.toDateTime <= body.fromDateTime) errors.to_datetime = t('ValOtToAfterFrom');
     return errors;
   }
 
   async function save(){
     if (saving) return;
     clearErrors();
-    const body = { staffId: $('otStaff').value || null, fromTime: $('otFrom').value, toTime: $('otTo').value };
+    const body = { staffId: $('otStaff').value || null, fromDateTime: $('otFrom').value, toDateTime: $('otTo').value };
     const errors = validate(body);
     if (Object.keys(errors).length){ showErrors(errors); return; }
 
@@ -139,7 +142,7 @@
   function view(row){
     const fields = [
       ['EmployeeID', row.employeeId], ['StaffName', row.staffName], ['Department', row.staffCategory], ['Designation', row.designation],
-      ['OTFromTime', row.fromTime], ['OTToTime', row.toTime], ['UpdatedBy', row.by]
+      ['OTFromTime', stamp(row.fromDateTime)], ['OTToTime', stamp(row.toDateTime)], ['UpdatedBy', row.by]
     ];
     $('otViewBody').innerHTML = `<div class="form-grid col-2">
       ${fields.map(([label, value]) => `<div class="form-group"><div class="form-label">${esc(t(label))}</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(value || '—')}</div></div>`).join('')}

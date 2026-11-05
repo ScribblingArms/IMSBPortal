@@ -2379,6 +2379,9 @@
   <data name="ConfirmDeleteApplication" xml:space="preserve">
     <value>आवेदन {0} हटाएँ? इसे पूर्ववत नहीं किया जा सकता।</value>
   </data>
+  <data name="ConfirmDeleteApprovedApplication" xml:space="preserve">
+    <value>स्वीकृत आवेदन {0} हटाएँ? कारीगर पंजीकृत रहेगा, लेकिन यह पंजीकरण रिकॉर्ड वापस नहीं पाया जा सकेगा।</value>
+  </data>
   <data name="ApplicationProcessed" xml:space="preserve">
     <value>आवेदन {0} समीक्षा में भेजा गया</value>
   </data>
@@ -2402,9 +2405,6 @@
   </data>
   <data name="ValApplicationDecided" xml:space="preserve">
     <value>इस आवेदन पर पहले ही निर्णय हो चुका है</value>
-  </data>
-  <data name="ValApplicationApprovedDelete" xml:space="preserve">
-    <value>स्वीकृत आवेदन कारीगर के पंजीकरण रिकॉर्ड के रूप में रखा जाता है और हटाया नहीं जा सकता</value>
   </data>
   <data name="ValApplicationNotPending" xml:space="preserve">
     <value>केवल नया आवेदन ही संसाधित किया जा सकता है</value>

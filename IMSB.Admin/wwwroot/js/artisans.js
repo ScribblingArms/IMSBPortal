@@ -248,7 +248,7 @@
     };
   }
 
-  // mirrors the server rules; the server has the final say (duplicates, Aadhaar checksum)
+  // mirrors the server rules; the server has the final say (duplicates)
   function validate(v, editing){
     const e = {};
     if (v.fullName.length < 2 || v.fullName.length > 100) e.full_name = t('ValFullName');

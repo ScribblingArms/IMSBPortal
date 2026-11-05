@@ -273,9 +273,10 @@ public class StaffControllerCreateTests
     [InlineData(null)]
     [InlineData("   ")]
     [InlineData("12345")]
-    [InlineData("123456789012")]   // cannot start with 1
-    [InlineData("234567890123")]   // fails the checksum
-    public async Task Create_needs_a_valid_aadhaar(string? aadhaar)
+    [InlineData("12345678901")]     // 11 digits
+    [InlineData("1234567890123")]   // 13 digits
+    [InlineData("abcd-efgh-ijkl")]
+    public async Task Create_needs_a_12_digit_aadhaar(string? aadhaar)
     {
         using var ctx = TestHelpers.CreateContext();
         var dto = TestHelpers.ValidCreateDto();
@@ -285,6 +286,23 @@ public class StaffControllerCreateTests
 
         Assert.Equal("Enter a valid 12-digit Aadhaar number", errors["aadhaar"]);
         Assert.Empty(ctx.Staff);
+    }
+
+    [Theory]
+    [InlineData("1111-1111-1111")]
+    [InlineData("0123-4567-8901")]
+    [InlineData("234567890123")]
+    public async Task Create_accepts_any_12_digit_aadhaar(string aadhaar)
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.Aadhaar = aadhaar;
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(dto));
+
+        var saved = await ctx.Staff.SingleAsync();
+        Assert.Equal(Aadhaar.Hash(aadhaar), saved.AadhaarHash);
+        Assert.Equal(aadhaar[^4..], saved.AadhaarLast4);
     }
 
     [Fact]

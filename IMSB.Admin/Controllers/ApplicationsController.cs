@@ -11,7 +11,7 @@ namespace IMSB.Admin.Controllers
 {
     /// <summary>
     /// Artisan applications: new (PENDING) -> Process (UNDER_REVIEW) -> Approve (registers the artisan, optionally
-    /// allotting a vacant stall) or Reject. Open applications can be edited; any but approved ones deleted.
+    /// allotting a vacant stall) or Reject. Open applications can be edited; any application can be deleted.
     /// </summary>
     [Authorize(Roles = "Admin")]
     public class ApplicationsController : Controller
@@ -95,14 +95,13 @@ namespace IMSB.Admin.Controllers
             return Ok(new { id = app.ApplicationNo });
         }
 
-        /// <summary>Approved applications stay as the artisan's registration record; the rest can be deleted.</summary>
+        /// <summary>Removes the application only: an artisan registered from it, and their stall, are not touched.</summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
             var app = await _applications.FindAsync(id);
             if (app == null) return NotFound();
-            if (app.Status == ApplicationStatuses.Approved) return ErrorResult("application", _L["ValApplicationApprovedDelete"]);
             await _applications.RemoveAsync(app);
             return Ok(new { id });
         }

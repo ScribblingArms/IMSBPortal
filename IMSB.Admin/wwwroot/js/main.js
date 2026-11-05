@@ -16,8 +16,7 @@ function IMSBT(key, ...args) {
 const IMSBValidate = {
   mobile: v => /^[6-9][0-9]{9}$/.test(v || ''),
   email: v => new RegExp("^[A-Za-z0-9_%+-]+([.][A-Za-z0-9_%+-]+)*@[A-Za-z0-9]+(-+[A-Za-z0-9]+)*([.][A-Za-z0-9]+(-+[A-Za-z0-9]+)*)*[.][A-Za-z]{2,}$").test(v || ''),
-  // the server also checks the Verhoeff check digit
-  aadhaar: v => /^[2-9][0-9]{3}(-?)[0-9]{4}\1[0-9]{4}$/.test(v || '')
+  aadhaar: v => /^[0-9]{12}$/.test((v || '').replace(/[-\s]/g, ''))
 };
 
 // Inputs with data-format="mobile" or "aadhaar" keep to their format while typing or pasting.

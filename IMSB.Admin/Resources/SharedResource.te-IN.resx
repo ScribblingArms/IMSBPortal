@@ -2379,6 +2379,9 @@
   <data name="ConfirmDeleteApplication" xml:space="preserve">
     <value>దరఖాస్తు {0}ను తొలగించాలా? దీన్ని రద్దు చేయలేరు.</value>
   </data>
+  <data name="ConfirmDeleteApprovedApplication" xml:space="preserve">
+    <value>ఆమోదించిన దరఖాస్తు {0}ను తొలగించాలా? కళాకారుని నమోదు కొనసాగుతుంది, కానీ ఈ నమోదు రికార్డును తిరిగి పొందలేరు.</value>
+  </data>
   <data name="ApplicationProcessed" xml:space="preserve">
     <value>దరఖాస్తు {0} సమీక్షకు మార్చబడింది</value>
   </data>
@@ -2402,9 +2405,6 @@
   </data>
   <data name="ValApplicationDecided" xml:space="preserve">
     <value>ఈ దరఖాస్తుపై ఇప్పటికే నిర్ణయం తీసుకోబడింది</value>
-  </data>
-  <data name="ValApplicationApprovedDelete" xml:space="preserve">
-    <value>ఆమోదించిన దరఖాస్తు కళాకారుని నమోదు రికార్డుగా ఉంచబడుతుంది; దాన్ని తొలగించలేరు</value>
   </data>
   <data name="ValApplicationNotPending" xml:space="preserve">
     <value>కొత్త దరఖాస్తును మాత్రమే ప్రాసెస్ చేయగలరు</value>

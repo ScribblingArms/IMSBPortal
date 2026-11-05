@@ -49,8 +49,7 @@ namespace IMSB.Dto.Models
             {
                 if (!categories.TryGetValue(s.Category, out var categoryId)) continue;
                 i++;
-                var eleven = $"5{i:D2}{s.Mobile[..8]}";
-                var aadhaar = eleven + Aadhaar.CheckDigit(eleven);
+                var aadhaar = $"5{i:D2}{s.Mobile[..9]}";
                 var artisan = new Artisan
                 {
                     ArtisanCode = $"ART-{i:D4}",
@@ -103,8 +102,7 @@ namespace IMSB.Dto.Models
             {
                 if (!categories.TryGetValue(s.Category, out var categoryId) || context.Artisans.Any(a => a.Mobile == s.Mobile)) continue;
                 i++;
-                var eleven = $"6{i:D2}{s.Mobile[..8]}";
-                var aadhaar = eleven + Aadhaar.CheckDigit(eleven);
+                var aadhaar = $"6{i:D2}{s.Mobile[..9]}";
                 context.ArtisanApplications.Add(new ArtisanApplication
                 {
                     ApplicationNo = $"APP-{i:D4}",

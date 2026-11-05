@@ -9,7 +9,7 @@ namespace IMSB.Api.Controllers
 {
     /// <summary>
     /// Artisan applications: new (PENDING) -> process (UNDER_REVIEW) -> approve (registers the artisan, optionally
-    /// allotting a vacant stall) or reject. Open applications can be edited; any but approved ones deleted.
+    /// allotting a vacant stall) or reject. Open applications can be edited; any application can be deleted.
     /// </summary>
     [Authorize(Roles = "Admin")]
     public class ApplicationsController : ApiControllerBase
@@ -70,13 +70,12 @@ namespace IMSB.Api.Controllers
             return Ok(new { id = app.ApplicationNo });
         }
 
-        /// <summary>Approved applications stay as the artisan's registration record; the rest can be deleted.</summary>
+        /// <summary>Removes the application only: an artisan registered from it, and their stall, are not touched.</summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var app = await _applications.FindAsync(id);
             if (app == null) return NotFound();
-            if (app.Status == ApplicationStatuses.Approved) return Invalid("application", "ValApplicationApprovedDelete");
             await _applications.RemoveAsync(app);
             return Ok(new { id });
         }

@@ -77,14 +77,28 @@ public class ApplicationsControllerTests
     }
 
     [Fact]
-    public async Task Aadhaar_is_required_and_checksummed()
+    public async Task Aadhaar_is_required_and_must_be_12_digits()
     {
         using var ctx = Seeded();
         var dto = NewApplication();
-        dto.Aadhaar = null;
-        Assert.Equal("Enter a valid 12-digit Aadhaar number", TestHelpers.Errors(await Applications(ctx).Create(dto))["aadhaar"]);
-        dto.Aadhaar = "234123412347";   // wrong check digit
-        Assert.True(TestHelpers.Errors(await Applications(ctx).Create(dto)).ContainsKey("aadhaar"));
+        foreach (var aadhaar in new[] { null, "2341-2341-234", "2341-2341-23461", "abcd-efgh-ijkl" })
+        {
+            dto.Aadhaar = aadhaar;
+            Assert.Equal("Enter a valid 12-digit Aadhaar number", TestHelpers.Errors(await Applications(ctx).Create(dto))["aadhaar"]);
+        }
+    }
+
+    [Theory]
+    [InlineData("1111-1111-1111")]
+    [InlineData("0123-4567-8901")]
+    [InlineData("234123412347")]
+    public async Task Any_12_digit_aadhaar_is_accepted(string aadhaar)
+    {
+        using var ctx = Seeded();
+        var dto = NewApplication();
+        dto.Aadhaar = aadhaar;
+        Assert.IsType<OkObjectResult>(await Applications(ctx).Create(dto));
+        Assert.Contains(ctx.ArtisanApplications, a => a.AadhaarHash == Aadhaar.Hash(aadhaar) && a.AadhaarLast4 == aadhaar[^4..]);
     }
 
     [Fact]
@@ -239,21 +253,108 @@ public class ApplicationsControllerTests
         Assert.IsType<NotFoundResult>(await Applications(ctx).Update("APP-9999", dto));
     }
 
+    [Theory]
+    [InlineData(ApplicationStatuses.Pending)]
+    [InlineData(ApplicationStatuses.UnderReview)]
+    [InlineData(ApplicationStatuses.Approved)]
+    [InlineData(ApplicationStatuses.Rejected)]
+    public async Task Delete_removes_an_application_of_any_status_and_nothing_else(string status)
+    {
+        using var ctx = Seeded();
+        AddApplication(ctx, "APP-0001", status, decidedAt: DateTime.UtcNow);
+        AddApplication(ctx, "APP-0002", status, decidedAt: DateTime.UtcNow);
+
+        var json = TestHelpers.OkJson(await Applications(ctx).Delete("APP-0001"));
+
+        Assert.Equal("APP-0001", json.GetProperty("id").GetString());
+        Assert.Equal("APP-0002", ctx.ArtisanApplications.Single().ApplicationNo);
+    }
+
     [Fact]
-    public async Task Delete_removes_open_and_rejected_but_keeps_approved()
+    public async Task Delete_of_an_unknown_or_already_deleted_application_is_not_found()
     {
         using var ctx = Seeded();
         AddApplication(ctx, "APP-0001");
-        AddApplication(ctx, "APP-0002", ApplicationStatuses.Rejected, decidedAt: DateTime.UtcNow);
-        AddApplication(ctx, "APP-0003", ApplicationStatuses.Approved, decidedAt: DateTime.UtcNow);
         var c = Applications(ctx);
 
+        Assert.IsType<NotFoundResult>(await c.Delete("APP-9999"));
         Assert.IsType<OkObjectResult>(await c.Delete("APP-0001"));
-        Assert.IsType<OkObjectResult>(await c.Delete("APP-0002"));
-        Assert.Equal("An approved application is kept as the artisan's registration record and cannot be deleted",
-            TestHelpers.Errors(await c.Delete("APP-0003"))["application"]);
-        Assert.Equal("APP-0003", ctx.ArtisanApplications.Single().ApplicationNo);
         Assert.IsType<NotFoundResult>(await c.Delete("APP-0001"));
+    }
+
+    [Fact]
+    public async Task Deleting_an_approved_application_leaves_the_artisan_and_stall_in_place()
+    {
+        using var ctx = Seeded();
+        ctx.Stalls.Add(new Stall { StallCode = "Z-01", Name = "Stall Z-01", Block = "Z", Status = StallStatuses.Vacant });
+        await ctx.SaveChangesAsync();
+        AddApplication(ctx, "APP-0001");
+        var approved = TestHelpers.OkJson(await Applications(ctx).Approve("APP-0001", new ApproveApplicationDto { StallCode = "Z-01" }));
+        var code = approved.GetProperty("artisanCode").GetString();
+
+        Assert.IsType<OkObjectResult>(await Applications(ctx).Delete("APP-0001"));
+
+        Assert.Empty(ctx.ArtisanApplications);
+        var artisan = ctx.Artisans.AsNoTracking().Single(a => a.ArtisanCode == code);
+        var stall = ctx.Stalls.AsNoTracking().Single(s => s.StallCode == "Z-01");
+        Assert.Equal((artisan.Id, StallStatuses.Occupied), (stall.ArtisanId!.Value, stall.Status));
+    }
+
+    [Fact]
+    public async Task An_approved_application_can_be_deleted_after_its_artisan_was()
+    {
+        using var ctx = Seeded();
+        AddApplication(ctx, "APP-0001");
+        var code = TestHelpers.OkJson(await Applications(ctx).Approve("APP-0001", null)).GetProperty("artisanCode").GetString()!;
+        Assert.IsType<OkObjectResult>(await Artisans(ctx).Delete(code));
+
+        Assert.IsType<OkObjectResult>(await Applications(ctx).Delete("APP-0001"));
+
+        Assert.Empty(ctx.ArtisanApplications);
+    }
+
+    [Fact]
+    public async Task Deleted_application_leaves_the_stats_and_list()
+    {
+        using var ctx = Seeded();
+        AddApplication(ctx, "APP-0001", ApplicationStatuses.Approved, decidedAt: DateTime.UtcNow);
+        AddApplication(ctx, "APP-0002", ApplicationStatuses.Approved, decidedAt: DateTime.UtcNow);
+        var c = Applications(ctx);
+
+        await c.Delete("APP-0001");
+
+        var data = TestHelpers.OkJson(await c.Data(null, null, null, null));
+        Assert.Equal((1, 1, 1), (data.GetProperty("stats").GetProperty("total").GetInt32(), data.GetProperty("stats").GetProperty("approved").GetInt32(),
+            data.GetProperty("stats").GetProperty("approvedThisMonth").GetInt32()));
+        Assert.Equal("APP-0002", Ids(await c.Data(null, null, null, null)));
+    }
+
+    [Fact]
+    public async Task Deleting_an_open_application_frees_its_mobile_and_aadhaar_for_a_new_one()
+    {
+        using var ctx = Seeded();
+        var c = Applications(ctx);
+        await c.Create(NewApplication());
+        Assert.Contains("mobile", TestHelpers.Errors(await c.Create(NewApplication())).Keys);
+
+        await c.Delete("APP-0001");
+
+        Assert.IsType<OkObjectResult>(await c.Create(NewApplication()));
+    }
+
+    [Fact]
+    public async Task Deleting_an_approved_application_does_not_let_the_artisan_apply_again()
+    {
+        using var ctx = Seeded();
+        var c = Applications(ctx);
+        await c.Create(NewApplication());
+        await c.Approve("APP-0001", null);
+        await c.Delete("APP-0001");
+
+        var errors = TestHelpers.Errors(await c.Create(NewApplication()));
+
+        Assert.Equal("Mobile already registered", errors["mobile"]);
+        Assert.Equal("This Aadhaar number is already registered", errors["aadhaar"]);
     }
 
     [Fact]

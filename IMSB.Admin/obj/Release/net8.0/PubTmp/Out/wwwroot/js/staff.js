@@ -62,6 +62,7 @@
       ['Designation', s.designation],
       ['Mobile', s.mobile],
       ['Email', s.email],
+      ['AadhaarNumber', s.aadhaar_masked],
       ['DateOfBirth', formatDateDisplay(s.date_of_birth)],
       ['Gender', s.gender],
       ['JoinDate', formatDateDisplay(s.join_date)],
@@ -203,7 +204,7 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', aadhaar: 'Aadhaar', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
     return map[name] || name;
   }
 
@@ -218,6 +219,13 @@
     document.getElementById('staffJoinDate').setAttribute('max', iso);
   }
 
+  // the number is never sent back: registering needs one, editing keeps the one on record unless a new one is typed
+  function prepareAadhaar(s){
+    document.getElementById('staffAadhaar').value = '';
+    document.getElementById('staffAadhaarReq').style.display = s ? 'none' : '';
+    document.getElementById('staffAadhaarHint').textContent = s && s.aadhaar_masked ? t('AadhaarKeepHint', s.aadhaar_masked) : t('AadhaarStoredHint');
+  }
+
   function openCreate(){
     formDirty = false;
     const modal = document.querySelector('#addStaffModal .modal');
@@ -225,6 +233,7 @@
     document.getElementById('staffSubmitBtnText').textContent = modal.dataset.registerText;
     document.getElementById('staffForm').reset();
     prepareForm();
+    prepareAadhaar(null);
     document.getElementById('staffEmployeeId').value = '';   // placeholder shows "Auto-generated"
     document.getElementById('staffInternalId').value = '';
     document.getElementById('staffGender').value = 'Female';
@@ -242,6 +251,7 @@
     document.getElementById('staffModalTitle').textContent = modal.dataset.editTitle;
     document.getElementById('staffSubmitBtnText').textContent = modal.dataset.updateText;
     prepareForm();
+    prepareAadhaar(s);
     document.getElementById('staffInternalId').value = s.id;
     document.getElementById('staffEmployeeId').value = s.id;
     document.getElementById('staffFullName').value = s.full_name || '';
@@ -276,8 +286,12 @@
     const errors = {};
     const today = new Date(); today.setHours(0,0,0,0);
     if (vals.full_name.length < 2 || vals.full_name.length > 100) errors.full_name = t('ValFullName');
-    if (!/^[0-9]{9,12}$/.test(vals.mobile)) errors.mobile = t('ValMobile');
-    if (vals.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(vals.email)) errors.email = t('ValEmail');
+    // an unchanged number is accepted so records saved under the older 9-12 digit rule can still be edited
+    const saved = vals.id ? staff.find(x => x.id === vals.id) : null;
+    if (vals.mobile !== saved?.mobile && !IMSBValidate.mobile(vals.mobile)) errors.mobile = t('ValMobile');
+    if (vals.email && !IMSBValidate.email(vals.email)) errors.email = t('ValEmail');
+    // the server has the final say (checksum, duplicates)
+    if ((!vals.id || vals.aadhaar) && !IMSBValidate.aadhaar(vals.aadhaar)) errors.aadhaar = t('ValAadhaar');
     const dob = parseIsoDate(vals.date_of_birth);
     if (!dob) errors.date_of_birth = t('ValDobRequired');
     else if (dob > today) errors.date_of_birth = t('ValDobFuture');
@@ -314,6 +328,7 @@
       full_name: v('staffFullName'),
       mobile: v('staffMobile'),
       email: v('staffEmail') || null,
+      aadhaar: v('staffAadhaar') || null,
       date_of_birth: v('staffDOB'),
       gender: v('staffGender'),
       department_id: v('staffDepartment'),
@@ -341,7 +356,7 @@
     const isCreate = !vals.id;
     const url = isCreate ? '/Staff/Create' : '/Staff/Update/' + encodeURIComponent(vals.id);
     const body = {
-      fullName: vals.full_name, mobile: vals.mobile, email: vals.email,
+      fullName: vals.full_name, mobile: vals.mobile, email: vals.email, aadhaar: vals.aadhaar,
       dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id,
       designation: vals.designation, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
     };
@@ -423,6 +438,7 @@
         monthly_salary: s.monthlySalary,
         mobile: s.mobile || '',
         email: s.email || null,
+        aadhaar_masked: s.aadhaarMasked || null,
         date_of_birth: s.dateOfBirth || '',
         gender: s.gender || 'Female',
         join_date: s.joinDate || '',

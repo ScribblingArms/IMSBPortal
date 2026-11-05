@@ -26,12 +26,8 @@ internal static class BazaarTestHelpers
     public static ArtisansController Artisans(IMSBContext ctx, string user = "admin@imsb") =>
         new(new IMSB.Backend.Artisans(ctx), TestHelpers.LocalizerFactory()) { ControllerContext = Context(user) };
 
-    /// <summary>A valid Aadhaar number (Verhoeff check digit) built from a seed.</summary>
-    public static string ValidAadhaar(int seed)
-    {
-        var eleven = (40000000000L + seed * 7919L).ToString();
-        return eleven + Aadhaar.CheckDigit(eleven);
-    }
+    /// <summary>A 12-digit Aadhaar number built from a seed, so different seeds give different numbers.</summary>
+    public static string ValidAadhaar(int seed) => (400000000000L + seed * 7919L).ToString();
 
     public static Artisan AddArtisan(IMSBContext ctx, string code, string name, string mobile, string status = ArtisanStatuses.Active,
         Guid? category = null, string district = "Hyderabad", int seed = 0)

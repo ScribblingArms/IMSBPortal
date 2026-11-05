@@ -73,12 +73,9 @@ internal static class TestHelpers
                 controller.ModelState.AddModelError(member, r.ErrorMessage ?? "invalid");
     }
 
-    /// <summary>A checksum-valid Aadhaar number derived from the seed, so different seeds give different numbers.</summary>
-    public static string ValidAadhaar(string seed)
-    {
-        var eleven = "2" + new string(seed.Where(char.IsDigit).ToArray()).PadLeft(10, '0')[^10..];
-        return eleven + Aadhaar.CheckDigit(eleven);
-    }
+    /// <summary>A 12-digit Aadhaar number derived from the seed, so different seeds give different numbers.</summary>
+    public static string ValidAadhaar(string seed) =>
+        "23" + new string(seed.Where(char.IsDigit).ToArray()).PadLeft(10, '0')[^10..];
 
     public static CreateStaffDto ValidCreateDto(string mobile = "9876500001", string? email = "new.staff@example.com") => new()
     {

@@ -2379,6 +2379,9 @@
   <data name="ConfirmDeleteApplication" xml:space="preserve">
     <value>விண்ணப்பம் {0}-ஐ நீக்கவா? இதை மீட்க முடியாது.</value>
   </data>
+  <data name="ConfirmDeleteApprovedApplication" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்ட விண்ணப்பம் {0}-ஐ நீக்கவா? கலைஞரின் பதிவு தொடரும், ஆனால் இந்தப் பதிவுச் சான்றை மீட்க முடியாது.</value>
+  </data>
   <data name="ApplicationProcessed" xml:space="preserve">
     <value>விண்ணப்பம் {0} பரிசீலனைக்கு மாற்றப்பட்டது</value>
   </data>
@@ -2402,9 +2405,6 @@
   </data>
   <data name="ValApplicationDecided" xml:space="preserve">
     <value>இந்த விண்ணப்பத்தின் மீது ஏற்கனவே முடிவு எடுக்கப்பட்டுள்ளது</value>
-  </data>
-  <data name="ValApplicationApprovedDelete" xml:space="preserve">
-    <value>அங்கீகரிக்கப்பட்ட விண்ணப்பம் கலைஞரின் பதிவுச் சான்றாக வைக்கப்படும்; அதை நீக்க முடியாது</value>
   </data>
   <data name="ValApplicationNotPending" xml:space="preserve">
     <value>புதிய விண்ணப்பத்தை மட்டுமே செயல்படுத்த முடியும்</value>
