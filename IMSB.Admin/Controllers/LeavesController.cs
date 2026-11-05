@@ -31,7 +31,7 @@ public class LeavesController : Controller
             Year = year,
             Categories = staff.Select(s => s.StaffCategory.Trim()).Where(c => c.Length > 0)
                 .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(c => c).ToList(),
-            Staff = staff.Select(ToOption).ToList(),
+            Staff = staff,
             Entitlements = await _leaves.EntitlementsWithStaffAsync(year),
             Balances = await _leaves.BalancesAsync(year)
         });
@@ -80,7 +80,8 @@ public class LeavesController : Controller
         {
             Year = year,
             Form = new LeaveEntryForm { FromDate = firstFutureDate, ToDate = firstFutureDate },
-            Staff = (await _leaves.ActiveStaffAsync()).Select(ToOption).ToList(),
+            Staff = await _leaves.ActiveStaffAsync(),
+            LeaveTypes = await _leaves.LeaveTypesAsync(),
             Entitlements = await _leaves.EntitlementsAsync(year),
             Entries = await _leaves.EntriesAsync(year)
         });
@@ -117,8 +118,6 @@ public class LeavesController : Controller
         TempData["LeaveMessage"] = _L["LeaveEntryDeleted"].Value;
         return RedirectToAction(nameof(Add));
     }
-
-    private static LeaveStaffOption ToOption(Staff s) => new(s.Id, s.EmployeeId, s.FullName, s.StaffCategory);
 
     private IActionResult LeaveIndexError(string message)
     {

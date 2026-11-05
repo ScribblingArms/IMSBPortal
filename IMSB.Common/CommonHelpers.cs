@@ -49,6 +49,10 @@ namespace IMSB.Common
         public static bool TryParseTime(string? value, out TimeSpan time) =>
             TimeSpan.TryParseExact(value?.Trim(), @"hh\:mm", CultureInfo.InvariantCulture, out time) && time < TimeSpan.FromDays(1);
 
+        /// <summary>yyyy-MM-ddTHH:mm, as sent by a datetime-local input.</summary>
+        public static bool TryParseDateTime(string? value, out DateTime dateTime) =>
+            DateTime.TryParseExact(value?.Trim(), "yyyy-MM-dd'T'HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
+
         private static readonly Regex Whitespace = new(@"\s+", RegexOptions.Compiled);
         private static readonly Regex TrailingNumber = new(@"(\d+)$", RegexOptions.Compiled);
         private static readonly Regex IndexSegment = new(@"\[(\d+)\]", RegexOptions.Compiled);

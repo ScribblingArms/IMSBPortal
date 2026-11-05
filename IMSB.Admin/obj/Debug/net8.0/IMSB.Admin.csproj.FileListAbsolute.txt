@@ -589,4 +589,7 @@ C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\en-US\IMSB.Admin.res
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\hi-IN\IMSB.Admin.resources.dll
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\ta-IN\IMSB.Admin.resources.dll
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\te-IN\IMSB.Admin.resources.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\en-US\IMSB.Admin.resources.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\hi-IN\IMSB.Admin.resources.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\ta-IN\IMSB.Admin.resources.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\te-IN\IMSB.Admin.resources.cs

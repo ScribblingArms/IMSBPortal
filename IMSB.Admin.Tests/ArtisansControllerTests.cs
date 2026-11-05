@@ -77,7 +77,7 @@ public class ArtisansControllerTests
     public async Task New_application_registers_artisan_without_storing_aadhaar()
     {
         using var ctx = Seeded();
-        var dto = NewArtisan(mobile: "+91 91234 56780");
+        var dto = NewArtisan(mobile: "9123456780");
         var result = await Artisans(ctx, "clerk").Create(dto);
         Assert.Equal("ART-0005", TestHelpers.OkJson(result).GetProperty("code").GetString());
 
@@ -87,7 +87,7 @@ public class ArtisansControllerTests
         Assert.Equal(dto.Aadhaar![^4..], a.AadhaarLast4);
         Assert.Equal(Aadhaar.Hash(dto.Aadhaar), a.AadhaarHash);
         Assert.DoesNotContain(dto.Aadhaar, a.AadhaarHash);
-        Assert.Equal("XXXX XXXX " + dto.Aadhaar[^4..], a.MaskedAadhaar);
+        Assert.Equal("XXXX-XXXX-" + dto.Aadhaar[^4..], a.MaskedAadhaar);
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class ArtisansControllerTests
         var first = NewArtisan();
         Assert.IsType<OkObjectResult>(await c.Create(first));
         var second = NewArtisan(mobile: "9988776655", name: "Someone Else");
-        second.Aadhaar = string.Join(" ", first.Aadhaar![..4], first.Aadhaar[4..8], first.Aadhaar[8..]);
+        second.Aadhaar = string.Join("-", first.Aadhaar![..4], first.Aadhaar[4..8], first.Aadhaar[8..]);
         Assert.Equal("This Aadhaar number is already registered", TestHelpers.Errors(await c.Create(second))["aadhaar"]);
     }
 
@@ -245,7 +245,7 @@ public class ArtisansControllerTests
         Assert.Equal("A-01", json.GetProperty("stallCode").GetString());
         Assert.Equal(3000m, json.GetProperty("monthSales").GetDecimal());
         Assert.Equal(1, json.GetProperty("productsListed").GetInt32());
-        Assert.StartsWith("XXXX XXXX ", json.GetProperty("aadhaarMasked").GetString());
+        Assert.StartsWith("XXXX-XXXX-", json.GetProperty("aadhaarMasked").GetString());
         Assert.False(json.TryGetProperty("aadhaarHash", out _));
         Assert.IsType<NotFoundResult>(await Artisans(ctx).Get("ART-9999"));
     }
@@ -260,7 +260,7 @@ public class ArtisansControllerTests
         var lines = csv.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         Assert.Equal("Artisan ID,Full Name,Gender,Date of Birth,Mobile,Email,Aadhaar Number,District,Agency,Years of Experience,Stall,Status,Joined,From Date,To Date", lines[0]);
         var a = Get(ctx, "ART-0001");
-        Assert.Equal($"ART-0001,Kamala Rajendran,Female,1985-05-05,9876543210,,XXXX XXXX {a.AadhaarLast4},Hyderabad,Textiles,0,A-01,Active,2024-01-15,,", lines[1]);
+        Assert.Equal($"ART-0001,Kamala Rajendran,Female,1985-05-05,9876543210,,XXXX-XXXX-{a.AadhaarLast4},Hyderabad,Textiles,0,A-01,Active,2024-01-15,,", lines[1]);
         Assert.Equal(2, lines.Length);
 
         using var _ = new TestHelpers.CultureScope("hi-IN");
@@ -271,7 +271,7 @@ public class ArtisansControllerTests
 
     [Theory]
     [InlineData("234123412346", true)]    // Verhoeff-valid sample
-    [InlineData("2341 2341 2346", true)]
+    [InlineData("2341-2341-2346", true)]
     [InlineData("234123412347", false)]
     [InlineData("034123412346", false)]
     [InlineData("23412341234", false)]

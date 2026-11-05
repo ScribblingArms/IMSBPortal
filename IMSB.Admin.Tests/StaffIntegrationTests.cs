@@ -153,18 +153,22 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
         Assert.DoesNotContain("bootstrap.min.css", html);
         Assert.Contains("class=\"form-grid col-2\"", html);
         Assert.Contains("id=\"addStaffModal\"", html);
+        // Add Staff sits in the Staff Directory card header; Export stays in the markup but hidden
+        var addStaffBtn = html.IndexOf("class=\"btn staff-add-btn\" data-modal-open=\"addStaffModal\"", StringComparison.Ordinal);
+        Assert.True(html.IndexOf("Staff Directory", StringComparison.Ordinal) < addStaffBtn);
+        Assert.True(addStaffBtn < html.IndexOf("id=\"staffTable\"", StringComparison.Ordinal));
+        Assert.Contains("id=\"staffExportBtn\" style=\"display:none\"", html);
         Assert.Contains("id=\"staffMonthlySalary\"", html);
         Assert.Contains("Monthly Salary", html);
         Assert.Contains("id=\"staffProfileModal\"", html);
         Assert.Contains("StaffCanViewSalary = true", html);
         Assert.DoesNotContain("id=\"staffMonthlySalary\"", staffHtml);
         Assert.Contains("StaffCanViewSalary = false", staffHtml);
-        // OT Assignment: admin only, placed after Employment Details
-        Assert.Contains("OT Assignment", html);
-        Assert.Contains("id=\"staffOtFrom\"", html);
-        Assert.Contains("id=\"staffOtTo\"", html);
-        Assert.True(html.IndexOf("Employment Details", StringComparison.Ordinal) < html.IndexOf("id=\"staffOtFrom\"", StringComparison.Ordinal));
-        Assert.DoesNotContain("id=\"staffOtFrom\"", staffHtml);
+        // Department field is labelled Staff Category; the old free-text field is gone
+        Assert.DoesNotContain("id=\"staffCategory\"", html);
+        Assert.Matches(@"for=""staffDepartment"">Staff Category ", html);
+        // OT timings have their own screen
+        Assert.DoesNotContain("id=\"staffOtFrom\"", html);
         Assert.Single(Regex.Matches(html, "id=\"toast-container\""));
         Assert.Single(Regex.Matches(html, "/js/main\\.js"));
     }
@@ -206,37 +210,37 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
         var token = await AntiforgeryToken(client);
 
         // create
-        var create = await client.SendAsync(Post("/Staff/Create", token, TestHelpers.ValidCreateDto(mobile: "900000555", email: "roundtrip@example.com")));
+        var create = await client.SendAsync(Post("/Staff/Create", token, TestHelpers.ValidCreateDto(mobile: "9000005551", email: "roundtrip@example.com")));
         Assert.Equal(HttpStatusCode.OK, create.StatusCode);
         var id = (await create.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("employeeId").GetString()!;
         Assert.Matches(@"^EMP\d{3,}$", id);
 
         // listed
-        var list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?q=900000555");
+        var list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?q=9000005551");
         var row = Assert.Single(list.GetProperty("staff").EnumerateArray());
         Assert.Equal(id, row.GetProperty("employeeId").GetString());
 
         // validation error comes back keyed by form field
-        var dup = await client.SendAsync(Post("/Staff/Create", token, TestHelpers.ValidCreateDto(mobile: "900000555", email: null)));
+        var dup = await client.SendAsync(Post("/Staff/Create", token, TestHelpers.ValidCreateDto(mobile: "9000005551", email: null)));
         Assert.Equal(HttpStatusCode.BadRequest, dup.StatusCode);
         Assert.Equal("Mobile already registered", (await dup.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("errors").GetProperty("mobile").GetString());
 
         // update
-        var upd = TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(mobile: "900000555", email: "roundtrip@example.com"), "ON_LEAVE");
+        var upd = TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(mobile: "9000005551", email: "roundtrip@example.com"), "ON_LEAVE");
         upd.Designation = "Floor Manager";
         Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Staff/Update/{id}", token, upd))).StatusCode);
-        list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?status=ON_LEAVE&q=900000555");
+        list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?status=ON_LEAVE&q=9000005551");
         row = Assert.Single(list.GetProperty("staff").EnumerateArray());
         Assert.Equal("Floor Manager", row.GetProperty("designation").GetString());
-        Assert.Equal("Executive", row.GetProperty("staffCategory").GetString());
+        Assert.False(row.TryGetProperty("staffCategory", out _));   // the department is the staff category now
 
         // csv export includes it
-        var csv = ExcelExportTestHelpers.CsvText(await client.GetStringAsync("/Staff/Export?q=900000555"));
-        Assert.Contains($"{id},Meena Kumari,Sales,Floor Manager,Executive,900000555", csv);
+        var csv = ExcelExportTestHelpers.CsvText(await client.GetStringAsync("/Staff/Export?q=9000005551"));
+        Assert.Contains($"{id},Meena Kumari,Sales,Floor Manager,9000005551", csv);
 
         // delete
         Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Staff/Delete/{id}", token))).StatusCode);
-        list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?q=900000555");
+        list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?q=9000005551");
         Assert.Empty(list.GetProperty("staff").EnumerateArray());
         Assert.Equal(HttpStatusCode.NotFound, (await client.SendAsync(Post($"/Staff/Delete/{id}", token))).StatusCode);
     }
@@ -246,7 +250,7 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
     {
         var client = _factory.ClientAs("Admin");
         var token = await AntiforgeryToken(client);
-        var dto = TestHelpers.ValidCreateDto(mobile: "900000556", email: "salary-roundtrip@example.com");
+        var dto = TestHelpers.ValidCreateDto(mobile: "9000005561", email: "salary-roundtrip@example.com");
         dto.MonthlySalary = 24680.50m;
 
         var create = await client.SendAsync(Post("/Staff/Create", token, dto));
@@ -276,12 +280,12 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
     {
         var client = _factory.ClientAs("Admin", "hi-IN");
         var token = await AntiforgeryToken(client);
-        var dto = TestHelpers.ValidCreateDto(mobile: "12", email: null);   // fails [RegularExpression] on the DTO
+        var dto = TestHelpers.ValidCreateDto(mobile: "12", email: null);   // fails the mobile rule
 
         var res = await client.SendAsync(Post("/Staff/Create", token, dto));
 
         Assert.Equal(HttpStatusCode.BadRequest, res.StatusCode);
         var errors = (await res.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("errors");
-        Assert.Equal("मोबाइल नंबर 9-12 अंकों का होना चाहिए", errors.GetProperty("mobile").GetString());
+        Assert.Equal("मान्य 10 अंकों का मोबाइल नंबर दर्ज करें", errors.GetProperty("mobile").GetString());
     }
 }

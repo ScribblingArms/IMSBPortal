@@ -11,6 +11,70 @@ function IMSBT(key, ...args) {
   return s;
 }
 
+/* ── Mobile / email / Aadhaar ────────────────────────────────── */
+// The browser copy of the server rules (MobileNumbers, EmailAddresses and Aadhaar in IMSB.Dto), used by every form.
+const IMSBValidate = {
+  mobile: v => /^[6-9][0-9]{9}$/.test(v || ''),
+  email: v => new RegExp("^[A-Za-z0-9_%+-]+([.][A-Za-z0-9_%+-]+)*@[A-Za-z0-9]+(-+[A-Za-z0-9]+)*([.][A-Za-z0-9]+(-+[A-Za-z0-9]+)*)*[.][A-Za-z]{2,}$").test(v || ''),
+  // the server also checks the Verhoeff check digit
+  aadhaar: v => /^[2-9][0-9]{3}(-?)[0-9]{4}\1[0-9]{4}$/.test(v || '')
+};
+
+// Inputs with data-format="mobile" or "aadhaar" keep to their format while typing or pasting.
+(function initFormattedInputs() {
+  const formats = {
+    mobile(value) {
+      let digits = value.replace(/\D/g, '');
+      // a pasted "+91 98765 43210" or "098765 43210" is the 10-digit number
+      if (digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
+      else if (digits.length === 11 && digits.startsWith('0')) digits = digits.slice(1);
+      return digits.slice(0, 10);
+    },
+    aadhaar: value => (value.replace(/\D/g, '').slice(0, 12).match(/\d{1,4}/g) || []).join('-')
+  };
+
+  document.addEventListener('input', e => {
+    const el = e.target;
+    const format = el.dataset && formats[el.dataset.format];
+    if (!format) return;
+    const formatted = format(el.value);
+    if (formatted === el.value) return;
+    // keep the caret after the same digit, so correcting the middle of a number does not jump to the end
+    const digitsBefore = el.value.slice(0, el.selectionStart).replace(/\D/g, '').length;
+    el.value = formatted;
+    let caret = 0;
+    for (let seen = 0; caret < formatted.length && seen < digitsBefore; caret++) if (/\d/.test(formatted[caret])) seen++;
+    el.setSelectionRange(caret, caret);
+  });
+})();
+
+/* ── Date fields ─────────────────────────────────────────────── */
+// Browsers show "dd-mm-yyyy" in an empty date field and CSS cannot detect that, so empty fields get .date-empty,
+// which forms.css uses to hide the text until the field is focused. Half-typed dates stay visible (badInput).
+(function initDateFields() {
+  const DATE_TYPES = ['date', 'datetime-local', 'month', 'week'];
+  const isDateField = el => el instanceof HTMLInputElement && DATE_TYPES.includes(el.type);
+  const sync = el => {
+    if (isDateField(el)) el.classList.toggle('date-empty', el.value === '' && !el.validity.badInput);
+  };
+  const syncAll = root => root.querySelectorAll('input').forEach(sync);
+
+  // pages fill their edit forms by assigning .value, which fires no event
+  const value = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+  Object.defineProperty(HTMLInputElement.prototype, 'value', {
+    ...value,
+    set(next) {
+      value.set.call(this, next);
+      sync(this);
+    }
+  });
+
+  ['input', 'change', 'focusout'].forEach(type => document.addEventListener(type, e => sync(e.target), true));
+  // the fields are only cleared after the reset event has finished
+  document.addEventListener('reset', e => setTimeout(() => syncAll(e.target)));
+  syncAll(document);
+})();
+
 /* ── Sidebar Toggle ──────────────────────────────────────────── */
 function initSidebar() {
   const sidebar = document.getElementById('sidebar');

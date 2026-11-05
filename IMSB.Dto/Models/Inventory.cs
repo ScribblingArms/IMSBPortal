@@ -7,15 +7,15 @@ namespace IMSB.Dto.Models
     public class ProductCategory
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("name")]
+        [Column("Name")]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
-        [Column("sort_order")]
+        [Column("SortOrder")]
         public int SortOrder { get; set; }
     }
 
@@ -23,49 +23,49 @@ namespace IMSB.Dto.Models
     public class Product
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("product_code")]
+        [Column("ProductCode")]
         [MaxLength(20)]
         public string ProductCode { get; set; } = string.Empty;   // PRD001
 
         [Required]
-        [Column("name")]
+        [Column("Name")]
         [MaxLength(200)]
         public string Name { get; set; } = string.Empty;
 
-        [Column("category_id")]
+        [Column("CategoryId")]
         public Guid CategoryId { get; set; }
 
         public ProductCategory? Category { get; set; }
 
         [Required]
-        [Column("stall_code")]
+        [Column("StallCode")]
         [MaxLength(20)]
         public string StallCode { get; set; } = string.Empty;     // A-01
 
-        [Column("quantity")]
+        [Column("Quantity")]
         public int Quantity { get; set; }
 
-        [Column("min_stock")]
+        [Column("MinStock")]
         public int MinStock { get; set; }
 
-        [Column("unit_price", TypeName = "decimal(18,2)")]
+        [Column("UnitPrice", TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
 
-        [Column("updated_at")]
+        [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
-        [Column("updated_by")]
+        [Column("UpdatedBy")]
         [MaxLength(100)]
         public string? UpdatedBy { get; set; }
 
@@ -75,56 +75,56 @@ namespace IMSB.Dto.Models
 
     /// <summary>
     /// One row per stock change (initial quantity, restock, sale, correction). Keeps a name snapshot so the
-    /// history survives when the product itself is deleted (product_id is then set to NULL).
+    /// history survives when the product itself is deleted (ProductId is then set to NULL).
     /// </summary>
     [Table("stock_movements")]
     public class StockMovement
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Column("product_id")]
+        [Column("ProductId")]
         public Guid? ProductId { get; set; }
 
         public Product? Product { get; set; }
 
         [Required]
-        [Column("product_code")]
+        [Column("ProductCode")]
         [MaxLength(20)]
         public string ProductCode { get; set; } = string.Empty;
 
         [Required]
-        [Column("product_name")]
+        [Column("ProductName")]
         [MaxLength(200)]
         public string ProductName { get; set; } = string.Empty;
 
         [Required]
-        [Column("movement_type")]
+        [Column("MovementType")]
         [MaxLength(20)]
         public string MovementType { get; set; } = StockMovementTypes.Add;
 
         /// <summary>Quantity entered by the user (for CORRECTION: the new absolute quantity).</summary>
-        [Column("quantity")]
+        [Column("Quantity")]
         public int Quantity { get; set; }
 
-        [Column("quantity_before")]
+        [Column("QuantityBefore")]
         public int QuantityBefore { get; set; }
 
-        [Column("quantity_after")]
+        [Column("QuantityAfter")]
         public int QuantityAfter { get; set; }
 
-        [Column("movement_date", TypeName = "date")]
+        [Column("MovementDate", TypeName = "date")]
         public DateTime MovementDate { get; set; }
 
-        [Column("remarks")]
+        [Column("Remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
     }

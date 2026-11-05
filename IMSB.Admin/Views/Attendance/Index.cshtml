@@ -8,14 +8,14 @@
 
     // Strings used by attendance.js (sheet, cards, history, modals, toasts, client-side validation)
     var jsKeys = new[] {
-        "Success", "Error", "CouldNotReachServer", "CheckForm", "DiscardChanges", "View", "Edit", "Delete",
-        "Present", "Absent", "Leave", "HalfDay", "NotMarked", "NotMarkedOption", "NotMarkedCount", "WeekOf",
-        "AttendanceSaved", "AttendanceSavedMsg", "AttendanceUpdated", "AttendanceDeleted", "ConfirmDeleteAttendance", "AttendanceNotFound",
+        "Success", "Error", "CouldNotReachServer", "CheckForm", "View", "Edit", "Delete",
+        "Present", "Absent", "Leave", "HalfDay", "NotMarked", "NotMarkedCount", "WeekOf",
+        "AttendanceUpdated", "AttendanceDeleted", "ConfirmDeleteAttendance", "AttendanceNotFound",
         "LeaveWithoutPay", "AttendanceLopMessage",
-        "NothingToSave", "NoStaffForAttendance", "NoStaffInDepartment", "NoAttendanceRecords", "HistoryTotals", "MonthToDate",
+        "NoStaffForAttendance", "NoStaffInDepartment", "NoAttendanceRecords", "HistoryTotals", "MonthToDate",
         "AttendanceRatio", "AttendancePercent", "OpenInEntry", "AttendanceDetails", "EmployeeID", "Department", "Designation", "Shift",
         "Date", "InTime", "OutTime", "Hours", "OTHours", "Status", "Remarks", "UpdatedBy", "StaffName", "EmployeeType", "AllTypes",
-        "ValInTimeRequired", "ValOutBeforeIn", "ValAttendanceStatus", "ValTime", "ValDateFuture", "ValRemarks"
+        "ValInTimeRequired", "ValOutBeforeIn", "ValTime", "ValDateFuture", "ValRemarks"
     };
     var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
 }
@@ -71,22 +71,19 @@
         <div class="tab-panel active" data-panel="entry">
           <div class="card">
             <div class="card-header">
-              <div class="card-title"><i class="fa-solid fa-fingerprint"></i> @L["MarkAttendance"] – <span id="entryDateLabel"></span></div>
+              <div class="card-title"><i class="fa-solid fa-fingerprint"></i> @L["Attendance"] – <span id="entryDateLabel"></span></div>
               <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
                 <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="entrySearch" placeholder="@L["SearchStaff"]" aria-label="@L["SearchStaff"]"></div>
                 <select class="form-control" style="width:180px" id="entryDept" aria-label="@L["Department"]">
                   <option value="">@L["AllDepartments"]</option>
                   @foreach (var d in departments) { <option value="@d.Key">@d.Value</option> }
                 </select>
-                <button type="button" class="btn btn-outline btn-sm" id="markAllPresentBtn"><i class="fa-solid fa-user-check"></i> @L["MarkAllPresent"]</button>
               </div>
             </div>
             <div class="card-body" style="padding-top:14px">
               <div class="alert alert-warning" id="futureNote" style="display:none;margin-bottom:14px"><i class="fa-solid fa-triangle-exclamation"></i><div>@L["FutureDateNote"]</div></div>
               <form id="attendanceForm" novalidate>
                 @Html.AntiForgeryToken()
-                <div class="form-error" id="err_date"></div>
-                <div class="form-error" id="err_entries"></div>
                 <div class="att-sheet">
                   <div class="att-entry-grid att-header-grid">
                     <div></div><div>@L["StaffName"]</div><div>@L["Department"]</div>
@@ -96,11 +93,6 @@
                   <div id="attendanceRows"></div>
                 </div>
               </form>
-            </div>
-            <div class="card-footer">
-              <span class="att-unsaved" id="unsavedNote" style="display:none"><i class="fa-solid fa-circle"></i> @L["UnsavedChanges"]</span>
-              <button type="button" class="btn btn-outline btn-sm btn-reset" id="resetSheetBtn">@L["Reset"]</button>
-              <button type="button" class="btn btn-success" id="saveSheetBtn"><i class="fa-solid fa-floppy-disk"></i> @L["SaveAttendance"]</button>
             </div>
           </div>
         </div>

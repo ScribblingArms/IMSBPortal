@@ -144,7 +144,7 @@ public class StallsArtisansIntegrationTests : IClassFixture<BazaarAppFactory>
         Assert.Equal("application/vnd.ms-excel", csv.Content.Headers.ContentType!.MediaType);
         Assert.Contains("H-01,Http Stall,H,", ExcelExportTestHelpers.CsvText(await csv.Content.ReadAsStringAsync()));
         var artisanCsv = ExcelExportTestHelpers.CsvText(await (await client.GetAsync("/Artisans/Export?q=http")).Content.ReadAsStringAsync());
-        Assert.Contains("XXXX XXXX", artisanCsv);
+        Assert.Contains("XXXX-XXXX", artisanCsv);
         Assert.DoesNotContain(BazaarTestHelpers.ValidAadhaar(9001), artisanCsv);
 
         // now both can be deleted

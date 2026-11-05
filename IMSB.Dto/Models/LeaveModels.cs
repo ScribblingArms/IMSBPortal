@@ -3,35 +3,49 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IMSB.Dto.Models;
 
+/// <summary>The leave types offered when applying for leave.</summary>
+[Table("leave_types")]
+public class LeaveType
+{
+    [Key]
+    [Column("Id")]
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    [Required]
+    [MaxLength(100)]
+    [Column("Name")]
+    public string Name { get; set; } = string.Empty;
+}
+
 [Table("leave_entitlements")]
 public class LeaveEntitlement
 {
     [Key]
-    [Column("id")]
+    [Column("Id")]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Column("staff_id")]
+    [Column("StaffId")]
     public Guid? StaffId { get; set; }
 
     public Staff? Staff { get; set; }
 
     [Required]
     [MaxLength(100)]
-    [Column("staff_category")]
+    [Column("StaffCategory")]
     public string StaffCategory { get; set; } = string.Empty;
 
     [Required]
     [MaxLength(100)]
-    [Column("leave_type")]
+    [Column("LeaveType")]
     public string LeaveType { get; set; } = string.Empty;
 
-    [Column("year")]
+    [Column("Year")]
     public int Year { get; set; }
 
-    [Column("annual_quota", TypeName = "decimal(8,2)")]
+    [Column("AnnualQuota", TypeName = "decimal(8,2)")]
     public decimal AnnualQuota { get; set; }
 
-    [Column("attendance_leave_type")]
+    [Column("AttendanceLeaveType")]
     public bool IsAttendanceLeaveType { get; set; }
 }
 
@@ -67,47 +81,47 @@ public static class LeaveBalanceRules
 public class StaffLeaveEntry
 {
     [Key]
-    [Column("id")]
+    [Column("Id")]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Column("staff_id")]
+    [Column("StaffId")]
     public Guid StaffId { get; set; }
 
     public Staff? Staff { get; set; }
 
     [Required]
     [MaxLength(100)]
-    [Column("leave_type")]
+    [Column("LeaveType")]
     public string LeaveType { get; set; } = string.Empty;
 
-    [Column("year")]
+    [Column("Year")]
     public int Year { get; set; }
 
-    [Column("from_date", TypeName = "date")]
+    [Column("FromDate", TypeName = "date")]
     public DateTime FromDate { get; set; }
 
-    [Column("to_date", TypeName = "date")]
+    [Column("ToDate", TypeName = "date")]
     public DateTime ToDate { get; set; }
 
-    [Column("days", TypeName = "decimal(6,2)")]
+    [Column("Days", TypeName = "decimal(6,2)")]
     public decimal Days { get; set; }
 
     [MaxLength(500)]
-    [Column("remarks")]
+    [Column("Remarks")]
     public string? Remarks { get; set; }
 
-    [Column("created_at")]
+    [Column("CreatedAt")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     [MaxLength(100)]
-    [Column("created_by")]
+    [Column("CreatedBy")]
     public string? CreatedBy { get; set; }
 
-    [Column("updated_at")]
+    [Column("UpdatedAt")]
     public DateTime? UpdatedAt { get; set; }
 
     [MaxLength(100)]
-    [Column("updated_by")]
+    [Column("UpdatedBy")]
     public string? UpdatedBy { get; set; }
 }
 
@@ -165,6 +179,7 @@ public class LeaveEntryViewModel
     public int Year { get; set; }
     public LeaveEntryForm Form { get; set; } = new();
     public List<LeaveStaffOption> Staff { get; set; } = new();
+    public List<string> LeaveTypes { get; set; } = new();
     public List<LeaveEntitlement> Entitlements { get; set; } = new();
     public List<StaffLeaveEntry> Entries { get; set; } = new();
 }

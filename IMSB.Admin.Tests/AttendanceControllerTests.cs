@@ -764,7 +764,7 @@ public class AttendanceControllerTests
         var file = Assert.IsType<FileContentResult>(result);
         Assert.Equal($"attendance_{Day:yyyyMMdd}_{Day:yyyyMMdd}.xls", file.FileDownloadName);
         var lines = SalesTestHelpers.CsvText(result).TrimEnd().Split(Environment.NewLine);
-        Assert.Equal("Date,Employee ID,Staff Name,Department,Designation,In-Time,Out-Time,Hours,OT Hrs,Status,Remarks,By", lines[0]);
+        Assert.Equal("Date,Employee ID,Staff Name,Staff Category,Designation,In-Time,Out-Time,Hours,OT Hrs,Status,Remarks,By", lines[0]);
         Assert.Equal($"{day},EMP002,Ravi Shankar,Admin,Executive,,,0,0,Absent,,admin@imsb", lines[1]);     // by department, then name
         Assert.Equal($"{day},EMP001,Meena Kumari,Sales,Executive,08:00,18:00,10,2,Present,,admin@imsb", lines[2]);
         Assert.Equal("Total,,,,,,,10,2,,,", lines[3]);

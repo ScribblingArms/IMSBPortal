@@ -44,26 +44,6 @@ public class StaffDtoValidationTests
         Assert.Contains(nameof(CreateStaffDto.FullName), FailedMembers(dto));
     }
 
-    [Theory]
-    [InlineData("12345678")]       // 8 digits
-    [InlineData("1234567890123")]  // 13 digits
-    [InlineData("98765abcde")]
-    [InlineData("+919876543210")]
-    [InlineData("")]
-    public void Mobile_must_be_9_to_12_digits(string mobile)
-    {
-        var dto = TestHelpers.ValidCreateDto(mobile: mobile);
-        Assert.Contains(nameof(CreateStaffDto.Mobile), FailedMembers(dto));
-    }
-
-    [Theory]
-    [InlineData("987654321")]
-    [InlineData("987654321012")]
-    public void Mobile_boundaries_are_accepted(string mobile)
-    {
-        Assert.Empty(Validate(TestHelpers.ValidCreateDto(mobile: mobile)));
-    }
-
     [Fact]
     public void Invalid_email_fails()
     {
@@ -84,7 +64,6 @@ public class StaffDtoValidationTests
     [InlineData(nameof(CreateStaffDto.DateOfBirth))]
     [InlineData(nameof(CreateStaffDto.DepartmentId))]
     [InlineData(nameof(CreateStaffDto.Designation))]
-    [InlineData(nameof(CreateStaffDto.StaffCategory))]
     [InlineData(nameof(CreateStaffDto.JoinDate))]
     public void Required_fields_fail_when_empty(string property)
     {
@@ -121,7 +100,7 @@ public class StaffDtoValidationTests
     [Fact]
     public void Error_messages_are_resource_keys_for_localization()
     {
-        var dto = TestHelpers.ValidCreateDto(mobile: "12");
+        var dto = TestHelpers.ValidCreateDto(mobile: "");
         var mobileError = Validate(dto).Single(r => r.MemberNames.Contains(nameof(CreateStaffDto.Mobile)));
         Assert.Equal("ValMobile", mobileError.ErrorMessage);
     }

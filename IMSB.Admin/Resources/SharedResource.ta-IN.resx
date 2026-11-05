@@ -307,7 +307,7 @@
     <value>வருகை பதிவு</value>
   </data>
   <data name="DepartmentWise" xml:space="preserve">
-    <value>துறைவாரியாக</value>
+    <value>வகை வாரியாக</value>
   </data>
   <data name="History" xml:space="preserve">
     <value>வரலாறு</value>
@@ -361,7 +361,7 @@
     <value>மொத்தச் சம்பளம் = மாதச் சம்பளம் × பணிநாட்கள் ÷ மாத நாட்கள். வருகை = 1 நாள், அரை நாள் = 0.5; வராதது மற்றும் விடுப்பு = 0.</value>
   </data>
   <data name="SearchSalaryPlaceholder" xml:space="preserve">
-    <value>பணியாளர் / துறை / பதவியின் அடிப்படையில் தேடுங்கள்</value>
+    <value>பணியாளர் / பணியாளர் வகை / பதவி மூலம் தேடவும்</value>
   </data>
   <data name="ValMonthlySalary" xml:space="preserve">
     <value>0 முதல் 999,999,999.99 வரையிலான மாதச் சம்பளத்தை உள்ளிடவும்.</value>
@@ -370,7 +370,7 @@
     <value>வருகையை குறி</value>
   </data>
   <data name="AllDepartments" xml:space="preserve">
-    <value>அனைத்து துறைகள்</value>
+    <value>அனைத்து பணியாளர் வகைகளும்</value>
   </data>
   <data name="StaffName" xml:space="preserve">
     <value>ஊழியர் பெயர்</value>
@@ -532,7 +532,7 @@
     <value>பணியாளர் / HR மேலாண்மை</value>
   </data>
   <data name="StaffHRSubtitle" xml:space="preserve">
-    <value>பணியாளர் பதிவுகள், துறைகள் மற்றும் HR செயல்பாடுகளை நிர்வகிக்கவும்</value>
+    <value>பணியாளர் பதிவுகள், பணியாளர் வகைகள் மற்றும் HR செயல்பாடுகளை நிர்வகிக்கவும்</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>ஏற்றுமதி</value>
@@ -547,19 +547,19 @@
     <value>செயலற்றது</value>
   </data>
   <data name="Departments" xml:space="preserve">
-    <value>துறைகள்</value>
+    <value>பணியாளர் வகைகள்</value>
   </data>
   <data name="ContractExpiring" xml:space="preserve">
     <value>ஒப்பந்தம் முடிவடைகிறது</value>
   </data>
   <data name="DeptDistribution" xml:space="preserve">
-    <value>துறை வாரியான பகிர்வு</value>
+    <value>பணியாளர் வகை பகிர்வு</value>
   </data>
   <data name="StaffDirectory" xml:space="preserve">
     <value>பணியாளர் பட்டியல்</value>
   </data>
   <data name="FilterByDepartment" xml:space="preserve">
-    <value>துறை வாரியாக வடிகட்டு</value>
+    <value>பணியாளர் வகை வாரியாக வடிகட்டவும்</value>
   </data>
   <data name="FilterByStatus" xml:space="preserve">
     <value>நிலை வாரியாக வடிகட்டு</value>
@@ -568,7 +568,7 @@
     <value>பணியாளர் எண்</value>
   </data>
   <data name="Department" xml:space="preserve">
-    <value>துறை</value>
+    <value>பணியாளர் வகை</value>
   </data>
   <data name="Designation" xml:space="preserve">
     <value>பதவி</value>
@@ -583,7 +583,7 @@
     <value>செயல்கள்</value>
   </data>
   <data name="DeptWiseStaffCount" xml:space="preserve">
-    <value>துறை வாரியான பணியாளர் எண்ணிக்கை</value>
+    <value>வகை வாரியான பணியாளர் எண்ணிக்கை</value>
   </data>
   <data name="AddNewStaffMember" xml:space="preserve">
     <value>புதிய பணியாளரைச் சேர்</value>
@@ -640,7 +640,7 @@
     <value>-- தேர்ந்தெடு --</value>
   </data>
   <data name="NoDepartmentsConfigured" xml:space="preserve">
-    <value>துறைகள் எதுவும் அமைக்கப்படவில்லை</value>
+    <value>பணியாளர் வகைகள் எதுவும் அமைக்கப்படவில்லை</value>
   </data>
   <data name="NoStaffFound" xml:space="preserve">
     <value>பணியாளர்கள் இல்லை</value>
@@ -700,7 +700,7 @@
     <value>முழு பெயர் தேவை (2-100 எழுத்துகள்)</value>
   </data>
   <data name="ValMobile" xml:space="preserve">
-    <value>மொபைல் எண் 9-12 இலக்கங்கள் இருக்க வேண்டும்</value>
+    <value>சரியான 10 இலக்கக் கைபேசி எண்ணை உள்ளிடவும்</value>
   </data>
   <data name="ValEmail" xml:space="preserve">
     <value>தவறான மின்னஞ்சல்</value>
@@ -718,7 +718,7 @@
     <value>பணியாளருக்கு குறைந்தது 18 வயது இருக்க வேண்டும்</value>
   </data>
   <data name="ValDepartment" xml:space="preserve">
-    <value>துறை தேவை</value>
+    <value>பணியாளர் வகை தேவை</value>
   </data>
   <data name="ValDesignation" xml:space="preserve">
     <value>பதவி தேவை</value>
@@ -1180,7 +1180,7 @@
     <value>டெமோ சான்றுகள் (நிரப்ப கிளிக் செய்யவும்)</value>
   </data>
   <data name="DeptWiseAttendance" xml:space="preserve">
-    <value>துறை வாரியான வருகை</value>
+    <value>வகை வாரியான வருகை</value>
   </data>
   <data name="DescribeSkills" xml:space="preserve">
     <value>உங்கள் கைவினை மற்றும் திறன்களை விவரிக்கவும்…</value>
@@ -1609,7 +1609,7 @@
     <value>மனிதவள வருகை அறிக்கை</value>
   </data>
   <data name="RptAttendanceDesc" xml:space="preserve">
-    <value>துறை வாரியான வருகை, மிகைநேரம் மற்றும் விடுப்புச் சுருக்கம்.</value>
+    <value>வகை வாரியான வருகை, மிகைநேரம் மற்றும் விடுப்பு சுருக்கம்.</value>
   </data>
   <data name="RptInventory" xml:space="preserve">
     <value>இருப்பு அறிக்கை</value>
@@ -2605,7 +2605,7 @@
     <value>இந்தத் தேதிக்குக் குறிக்க பணியாளர்கள் இல்லை.</value>
   </data>
   <data name="NoStaffInDepartment" xml:space="preserve">
-    <value>இந்தத் துறையில் பணியாளர்கள் இல்லை.</value>
+    <value>இந்த வகையில் பணியாளர்கள் இல்லை.</value>
   </data>
   <data name="NoAttendanceRecords" xml:space="preserve">
     <value>வடிப்பான்களுக்குப் பொருந்தும் வருகைப் பதிவுகள் இல்லை.</value>
@@ -2685,7 +2685,6 @@
   <data name="NoEmployeesForSection" xml:space="preserve"><value>இந்தப் பிரிவில் பணியாளர்கள் இல்லை.</value></data>
   <data name="StaffCategory" xml:space="preserve"><value>பணியாளர் வகை</value></data>
   <data name="StaffProfile" xml:space="preserve"><value>பணியாளர் சுயவிவரம்</value></data>
-  <data name="ValStaffCategory" xml:space="preserve"><value>பணியாளர் வகையை உள்ளிடவும் (அதிகபட்சம் 100 எழுத்துகள்)</value></data>
   <data name="LeaveManagement" xml:space="preserve"><value>விடுப்பு மேலாண்மை</value></data>
   <data name="Update" xml:space="preserve"><value>புதுப்பிக்கவும்</value></data>
   <data name="LeaveManagementSubtitle" xml:space="preserve"><value>பணியாளர்களின் தற்போதைய ஆண்டு விடுப்பு இருப்புகளைப் பார்க்கவும்.</value></data>
@@ -2734,11 +2733,24 @@
   <data name="OTAssignment" xml:space="preserve"><value>மிகைநேர ஒதுக்கீடு</value></data>
   <data name="OTFromTime" xml:space="preserve"><value>மிகைநேரம் முதல்</value></data>
   <data name="OTToTime" xml:space="preserve"><value>மிகைநேரம் வரை</value></data>
-  <data name="ValOtTimes" xml:space="preserve"><value>மிகைநேரம் முதல், வரை ஆகிய இரு நேரங்களையும் உள்ளிடவும்</value></data>
+  <data name="ValOtTimes" xml:space="preserve"><value>மிகைநேரம் முதல், வரை ஆகிய இரண்டின் தேதியையும் நேரத்தையும் உள்ளிடவும்</value></data>
+  <data name="ValDateTime" xml:space="preserve"><value>சரியான தேதியையும் நேரத்தையும் உள்ளிடவும்</value></data>
   <data name="Agency" xml:space="preserve"><value>முகமை</value></data>
   <data name="FromDateLabel" xml:space="preserve"><value>தொடக்கத் தேதி</value></data>
   <data name="ToDateLabel" xml:space="preserve"><value>முடிவுத் தேதி</value></data>
   <data name="WeekOffs" xml:space="preserve"><value>வார விடுமுறைகள்</value></data>
   <data name="Leaves" xml:space="preserve"><value>விடுப்புகள்</value></data>
   <data name="ValOtToAfterFrom" xml:space="preserve"><value>மிகைநேரம் வரை நேரம், முதல் நேரத்திற்குப் பின் இருக்க வேண்டும்</value></data>
+  <data name="HRModule" xml:space="preserve"><value>HR தொகுதி</value></data>
+  <data name="DailyAttendance" xml:space="preserve"><value>தினசரி வருகைப் பதிவு</value></data>
+  <data name="OTAssignmentSubtitle" xml:space="preserve"><value>ஒவ்வொரு பணியாளருக்கும் மிகைநேரம் முதல், வரை நேரங்களை அமைக்கவும்.</value></data>
+  <data name="AddOTAssignment" xml:space="preserve"><value>மிகைநேர ஒதுக்கீட்டைச் சேர்</value></data>
+  <data name="EditOTAssignment" xml:space="preserve"><value>மிகைநேர ஒதுக்கீட்டைத் திருத்து</value></data>
+  <data name="SaveOTAssignment" xml:space="preserve"><value>சேமி</value></data>
+  <data name="OTAssignmentSaved" xml:space="preserve"><value>மிகைநேர ஒதுக்கீடு சேமிக்கப்பட்டது.</value></data>
+  <data name="OTAssignmentDeleted" xml:space="preserve"><value>மிகைநேர ஒதுக்கீடு நீக்கப்பட்டது.</value></data>
+  <data name="ConfirmDeleteOTAssignment" xml:space="preserve"><value>{0} இன் மிகைநேர ஒதுக்கீட்டை நீக்கவா?</value></data>
+  <data name="NoOTAssignments" xml:space="preserve"><value>இன்னும் மிகைநேர ஒதுக்கீடுகள் இல்லை.</value></data>
+  <data name="ValOtSelectStaff" xml:space="preserve"><value>ஒரு பணியாளரைத் தேர்ந்தெடுக்கவும்</value></data>
+  <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>இந்தப் பணியாளருக்கு ஏற்கனவே மிகைநேர ஒதுக்கீடு உள்ளது. அதையே திருத்தவும்.</value></data>
 </root>

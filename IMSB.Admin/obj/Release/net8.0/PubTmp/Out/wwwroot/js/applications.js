@@ -300,6 +300,8 @@
     $('apAddress').value = a?.address || '';
     $('apDistrict').value = a?.district || '';
     $('apSubmitted').value = a?.submittedDate || todayIso();
+    $('apFromDate').value = a?.fromDate || '';
+    $('apToDate').value = a?.toDate || '';
     $('apCategory').value = a?.categoryId || '';
     $('apYears').value = a ? a.yearsOfExperience : 0;
     $('apSkills').value = a?.skills || '';
@@ -332,6 +334,8 @@
       yearsOfExperience: Number($('apYears').value || 0),
       skills: $('apSkills').value.trim() || null,
       submittedDate: $('apSubmitted').value || null,
+      fromDate: $('apFromDate').value || null,
+      toDate: $('apToDate').value || null,
       remarks: $('apRemarks').value.trim() || null
     };
   }
@@ -352,6 +356,7 @@
     if (!v.categoryId) e.category_id = t('ValCraftCategory');
     if (!Number.isInteger(v.yearsOfExperience) || v.yearsOfExperience < 0 || v.yearsOfExperience > 80) e.years_of_experience = t('ValExperience');
     if (v.submittedDate && v.submittedDate > todayIso()) e.submitted_date = t('ValDateFuture');
+    if (v.fromDate && v.toDate && v.toDate < v.fromDate) e.to_date = t('ValDateRange');
     return e;
   }
 
@@ -439,6 +444,13 @@
     $('applicationSaveBtn').addEventListener('click', save);
     $('applicationForm').addEventListener('submit', e => { e.preventDefault(); save(); });
     $('applicationForm').addEventListener('input', () => { formDirty = true; });
+    // flag an under-18 / future DOB as soon as it is picked
+    $('apDob').addEventListener('change', () => {
+      const msg = validate(formValues(), !!$('apEditing').value).date_of_birth || '';
+      const el = document.querySelector('#applicationForm #err_date_of_birth');
+      el.textContent = msg;
+      el.closest('.form-group')?.classList.toggle('has-error', !!msg);
+    });
     $('applicationCancelBtn').addEventListener('click', () => closeForm(false));
     $('applicationModalClose').addEventListener('click', () => closeForm(false));
 

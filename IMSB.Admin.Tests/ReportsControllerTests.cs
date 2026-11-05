@@ -319,7 +319,7 @@ public class ReportsControllerTests
         var export = Assert.IsType<FileContentResult>(await controller.SalaryExport(Today.Year, Today.Month, "Admin", "security"));
         Assert.Equal($"salary_report_{MonthStart:yyyyMM}.xls", export.FileDownloadName);
         var csv = CsvText(export);
-        Assert.Contains("S.No,Employee ID,Staff Name,Employee Type,Designation,Total Days in Month,Worked Days,Total Salary", csv);
+        Assert.Contains("S.No,Employee ID,Staff Name,Staff Category,Designation,Total Days in Month,Worked Days,Total Salary", csv);
         Assert.Contains($"1,EMP002,Ravi,Admin,Security,{monthDays},15,{Math.Round(62000m * 15m / monthDays, 2, MidpointRounding.AwayFromZero).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}", csv);
         Assert.Contains($"Grand Total,,,,,,,{Math.Round(62000m * 15m / monthDays, 2, MidpointRounding.AwayFromZero).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}", csv);
         Assert.DoesNotContain("Meena", csv);

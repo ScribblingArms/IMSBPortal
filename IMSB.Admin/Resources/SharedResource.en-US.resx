@@ -307,7 +307,7 @@
     <value>Attendance Entry</value>
   </data>
   <data name="DepartmentWise" xml:space="preserve">
-    <value>Department-wise</value>
+    <value>Category-wise</value>
   </data>
   <data name="History" xml:space="preserve">
     <value>History</value>
@@ -361,7 +361,7 @@
     <value>Total salary = monthly salary × worked days ÷ days in month. Present = 1 day, Half Day = 0.5; Absent and Leave = 0.</value>
   </data>
   <data name="SearchSalaryPlaceholder" xml:space="preserve">
-    <value>Search by Employee / Department / Designation</value>
+    <value>Search by Employee / Staff Category / Designation</value>
   </data>
   <data name="ValMonthlySalary" xml:space="preserve">
     <value>Enter a monthly salary from 0 to 999,999,999.99.</value>
@@ -370,7 +370,7 @@
     <value>Mark Attendance</value>
   </data>
   <data name="AllDepartments" xml:space="preserve">
-    <value>All Departments</value>
+    <value>All Staff Categories</value>
   </data>
   <data name="StaffName" xml:space="preserve">
     <value>Staff Name</value>
@@ -532,7 +532,7 @@
     <value>Staff / HR Management</value>
   </data>
   <data name="StaffHRSubtitle" xml:space="preserve">
-    <value>Manage staff records, departments, and HR activities</value>
+    <value>Manage staff records, staff categories, and HR activities</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>Export</value>
@@ -547,19 +547,19 @@
     <value>Inactive</value>
   </data>
   <data name="Departments" xml:space="preserve">
-    <value>Departments</value>
+    <value>Staff Categories</value>
   </data>
   <data name="ContractExpiring" xml:space="preserve">
     <value>Contract Expiring</value>
   </data>
   <data name="DeptDistribution" xml:space="preserve">
-    <value>Dept Distribution</value>
+    <value>Staff Category Distribution</value>
   </data>
   <data name="StaffDirectory" xml:space="preserve">
     <value>Staff Directory</value>
   </data>
   <data name="FilterByDepartment" xml:space="preserve">
-    <value>Filter by department</value>
+    <value>Filter by staff category</value>
   </data>
   <data name="FilterByStatus" xml:space="preserve">
     <value>Filter by status</value>
@@ -568,7 +568,7 @@
     <value>Staff ID</value>
   </data>
   <data name="Department" xml:space="preserve">
-    <value>Department</value>
+    <value>Staff Category</value>
   </data>
   <data name="Designation" xml:space="preserve">
     <value>Designation</value>
@@ -583,7 +583,7 @@
     <value>Actions</value>
   </data>
   <data name="DeptWiseStaffCount" xml:space="preserve">
-    <value>Department-wise Staff Count</value>
+    <value>Category-wise Staff Count</value>
   </data>
   <data name="AddNewStaffMember" xml:space="preserve">
     <value>Add New Staff Member</value>
@@ -640,7 +640,7 @@
     <value>-- Select --</value>
   </data>
   <data name="NoDepartmentsConfigured" xml:space="preserve">
-    <value>No departments configured</value>
+    <value>No staff categories configured</value>
   </data>
   <data name="NoStaffFound" xml:space="preserve">
     <value>No staff found</value>
@@ -700,7 +700,7 @@
     <value>Full name is required (2-100 chars)</value>
   </data>
   <data name="ValMobile" xml:space="preserve">
-    <value>Mobile must be 9-12 digits</value>
+    <value>Enter a valid 10-digit mobile number</value>
   </data>
   <data name="ValEmail" xml:space="preserve">
     <value>Invalid email</value>
@@ -718,7 +718,7 @@
     <value>Staff must be at least 18 years old</value>
   </data>
   <data name="ValDepartment" xml:space="preserve">
-    <value>Department is required</value>
+    <value>Staff category is required</value>
   </data>
   <data name="ValDesignation" xml:space="preserve">
     <value>Designation is required</value>
@@ -1180,7 +1180,7 @@
     <value>Demo Credentials (Click to fill)</value>
   </data>
   <data name="DeptWiseAttendance" xml:space="preserve">
-    <value>Dept-wise Attendance</value>
+    <value>Category-wise Attendance</value>
   </data>
   <data name="DescribeSkills" xml:space="preserve">
     <value>Describe your craft and skills…</value>
@@ -1609,7 +1609,7 @@
     <value>HR Attendance Report</value>
   </data>
   <data name="RptAttendanceDesc" xml:space="preserve">
-    <value>Department-wise attendance, overtime, and leave summary.</value>
+    <value>Category-wise attendance, overtime, and leave summary.</value>
   </data>
   <data name="RptInventory" xml:space="preserve">
     <value>Inventory Report</value>
@@ -2605,7 +2605,7 @@
     <value>No staff to mark for this date.</value>
   </data>
   <data name="NoStaffInDepartment" xml:space="preserve">
-    <value>No staff in this department.</value>
+    <value>No staff in this category.</value>
   </data>
   <data name="NoAttendanceRecords" xml:space="preserve">
     <value>No attendance records match the filters.</value>
@@ -2685,7 +2685,6 @@
   <data name="NoEmployeesForSection" xml:space="preserve"><value>No employees found for this section.</value></data>
   <data name="StaffCategory" xml:space="preserve"><value>Staff Category</value></data>
   <data name="StaffProfile" xml:space="preserve"><value>Staff Profile</value></data>
-  <data name="ValStaffCategory" xml:space="preserve"><value>Enter a staff category (up to 100 characters)</value></data>
   <data name="LeaveManagement" xml:space="preserve"><value>Leave Management</value></data>
   <data name="Update" xml:space="preserve"><value>Update</value></data>
   <data name="LeaveManagementSubtitle" xml:space="preserve"><value>Review current annual leave balances for staff.</value></data>
@@ -2734,11 +2733,24 @@
   <data name="OTAssignment" xml:space="preserve"><value>OT Assignment</value></data>
   <data name="OTFromTime" xml:space="preserve"><value>OT From</value></data>
   <data name="OTToTime" xml:space="preserve"><value>OT To</value></data>
-  <data name="ValOtTimes" xml:space="preserve"><value>Enter both OT From and OT To times</value></data>
+  <data name="ValOtTimes" xml:space="preserve"><value>Enter both OT From and OT To dates and times</value></data>
+  <data name="ValDateTime" xml:space="preserve"><value>Enter a valid date and time</value></data>
   <data name="Agency" xml:space="preserve"><value>Agency</value></data>
   <data name="FromDateLabel" xml:space="preserve"><value>From Date</value></data>
   <data name="ToDateLabel" xml:space="preserve"><value>To Date</value></data>
   <data name="WeekOffs" xml:space="preserve"><value>Week Offs</value></data>
   <data name="Leaves" xml:space="preserve"><value>Leaves</value></data>
   <data name="ValOtToAfterFrom" xml:space="preserve"><value>OT To time must be later than OT From time</value></data>
+  <data name="HRModule" xml:space="preserve"><value>HR Module</value></data>
+  <data name="DailyAttendance" xml:space="preserve"><value>Daily Attendance</value></data>
+  <data name="OTAssignmentSubtitle" xml:space="preserve"><value>Set the OT From and To timings for each staff member.</value></data>
+  <data name="AddOTAssignment" xml:space="preserve"><value>Add OT Assignment</value></data>
+  <data name="EditOTAssignment" xml:space="preserve"><value>Edit OT Assignment</value></data>
+  <data name="SaveOTAssignment" xml:space="preserve"><value>Save</value></data>
+  <data name="OTAssignmentSaved" xml:space="preserve"><value>OT assignment saved.</value></data>
+  <data name="OTAssignmentDeleted" xml:space="preserve"><value>OT assignment deleted.</value></data>
+  <data name="ConfirmDeleteOTAssignment" xml:space="preserve"><value>Delete the OT assignment of {0}?</value></data>
+  <data name="NoOTAssignments" xml:space="preserve"><value>No OT assignments yet.</value></data>
+  <data name="ValOtSelectStaff" xml:space="preserve"><value>Select a staff member</value></data>
+  <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>This staff member already has an OT assignment. Edit it instead.</value></data>
 </root>

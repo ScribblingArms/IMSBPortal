@@ -27,118 +27,118 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<string>("AadhaarHash")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)")
-                        .HasColumnName("aadhaar_hash");
+                        .HasColumnName("AadhaarHash");
 
                     b.Property<string>("AadhaarLast4")
                         .IsRequired()
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)")
-                        .HasColumnName("aadhaar_last4");
+                        .HasColumnName("AadhaarLast4");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("address");
+                        .HasColumnName("Address");
 
                     b.Property<string>("ArtisanCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("artisan_code");
+                        .HasColumnName("ArtisanCode");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("category_id");
+                        .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("date")
-                        .HasColumnName("date_of_birth");
+                        .HasColumnName("DateOfBirth");
 
                     b.Property<string>("District")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)")
-                        .HasColumnName("district");
+                        .HasColumnName("District");
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("email");
+                        .HasColumnName("Email");
 
                     b.Property<DateTime?>("FromDate")
                         .HasColumnType("date")
-                        .HasColumnName("from_date");
+                        .HasColumnName("FromDate");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("full_name");
+                        .HasColumnName("FullName");
 
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
-                        .HasColumnName("gender");
+                        .HasColumnName("Gender");
 
                     b.Property<DateTime>("JoinedDate")
                         .HasColumnType("date")
-                        .HasColumnName("joined_date");
+                        .HasColumnName("JoinedDate");
 
                     b.Property<string>("Mobile")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)")
-                        .HasColumnName("mobile");
+                        .HasColumnName("Mobile");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.Property<string>("Skills")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("skills");
+                        .HasColumnName("Skills");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("status");
+                        .HasColumnName("Status");
 
                     b.Property<DateTime?>("ToDate")
                         .HasColumnType("date")
-                        .HasColumnName("to_date");
+                        .HasColumnName("ToDate");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.Property<int>("YearsOfExperience")
                         .HasColumnType("int")
-                        .HasColumnName("years_of_experience");
+                        .HasColumnName("YearsOfExperience");
 
                     b.HasKey("Id");
 
@@ -163,155 +163,155 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<string>("AadhaarHash")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)")
-                        .HasColumnName("aadhaar_hash");
+                        .HasColumnName("AadhaarHash");
 
                     b.Property<string>("AadhaarLast4")
                         .IsRequired()
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)")
-                        .HasColumnName("aadhaar_last4");
+                        .HasColumnName("AadhaarLast4");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("address");
+                        .HasColumnName("Address");
 
                     b.Property<string>("ApplicationNo")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("application_no");
+                        .HasColumnName("ApplicationNo");
 
                     b.Property<string>("ArtisanCode")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("artisan_code");
+                        .HasColumnName("ArtisanCode");
 
                     b.Property<Guid?>("ArtisanId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("artisan_id");
+                        .HasColumnName("ArtisanId");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("category_id");
+                        .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("date")
-                        .HasColumnName("date_of_birth");
+                        .HasColumnName("DateOfBirth");
 
                     b.Property<DateTime?>("DecidedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("decided_at");
+                        .HasColumnName("DecidedAt");
 
                     b.Property<string>("DecidedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("decided_by");
+                        .HasColumnName("DecidedBy");
 
                     b.Property<string>("DecisionRemarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("decision_remarks");
+                        .HasColumnName("DecisionRemarks");
 
                     b.Property<string>("District")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)")
-                        .HasColumnName("district");
+                        .HasColumnName("District");
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("email");
+                        .HasColumnName("Email");
 
                     b.Property<DateTime?>("FromDate")
                         .HasColumnType("date")
-                        .HasColumnName("from_date");
+                        .HasColumnName("FromDate");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("full_name");
+                        .HasColumnName("FullName");
 
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
-                        .HasColumnName("gender");
+                        .HasColumnName("Gender");
 
                     b.Property<string>("Mobile")
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)")
-                        .HasColumnName("mobile");
+                        .HasColumnName("Mobile");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.Property<DateTime?>("ReviewStartedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("review_started_at");
+                        .HasColumnName("ReviewStartedAt");
 
                     b.Property<string>("Reviewer")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("reviewer");
+                        .HasColumnName("Reviewer");
 
                     b.Property<string>("Skills")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("skills");
+                        .HasColumnName("Skills");
 
                     b.Property<string>("StallCode")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("stall_code");
+                        .HasColumnName("StallCode");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("status");
+                        .HasColumnName("Status");
 
                     b.Property<DateTime>("SubmittedDate")
                         .HasColumnType("date")
-                        .HasColumnName("submitted_date");
+                        .HasColumnName("SubmittedDate");
 
                     b.Property<DateTime?>("ToDate")
                         .HasColumnType("date")
-                        .HasColumnName("to_date");
+                        .HasColumnName("ToDate");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.Property<int>("YearsOfExperience")
                         .HasColumnType("int")
-                        .HasColumnName("years_of_experience");
+                        .HasColumnName("YearsOfExperience");
 
                     b.HasKey("Id");
 
@@ -338,64 +338,64 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("AttendanceDate")
                         .HasColumnType("date")
-                        .HasColumnName("attendance_date");
+                        .HasColumnName("AttendanceDate");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<TimeSpan?>("InTime")
                         .HasColumnType("time")
-                        .HasColumnName("in_time");
+                        .HasColumnName("InTime");
 
                     b.Property<bool>("LeaveWithoutPay")
                         .HasColumnType("bit")
-                        .HasColumnName("leave_without_pay");
+                        .HasColumnName("LeaveWithoutPay");
 
                     b.Property<TimeSpan?>("OutTime")
                         .HasColumnType("time")
-                        .HasColumnName("out_time");
+                        .HasColumnName("OutTime");
 
                     b.Property<decimal>("OvertimeHours")
                         .HasColumnType("decimal(5,2)")
-                        .HasColumnName("overtime_hours");
+                        .HasColumnName("OvertimeHours");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.Property<Guid>("StaffId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("staff_id");
+                        .HasColumnName("StaffId");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("status");
+                        .HasColumnName("Status");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.Property<decimal>("WorkedHours")
                         .HasColumnType("decimal(5,2)")
-                        .HasColumnName("worked_hours");
+                        .HasColumnName("WorkedHours");
 
                     b.HasKey("Id");
 
@@ -414,12 +414,12 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("name");
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
@@ -433,47 +433,85 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<decimal>("AnnualQuota")
                         .HasColumnType("decimal(8,2)")
-                        .HasColumnName("annual_quota");
+                        .HasColumnName("AnnualQuota");
 
                     b.Property<bool>("IsAttendanceLeaveType")
                         .HasColumnType("bit")
-                        .HasColumnName("attendance_leave_type");
+                        .HasColumnName("AttendanceLeaveType");
 
                     b.Property<string>("LeaveType")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("leave_type");
+                        .HasColumnName("LeaveType");
 
                     b.Property<string>("StaffCategory")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("staff_category");
+                        .HasColumnName("StaffCategory");
 
                     b.Property<Guid?>("StaffId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("staff_id");
+                        .HasColumnName("StaffId");
 
                     b.Property<int>("Year")
                         .HasColumnType("int")
-                        .HasColumnName("year");
+                        .HasColumnName("Year");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StaffId", "Year")
                         .IsUnique()
-                        .HasFilter("[attendance_leave_type] = 1");
+                        .HasFilter("[AttendanceLeaveType] = 1");
 
                     b.HasIndex("StaffId", "LeaveType", "Year")
                         .IsUnique()
-                        .HasFilter("[staff_id] IS NOT NULL");
+                        .HasFilter("[StaffId] IS NOT NULL");
 
                     b.ToTable("leave_entitlements");
+                });
+
+            modelBuilder.Entity("IMSB.Dto.Models.LeaveType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("leave_types");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b1000000-0000-0000-0000-000000000001"),
+                            Name = "Casual"
+                        },
+                        new
+                        {
+                            Id = new Guid("b1000000-0000-0000-0000-000000000002"),
+                            Name = "Earned"
+                        },
+                        new
+                        {
+                            Id = new Guid("b1000000-0000-0000-0000-000000000003"),
+                            Name = "Sick"
+                        });
                 });
 
             modelBuilder.Entity("IMSB.Dto.Models.Login", b =>
@@ -481,31 +519,31 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("email");
+                        .HasColumnName("Email");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true)
-                        .HasColumnName("is_active");
+                        .HasColumnName("IsActive");
 
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime2")
-                        .HasColumnName("last_login");
+                        .HasColumnName("LastLogin");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("password_hash");
+                        .HasColumnName("PasswordHash");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -513,13 +551,13 @@ namespace IMSB.Dto.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValue("Admin")
-                        .HasColumnName("role");
+                        .HasColumnName("Role");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("username");
+                        .HasColumnName("Username");
 
                     b.HasKey("Id");
 
@@ -529,29 +567,74 @@ namespace IMSB.Dto.Migrations
                     b.ToTable("logins", (string)null);
                 });
 
+            modelBuilder.Entity("IMSB.Dto.Models.OtAssignment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("CreatedBy");
+
+                    b.Property<DateTime>("FromDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("FromDateTime");
+
+                    b.Property<Guid>("StaffId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("StaffId");
+
+                    b.Property<DateTime>("ToDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ToDateTime");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("UpdatedBy");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StaffId")
+                        .IsUnique();
+
+                    b.ToTable("ot_assignments");
+                });
+
             modelBuilder.Entity("IMSB.Dto.Models.PasswordResetToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("expires_at");
+                        .HasColumnName("ExpiresAt");
 
                     b.Property<Guid>("LoginId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("login_id");
+                        .HasColumnName("LoginId");
 
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
-                        .HasColumnName("token");
+                        .HasColumnName("Token");
 
                     b.HasKey("Id");
 
@@ -568,83 +651,83 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<decimal>("Allowances")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("allowances");
+                        .HasColumnName("Allowances");
 
                     b.Property<decimal>("BasicPay")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("basic_pay");
+                        .HasColumnName("BasicPay");
 
                     b.Property<decimal>("Deductions")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("deductions");
+                        .HasColumnName("Deductions");
 
                     b.Property<string>("Department")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("department");
+                        .HasColumnName("Department");
 
                     b.Property<string>("Designation")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("designation");
+                        .HasColumnName("Designation");
 
                     b.Property<string>("EmployeeId")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("employee_id");
+                        .HasColumnName("EmployeeId");
 
                     b.Property<string>("EmployeeName")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)")
-                        .HasColumnName("employee_name");
+                        .HasColumnName("EmployeeName");
 
                     b.Property<DateTime>("GeneratedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("generated_at");
+                        .HasColumnName("GeneratedAt");
 
                     b.Property<int>("Month")
                         .HasColumnType("int")
-                        .HasColumnName("month");
+                        .HasColumnName("Month");
 
                     b.Property<int>("MonthDays")
                         .HasColumnType("int")
-                        .HasColumnName("month_days");
+                        .HasColumnName("MonthDays");
 
                     b.Property<decimal>("MonthlySalary")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("monthly_salary");
+                        .HasColumnName("MonthlySalary");
 
                     b.Property<decimal>("NetPay")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("net_pay");
+                        .HasColumnName("NetPay");
 
                     b.Property<decimal>("OvertimeAmount")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("overtime_amount");
+                        .HasColumnName("OvertimeAmount");
 
                     b.Property<decimal>("OvertimeHours")
                         .HasColumnType("decimal(8,2)")
-                        .HasColumnName("overtime_hours");
+                        .HasColumnName("OvertimeHours");
 
                     b.Property<decimal>("PaidDays")
                         .HasColumnType("decimal(6,2)")
-                        .HasColumnName("paid_days");
+                        .HasColumnName("PaidDays");
 
                     b.Property<Guid>("StaffId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("staff_id");
+                        .HasColumnName("StaffId");
 
                     b.Property<int>("Year")
                         .HasColumnType("int")
-                        .HasColumnName("year");
+                        .HasColumnName("Year");
 
                     b.HasKey("Id");
 
@@ -661,59 +744,59 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("category_id");
+                        .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<int>("MinStock")
                         .HasColumnType("int")
-                        .HasColumnName("min_stock");
+                        .HasColumnName("MinStock");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("name");
+                        .HasColumnName("Name");
 
                     b.Property<string>("ProductCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("product_code");
+                        .HasColumnName("ProductCode");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnName("Quantity");
 
                     b.Property<string>("StallCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("stall_code");
+                        .HasColumnName("StallCode");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("unit_price");
+                        .HasColumnName("UnitPrice");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.HasKey("Id");
 
@@ -732,17 +815,17 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name");
+                        .HasColumnName("Name");
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("int")
-                        .HasColumnName("sort_order");
+                        .HasColumnName("SortOrder");
 
                     b.HasKey("Id");
 
@@ -801,55 +884,55 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("category_id");
+                        .HasColumnName("CategoryId");
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("category_name");
+                        .HasColumnName("CategoryName");
 
                     b.Property<decimal>("LineTotal")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("line_total");
+                        .HasColumnName("LineTotal");
 
                     b.Property<string>("ProductCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("product_code");
+                        .HasColumnName("ProductCode");
 
                     b.Property<Guid?>("ProductId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("product_id");
+                        .HasColumnName("ProductId");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("product_name");
+                        .HasColumnName("ProductName");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnName("Quantity");
 
                     b.Property<Guid>("SalesEntryId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("sales_entry_id");
+                        .HasColumnName("SalesEntryId");
 
                     b.Property<string>("StallCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("stall_code");
+                        .HasColumnName("StallCode");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("unit_price");
+                        .HasColumnName("UnitPrice");
 
                     b.HasKey("Id");
 
@@ -867,48 +950,48 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<string>("EntryNo")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("entry_no");
+                        .HasColumnName("EntryNo");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.Property<DateTime>("SoldAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("sold_at");
+                        .HasColumnName("SoldAt");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("total_amount");
+                        .HasColumnName("TotalAmount");
 
                     b.Property<int>("TotalQuantity")
                         .HasColumnType("int")
-                        .HasColumnName("total_quantity");
+                        .HasColumnName("TotalQuantity");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.HasKey("Id");
 
@@ -925,7 +1008,7 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -950,100 +1033,106 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
+
+                    b.Property<string>("AadhaarHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)")
+                        .HasColumnName("AadhaarHash");
+
+                    b.Property<string>("AadhaarLast4")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)")
+                        .HasColumnName("AadhaarLast4");
 
                     b.Property<DateTime?>("ContractEndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2")
-                        .HasColumnName("date_of_birth");
+                        .HasColumnName("DateOfBirth");
 
                     b.Property<Guid>("DepartmentId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("department_id");
+                        .HasColumnName("DepartmentId");
 
                     b.Property<string>("Designation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("designation");
+                        .HasColumnName("Designation");
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("email");
+                        .HasColumnName("Email");
 
                     b.Property<string>("EmployeeId")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("employee_id");
+                        .HasColumnName("EmployeeId");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("full_name");
+                        .HasColumnName("FullName");
 
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("gender");
+                        .HasColumnName("Gender");
 
                     b.Property<DateTime>("JoinDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("join_date");
+                        .HasColumnName("JoinDate");
 
                     b.Property<string>("Mobile")
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)")
-                        .HasColumnName("mobile");
+                        .HasColumnName("Mobile");
 
                     b.Property<decimal>("MonthlySalary")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("monthly_salary");
-
-                    b.Property<TimeSpan?>("OtFromTime")
-                        .HasColumnType("time")
-                        .HasColumnName("ot_from_time");
-
-                    b.Property<TimeSpan?>("OtToTime")
-                        .HasColumnType("time")
-                        .HasColumnName("ot_to_time");
+                        .HasColumnName("MonthlySalary");
 
                     b.Property<string>("Shift")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("shift");
+                        .HasColumnName("Shift");
 
                     b.Property<string>("StaffCategory")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("staff_category");
+                        .HasColumnName("StaffCategory");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("status");
+                        .HasColumnName("Status");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AadhaarHash")
+                        .IsUnique()
+                        .HasFilter("[AadhaarHash] IS NOT NULL");
 
                     b.HasIndex("DepartmentId");
 
@@ -1061,56 +1150,56 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<decimal>("Days")
                         .HasColumnType("decimal(6,2)")
-                        .HasColumnName("days");
+                        .HasColumnName("Days");
 
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("date")
-                        .HasColumnName("from_date");
+                        .HasColumnName("FromDate");
 
                     b.Property<string>("LeaveType")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("leave_type");
+                        .HasColumnName("LeaveType");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.Property<Guid>("StaffId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("staff_id");
+                        .HasColumnName("StaffId");
 
                     b.Property<DateTime>("ToDate")
                         .HasColumnType("date")
-                        .HasColumnName("to_date");
+                        .HasColumnName("ToDate");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.Property<int>("Year")
                         .HasColumnType("int")
-                        .HasColumnName("year");
+                        .HasColumnName("Year");
 
                     b.HasKey("Id");
 
@@ -1126,90 +1215,90 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime?>("AgreementEndDate")
                         .HasColumnType("date")
-                        .HasColumnName("agreement_end_date");
+                        .HasColumnName("AgreementEndDate");
 
                     b.Property<DateTime?>("AllottedDate")
                         .HasColumnType("date")
-                        .HasColumnName("allotted_date");
+                        .HasColumnName("AllottedDate");
 
                     b.Property<Guid?>("ArtisanId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("artisan_id");
+                        .HasColumnName("ArtisanId");
 
                     b.Property<string>("Block")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("block");
+                        .HasColumnName("Block");
 
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("category_id");
+                        .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<string>("Location")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("location");
+                        .HasColumnName("Location");
 
                     b.Property<decimal?>("MonthlyRent")
                         .HasColumnType("decimal(18,2)")
-                        .HasColumnName("monthly_rent");
+                        .HasColumnName("MonthlyRent");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name");
+                        .HasColumnName("Name");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.Property<string>("RowLabel")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("row_label");
+                        .HasColumnName("RowLabel");
 
                     b.Property<string>("StallCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("stall_code");
+                        .HasColumnName("StallCode");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("status");
+                        .HasColumnName("Status");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("updated_at");
+                        .HasColumnName("UpdatedAt");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("updated_by");
+                        .HasColumnName("UpdatedBy");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ArtisanId")
                         .IsUnique()
-                        .HasFilter("[artisan_id] IS NOT NULL");
+                        .HasFilter("[ArtisanId] IS NOT NULL");
 
                     b.HasIndex("CategoryId");
 
@@ -1226,85 +1315,85 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<Guid?>("CurrentArtisanId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("current_artisan_id");
+                        .HasColumnName("CurrentArtisanId");
 
                     b.Property<string>("CurrentArtisanName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("current_artisan_name");
+                        .HasColumnName("CurrentArtisanName");
 
                     b.Property<DateTime?>("DecidedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("decided_at");
+                        .HasColumnName("DecidedAt");
 
                     b.Property<string>("DecidedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("decided_by");
+                        .HasColumnName("DecidedBy");
 
                     b.Property<string>("DecisionRemarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("decision_remarks");
+                        .HasColumnName("DecisionRemarks");
 
                     b.Property<Guid?>("NewArtisanId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("new_artisan_id");
+                        .HasColumnName("NewArtisanId");
 
                     b.Property<string>("NewArtisanName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("new_artisan_name");
+                        .HasColumnName("NewArtisanName");
 
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
-                        .HasColumnName("reason");
+                        .HasColumnName("Reason");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.Property<string>("RequestNo")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("request_no");
+                        .HasColumnName("RequestNo");
 
                     b.Property<DateTime>("RequestedDate")
                         .HasColumnType("date")
-                        .HasColumnName("requested_date");
+                        .HasColumnName("RequestedDate");
 
                     b.Property<string>("StallCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("stall_code");
+                        .HasColumnName("StallCode");
 
                     b.Property<Guid>("StallId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("stall_id");
+                        .HasColumnName("StallId");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("status");
+                        .HasColumnName("Status");
 
                     b.HasKey("Id");
 
@@ -1325,59 +1414,59 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("created_by");
+                        .HasColumnName("CreatedBy");
 
                     b.Property<DateTime>("MovementDate")
                         .HasColumnType("date")
-                        .HasColumnName("movement_date");
+                        .HasColumnName("MovementDate");
 
                     b.Property<string>("MovementType")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("movement_type");
+                        .HasColumnName("MovementType");
 
                     b.Property<string>("ProductCode")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
-                        .HasColumnName("product_code");
+                        .HasColumnName("ProductCode");
 
                     b.Property<Guid?>("ProductId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("product_id");
+                        .HasColumnName("ProductId");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("product_name");
+                        .HasColumnName("ProductName");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
-                        .HasColumnName("quantity");
+                        .HasColumnName("Quantity");
 
                     b.Property<int>("QuantityAfter")
                         .HasColumnType("int")
-                        .HasColumnName("quantity_after");
+                        .HasColumnName("QuantityAfter");
 
                     b.Property<int>("QuantityBefore")
                         .HasColumnType("int")
-                        .HasColumnName("quantity_before");
+                        .HasColumnName("QuantityBefore");
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
-                        .HasColumnName("remarks");
+                        .HasColumnName("Remarks");
 
                     b.HasKey("Id");
 
@@ -1393,52 +1482,52 @@ namespace IMSB.Dto.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("CreatedAt");
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("expires_at");
+                        .HasColumnName("ExpiresAt");
 
                     b.Property<string>("IpAddress")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)")
-                        .HasColumnName("ip_address");
+                        .HasColumnName("IpAddress");
 
                     b.Property<bool>("IsPersistent")
                         .HasColumnType("bit")
-                        .HasColumnName("is_persistent");
+                        .HasColumnName("IsPersistent");
 
                     b.Property<DateTime>("LastSeenAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("last_seen_at");
+                        .HasColumnName("LastSeenAt");
 
                     b.Property<Guid>("LoginId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("login_id");
+                        .HasColumnName("LoginId");
 
                     b.Property<DateTime?>("RevokedAt")
                         .HasColumnType("datetime2")
-                        .HasColumnName("revoked_at");
+                        .HasColumnName("RevokedAt");
 
                     b.Property<string>("RevokedReason")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)")
-                        .HasColumnName("revoked_reason");
+                        .HasColumnName("RevokedReason");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasColumnName("role");
+                        .HasColumnName("Role");
 
                     b.Property<string>("UserAgent")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
-                        .HasColumnName("user_agent");
+                        .HasColumnName("UserAgent");
 
                     b.HasKey("Id");
 
@@ -1495,6 +1584,17 @@ namespace IMSB.Dto.Migrations
                         .WithMany()
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("IMSB.Dto.Models.OtAssignment", b =>
+                {
+                    b.HasOne("IMSB.Dto.Models.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Staff");
                 });

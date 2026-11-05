@@ -79,26 +79,49 @@
         }
       </div>
       }
-      <div class="nav-item" data-page="/Staff/Index" onclick="location.href='/Staff/Index'">
-        <i class="fa-solid fa-users"></i>
-        <span class="nav-label">@L["StaffHR"]</span>
-      </div>
-      <div class="nav-item" data-page="/Attendance/Index" onclick="location.href='/Attendance/Index'">
-        <i class="fa-solid fa-calendar-check"></i>
-        <span class="nav-label">@L["Attendance"]</span>
-      </div>
-      <div class="nav-item" data-page="/Leaves/Index" onclick="location.href='/Leaves/Index'">
-        <i class="fa-solid fa-calendar-minus"></i>
-        <span class="nav-label">@L["LeaveManagement"]</span>
-      </div>
-      <div class="nav-item" data-page="/Payroll/Index" onclick="location.href='/Payroll/Index'">
-        <i class="fa-solid fa-money-check-dollar"></i>
-        <span class="nav-label">@L["PayBillTitle"]</span>
+      <div class="nav-group" data-nav-group="hr">
+        <div class="nav-group-heading">
+          @* Opens the Staff page; no data-page, so the active highlight lands on the Staff item in the submenu *@
+          <div class="nav-item" onclick="location.href='/Staff/Index'">
+            <i class="fa-solid fa-user-tie"></i>
+            <span class="nav-label">@L["HRModule"]</span>
+          </div>
+          <button type="button" class="nav-group-toggle" aria-expanded="false" aria-controls="hrSubmenu" aria-label="@L["HRModule"]">
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+        </div>
+        <div class="nav-submenu" id="hrSubmenu">
+          <div class="nav-item" data-page="/Staff/Index" onclick="location.href='/Staff/Index'">
+            <i class="fa-solid fa-users"></i>
+            <span class="nav-label">@L["StaffHR"]</span>
+          </div>
+          <div class="nav-item" data-page="/Attendance/Index" onclick="location.href='/Attendance/Index'">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span class="nav-label">@L["DailyAttendance"]</span>
+          </div>
+          <div class="nav-item" data-page="/Leaves/Index" onclick="location.href='/Leaves/Index'">
+            <i class="fa-solid fa-calendar-minus"></i>
+            <span class="nav-label">@L["LeaveManagement"]</span>
+          </div>
+          <div class="nav-item" data-page="/Payroll/Index" onclick="location.href='/Payroll/Index'">
+            <i class="fa-solid fa-money-check-dollar"></i>
+            <span class="nav-label">@L["PayBillTitle"]</span>
+          </div>
+          <div class="nav-item" data-page="/Attendance/MonthlyCalendar" onclick="location.href='/Attendance/MonthlyCalendar'">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span class="nav-label">@L["MonthlyCalendar"]</span>
+          </div>
+          @if (isAdmin)
+          {
+          <div class="nav-item" data-page="/OtAssignments/Index" onclick="location.href='/OtAssignments/Index'">
+            <i class="fa-solid fa-business-time"></i>
+            <span class="nav-label">@L["OTAssignment"]</span>
+          </div>
+          }
+        </div>
       </div>
       }
 
-      @if (isAdmin || isStaff)
-      {
       @if (isAdmin)
       {
       <div class="nav-group" data-nav-group="reports">
@@ -124,24 +147,12 @@
             <i class="fa-solid fa-calendar-days"></i>
             <span class="nav-label">@L["MonthlyReports"]</span>
           </div>
-          <div class="nav-item" data-page="/Attendance/MonthlyCalendar" onclick="location.href='/Attendance/MonthlyCalendar'">
-            <i class="fa-solid fa-calendar-days"></i>
-            <span class="nav-label">@L["MonthlyCalendar"]</span>
-          </div>
           <div class="nav-item" data-page="/Reports/SalaryReport" onclick="location.href='/Reports/SalaryReport'">
             <i class="fa-solid fa-money-check-dollar"></i>
             <span class="nav-label">@L["SalaryReport"]</span>
           </div>
         </div>
       </div>
-      }
-      else
-      {
-      <div class="nav-item" data-page="/Attendance/MonthlyCalendar" onclick="location.href='/Attendance/MonthlyCalendar'">
-        <i class="fa-solid fa-calendar-days"></i>
-        <span class="nav-label">@L["MonthlyCalendar"]</span>
-      </div>
-      }
       }
     </nav>
 

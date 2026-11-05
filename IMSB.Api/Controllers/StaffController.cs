@@ -47,7 +47,7 @@ namespace IMSB.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStaffDto dto)
         {
-            var errors = await ValidateAsync(dto, null, null);
+            var errors = await ValidateAsync(dto, null, null, null);
             if (errors.Count > 0) return Invalid(errors);
 
             var entity = new Staff
@@ -59,11 +59,7 @@ namespace IMSB.Api.Controllers
                 CreatedBy = UserName
             };
             dto.ApplyTo(entity);
-            if (User.IsInRole("Admin"))
-            {
-                entity.MonthlySalary = dto.MonthlySalary;
-                dto.ApplyOvertimeTo(entity);
-            }
+            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
             await _staff.AddAsync(entity);
             return Ok(new { employeeId = entity.EmployeeId });
         }
@@ -73,15 +69,11 @@ namespace IMSB.Api.Controllers
         {
             var entity = await _staff.FindAsync(id);
             if (entity == null) return NotFound();
-            var errors = await ValidateAsync(dto, entity.Id, entity.Shift);
+            var errors = await ValidateAsync(dto, entity.Id, entity.Shift, entity.Mobile);
             if (errors.Count > 0) return Invalid(errors);
 
             dto.ApplyTo(entity);
-            if (User.IsInRole("Admin"))
-            {
-                entity.MonthlySalary = dto.MonthlySalary;
-                dto.ApplyOvertimeTo(entity);
-            }
+            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
             if (!string.IsNullOrWhiteSpace(dto.Status)) entity.Status = dto.Status.Trim().ToUpperInvariant();
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = UserName;
@@ -110,7 +102,7 @@ namespace IMSB.Api.Controllers
                 all.Count(x => x.ContractEndDate >= today && x.ContractEndDate <= soon));
         }
 
-        private async Task<Dictionary<string, string>> ValidateAsync(CreateStaffDto dto, Guid? existingId, string? currentShift)
+        private async Task<Dictionary<string, string>> ValidateAsync(CreateStaffDto dto, Guid? existingId, string? currentShift, string? currentMobile)
         {
             var errors = new Dictionary<string, string>();
             var today = DateTime.Today;
@@ -125,14 +117,23 @@ namespace IMSB.Api.Controllers
             if (!Guid.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
                 errors["department_id"] = L["ValDepartment"];
 
-            if (User.IsInRole("Admin") && dto.ValidateOvertime() is { } ot) errors[ot.Field] = L[ot.Key];
-
             // an unchanged shift is accepted so records holding older values (e.g. "Night") can still be edited
             var shiftUnchanged = currentShift != null && string.Equals(currentShift, dto.Shift, StringComparison.OrdinalIgnoreCase);
             if (!shiftUnchanged && await _staff.AnyShiftsAsync() && !await _staff.ShiftExistsAsync(dto.Shift))
                 errors["shift"] = L["ValShift"];
 
-            if (await _staff.MobileExistsAsync(dto.Mobile.Trim(), existingId)) errors["mobile"] = L["ValMobileExists"];
+            // an unchanged number is accepted so records saved under the older 9-12 digit rule can still be edited
+            var mobile = MobileNumbers.Normalize(dto.Mobile);
+            if (mobile != currentMobile && !MobileNumbers.IsValid(mobile)) errors["mobile"] = L["ValMobile"];
+            else if (await _staff.MobileExistsAsync(mobile, existingId)) errors["mobile"] = L["ValMobileExists"];
+
+            if (string.IsNullOrWhiteSpace(dto.Aadhaar))
+            {
+                // existing staff may have none on record, so it is only demanded when registering
+                if (existingId == null) errors["aadhaar"] = L["ValAadhaar"];
+            }
+            else if (!Aadhaar.IsValid(dto.Aadhaar)) errors["aadhaar"] = L["ValAadhaar"];
+            else if (await _staff.AadhaarExistsAsync(Aadhaar.Hash(dto.Aadhaar), existingId)) errors["aadhaar"] = L["ValAadhaarExists"];
 
             var email = dto.Email?.Trim().ToLower();
             if (!string.IsNullOrEmpty(email) && await _staff.EmailExistsAsync(email, existingId)) errors["email"] = L["ValEmailExists"];

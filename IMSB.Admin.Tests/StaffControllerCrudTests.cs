@@ -91,8 +91,8 @@ public class StaffControllerCreateTests
     {
         using var ctx = TestHelpers.CreateContext();
         var controller = TestHelpers.CreateController(ctx);
-        await controller.Create(TestHelpers.ValidCreateDto(mobile: "900000011", email: null));
-        await controller.Create(TestHelpers.ValidCreateDto(mobile: "900000012", email: null));
+        await controller.Create(TestHelpers.ValidCreateDto(mobile: "9000000011", email: null));
+        await controller.Create(TestHelpers.ValidCreateDto(mobile: "9000000012", email: null));
 
         var ids = await ctx.Staff.Select(s => s.EmployeeId).OrderBy(x => x).ToListAsync();
         Assert.Equal(new[] { "EMP001", "EMP002" }, ids);
@@ -110,7 +110,7 @@ public class StaffControllerCreateTests
     {
         using var ctx = TestHelpers.CreateContext();
         var controller = TestHelpers.CreateController(ctx);
-        var dto = TestHelpers.ValidCreateDto(mobile: "12");
+        var dto = TestHelpers.ValidCreateDto(mobile: "");
         dto.FullName = "A";
         dto.DepartmentId = "";
         TestHelpers.BindModelState(controller, dto);
@@ -200,7 +200,7 @@ public class StaffControllerCreateTests
 
         var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(dto));
 
-        Assert.Equal("Department is required", errors["department_id"]);
+        Assert.Equal("Staff category is required", errors["department_id"]);
     }
 
     [Fact]
@@ -251,6 +251,56 @@ public class StaffControllerCreateTests
 
         Assert.Equal("Email already registered", errors["email"]);
     }
+
+    [Fact]
+    public async Task Create_keeps_only_the_hash_and_last_four_of_the_aadhaar()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var dto = TestHelpers.ValidCreateDto();
+        var number = dto.Aadhaar!;
+        dto.Aadhaar = $"{number[..4]}-{number[4..8]}-{number[8..]}";   // as typed in the form
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(dto));
+
+        var saved = await ctx.Staff.SingleAsync();
+        Assert.Equal(Aadhaar.Hash(number), saved.AadhaarHash);
+        Assert.Equal(number[^4..], saved.AadhaarLast4);
+        Assert.Equal("XXXX-XXXX-" + number[^4..], saved.MaskedAadhaar);
+        Assert.DoesNotContain(number, System.Text.Json.JsonSerializer.Serialize(saved));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("   ")]
+    [InlineData("12345")]
+    [InlineData("123456789012")]   // cannot start with 1
+    [InlineData("234567890123")]   // fails the checksum
+    public async Task Create_needs_a_valid_aadhaar(string? aadhaar)
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.Aadhaar = aadhaar;
+
+        var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(dto));
+
+        Assert.Equal("Enter a valid 12-digit Aadhaar number", errors["aadhaar"]);
+        Assert.Empty(ctx.Staff);
+    }
+
+    [Fact]
+    public async Task Create_rejects_an_aadhaar_already_on_another_staff_member()
+    {
+        using var ctx = TestHelpers.CreateContext();
+        var first = TestHelpers.ValidCreateDto(mobile: "9876500001", email: null);
+        await TestHelpers.CreateController(ctx).Create(first);
+        var second = TestHelpers.ValidCreateDto(mobile: "9876500002", email: null);
+        second.Aadhaar = first.Aadhaar;
+
+        var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(second));
+
+        Assert.Equal("This Aadhaar number is already registered", errors["aadhaar"]);
+        Assert.Single(ctx.Staff);
+    }
 }
 
 public class StaffControllerUpdateTests
@@ -267,9 +317,89 @@ public class StaffControllerUpdateTests
     private static UpdateStaffDto DtoFor(Staff s, string? status = null) => new()
     {
         FullName = s.FullName, Mobile = s.Mobile, Email = s.Email, DateOfBirth = s.DateOfBirth.ToString("yyyy-MM-dd"),
-        Gender = s.Gender, DepartmentId = s.DepartmentId.ToString(), Designation = s.Designation, StaffCategory = s.StaffCategory,
+        Gender = s.Gender, DepartmentId = s.DepartmentId.ToString(), Designation = s.Designation,
         JoinDate = s.JoinDate.ToString("yyyy-MM-dd"), Shift = s.Shift, Status = status
     };
+
+    [Fact]
+    public async Task Editing_staff_without_an_aadhaar_on_record_does_not_demand_one()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", DtoFor(staff)));
+
+        Assert.Null((await ctx.Staff.SingleAsync()).AadhaarHash);
+    }
+
+    [Fact]
+    public async Task Editing_with_a_blank_aadhaar_keeps_the_one_on_record()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var number = TestHelpers.ValidAadhaar("1");
+        staff.AadhaarHash = Aadhaar.Hash(number);
+        staff.AadhaarLast4 = Aadhaar.Last4(number);
+        await ctx.SaveChangesAsync();
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", DtoFor(staff)));
+
+        var saved = await ctx.Staff.SingleAsync();
+        Assert.Equal(Aadhaar.Hash(number), saved.AadhaarHash);
+        Assert.Equal(number[^4..], saved.AadhaarLast4);
+    }
+
+    [Fact]
+    public async Task Editing_can_add_or_replace_the_aadhaar_and_resubmit_its_own()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var dto = DtoFor(staff);
+        dto.Aadhaar = TestHelpers.ValidAadhaar("2");
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+        Assert.Equal(dto.Aadhaar[^4..], (await ctx.Staff.SingleAsync()).AadhaarLast4);
+
+        // the same person sending their own number again is not a duplicate
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+    }
+
+    [Fact]
+    public async Task Editing_rejects_an_invalid_aadhaar_or_another_staff_members()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var taken = TestHelpers.ValidAadhaar("3");
+        var other = TestHelpers.ExistingStaff("EMP002", "Other", "900000002");
+        other.AadhaarHash = Aadhaar.Hash(taken);
+        other.AadhaarLast4 = Aadhaar.Last4(taken);
+        ctx.Staff.Add(other);
+        await ctx.SaveChangesAsync();
+        var dto = DtoFor(staff);
+
+        dto.Aadhaar = "12345";
+        Assert.Equal("Enter a valid 12-digit Aadhaar number", TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto))["aadhaar"]);
+
+        dto.Aadhaar = taken;
+        Assert.Equal("This Aadhaar number is already registered", TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto))["aadhaar"]);
+    }
+
+    [Fact]
+    public async Task Staff_list_shows_the_aadhaar_masked_and_never_the_hash()
+    {
+        var (ctx, staff) = await SeedOne();
+        using var _ = ctx;
+        var number = TestHelpers.ValidAadhaar("4");
+        staff.AadhaarHash = Aadhaar.Hash(number);
+        staff.AadhaarLast4 = Aadhaar.Last4(number);
+        await ctx.SaveChangesAsync();
+
+        var json = TestHelpers.OkJson(await TestHelpers.CreateController(ctx).IndexData(null, null, null));
+
+        var row = Assert.Single(json.GetProperty("staff").EnumerateArray());
+        Assert.Equal("XXXX-XXXX-" + number[^4..], row.GetProperty("aadhaarMasked").GetString());
+        Assert.DoesNotContain(staff.AadhaarHash!, json.GetRawText());
+    }
 
     [Fact]
     public async Task Editing_to_an_under_18_dob_is_rejected()
@@ -328,61 +458,6 @@ public class StaffControllerUpdateTests
     }
 
     [Fact]
-    public async Task Admin_assigns_and_clears_ot_timings()
-    {
-        var (ctx, staff) = await SeedOne();
-        using var _ = ctx;
-        var dto = DtoFor(staff);
-        dto.OtFromTime = "18:00";
-        dto.OtToTime = "21:30";
-
-        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
-        var saved = await ctx.Staff.SingleAsync();
-        Assert.Equal((new TimeSpan(18, 0, 0), new TimeSpan(21, 30, 0)), (saved.OtFromTime!.Value, saved.OtToTime!.Value));
-        var row = TestHelpers.OkJson(await TestHelpers.CreateController(ctx).IndexData(null, null, null)).GetProperty("staff")[0];
-        Assert.Equal(("18:00", "21:30"), (row.GetProperty("otFromTime").GetString(), row.GetProperty("otToTime").GetString()));
-
-        dto.OtFromTime = dto.OtToTime = null;
-        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
-        saved = await ctx.Staff.SingleAsync();
-        Assert.Equal((null, null), (saved.OtFromTime, saved.OtToTime));
-    }
-
-    [Theory]
-    [InlineData("18:00", null, "ot_to_time", "Enter both OT From and OT To times")]
-    [InlineData(null, "21:00", "ot_from_time", "Enter both OT From and OT To times")]
-    [InlineData("18:00", "18:00", "ot_to_time", "OT To time must be later than OT From time")]
-    [InlineData("21:00", "18:00", "ot_to_time", "OT To time must be later than OT From time")]
-    [InlineData("25:00", "21:00", "ot_from_time", "Enter a valid time (HH:mm)")]
-    public async Task Ot_timings_need_both_times_with_to_after_from(string? from, string? to, string field, string message)
-    {
-        var (ctx, staff) = await SeedOne();
-        using var _ = ctx;
-        var dto = DtoFor(staff);
-        dto.OtFromTime = from;
-        dto.OtToTime = to;
-
-        var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
-        Assert.Equal(message, errors[field]);
-        Assert.Null((await ctx.Staff.SingleAsync()).OtFromTime);
-    }
-
-    [Fact]
-    public async Task Staff_role_cannot_set_ot_timings()
-    {
-        var (ctx, staff) = await SeedOne();
-        using var _ = ctx;
-        var dto = DtoFor(staff);
-        dto.OtFromTime = "18:00";
-        dto.OtToTime = "21:00";
-
-        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx, userName: "staff@imsb", role: "Staff").Update("EMP001", dto));
-        var row = TestHelpers.OkJson(await TestHelpers.CreateController(ctx, role: "Staff").IndexData(null, null, null)).GetProperty("staff")[0];
-        Assert.Null((await ctx.Staff.SingleAsync()).OtFromTime);
-        Assert.Equal(System.Text.Json.JsonValueKind.Null, row.GetProperty("otFromTime").ValueKind);
-    }
-
-    [Fact]
     public async Task Update_without_status_keeps_current_status()
     {
         var (ctx, staff) = await SeedOne(status: "ON_LEAVE");
@@ -406,10 +481,10 @@ public class StaffControllerUpdateTests
     {
         var (ctx, staff) = await SeedOne();
         using var _ = ctx;
-        ctx.Staff.Add(TestHelpers.ExistingStaff("EMP002", "Other", "900000002"));
+        ctx.Staff.Add(TestHelpers.ExistingStaff("EMP002", "Other", "9000000002"));
         await ctx.SaveChangesAsync();
         var dto = DtoFor(staff);
-        dto.Mobile = "900000002";
+        dto.Mobile = "9000000002";
 
         var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
 

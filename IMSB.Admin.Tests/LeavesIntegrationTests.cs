@@ -21,8 +21,10 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
             if (_seeded) return;
             factory.Seed(context =>
             {
+                context.Departments.Add(new Department { Id = TestHelpers.SalesDept, Name = "Sales" });
+                context.LeaveTypes.Add(new LeaveType { Name = "Study" });
                 var staff = TestHelpers.ExistingStaff("EMP951", "Leave Page Tester", "900000951");
-                staff.StaffCategory = "Operators";
+                staff.StaffCategory = "Operators";   // retired column: the screens must show the department instead
                 context.Staff.Add(staff);
                 context.LeaveEntitlements.Add(new LeaveEntitlement
                 {
@@ -62,7 +64,8 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
         Assert.DoesNotContain("attendance_leave_type", index);
         Assert.DoesNotContain("Use for attendance Leave and Half Day deductions", index);
         Assert.Contains("/Leaves/CurrentBalances", index);
-        Assert.Contains("Operators", index);
+        Assert.Contains("\"staffCategory\":\"Sales\"", index);
+        Assert.DoesNotContain("Operators", index);
         Assert.Contains("Casual", index);
         Assert.Contains("/Leaves/Add", index);
 
@@ -71,6 +74,7 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
         Assert.Contains("Leave Page Tester", add);
         Assert.Contains("id=\"leaveStaff\"", add);
         Assert.Contains("id=\"leaveType\"", add);
+        Assert.Contains("<option value=\"Study\">Study</option>", add);   // from the leave type table, no quota needed to be listed
         Assert.Contains("id=\"leaveFrom\"", add);
         var futureDate = DateTime.Today.AddDays(1);
         Assert.Contains($"value=\"{futureDate:yyyy-MM-dd}\"", add);
@@ -134,7 +138,7 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
 
     private static string ReadStaffId(string html)
     {
-        var match = Regex.Match(html, @"<option value=""([^""]+)"" data-category=""Operators"">EMP951");
+        var match = Regex.Match(html, @"<option value=""([^""]+)"" data-category=""Sales"">EMP951");
         Assert.True(match.Success, "staff option was not rendered");
         return match.Groups[1].Value;
     }

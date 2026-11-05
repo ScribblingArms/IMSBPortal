@@ -153,8 +153,9 @@ public class ApplicationsReportsIntegrationTests : IClassFixture<ApplicationsApp
         Assert.Contains("id=\"artisanReportReset\"", artisanPage);
         Assert.Contains("class=\"search-box artisan-report-search\"", artisanPage);
 
-        // submenu order: Artisan Performance, Abstract, Monthly Reports, Monthly Calendar, Salary
-        var order = new[] { "/Reports/ArtisanPerformance", "/Reports/AbstractReport", "/Reports/MonthlyReports", "/Attendance/MonthlyCalendar", "/Reports/SalaryReport" }
+        // submenu order: Artisan Performance, Abstract, Monthly Reports, Salary (Monthly Calendar is under the HR Module)
+        Assert.True(reports.IndexOf("data-page=\"/Attendance/MonthlyCalendar\"", StringComparison.Ordinal) < reportSubmenuStart);
+        var order = new[] { "/Reports/ArtisanPerformance", "/Reports/AbstractReport", "/Reports/MonthlyReports", "/Reports/SalaryReport" }
             .Select(route => reports.IndexOf($"data-page=\"{route}\"", reportSubmenuStart, StringComparison.Ordinal)).ToList();
         Assert.DoesNotContain(-1, order);
         Assert.Equal(order.OrderBy(i => i), order);

@@ -8,33 +8,33 @@ namespace IMSB.Dto.Models
     public class Login
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("username")]
+        [Column("Username")]
         [MaxLength(100)]
         public string Username { get; set; } = string.Empty;
 
         [Required]
-        [Column("password_hash")]
+        [Column("PasswordHash")]
         public string PasswordHash { get; set; } = string.Empty;
 
-        [Column("email")]
+        [Column("Email")]
         [MaxLength(200)]
         public string? Email { get; set; }
 
-        [Column("is_active")]
+        [Column("IsActive")]
         public bool IsActive { get; set; } = true;
 
-        [Column("role")]
+        [Column("Role")]
         [MaxLength(50)]
         public string Role { get; set; } = "Admin"; // Admin, Staff, Inventory
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("last_login")]
+        [Column("LastLogin")]
         public DateTime? LastLogin { get; set; }
     }
    

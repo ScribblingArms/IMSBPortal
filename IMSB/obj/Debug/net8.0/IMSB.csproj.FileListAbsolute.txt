@@ -35,4 +35,3 @@ K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\refint\IMSB.dll
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\IMSB.pdb
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\IMSB.genruntimeconfig.cache
 K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\ref\IMSB.dll
-K:\ScribblingArms\IMSBPortal\IMSB\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

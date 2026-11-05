@@ -243,7 +243,7 @@
   function renderMonthlyAttendance(report){
     const body = $('monthlyReportBody');
     if (!report.rows.length){
-      body.innerHTML = `<tr><td colspan="5" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="10" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
       return;
     }
     body.innerHTML = report.rows.map((row, index) => `<tr>
@@ -252,6 +252,11 @@
       <td>${esc(row.designation)}</td>
       <td>${row.totalDaysInMonth}</td>
       <td><strong>${row.totalWorkingDays}</strong></td>
+      <td>${row.weekOffs}</td>
+      <td>${row.present}</td>
+      <td>${row.absent}</td>
+      <td>${row.leaves}</td>
+      <td>${Number(row.otHours || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
     </tr>`).join('');
   }
 

@@ -60,19 +60,16 @@
       ['FullName', s.full_name],
       ['Department', s.department_name],
       ['Designation', s.designation],
-      ['StaffCategory', s.staff_category],
       ['Mobile', s.mobile],
       ['Email', s.email],
+      ['AadhaarNumber', s.aadhaar_masked],
       ['DateOfBirth', formatDateDisplay(s.date_of_birth)],
       ['Gender', s.gender],
       ['JoinDate', formatDateDisplay(s.join_date)],
       ['Shift', s.shift],
       ['Status', statusLabel(s.status)]
     ];
-    if (window.StaffCanViewSalary){
-      fields.push(['MonthlySalary', formatSalary(s.monthly_salary)]);
-      fields.push(['OTAssignment', s.ot_from_time && s.ot_to_time ? `${s.ot_from_time} – ${s.ot_to_time}` : '']);
-    }
+    if (window.StaffCanViewSalary) fields.push(['MonthlySalary', formatSalary(s.monthly_salary)]);
     document.getElementById('staffProfileBody').innerHTML = `
       <div class="form-grid col-2">
         ${fields.map(([label, value]) => `<div class="form-group"><div class="form-label">${esc(t(label))}</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(value || '—')}</div></div>`).join('')}
@@ -207,7 +204,7 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', staff_category: 'StaffCategory', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', ot_from_time: 'OtFrom', ot_to_time: 'OtTo', gender: 'Gender', shift: 'Shift', status: 'Status' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', aadhaar: 'Aadhaar', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
     return map[name] || name;
   }
 
@@ -222,6 +219,13 @@
     document.getElementById('staffJoinDate').setAttribute('max', iso);
   }
 
+  // the number is never sent back: registering needs one, editing keeps the one on record unless a new one is typed
+  function prepareAadhaar(s){
+    document.getElementById('staffAadhaar').value = '';
+    document.getElementById('staffAadhaarReq').style.display = s ? 'none' : '';
+    document.getElementById('staffAadhaarHint').textContent = s && s.aadhaar_masked ? t('AadhaarKeepHint', s.aadhaar_masked) : t('AadhaarStoredHint');
+  }
+
   function openCreate(){
     formDirty = false;
     const modal = document.querySelector('#addStaffModal .modal');
@@ -229,6 +233,7 @@
     document.getElementById('staffSubmitBtnText').textContent = modal.dataset.registerText;
     document.getElementById('staffForm').reset();
     prepareForm();
+    prepareAadhaar(null);
     document.getElementById('staffEmployeeId').value = '';   // placeholder shows "Auto-generated"
     document.getElementById('staffInternalId').value = '';
     document.getElementById('staffGender').value = 'Female';
@@ -246,6 +251,7 @@
     document.getElementById('staffModalTitle').textContent = modal.dataset.editTitle;
     document.getElementById('staffSubmitBtnText').textContent = modal.dataset.updateText;
     prepareForm();
+    prepareAadhaar(s);
     document.getElementById('staffInternalId').value = s.id;
     document.getElementById('staffEmployeeId').value = s.id;
     document.getElementById('staffFullName').value = s.full_name || '';
@@ -255,14 +261,9 @@
     document.getElementById('staffGender').value = s.gender || 'Female';
     document.getElementById('staffDepartment').value = s.department_id || '';
     document.getElementById('staffDesignation').value = s.designation || '';
-    document.getElementById('staffCategory').value = s.staff_category || 'General';
     document.getElementById('staffJoinDate').value = s.join_date || '';
     const salaryInput = document.getElementById('staffMonthlySalary');
     if (salaryInput) salaryInput.value = s.monthly_salary == null ? '0' : String(s.monthly_salary);
-    const otFrom = document.getElementById('staffOtFrom');
-    if (otFrom) otFrom.value = s.ot_from_time || '';
-    const otTo = document.getElementById('staffOtTo');
-    if (otTo) otTo.value = s.ot_to_time || '';
     // shift codes are matched case-insensitively ("Morning" -> "MORNING"); a value not in the Shift table
     // (older records, e.g. "Night") is kept as an extra option so the record can still be saved unchanged
     const shiftSel = document.getElementById('staffShift');
@@ -285,15 +286,18 @@
     const errors = {};
     const today = new Date(); today.setHours(0,0,0,0);
     if (vals.full_name.length < 2 || vals.full_name.length > 100) errors.full_name = t('ValFullName');
-    if (!/^[0-9]{9,12}$/.test(vals.mobile)) errors.mobile = t('ValMobile');
-    if (vals.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(vals.email)) errors.email = t('ValEmail');
+    // an unchanged number is accepted so records saved under the older 9-12 digit rule can still be edited
+    const saved = vals.id ? staff.find(x => x.id === vals.id) : null;
+    if (vals.mobile !== saved?.mobile && !IMSBValidate.mobile(vals.mobile)) errors.mobile = t('ValMobile');
+    if (vals.email && !IMSBValidate.email(vals.email)) errors.email = t('ValEmail');
+    // the server has the final say (checksum, duplicates)
+    if ((!vals.id || vals.aadhaar) && !IMSBValidate.aadhaar(vals.aadhaar)) errors.aadhaar = t('ValAadhaar');
     const dob = parseIsoDate(vals.date_of_birth);
     if (!dob) errors.date_of_birth = t('ValDobRequired');
     else if (dob > today) errors.date_of_birth = t('ValDobFuture');
     else if (new Date(dob.getFullYear() + 18, dob.getMonth(), dob.getDate()) > today) errors.date_of_birth = t('ValMinAge');
     if (!vals.department_id) errors.department_id = t('ValDepartment');
     if (!vals.designation) errors.designation = t('ValDesignation');
-    if (!vals.staff_category || vals.staff_category.length > 100) errors.staff_category = t('ValStaffCategory');
     const join = parseIsoDate(vals.join_date);
     if (!join) errors.join_date = t('ValJoinRequired');
     else if (join > today) errors.join_date = t('ValJoinFuture');
@@ -302,12 +306,6 @@
       const salary = Number(vals.monthly_salary);
       if (vals.monthly_salary === '' || !Number.isFinite(salary) || salary < 0 || salary > 999999999.99)
         errors.monthly_salary = t('ValMonthlySalary');
-    }
-    // OT assignment: both times or neither, and To later than From (HH:mm compares as text)
-    if (vals.ot_from_time || vals.ot_to_time){
-      if (!vals.ot_from_time) errors.ot_from_time = t('ValOtTimes');
-      else if (!vals.ot_to_time) errors.ot_to_time = t('ValOtTimes');
-      else if (vals.ot_to_time <= vals.ot_from_time) errors.ot_to_time = t('ValOtToAfterFrom');
     }
     return errors;
   }
@@ -330,15 +328,13 @@
       full_name: v('staffFullName'),
       mobile: v('staffMobile'),
       email: v('staffEmail') || null,
+      aadhaar: v('staffAadhaar') || null,
       date_of_birth: v('staffDOB'),
       gender: v('staffGender'),
       department_id: v('staffDepartment'),
       designation: v('staffDesignation'),
-      staff_category: v('staffCategory'),
       join_date: v('staffJoinDate'),
       monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
-      ot_from_time: document.getElementById('staffOtFrom') ? v('staffOtFrom') : null,
-      ot_to_time: document.getElementById('staffOtTo') ? v('staffOtTo') : null,
       shift: v('staffShift'),
       status: v('staffStatus'),
     };
@@ -360,10 +356,9 @@
     const isCreate = !vals.id;
     const url = isCreate ? '/Staff/Create' : '/Staff/Update/' + encodeURIComponent(vals.id);
     const body = {
-      fullName: vals.full_name, mobile: vals.mobile, email: vals.email,
+      fullName: vals.full_name, mobile: vals.mobile, email: vals.email, aadhaar: vals.aadhaar,
       dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id,
-      designation: vals.designation, staffCategory: vals.staff_category, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift,
-      otFromTime: vals.ot_from_time || null, otToTime: vals.ot_to_time || null
+      designation: vals.designation, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
     };
     if (!isCreate) body.status = vals.status;
     const submitBtn = document.getElementById('staffSubmitBtn');
@@ -440,12 +435,10 @@
         department_id: s.departmentId || '',
         department_name: s.departmentName || '',
         designation: s.designation || '',
-        staff_category: s.staffCategory || 'General',
         monthly_salary: s.monthlySalary,
-        ot_from_time: s.otFromTime || '',
-        ot_to_time: s.otToTime || '',
         mobile: s.mobile || '',
         email: s.email || null,
+        aadhaar_masked: s.aadhaarMasked || null,
         date_of_birth: s.dateOfBirth || '',
         gender: s.gender || 'Female',
         join_date: s.joinDate || '',
@@ -502,8 +495,6 @@
     form.addEventListener('input', () => { formDirty = true; });
     form.addEventListener('change', () => { formDirty = true; });
     document.getElementById('staffDOB').addEventListener('change', () => liveCheck(['date_of_birth']));
-    ['staffOtFrom', 'staffOtTo'].forEach(id =>
-      document.getElementById(id)?.addEventListener('change', () => liveCheck(['ot_from_time', 'ot_to_time'])));
     document.getElementById('staffModalClose').addEventListener('click', tryClose);
     document.getElementById('staffCancelBtn').addEventListener('click', e => { e.preventDefault(); tryClose(); });
     document.getElementById('staffExportBtn')?.addEventListener('click', e => { e.preventDefault(); exportData(); });

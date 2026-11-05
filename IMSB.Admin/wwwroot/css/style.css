@@ -421,12 +421,13 @@ ul { list-style: none; }
 /* ── Buttons ────────────────────────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; gap: 7px;
-  padding: 8px 18px;
-  border-radius: var(--r-sm);
-  border: none;
+  padding: .3125rem .625rem;
+  border-radius: .375rem;
+  border: 1px solid transparent;
   font-family: inherit;
-  font-size: .8rem;
-  font-weight: 600;
+  font-size: .875rem;
+  font-weight: 400;
+  line-height: 1.5;
   cursor: pointer;
   transition: all var(--transition);
   white-space: nowrap;
@@ -447,20 +448,15 @@ ul { list-style: none; }
 
 .btn-outline   {
   background: transparent;
-  border: 1.5px solid var(--border);
+  border-color: var(--border);
   color: var(--text-muted);
 }
 .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-xlight); }
 
 .btn-reset {
-  min-height: 36px;
-  padding: 6px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-sm);
+  border-color: var(--border);
   background: transparent;
   color: var(--text-muted);
-  font-size: .75rem;
-  font-weight: 600;
 }
 .btn-reset:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-xlight); }
 .report-info-banner {
@@ -481,9 +477,8 @@ ul { list-style: none; }
 .btn-ghost { background: none; color: var(--text-muted); }
 .btn-ghost:hover { background: var(--bg); color: var(--text); }
 
-.btn-sm { padding: 5px 12px; font-size: .75rem; }
-.btn-lg { padding: 11px 24px; font-size: .9rem; }
-.btn-icon { padding: 8px; border-radius: var(--r-sm); }
+/* Every text button is one size, so .btn-sm sets no size of its own. Icon-only buttons stay compact. */
+.btn-icon { padding: 8px; border-radius: var(--r-sm); font-size: .8rem; line-height: inherit; }
 .btn-icon.btn-sm { padding: 5px; }
 
 /* Keep export controls aligned consistently across modules and report formats. */
@@ -492,13 +487,10 @@ ul { list-style: none; }
 .btn[data-export-status],
 .btn[data-export] {
   box-sizing: border-box;
-  width: 150px;
   min-width: 150px;
-  flex: 0 0 150px;
+  flex: 0 0 auto;
   justify-content: center;
-  white-space: normal;
   text-align: center;
-  line-height: 1.2;
 }
 
 /* ── Cards ──────────────────────────────────────────────────── */

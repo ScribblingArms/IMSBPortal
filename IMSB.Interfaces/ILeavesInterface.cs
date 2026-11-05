@@ -9,10 +9,13 @@ namespace IMSB.Interfaces
     public interface ILeavesInterface
     {
         /// <summary>Every staff member by category and name.</summary>
-        Task<List<Staff>> StaffAsync();
+        Task<List<LeaveStaffOption>> StaffAsync();
 
         /// <summary>Staff who are not inactive, by name.</summary>
-        Task<List<Staff>> ActiveStaffAsync();
+        Task<List<LeaveStaffOption>> ActiveStaffAsync();
+
+        /// <summary>Names from the leave type table, in alphabetical order.</summary>
+        Task<List<string>> LeaveTypesAsync();
 
         /// <summary>The year's entitlements with their staff member, by name and leave type.</summary>
         Task<List<LeaveEntitlement>> EntitlementsWithStaffAsync(int year);

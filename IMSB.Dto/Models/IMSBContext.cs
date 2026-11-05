@@ -22,6 +22,8 @@ public class IMSBContext : DbContext
     public DbSet<UserSession> UserSessions { get; set; }
     public DbSet<ArtisanApplication> ArtisanApplications { get; set; }
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
+    public DbSet<OtAssignment> OtAssignments { get; set; }
+    public DbSet<LeaveType> LeaveTypes { get; set; }
     public DbSet<LeaveEntitlement> LeaveEntitlements { get; set; }
     public DbSet<StaffLeaveEntry> StaffLeaveEntries { get; set; }
     public DbSet<PayBillEntry> PayBillEntries { get; set; }
@@ -46,6 +48,7 @@ public class IMSBContext : DbContext
         {
             b.HasIndex(e => e.EmployeeId).IsUnique();
             b.HasIndex(e => e.Mobile).IsUnique();
+            b.HasIndex(e => e.AadhaarHash).IsUnique();
             b.HasIndex(e => e.DepartmentId);
 
             b.Property(p => p.EmployeeId).HasMaxLength(20);
@@ -105,7 +108,7 @@ public class IMSBContext : DbContext
         {
             b.HasIndex(m => m.ProductId);
             b.HasIndex(m => m.CreatedAt);
-            // deleting a product keeps its history (product_code/product_name are snapshots)
+            // deleting a product keeps its history (ProductCode/ProductName are snapshots)
             b.HasOne(m => m.Product).WithMany().HasForeignKey(m => m.ProductId).OnDelete(DeleteBehavior.SetNull);
         });
 
@@ -138,7 +141,7 @@ public class IMSBContext : DbContext
             b.HasIndex(s => s.StallCode).IsUnique();
             b.HasIndex(s => s.Status);
             // an artisan holds at most one stall
-            b.HasIndex(s => s.ArtisanId).IsUnique().HasFilter("[artisan_id] IS NOT NULL");
+            b.HasIndex(s => s.ArtisanId).IsUnique().HasFilter("[ArtisanId] IS NOT NULL");
             b.HasOne(s => s.Category).WithMany().HasForeignKey(s => s.CategoryId).OnDelete(DeleteBehavior.Restrict);
             // an allocated artisan cannot be deleted (the controller asks to vacate first)
             b.HasOne(s => s.Artisan).WithMany().HasForeignKey(s => s.ArtisanId).OnDelete(DeleteBehavior.Restrict);
@@ -184,12 +187,27 @@ public class IMSBContext : DbContext
             b.HasOne(a => a.Staff).WithMany().HasForeignKey(a => a.StaffId).OnDelete(DeleteBehavior.Cascade);
         });
 
+        modelBuilder.Entity<OtAssignment>(b =>
+        {
+            b.HasIndex(a => a.StaffId).IsUnique();
+            b.HasOne(a => a.Staff).WithMany().HasForeignKey(a => a.StaffId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<LeaveType>(b =>
+        {
+            b.HasIndex(t => t.Name).IsUnique();
+            b.HasData(
+                new LeaveType { Id = Guid.Parse("b1000000-0000-0000-0000-000000000001"), Name = "Casual" },
+                new LeaveType { Id = Guid.Parse("b1000000-0000-0000-0000-000000000002"), Name = "Earned" },
+                new LeaveType { Id = Guid.Parse("b1000000-0000-0000-0000-000000000003"), Name = "Sick" });
+        });
+
         modelBuilder.Entity<LeaveEntitlement>(b =>
         {
             b.HasIndex(e => new { e.StaffId, e.LeaveType, e.Year }).IsUnique()
-                .HasFilter("[staff_id] IS NOT NULL");
+                .HasFilter("[StaffId] IS NOT NULL");
             b.HasIndex(e => new { e.StaffId, e.Year }).IsUnique()
-                .HasFilter("[attendance_leave_type] = 1");
+                .HasFilter("[AttendanceLeaveType] = 1");
             b.HasOne(e => e.Staff).WithMany().HasForeignKey(e => e.StaffId).OnDelete(DeleteBehavior.Cascade);
             b.Property(e => e.StaffCategory).HasMaxLength(100).IsRequired();
             b.Property(e => e.LeaveType).HasMaxLength(100).IsRequired();

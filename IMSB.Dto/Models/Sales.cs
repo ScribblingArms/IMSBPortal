@@ -11,39 +11,39 @@ namespace IMSB.Dto.Models
     public class SalesEntry
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("entry_no")]
+        [Column("EntryNo")]
         [MaxLength(20)]
         public string EntryNo { get; set; } = string.Empty;       // SAL-000001
 
         /// <summary>Local date and time of the sale (drives the daily totals and the hourly chart).</summary>
-        [Column("sold_at")]
+        [Column("SoldAt")]
         public DateTime SoldAt { get; set; }
 
-        [Column("total_amount", TypeName = "decimal(18,2)")]
+        [Column("TotalAmount", TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
 
-        [Column("total_quantity")]
+        [Column("TotalQuantity")]
         public int TotalQuantity { get; set; }
 
-        [Column("remarks")]
+        [Column("Remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
 
-        [Column("updated_at")]
+        [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
-        [Column("updated_by")]
+        [Column("UpdatedBy")]
         [MaxLength(100)]
         public string? UpdatedBy { get; set; }
 
@@ -55,48 +55,48 @@ namespace IMSB.Dto.Models
     public class SaleItem
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Column("sales_entry_id")]
+        [Column("SalesEntryId")]
         public Guid SalesEntryId { get; set; }
 
         public SalesEntry? SalesEntry { get; set; }
 
-        [Column("product_id")]
+        [Column("ProductId")]
         public Guid? ProductId { get; set; }
 
         public Product? Product { get; set; }
 
         [Required]
-        [Column("product_code")]
+        [Column("ProductCode")]
         [MaxLength(20)]
         public string ProductCode { get; set; } = string.Empty;
 
         [Required]
-        [Column("product_name")]
+        [Column("ProductName")]
         [MaxLength(200)]
         public string ProductName { get; set; } = string.Empty;
 
-        [Column("category_id")]
+        [Column("CategoryId")]
         public Guid? CategoryId { get; set; }
 
-        [Column("category_name")]
+        [Column("CategoryName")]
         [MaxLength(100)]
         public string CategoryName { get; set; } = string.Empty;
 
         [Required]
-        [Column("stall_code")]
+        [Column("StallCode")]
         [MaxLength(20)]
         public string StallCode { get; set; } = string.Empty;
 
-        [Column("quantity")]
+        [Column("Quantity")]
         public int Quantity { get; set; }
 
-        [Column("unit_price", TypeName = "decimal(18,2)")]
+        [Column("UnitPrice", TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
 
-        [Column("line_total", TypeName = "decimal(18,2)")]
+        [Column("LineTotal", TypeName = "decimal(18,2)")]
         public decimal LineTotal { get; set; }
     }
 }

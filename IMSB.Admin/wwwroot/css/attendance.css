@@ -22,20 +22,15 @@
     grid-template-columns: 36px minmax(170px, 1.8fr) minmax(120px, 1fr) 120px 120px 64px 70px 130px 64px;
     min-width: 960px;
 }
-.att-row .form-group { margin: 0; }
-.att-row .form-control { padding: 5px 8px; font-size: .75rem; }
-.att-row.changed { background: var(--warning-light); }
 .att-row.hidden { display: none; }
 .att-name { font-weight: 600; }
 .att-sub { font-size: .68rem; color: var(--text-muted); }
 .att-hours { font-weight: 700; }
+.att-in-text, .att-out-text { font-size: .8rem; }
 .att-actions { display: flex; gap: 2px; justify-content: flex-end; }
 .att-status-dot.halfday { background: #ccfbf1; color: #0d9488; }
 .att-status-dot.none { background: var(--bg); color: var(--text-muted); }
 .att-empty { padding: 28px 14px; text-align: center; color: var(--text-muted); font-size: .82rem; }
-
-.att-unsaved { margin-right: auto; font-size: .75rem; font-weight: 600; color: var(--warning); display: inline-flex; align-items: center; gap: 6px; }
-.att-unsaved i { font-size: .45rem; }
 
 .badge.badge-halfday { background: #ccfbf1; color: #0d9488; }
 

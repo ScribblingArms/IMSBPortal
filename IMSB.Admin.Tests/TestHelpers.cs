@@ -73,16 +73,23 @@ internal static class TestHelpers
                 controller.ModelState.AddModelError(member, r.ErrorMessage ?? "invalid");
     }
 
+    /// <summary>A checksum-valid Aadhaar number derived from the seed, so different seeds give different numbers.</summary>
+    public static string ValidAadhaar(string seed)
+    {
+        var eleven = "2" + new string(seed.Where(char.IsDigit).ToArray()).PadLeft(10, '0')[^10..];
+        return eleven + Aadhaar.CheckDigit(eleven);
+    }
+
     public static CreateStaffDto ValidCreateDto(string mobile = "9876500001", string? email = "new.staff@example.com") => new()
     {
         FullName = "Meena Kumari",
         Mobile = mobile,
         Email = email,
+        Aadhaar = ValidAadhaar(mobile),
         DateOfBirth = "1990-05-10",
         Gender = "Female",
         DepartmentId = SalesDept.ToString(),
         Designation = "Sales Executive",
-        StaffCategory = "Executive",
         MonthlySalary = 24000m,
         JoinDate = "2020-01-15",
         Shift = "MORNING"
@@ -91,7 +98,7 @@ internal static class TestHelpers
     public static UpdateStaffDto ToUpdate(CreateStaffDto c, string? status = null) => new()
     {
         FullName = c.FullName, Mobile = c.Mobile, Email = c.Email, DateOfBirth = c.DateOfBirth, Gender = c.Gender,
-        DepartmentId = c.DepartmentId, Designation = c.Designation, StaffCategory = c.StaffCategory, MonthlySalary = c.MonthlySalary,
+        DepartmentId = c.DepartmentId, Designation = c.Designation, MonthlySalary = c.MonthlySalary,
         JoinDate = c.JoinDate, Shift = c.Shift, Status = status
     };
 

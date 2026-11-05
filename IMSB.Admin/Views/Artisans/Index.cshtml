@@ -96,11 +96,11 @@
             <select class="form-control" id="arGender"><option value="Female">@L["Female"]</option><option value="Male">@L["Male"]</option><option value="Other">@L["Other"]</option></select>
             <div class="form-error" id="err_gender"></div></div>
           <div class="form-group"><label class="form-label" for="arMobile">@L["MobileNumber"] <span class="req">*</span></label>
-            <input type="tel" class="form-control" id="arMobile" maxlength="15" placeholder="98765 43210" required><div class="form-error" id="err_mobile"></div></div>
+            <input type="tel" class="form-control" id="arMobile" maxlength="16" inputmode="numeric" data-format="mobile" placeholder="9876543210" required><div class="form-error" id="err_mobile"></div></div>
           <div class="form-group"><label class="form-label" for="arEmail">@L["EmailAddress"]</label>
             <input type="email" class="form-control" id="arEmail" maxlength="200" placeholder="@L["Optional"]"><div class="form-error" id="err_email"></div></div>
           <div class="form-group"><label class="form-label" for="arAadhaar">@L["AadhaarNumber"] <span class="req" id="arAadhaarReq">*</span></label>
-            <input class="form-control" id="arAadhaar" maxlength="14" inputmode="numeric" autocomplete="off" placeholder="XXXX XXXX XXXX">
+            <input class="form-control" id="arAadhaar" maxlength="14" inputmode="numeric" autocomplete="off" data-format="aadhaar" placeholder="XXXX-XXXX-XXXX">
             <div class="form-hint" id="arAadhaarHint" style="font-size:.7rem;color:var(--text-muted)">@L["AadhaarStoredHint"]</div>
             <div class="form-error" id="err_aadhaar"></div></div>
           <div class="form-group form-full"><label class="form-label" for="arAddress">@L["ResidentialAddress"] <span class="req">*</span></label>

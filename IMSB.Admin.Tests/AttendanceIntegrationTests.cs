@@ -102,10 +102,25 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         Assert.DoesNotContain("data-tab=\"monthly\"", html);
         Assert.DoesNotContain("id=\"monthlyMonth\"", html);
         Assert.Contains("data-page=\"/Attendance/MonthlyCalendar\"", html);
+        Assert.Contains("fa-fingerprint\"></i> Attendance –", html);
+        Assert.DoesNotContain("Mark Attendance", html);
+        // the sheet is view-only: no bulk marking or saving
+        Assert.DoesNotContain("id=\"markAllPresentBtn\"", html);
+        Assert.DoesNotContain("id=\"saveSheetBtn\"", html);
+        Assert.DoesNotContain("id=\"resetSheetBtn\"", html);
     }
 
     [Fact]
-    public async Task Monthly_calendar_is_linked_under_reports()
+    public async Task Pay_bill_statement_only_lists_the_salary_columns()
+    {
+        var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Payroll/Index"));
+
+        var headers = Regex.Matches(html, "<th>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()).ToList();
+        Assert.Equal(new[] { "Employee ID", "Staff Name", "Staff Category", "Designation", "Paid Days", "Monthly Salary (₹)", "Net Pay" }, headers);
+    }
+
+    [Fact]
+    public async Task Monthly_calendar_page_renders_its_filters()
     {
         var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Attendance/MonthlyCalendar"));
 
@@ -122,14 +137,27 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         Assert.Contains("id=\"monthlyExportBtn\"", html);
         Assert.DoesNotContain("id=\"monthlyPdfBtn\"", html);
         Assert.Contains("/js/attendance-monthly.js", html);
+    }
 
-        var abstractReportLink = html.IndexOf("data-page=\"/Reports/AbstractReport\"", StringComparison.Ordinal);
-        var monthlyLink = html.IndexOf("data-page=\"/Attendance/MonthlyCalendar\"", StringComparison.Ordinal);
-        Assert.True(abstractReportLink >= 0 && monthlyLink > abstractReportLink);
+    [Theory]
+    [InlineData("Admin")]
+    [InlineData("Staff")]
+    public async Task Hr_pages_are_grouped_under_the_hr_module_menu(string role)
+    {
+        var html = WebUtility.HtmlDecode(await _factory.ClientAs(role).GetStringAsync("/Attendance/Index"));
+
+        var submenuStart = html.IndexOf("id=\"hrSubmenu\"", StringComparison.Ordinal);
+        Assert.True(html.IndexOf("HR Module", StringComparison.Ordinal) is >= 0 and var label && label < submenuStart);
+
+        // submenu order: Staff, Attendance, Leave Management, Pay Bill, Monthly Calendar; each appears only in the submenu
+        var order = new[] { "/Staff/Index", "/Attendance/Index", "/Leaves/Index", "/Payroll/Index", "/Attendance/MonthlyCalendar" }
+            .Select(route => html.IndexOf($"data-page=\"{route}\"", StringComparison.Ordinal)).ToList();
+        Assert.All(order, i => Assert.True(i > submenuStart));
+        Assert.Equal(order.OrderBy(i => i), order);
     }
 
     [Fact]
-    public async Task Staff_can_find_monthly_calendar_under_reports_without_admin_report_links()
+    public async Task Staff_can_find_monthly_calendar_under_hr_without_admin_report_links()
     {
         var html = WebUtility.HtmlDecode(await _factory.ClientAs("Staff").GetStringAsync("/Attendance/MonthlyCalendar"));
 
@@ -152,15 +180,15 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     }
 
     [Theory]
-    [InlineData("en-US", "Attendance Management", "Mark All Present", "Half Day")]
-    [InlineData("ta-IN", "வருகை மேலாண்மை", "அனைவரையும் வருகை எனக் குறி", "அரை நாள்")]
-    [InlineData("te-IN", "హాజరుకాల నిర్వహణ", "అందరినీ హాజరుగా గుర్తించు", "అర్ధ రోజు")]
-    [InlineData("hi-IN", "उपस्थिति प्रबंधन", "सभी को उपस्थित चिह्नित करें", "आधा दिन")]
-    public async Task Page_is_localized(string culture, string title, string markAll, string halfDay)
+    [InlineData("en-US", "Attendance Management", "Daily Attendance", "Half Day")]
+    [InlineData("ta-IN", "வருகை மேலாண்மை", "தினசரி வருகைப் பதிவு", "அரை நாள்")]
+    [InlineData("te-IN", "హాజరుకాల నిర్వహణ", "రోజువారీ హాజరు", "అర్ధ రోజు")]
+    [InlineData("hi-IN", "उपस्थिति प्रबंधन", "दैनिक उपस्थिति", "आधा दिन")]
+    public async Task Page_is_localized(string culture, string title, string menuLabel, string halfDay)
     {
         var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin", culture).GetStringAsync("/Attendance/Index"));
         Assert.Contains(title, html);
-        Assert.Contains(markAll, html);
+        Assert.Contains(menuLabel, html);
         Assert.Contains(halfDay, html);
         Assert.Contains("window.AttendanceI18n", html);
     }

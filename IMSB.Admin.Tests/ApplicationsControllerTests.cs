@@ -19,7 +19,7 @@ public class ApplicationsControllerTests
     public async Task New_application_is_pending_and_does_not_store_aadhaar()
     {
         using var ctx = Seeded();
-        var dto = NewApplication(mobile: "+91 91234 56780");
+        var dto = NewApplication(mobile: "9123456780");
         var json = TestHelpers.OkJson(await Applications(ctx, "clerk").Create(dto));
         Assert.Equal("APP-0001", json.GetProperty("id").GetString());
 
@@ -27,7 +27,7 @@ public class ApplicationsControllerTests
         Assert.Equal((ApplicationStatuses.Pending, "9123456780", "sridevi@example.com", DateTime.Today, "clerk", Pottery),
             (a.Status, a.Mobile, a.Email, a.SubmittedDate, a.CreatedBy, a.CategoryId));
         Assert.Equal(Aadhaar.Hash(dto.Aadhaar!), a.AadhaarHash);
-        Assert.Equal("XXXX XXXX " + dto.Aadhaar![^4..], a.MaskedAadhaar);
+        Assert.Equal("XXXX-XXXX-" + dto.Aadhaar![^4..], a.MaskedAadhaar);
         Assert.Null(a.ArtisanId);
         // a new application does not register anybody yet
         Assert.Equal(4, ctx.Artisans.Count());
@@ -332,7 +332,7 @@ public class ApplicationsControllerTests
         using var ctx = Seeded();
         var a = AddApplication(ctx, "APP-0001");
         var json = TestHelpers.OkJson(await Applications(ctx).Get("APP-0001"));
-        Assert.Equal(("APP-0001", "XXXX XXXX " + a.AadhaarLast4, "PENDING"),
+        Assert.Equal(("APP-0001", "XXXX-XXXX-" + a.AadhaarLast4, "PENDING"),
             (json.GetProperty("id").GetString(), json.GetProperty("aadhaarMasked").GetString(), json.GetProperty("status").GetString()));
         Assert.IsType<NotFoundResult>(await Applications(ctx).Get("APP-9999"));
     }
@@ -350,7 +350,7 @@ public class ApplicationsControllerTests
         Assert.StartsWith("applications_pending_", file.FileDownloadName);
         var lines = SalesTestHelpers.CsvText(file).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         Assert.Equal("App ID,Applicant,Gender,Date of Birth,Mobile,Email,Aadhaar Number,District,Craft Category,Years of Experience,Status,Submitted,Days Waiting,Reviewer,Decided On,Decided By,Decision Remarks,Artisan ID,Stall Assigned", lines[0]);
-        Assert.Equal($"APP-0001,Applicant 1,Female,1990-01-01,7000000001,,XXXX XXXX {pending.AadhaarLast4},Hyderabad,Textiles,0,Pending,{DateTime.Today.AddDays(-2):yyyy-MM-dd},2,,,,,,", lines[1]);
+        Assert.Equal($"APP-0001,Applicant 1,Female,1990-01-01,7000000001,,XXXX-XXXX-{pending.AadhaarLast4},Hyderabad,Textiles,0,Pending,{DateTime.Today.AddDays(-2):yyyy-MM-dd},2,,,,,,", lines[1]);
         Assert.Equal(2, lines.Length);
 
         var all = SalesTestHelpers.CsvText(await Applications(ctx).Export(null, null, null, null));

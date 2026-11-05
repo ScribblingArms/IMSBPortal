@@ -11,45 +11,45 @@ namespace IMSB.Dto.Models
     public class UserSession
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Column("login_id")]
+        [Column("LoginId")]
         public Guid LoginId { get; set; }
 
         public Login? Login { get; set; }
 
         [Required]
-        [Column("role")]
+        [Column("Role")]
         [MaxLength(50)]
         public string Role { get; set; } = string.Empty;
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; }
 
-        [Column("last_seen_at")]
+        [Column("LastSeenAt")]
         public DateTime LastSeenAt { get; set; }
 
         /// <summary>Absolute end of the session, however active it is.</summary>
-        [Column("expires_at")]
+        [Column("ExpiresAt")]
         public DateTime ExpiresAt { get; set; }
 
         /// <summary>"Remember me" sessions are not ended by inactivity, only by ExpiresAt.</summary>
-        [Column("is_persistent")]
+        [Column("IsPersistent")]
         public bool IsPersistent { get; set; }
 
-        [Column("revoked_at")]
+        [Column("RevokedAt")]
         public DateTime? RevokedAt { get; set; }
 
-        [Column("revoked_reason")]
+        [Column("RevokedReason")]
         [MaxLength(30)]
         public string? RevokedReason { get; set; }
 
-        [Column("ip_address")]
+        [Column("IpAddress")]
         [MaxLength(64)]
         public string? IpAddress { get; set; }
 
-        [Column("user_agent")]
+        [Column("UserAgent")]
         [MaxLength(300)]
         public string? UserAgent { get; set; }
     }

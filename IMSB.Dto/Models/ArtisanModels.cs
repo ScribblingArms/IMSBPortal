@@ -21,7 +21,7 @@ namespace IMSB.Dto.Models
         [Required(ErrorMessage = "ValArtisanMobile")]
         public string Mobile { get; set; } = "";
 
-        [EmailAddress(ErrorMessage = "ValEmail"), StringLength(200, ErrorMessage = "ValEmail")]
+        [RegularExpression(EmailAddresses.Pattern, ErrorMessage = "ValEmail"), StringLength(200, ErrorMessage = "ValEmail")]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "ValAddress"), StringLength(500, MinimumLength = 5, ErrorMessage = "ValAddress")]
@@ -76,12 +76,14 @@ namespace IMSB.Dto.Models
         /// <summary>Digits only ("1234 5678 9012" -> "123456789012").</summary>
         public static string Normalize(string? value) => new((value ?? "").Where(char.IsDigit).ToArray());
 
-        /// <summary>12 digits, not starting with 0 or 1, with a valid Verhoeff check digit (as issued by UIDAI).</summary>
+        /// <summary>
+        /// 1111-1111-1111 or 12 plain digits, not starting with 0 or 1, with a valid Verhoeff check digit (as issued by UIDAI).
+        /// main.js IMSBValidate.aadhaar is the browser copy of the format check.
+        /// </summary>
         public static bool IsValid(string? value)
         {
+            if (!System.Text.RegularExpressions.Regex.IsMatch((value ?? "").Trim(), @"^[2-9][0-9]{3}(-?)[0-9]{4}\1[0-9]{4}\z")) return false;
             var digits = Normalize(value);
-            if (digits.Length != 12 || digits[0] == '0' || digits[0] == '1') return false;
-            if ((value ?? "").Any(c => !char.IsDigit(c) && c != ' ' && c != '-')) return false;
             var c = 0;
             for (int i = 0; i < digits.Length; i++)
                 c = D[c, P[i % 8, digits[digits.Length - 1 - i] - '0']];

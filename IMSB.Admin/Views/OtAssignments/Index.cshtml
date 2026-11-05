@@ -1,0 +1,92 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+
+    // Strings used by ot-assignments.js (table, view modal, toasts, client-side validation)
+    var jsKeys = new[] {
+        "Success", "Error", "CouldNotReachServer", "CheckForm", "View", "Edit", "Delete", "SelectPlaceholder",
+        "EmployeeID", "StaffName", "Department", "Designation", "OTFromTime", "OTToTime", "UpdatedBy",
+        "AddOTAssignment", "EditOTAssignment", "OTAssignmentSaved", "OTAssignmentDeleted", "ConfirmDeleteOTAssignment",
+        "NoOTAssignments", "ValOtSelectStaff", "ValOtTimes", "ValOtToAfterFrom"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<main class="page-body">
+  <div class="page-header">
+    <div><div class="page-title">@L["OTAssignment"]</div><div class="page-subtitle">@L["OTAssignmentSubtitle"]</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa-solid fa-business-time"></i> @L["OTAssignment"] <span class="tab-count" id="otCount">0</span></div>
+      <button type="button" class="btn btn-primary" id="otAddBtn"><i class="fa-solid fa-plus"></i> @L["AddOTAssignment"]</button>
+    </div>
+    <div class="card-body">
+      <div class="toolbar">
+        <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="otSearch" placeholder="@L["SearchStaff"]" aria-label="@L["SearchStaff"]"></div>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="otTable">
+          <thead><tr><th>@L["StaffID"]</th><th>@L["Name"]</th><th>@L["Department"]</th><th>@L["Designation"]</th><th>@L["OTFromTime"]</th><th>@L["OTToTime"]</th><th>@L["Actions"]</th></tr></thead>
+          <tbody id="otBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="otFormModal" aria-hidden="true">
+  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true" aria-labelledby="otFormTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="otFormTitle">@L["AddOTAssignment"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Cancel"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="otForm" novalidate>
+        @Html.AntiForgeryToken()
+        <div class="form-error" id="err_request"></div>
+        <div class="form-group">
+          <label class="form-label" for="otStaff">@L["StaffName"] <span class="req">*</span></label>
+          <select id="otStaff" class="form-control" required></select>
+          <div class="form-error" id="err_staff_id"></div>
+        </div>
+        <div class="form-grid col-2">
+          <div class="form-group">
+            <label class="form-label" for="otFrom">@L["OTFromTime"] <span class="req">*</span></label>
+            <input id="otFrom" type="datetime-local" class="form-control" required />
+            <div class="form-error" id="err_from_datetime"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="otTo">@L["OTToTime"] <span class="req">*</span></label>
+            <input id="otTo" type="datetime-local" class="form-control" required />
+            <div class="form-error" id="err_to_datetime"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Cancel"]</button>
+      <button type="button" class="btn btn-primary" id="otSaveBtn"><i class="fa-solid fa-check"></i> @L["SaveOTAssignment"]</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="otViewModal" aria-hidden="true">
+  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true" aria-labelledby="otViewTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="otViewTitle">@L["OTAssignment"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="otViewBody"></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Close"]</button>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+  <script>window.OtAssignmentI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+  <script src="~/js/ot-assignments.js" asp-append-version="true"></script>
+}

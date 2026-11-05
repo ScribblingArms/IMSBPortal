@@ -142,7 +142,6 @@ namespace IMSB.Api.Controllers
             var gender = Genders.FirstOrDefault(g => g.Equals(dto.Gender?.Trim(), StringComparison.OrdinalIgnoreCase));
             if (gender == null) errors["gender"] = L["ValGender"];
 
-            // 10-digit Indian mobile; "+91 98765 43210" and "098765..." are accepted and stored as 9876543210
             var mobile = MobileNumbers.Normalize(dto.Mobile);
             if (!MobileNumbers.IsValid(mobile)) errors["mobile"] = L["ValArtisanMobile"];
             else if (await _artisans.MobileExistsAsync(mobile, selfId)) errors["mobile"] = L["ValMobileExists"];

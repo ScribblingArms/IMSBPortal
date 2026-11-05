@@ -206,6 +206,8 @@
     $('arAddress').value = a?.address || '';
     $('arDistrict').value = a?.district || '';
     $('arJoined').value = a?.joinedDate || todayIso();
+    $('arFromDate').value = a?.fromDate || '';
+    $('arToDate').value = a?.toDate || '';
     $('arCategory').value = a?.categoryId || '';
     $('arYears').value = a ? a.yearsOfExperience : 0;
     $('arSkills').value = a?.skills || '';
@@ -240,6 +242,8 @@
       skills: $('arSkills').value.trim() || null,
       status: $('arStatus').value,
       joinedDate: $('arJoined').value || null,
+      fromDate: $('arFromDate').value || null,
+      toDate: $('arToDate').value || null,
       remarks: $('arRemarks').value.trim() || null
     };
   }
@@ -260,6 +264,7 @@
     if (!v.categoryId) e.category_id = t('ValCraftCategory');
     if (!Number.isInteger(v.yearsOfExperience) || v.yearsOfExperience < 0 || v.yearsOfExperience > 80) e.years_of_experience = t('ValExperience');
     if (v.joinedDate && v.joinedDate > todayIso()) e.joined_date = t('ValJoinFuture');
+    if (v.fromDate && v.toDate && v.toDate < v.fromDate) e.to_date = t('ValDateRange');
     return e;
   }
 
@@ -343,6 +348,12 @@
     $('artisanSaveBtn').addEventListener('click', save);
     $('artisanForm').addEventListener('submit', e => { e.preventDefault(); save(); });
     $('artisanForm').addEventListener('input', () => { formDirty = true; });
+    // flag an under-18 / future DOB as soon as it is picked
+    $('arDob').addEventListener('change', () => {
+      const msg = validate(formValues(), !!$('arEditing').value).date_of_birth || '';
+      $('err_date_of_birth').textContent = msg;
+      $('err_date_of_birth').closest('.form-group')?.classList.toggle('has-error', !!msg);
+    });
     $('artisanCancelBtn').addEventListener('click', () => closeForm(false));
     $('artisanModalClose').addEventListener('click', () => closeForm(false));
 

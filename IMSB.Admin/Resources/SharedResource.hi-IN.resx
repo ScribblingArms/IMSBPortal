@@ -307,7 +307,7 @@
     <value>उपस्थिति प्रविष्टि</value>
   </data>
   <data name="DepartmentWise" xml:space="preserve">
-    <value>विभागानुसार</value>
+    <value>श्रेणीवार</value>
   </data>
   <data name="History" xml:space="preserve">
     <value>इतिहास</value>
@@ -361,7 +361,7 @@
     <value>कुल वेतन = मासिक वेतन × कार्य दिवस ÷ महीने के दिन। उपस्थित = 1 दिन, आधा दिन = 0.5; अनुपस्थित और छुट्टी = 0।</value>
   </data>
   <data name="SearchSalaryPlaceholder" xml:space="preserve">
-    <value>कर्मचारी / विभाग / पदनाम से खोजें</value>
+    <value>कर्मचारी / कर्मचारी श्रेणी / पदनाम से खोजें</value>
   </data>
   <data name="ValMonthlySalary" xml:space="preserve">
     <value>0 से 999,999,999.99 तक का मासिक वेतन दर्ज करें।</value>
@@ -370,7 +370,7 @@
     <value>उपस्थिति चिन्हित करें</value>
   </data>
   <data name="AllDepartments" xml:space="preserve">
-    <value>सभी विभाग</value>
+    <value>सभी कर्मचारी श्रेणियाँ</value>
   </data>
   <data name="StaffName" xml:space="preserve">
     <value>कर्मी का नाम</value>
@@ -532,7 +532,7 @@
     <value>स्टाफ / एचआर प्रबंधन</value>
   </data>
   <data name="StaffHRSubtitle" xml:space="preserve">
-    <value>स्टाफ रिकॉर्ड, विभाग और एचआर गतिविधियों का प्रबंधन करें</value>
+    <value>स्टाफ रिकॉर्ड, कर्मचारी श्रेणियों और एचआर गतिविधियों का प्रबंधन करें</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>निर्यात</value>
@@ -547,19 +547,19 @@
     <value>निष्क्रिय</value>
   </data>
   <data name="Departments" xml:space="preserve">
-    <value>विभाग</value>
+    <value>कर्मचारी श्रेणियाँ</value>
   </data>
   <data name="ContractExpiring" xml:space="preserve">
     <value>अनुबंध समाप्त हो रहा है</value>
   </data>
   <data name="DeptDistribution" xml:space="preserve">
-    <value>विभाग वितरण</value>
+    <value>कर्मचारी श्रेणी वितरण</value>
   </data>
   <data name="StaffDirectory" xml:space="preserve">
     <value>स्टाफ निर्देशिका</value>
   </data>
   <data name="FilterByDepartment" xml:space="preserve">
-    <value>विभाग के अनुसार फ़िल्टर करें</value>
+    <value>कर्मचारी श्रेणी के अनुसार फ़िल्टर करें</value>
   </data>
   <data name="FilterByStatus" xml:space="preserve">
     <value>स्थिति के अनुसार फ़िल्टर करें</value>
@@ -568,7 +568,7 @@
     <value>स्टाफ आईडी</value>
   </data>
   <data name="Department" xml:space="preserve">
-    <value>विभाग</value>
+    <value>कर्मचारी श्रेणी</value>
   </data>
   <data name="Designation" xml:space="preserve">
     <value>पद</value>
@@ -583,7 +583,7 @@
     <value>कार्रवाई</value>
   </data>
   <data name="DeptWiseStaffCount" xml:space="preserve">
-    <value>विभागवार स्टाफ संख्या</value>
+    <value>श्रेणीवार स्टाफ संख्या</value>
   </data>
   <data name="AddNewStaffMember" xml:space="preserve">
     <value>नया स्टाफ सदस्य जोड़ें</value>
@@ -640,7 +640,7 @@
     <value>-- चुनें --</value>
   </data>
   <data name="NoDepartmentsConfigured" xml:space="preserve">
-    <value>कोई विभाग कॉन्फ़िगर नहीं है</value>
+    <value>कोई कर्मचारी श्रेणी कॉन्फ़िगर नहीं है</value>
   </data>
   <data name="NoStaffFound" xml:space="preserve">
     <value>कोई स्टाफ नहीं मिला</value>
@@ -700,7 +700,7 @@
     <value>पूरा नाम आवश्यक है (2-100 अक्षर)</value>
   </data>
   <data name="ValMobile" xml:space="preserve">
-    <value>मोबाइल नंबर 9-12 अंकों का होना चाहिए</value>
+    <value>मान्य 10 अंकों का मोबाइल नंबर दर्ज करें</value>
   </data>
   <data name="ValEmail" xml:space="preserve">
     <value>अमान्य ईमेल</value>
@@ -718,7 +718,7 @@
     <value>स्टाफ की आयु कम से कम 18 वर्ष होनी चाहिए</value>
   </data>
   <data name="ValDepartment" xml:space="preserve">
-    <value>विभाग आवश्यक है</value>
+    <value>कर्मचारी श्रेणी आवश्यक है</value>
   </data>
   <data name="ValDesignation" xml:space="preserve">
     <value>पद आवश्यक है</value>
@@ -1180,7 +1180,7 @@
     <value>डेमो क्रेडेंशियल (भरने के लिए क्लिक करें)</value>
   </data>
   <data name="DeptWiseAttendance" xml:space="preserve">
-    <value>विभाग-वार उपस्थिति</value>
+    <value>श्रेणीवार उपस्थिति</value>
   </data>
   <data name="DescribeSkills" xml:space="preserve">
     <value>अपने शिल्प और कौशल का वर्णन करें…</value>
@@ -1609,7 +1609,7 @@
     <value>मानव संसाधन उपस्थिति रिपोर्ट</value>
   </data>
   <data name="RptAttendanceDesc" xml:space="preserve">
-    <value>विभाग-वार उपस्थिति, ओवरटाइम और छुट्टी सारांश।</value>
+    <value>श्रेणीवार उपस्थिति, ओवरटाइम और छुट्टी सारांश।</value>
   </data>
   <data name="RptInventory" xml:space="preserve">
     <value>इन्वेंटरी रिपोर्ट</value>
@@ -2605,7 +2605,7 @@
     <value>इस तारीख के लिए चिह्नित करने हेतु कोई स्टाफ नहीं है।</value>
   </data>
   <data name="NoStaffInDepartment" xml:space="preserve">
-    <value>इस विभाग में कोई स्टाफ नहीं है।</value>
+    <value>इस श्रेणी में कोई स्टाफ नहीं है।</value>
   </data>
   <data name="NoAttendanceRecords" xml:space="preserve">
     <value>फ़िल्टर से मेल खाने वाला कोई उपस्थिति रिकॉर्ड नहीं है।</value>
@@ -2685,7 +2685,6 @@
   <data name="NoEmployeesForSection" xml:space="preserve"><value>इस अनुभाग में कोई कर्मचारी नहीं मिला।</value></data>
   <data name="StaffCategory" xml:space="preserve"><value>कर्मचारी श्रेणी</value></data>
   <data name="StaffProfile" xml:space="preserve"><value>कर्मचारी प्रोफ़ाइल</value></data>
-  <data name="ValStaffCategory" xml:space="preserve"><value>कर्मचारी श्रेणी दर्ज करें (अधिकतम 100 अक्षर)</value></data>
   <data name="LeaveManagement" xml:space="preserve"><value>अवकाश प्रबंधन</value></data>
   <data name="Update" xml:space="preserve"><value>अपडेट करें</value></data>
   <data name="LeaveManagementSubtitle" xml:space="preserve"><value>कर्मचारियों की वर्तमान वार्षिक अवकाश शेष राशि देखें।</value></data>
@@ -2734,11 +2733,24 @@
   <data name="OTAssignment" xml:space="preserve"><value>ओटी असाइनमेंट</value></data>
   <data name="OTFromTime" xml:space="preserve"><value>ओटी से</value></data>
   <data name="OTToTime" xml:space="preserve"><value>ओटी तक</value></data>
-  <data name="ValOtTimes" xml:space="preserve"><value>ओटी से और ओटी तक दोनों समय दर्ज करें</value></data>
+  <data name="ValOtTimes" xml:space="preserve"><value>ओटी से और ओटी तक दोनों की तारीख और समय दर्ज करें</value></data>
+  <data name="ValDateTime" xml:space="preserve"><value>मान्य तारीख और समय दर्ज करें</value></data>
   <data name="Agency" xml:space="preserve"><value>एजेंसी</value></data>
   <data name="FromDateLabel" xml:space="preserve"><value>प्रारंभ तिथि</value></data>
   <data name="ToDateLabel" xml:space="preserve"><value>अंतिम तिथि</value></data>
   <data name="WeekOffs" xml:space="preserve"><value>साप्ताहिक अवकाश</value></data>
   <data name="Leaves" xml:space="preserve"><value>छुट्टियाँ</value></data>
   <data name="ValOtToAfterFrom" xml:space="preserve"><value>ओटी तक का समय ओटी से के समय के बाद होना चाहिए</value></data>
+  <data name="HRModule" xml:space="preserve"><value>एचआर मॉड्यूल</value></data>
+  <data name="DailyAttendance" xml:space="preserve"><value>दैनिक उपस्थिति</value></data>
+  <data name="OTAssignmentSubtitle" xml:space="preserve"><value>प्रत्येक कर्मचारी के लिए ओटी से और ओटी तक का समय निर्धारित करें।</value></data>
+  <data name="AddOTAssignment" xml:space="preserve"><value>ओटी असाइनमेंट जोड़ें</value></data>
+  <data name="EditOTAssignment" xml:space="preserve"><value>ओटी असाइनमेंट संपादित करें</value></data>
+  <data name="SaveOTAssignment" xml:space="preserve"><value>सहेजें</value></data>
+  <data name="OTAssignmentSaved" xml:space="preserve"><value>ओटी असाइनमेंट सहेजा गया।</value></data>
+  <data name="OTAssignmentDeleted" xml:space="preserve"><value>ओटी असाइनमेंट हटाया गया।</value></data>
+  <data name="ConfirmDeleteOTAssignment" xml:space="preserve"><value>{0} का ओटी असाइनमेंट हटाएँ?</value></data>
+  <data name="NoOTAssignments" xml:space="preserve"><value>अभी कोई ओटी असाइनमेंट नहीं है।</value></data>
+  <data name="ValOtSelectStaff" xml:space="preserve"><value>कोई कर्मचारी चुनें</value></data>
+  <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>इस कर्मचारी का ओटी असाइनमेंट पहले से है। उसे ही संपादित करें।</value></data>
 </root>

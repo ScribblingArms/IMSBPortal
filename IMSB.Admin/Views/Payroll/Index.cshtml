@@ -51,8 +51,7 @@
       <table class="data-table pay-bill-table">
         <thead><tr>
           <th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["Department"]</th><th>@L["Designation"]</th>
-          <th>@L["PaidDays"]</th><th>@L["MonthlySalary"]</th><th>@L["BasicPay"]</th><th>@L["Allowances"]</th>
-          <th>@L["OTHours"]</th><th>@L["OvertimeAmount"]</th><th>@L["Deductions"]</th><th>@L["NetPay"]</th>
+          <th>@L["PaidDays"]</th><th>@L["MonthlySalary"]</th><th>@L["NetPay"]</th>
         </tr></thead>
         <tbody id="payBillBody"></tbody>
         <tfoot id="payBillFoot"></tfoot>
@@ -69,13 +68,12 @@
     .pay-bill-filter .form-group { margin:0; min-width:150px; }
     .pay-bill-filter .pay-bill-staff-filter { min-width:240px; }
     .pay-bill-period { color:var(--text-muted); font-size:.85rem; padding:10px 0; }
-    .pay-bill-table { min-width:1200px; }
+    .pay-bill-table { min-width:800px; }
     .pay-bill-table th,.pay-bill-table td { text-align:right; white-space:nowrap; }
     .pay-bill-table th:first-child,.pay-bill-table td:first-child,
     .pay-bill-table th:nth-child(2),.pay-bill-table td:nth-child(2),
     .pay-bill-table th:nth-child(3),.pay-bill-table td:nth-child(3),
     .pay-bill-table th:nth-child(4),.pay-bill-table td:nth-child(4) { text-align:left; }
-    .pay-bill-table input { width:100px; min-width:80px; padding:6px 8px; text-align:right; }
     /* every card on a single row; scrolls sideways only if the screen is too narrow */
     .pay-dept-grid { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(140px, 1fr); gap:12px; overflow-x:auto; padding-bottom:4px; margin-bottom:18px; }
     .pay-dept-card { min-width:0; border:1px solid var(--border); border-top:3px solid var(--primary-light); border-radius:12px; padding:12px 14px; background:var(--card, #fff); box-shadow:var(--shadow-sm, 0 1px 3px rgba(15,23,42,.06)); display:flex; flex-direction:column; gap:8px; }
@@ -96,8 +94,7 @@
     window.PayBillI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
       EmployeeID = L["EmployeeID"].Value, StaffName = L["StaffName"].Value, Department = L["Department"].Value,
       Designation = L["Designation"].Value, PaidDays = L["PaidDays"].Value, MonthlySalary = L["MonthlySalary"].Value,
-      BasicPay = L["BasicPay"].Value, Allowances = L["Allowances"].Value, OvertimeAmount = L["OvertimeAmount"].Value,
-      OTHours = L["OTHours"].Value, Deductions = L["Deductions"].Value, NetPay = L["NetPay"].Value,
+      NetPay = L["NetPay"].Value,
       Employees = L["Employees"].Value, GrandTotal = L["GrandTotal"].Value, SelectEmployee = L["SelectEmployee"].Value,
       NoStaffForAttendance = L["NoStaffForAttendance"].Value, NoPayrollHistory = L["NoPayrollHistory"].Value,
       PayrollSaved = L["PayrollSaved"].Value, PayrollLoadFailed = L["PayrollLoadFailed"].Value,

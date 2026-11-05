@@ -255,11 +255,10 @@
     if (!v.dateOfBirth) e.date_of_birth = t('ValDobRequired');
     else if (v.dateOfBirth > todayIso()) e.date_of_birth = t('ValDobFuture');
     else if (v.dateOfBirth > yearsAgoIso(18)) e.date_of_birth = t('ValArtisanMinAge');
-    const mobile = v.mobile.replace(/[\s-]/g, '').replace(/^\+91/, '').replace(/^0(?=\d{10}$)/, '');
-    if (!/^[6-9]\d{9}$/.test(mobile)) e.mobile = t('ValArtisanMobile');
-    if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) e.email = t('ValEmail');
+    if (!IMSBValidate.mobile(v.mobile)) e.mobile = t('ValArtisanMobile');
+    if (v.email && !IMSBValidate.email(v.email)) e.email = t('ValEmail');
     if (v.address.length < 5) e.address = t('ValAddress');
-    if ((!editing || v.aadhaar) && !/^[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}$/.test(v.aadhaar || '')) e.aadhaar = t('ValAadhaar');
+    if ((!editing || v.aadhaar) && !IMSBValidate.aadhaar(v.aadhaar)) e.aadhaar = t('ValAadhaar');
     if (!v.district) e.district = t('ValDistrict');
     if (!v.categoryId) e.category_id = t('ValCraftCategory');
     if (!Number.isInteger(v.yearsOfExperience) || v.yearsOfExperience < 0 || v.yearsOfExperience > 80) e.years_of_experience = t('ValExperience');

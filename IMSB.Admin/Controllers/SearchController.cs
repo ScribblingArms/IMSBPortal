@@ -37,7 +37,8 @@ namespace IMSB.Admin.Controllers
             ("Artisans", "/Artisans/Index", "fa-palette", new[] { "Admin" }),
             ("Applications", "/Applications/Index", "fa-file-circle-check", new[] { "Admin" }),
             ("StaffHR", "/Staff/Index", "fa-users", new[] { "Admin", "Staff" }),
-            ("Attendance", "/Attendance/Index", "fa-calendar-check", new[] { "Admin", "Staff" }),
+            ("DailyAttendance", "/Attendance/Index", "fa-calendar-check", new[] { "Admin", "Staff" }),
+            ("OTAssignment", "/OtAssignments/Index", "fa-business-time", new[] { "Admin" }),
             ("ReportsAnalytics", "/Reports/Index", "fa-chart-pie", new[] { "Admin" }),
             ("ActiveSessions", "/Account/Sessions", "fa-shield-halved", Array.Empty<string>()),
         };

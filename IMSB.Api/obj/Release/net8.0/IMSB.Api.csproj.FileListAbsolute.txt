@@ -107,13 +107,9 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\IMSB.Api.csproj.CoreCom
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\IMSB.Api.MvcApplicationPartsAssemblyInfo.cs
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\IMSB.Api.MvcApplicationPartsAssemblyInfo.cache
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\IMSB.Api.sourcelink.json
-K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\en-US\IMSB.Api.resources.cs
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\en-US\IMSB.Api.resources.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\hi-IN\IMSB.Api.resources.cs
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\hi-IN\IMSB.Api.resources.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\ta-IN\IMSB.Api.resources.cs
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\ta-IN\IMSB.Api.resources.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\te-IN\IMSB.Api.resources.cs
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\te-IN\IMSB.Api.resources.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\rjimswa.dswa.cache.json
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\rjsmrazor.dswa.cache.json
@@ -130,3 +126,4 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\IMSB.Api.xml
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\IMSB.Api.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\IMSB.Api.genruntimeconfig.cache
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\ref\IMSB.Api.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\staticwebassets.upToDateCheck.txt

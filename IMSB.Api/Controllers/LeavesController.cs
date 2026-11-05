@@ -32,14 +32,14 @@ namespace IMSB.Api.Controllers
                 year = Year,
                 categories = staff.Select(s => s.StaffCategory.Trim()).Where(c => c.Length > 0)
                     .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(c => c),
-                staff = staff.Select(ToOption),
+                staff,
                 entitlements = (await _leaves.EntitlementsWithStaffAsync(Year)).Select(e => new
                 {
                     id = e.Id,
                     staffId = e.StaffId,
                     employeeId = e.Staff?.EmployeeId,
                     staffName = e.Staff?.FullName,
-                    staffCategory = e.StaffCategory,
+                    staffCategory = staff.FirstOrDefault(s => s.Id == e.StaffId)?.StaffCategory,
                     leaveType = e.LeaveType,
                     annualQuota = e.AnnualQuota,
                     isAttendanceLeaveType = e.IsAttendanceLeaveType
@@ -67,7 +67,8 @@ namespace IMSB.Api.Controllers
             Ok(new
             {
                 year = Year,
-                staff = (await _leaves.ActiveStaffAsync()).Select(ToOption),
+                staff = await _leaves.ActiveStaffAsync(),
+                leaveTypes = await _leaves.LeaveTypesAsync(),
                 entitlements = (await _leaves.EntitlementsAsync(Year)).Select(e => new { id = e.Id, staffId = e.StaffId, leaveType = e.LeaveType, annualQuota = e.AnnualQuota }),
                 entries = (await _leaves.EntriesAsync(Year)).Select(ToItem)
             });
@@ -98,8 +99,6 @@ namespace IMSB.Api.Controllers
         [HttpDelete("entries/{id:guid}")]
         public async Task<IActionResult> DeleteEntry(Guid id) =>
             FromResult(await _leaves.DeleteEntryAsync(id), "entry", () => Ok(new { message = L["LeaveEntryDeleted"].Value }));
-
-        private static LeaveStaffOption ToOption(Staff s) => new(s.Id, s.EmployeeId, s.FullName, s.StaffCategory);
 
         private static object ToItem(StaffLeaveEntry e) => new
         {

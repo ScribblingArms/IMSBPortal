@@ -7,11 +7,11 @@ namespace IMSB.Dto.Models
     public class Department
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("name")]
+        [Column("Name")]
         public string Name { get; set; } = string.Empty;
     }
 }

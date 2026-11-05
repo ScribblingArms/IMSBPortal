@@ -7,62 +7,62 @@ namespace IMSB.Dto.Models;
 public class PayBillEntry
 {
     [Key]
-    [Column("id")]
+    [Column("Id")]
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Column("staff_id")]
+    [Column("StaffId")]
     public Guid StaffId { get; set; }
 
-    [Column("year")]
+    [Column("Year")]
     public int Year { get; set; }
 
-    [Column("month")]
+    [Column("Month")]
     public int Month { get; set; }
 
     [Required, MaxLength(20)]
-    [Column("employee_id")]
+    [Column("EmployeeId")]
     public string EmployeeId { get; set; } = string.Empty;
 
     [Required, MaxLength(150)]
-    [Column("employee_name")]
+    [Column("EmployeeName")]
     public string EmployeeName { get; set; } = string.Empty;
 
     [MaxLength(100)]
-    [Column("department")]
+    [Column("Department")]
     public string Department { get; set; } = string.Empty;
 
     [MaxLength(100)]
-    [Column("designation")]
+    [Column("Designation")]
     public string Designation { get; set; } = string.Empty;
 
-    [Column("month_days")]
+    [Column("MonthDays")]
     public int MonthDays { get; set; }
 
-    [Column("paid_days", TypeName = "decimal(6,2)")]
+    [Column("PaidDays", TypeName = "decimal(6,2)")]
     public decimal PaidDays { get; set; }
 
-    [Column("monthly_salary", TypeName = "decimal(18,2)")]
+    [Column("MonthlySalary", TypeName = "decimal(18,2)")]
     public decimal MonthlySalary { get; set; }
 
-    [Column("basic_pay", TypeName = "decimal(18,2)")]
+    [Column("BasicPay", TypeName = "decimal(18,2)")]
     public decimal BasicPay { get; set; }
 
-    [Column("allowances", TypeName = "decimal(18,2)")]
+    [Column("Allowances", TypeName = "decimal(18,2)")]
     public decimal Allowances { get; set; }
 
-    [Column("overtime_hours", TypeName = "decimal(8,2)")]
+    [Column("OvertimeHours", TypeName = "decimal(8,2)")]
     public decimal OvertimeHours { get; set; }
 
-    [Column("overtime_amount", TypeName = "decimal(18,2)")]
+    [Column("OvertimeAmount", TypeName = "decimal(18,2)")]
     public decimal OvertimeAmount { get; set; }
 
-    [Column("deductions", TypeName = "decimal(18,2)")]
+    [Column("Deductions", TypeName = "decimal(18,2)")]
     public decimal Deductions { get; set; }
 
-    [Column("net_pay", TypeName = "decimal(18,2)")]
+    [Column("NetPay", TypeName = "decimal(18,2)")]
     public decimal NetPay { get; set; }
 
-    [Column("generated_at")]
+    [Column("GeneratedAt")]
     public DateTime GeneratedAt { get; set; } = DateTime.UtcNow;
 }
 

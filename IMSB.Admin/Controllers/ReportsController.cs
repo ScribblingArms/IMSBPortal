@@ -265,7 +265,7 @@ namespace IMSB.Admin.Controllers
             var report = await _attendance.SalaryReportAsync(start, type, q);
             var rows = new List<string?[]>
             {
-                new[] { _L["SerialNumber"].Value, _L["EmployeeID"].Value, _L["StaffName"].Value, _L["EmployeeType"].Value,
+                new[] { _L["SerialNumber"].Value, _L["EmployeeID"].Value, _L["StaffName"].Value, _L["Department"].Value,
                     _L["Designation"].Value, _L["TotalDaysInMonth"].Value, _L["WorkedDays"].Value, _L["TotalSalary"].Value }
             };
             rows.AddRange(report.Rows.Select((row, index) => new string?[]

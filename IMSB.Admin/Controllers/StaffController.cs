@@ -84,11 +84,11 @@ namespace IMSB.Admin.Controllers
 
             var rows = new List<string?[]>
             {
-                new string?[] { "EmployeeId", "FullName", "Department", "Designation", "StaffCategory", "Mobile", "Email", "DateOfBirth", "Gender", "JoinDate", "Shift", "Status" }
+                new string?[] { "EmployeeId", "FullName", "StaffCategory", "Designation", "Mobile", "Email", "DateOfBirth", "Gender", "JoinDate", "Shift", "Status" }
             };
             foreach (var s in staff.Select(s => s.ToListItem(depts)))
             {
-                rows.Add(new string?[] { s.EmployeeId, s.FullName, s.DepartmentName, s.Designation, s.StaffCategory, s.Mobile, s.Email, s.DateOfBirth, s.Gender,
+                rows.Add(new string?[] { s.EmployeeId, s.FullName, s.DepartmentName, s.Designation, s.Mobile, s.Email, s.DateOfBirth, s.Gender,
                     s.JoinDate, s.Shift, s.Status });
             }
             return ExportExcel($"staff_{DateTime.UtcNow:yyyyMMddHHmmss}.xls", rows);
@@ -99,7 +99,7 @@ namespace IMSB.Admin.Controllers
         public async Task<IActionResult> Create([FromBody] CreateStaffDto? dto)
         {
             if (dto == null) return BadRequest();
-            var errors = await ValidateStaffAsync(dto, null, null);
+            var errors = await ValidateStaffAsync(dto, null, null, null);
             if (errors.Count > 0) return BadRequest(new { errors });
 
             var entity = new Staff
@@ -111,11 +111,7 @@ namespace IMSB.Admin.Controllers
                 CreatedBy = User.Identity?.Name
             };
             dto.ApplyTo(entity);
-            if (User.IsInRole("Admin"))
-            {
-                entity.MonthlySalary = dto.MonthlySalary;
-                dto.ApplyOvertimeTo(entity);
-            }
+            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
             await _staff.AddAsync(entity);
 
             return Ok(new { employeeId = entity.EmployeeId });
@@ -129,15 +125,11 @@ namespace IMSB.Admin.Controllers
             var entity = await _staff.FindAsync(id);
             if (entity == null) return NotFound();
 
-            var errors = await ValidateStaffAsync(dto, entity.Id, entity.Shift);
+            var errors = await ValidateStaffAsync(dto, entity.Id, entity.Shift, entity.Mobile);
             if (errors.Count > 0) return BadRequest(new { errors });
 
             dto.ApplyTo(entity);
-            if (User.IsInRole("Admin"))
-            {
-                entity.MonthlySalary = dto.MonthlySalary;
-                dto.ApplyOvertimeTo(entity);
-            }
+            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
             if (!string.IsNullOrWhiteSpace(dto.Status)) entity.Status = dto.Status.Trim().ToUpperInvariant();
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = User.Identity?.Name;
@@ -158,7 +150,7 @@ namespace IMSB.Admin.Controllers
         }
 
         // Errors are keyed by the snake_case field names the staff form uses for its err_* elements
-        private async Task<Dictionary<string, string>> ValidateStaffAsync(CreateStaffDto dto, Guid? existingId, string? currentShift)
+        private async Task<Dictionary<string, string>> ValidateStaffAsync(CreateStaffDto dto, Guid? existingId, string? currentShift, string? currentMobile)
         {
             if (!ModelState.IsValid) return ModelStateErrors(ModelState);
             var errors = new Dictionary<string, string>();
@@ -175,15 +167,24 @@ namespace IMSB.Admin.Controllers
             if (!Guid.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
                 errors["department_id"] = _L["ValDepartment"];
 
-            if (User.IsInRole("Admin") && dto.ValidateOvertime() is { } ot) errors[ot.Field] = _L[ot.Key];
-
             // an unchanged shift is accepted so records holding older values (e.g. "Night") can still be edited
             var shiftUnchanged = currentShift != null && string.Equals(currentShift, dto.Shift, StringComparison.OrdinalIgnoreCase);
             if (!shiftUnchanged && await _staff.AnyShiftsAsync() && !await _staff.ShiftExistsAsync(dto.Shift))
                 errors["shift"] = _L["ValShift"];
 
-            if (await _staff.MobileExistsAsync(dto.Mobile.Trim(), existingId))
+            // an unchanged number is accepted so records saved under the older 9-12 digit rule can still be edited
+            var mobile = MobileNumbers.Normalize(dto.Mobile);
+            if (mobile != currentMobile && !MobileNumbers.IsValid(mobile)) errors["mobile"] = _L["ValMobile"];
+            else if (await _staff.MobileExistsAsync(mobile, existingId))
                 errors["mobile"] = _L["ValMobileExists"];
+
+            if (string.IsNullOrWhiteSpace(dto.Aadhaar))
+            {
+                // existing staff may have none on record, so it is only demanded when registering
+                if (existingId == null) errors["aadhaar"] = _L["ValAadhaar"];
+            }
+            else if (!Aadhaar.IsValid(dto.Aadhaar)) errors["aadhaar"] = _L["ValAadhaar"];
+            else if (await _staff.AadhaarExistsAsync(Aadhaar.Hash(dto.Aadhaar), existingId)) errors["aadhaar"] = _L["ValAadhaarExists"];
 
             var email = dto.Email?.Trim().ToLower();
             if (!string.IsNullOrEmpty(email) && await _staff.EmailExistsAsync(email, existingId))

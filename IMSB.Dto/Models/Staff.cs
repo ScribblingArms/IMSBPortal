@@ -7,77 +7,81 @@ namespace IMSB.Dto.Models
     public class Staff
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("employee_id")]
+        [Column("EmployeeId")]
         public string EmployeeId { get; set; } = string.Empty; // EMP-0001
 
         [Required]
-        [Column("full_name")]
+        [Column("FullName")]
         public string FullName { get; set; } = string.Empty;
 
         [Required]
-        [Column("mobile")]
+        [Column("Mobile")]
         public string Mobile { get; set; } = string.Empty;
 
-        [Column("email")]
+        [Column("Email")]
         public string? Email { get; set; }
 
+        /// <summary>As for artisans, the Aadhaar number itself is never stored. Null for staff registered before it was captured.</summary>
+        [MaxLength(64)]
+        [Column("AadhaarHash")]
+        public string? AadhaarHash { get; set; }
+
+        [MaxLength(4)]
+        [Column("AadhaarLast4")]
+        public string? AadhaarLast4 { get; set; }
+
         [Required]
-        [Column("date_of_birth")]
+        [Column("DateOfBirth")]
         public DateTime DateOfBirth { get; set; }
 
         [Required]
-        [Column("gender")]
+        [Column("Gender")]
         public string Gender { get; set; } = "Female";
 
         [Required]
-        [Column("department_id")]
+        [Column("DepartmentId")]
         public Guid DepartmentId { get; set; }
 
         [Required]
-        [Column("designation")]
+        [Column("Designation")]
         public string Designation { get; set; } = string.Empty;
 
+        /// <summary>Retired free-text column, kept so existing data is not dropped. "Staff Category" on screen is the department.</summary>
         [Required]
         [MaxLength(100)]
-        [Column("staff_category")]
+        [Column("StaffCategory")]
         public string StaffCategory { get; set; } = "General";
 
-        [Column("monthly_salary", TypeName = "decimal(18,2)")]
+        [Column("MonthlySalary", TypeName = "decimal(18,2)")]
         public decimal MonthlySalary { get; set; }
 
-        /// <summary>OT assignment set by an admin: the window this staff member may work overtime (null = none assigned).</summary>
-        [Column("ot_from_time")]
-        public TimeSpan? OtFromTime { get; set; }
-
-        [Column("ot_to_time")]
-        public TimeSpan? OtToTime { get; set; }
-
         [Required]
-        [Column("join_date")]
+        [Column("JoinDate")]
         public DateTime JoinDate { get; set; }
 
         [Required]
-        [Column("shift")]
+        [Column("Shift")]
         public string Shift { get; set; } = "morning";
 
-        [Column("status")]
+        [Column("Status")]
         public string Status { get; set; } = "ACTIVE";
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("updated_at")]
+        [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         public string? CreatedBy { get; set; }
 
-        [Column("updated_by")]
+        [Column("UpdatedBy")]
         public string? UpdatedBy { get; set; }
+        public string? MaskedAadhaar => AadhaarLast4 == null ? null : "XXXX-XXXX-" + AadhaarLast4;
         public bool IsActive => Status == "ACTIVE";
         public bool IsOnLeave => Status == "ON_LEAVE";
         public DateTime? ContractEndDate { get; set; } // Optional field for contract end date

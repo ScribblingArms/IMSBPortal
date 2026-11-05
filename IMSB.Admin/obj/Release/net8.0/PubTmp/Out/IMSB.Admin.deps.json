@@ -1264,6 +1264,7 @@
       },
       "IMSB.Backend/1.0.0": {
         "dependencies": {
+          "IMSB.Common": "1.0.0",
           "IMSB.Dto": "1.0.0",
           "IMSB.Interfaces": "1.0.0"
         },

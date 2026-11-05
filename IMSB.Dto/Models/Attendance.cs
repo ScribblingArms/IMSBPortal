@@ -13,52 +13,52 @@ namespace IMSB.Dto.Models
     public class AttendanceRecord
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Column("staff_id")]
+        [Column("StaffId")]
         public Guid StaffId { get; set; }
 
         public Staff? Staff { get; set; }
 
-        [Column("attendance_date", TypeName = "date")]
+        [Column("AttendanceDate", TypeName = "date")]
         public DateTime AttendanceDate { get; set; }
 
         [Required]
-        [Column("status")]
+        [Column("Status")]
         [MaxLength(20)]
         public string Status { get; set; } = AttendanceStatuses.Present;
 
-        [Column("leave_without_pay")]
+        [Column("LeaveWithoutPay")]
         public bool LeaveWithoutPay { get; set; }
 
-        [Column("in_time")]
+        [Column("InTime")]
         public TimeSpan? InTime { get; set; }
 
-        [Column("out_time")]
+        [Column("OutTime")]
         public TimeSpan? OutTime { get; set; }
 
-        [Column("worked_hours", TypeName = "decimal(5,2)")]
+        [Column("WorkedHours", TypeName = "decimal(5,2)")]
         public decimal WorkedHours { get; set; }
 
-        [Column("overtime_hours", TypeName = "decimal(5,2)")]
+        [Column("OvertimeHours", TypeName = "decimal(5,2)")]
         public decimal OvertimeHours { get; set; }
 
-        [Column("remarks")]
+        [Column("Remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
 
-        [Column("updated_at")]
+        [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
-        [Column("updated_by")]
+        [Column("UpdatedBy")]
         [MaxLength(100)]
         public string? UpdatedBy { get; set; }
     }

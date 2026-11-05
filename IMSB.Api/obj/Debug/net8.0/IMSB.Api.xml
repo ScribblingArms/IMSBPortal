@@ -178,6 +178,12 @@
             reallocations, agreements and contracts running out, renewals and low stock. The app builds the text from type + count.
             </summary>
         </member>
+        <member name="T:IMSB.Api.Controllers.OtAssignmentsController">
+            <summary>The overtime window of each staff member.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.OtAssignmentsController.List">
+            <summary>Every assignment, and the staff who can still be given one.</summary>
+        </member>
         <member name="T:IMSB.Api.Controllers.PayrollController">
             <summary>Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.</summary>
         </member>

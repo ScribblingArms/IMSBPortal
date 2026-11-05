@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.Admin.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("LeaveTests")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd5737e8f73e3cfc53291ff8b112a51cd7384ba3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7427b1a80d9bca5f69d546c986e24efd3762b4be")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.Admin.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.Admin.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

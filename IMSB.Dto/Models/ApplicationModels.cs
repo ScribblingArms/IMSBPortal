@@ -20,7 +20,7 @@ namespace IMSB.Dto.Models
         [Required(ErrorMessage = "ValArtisanMobile")]
         public string Mobile { get; set; } = "";
 
-        [EmailAddress(ErrorMessage = "ValEmail"), StringLength(200, ErrorMessage = "ValEmail")]
+        [RegularExpression(EmailAddresses.Pattern, ErrorMessage = "ValEmail"), StringLength(200, ErrorMessage = "ValEmail")]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "ValAddress"), StringLength(500, MinimumLength = 5, ErrorMessage = "ValAddress")]
@@ -65,16 +65,19 @@ namespace IMSB.Dto.Models
 
     public static class MobileNumbers
     {
-        /// <summary>"+91 98765 43210", "098765 43210" and "98765-43210" all become 9876543210.</summary>
-        public static string Normalize(string? value)
-        {
-            var mobile = Regex.Replace(value ?? "", @"[\s-]", "");
-            if (mobile.StartsWith("+91")) mobile = mobile[3..];
-            else if (mobile.Length == 11 && mobile.StartsWith("0")) mobile = mobile[1..];
-            return mobile;
-        }
+        /// <summary>Only surrounding whitespace is dropped: "+91" prefixes, leading zeros and separators stay and fail <see cref="IsValid"/>.</summary>
+        public static string Normalize(string? value) => (value ?? "").Trim();
 
-        /// <summary>10-digit Indian mobile number.</summary>
-        public static bool IsValid(string normalized) => Regex.IsMatch(normalized, "^[6-9][0-9]{9}$");
+        /// <summary>Exactly 10 digits, as an Indian mobile number (starts with 6-9). main.js IMSBValidate.mobile is the browser copy.</summary>
+        public static bool IsValid(string normalized) => Regex.IsMatch(normalized, @"^[6-9][0-9]{9}\z");
+    }
+
+    public static class EmailAddresses
+    {
+        /// <summary>
+        /// name@domain.tld: the name and each domain label may not be empty, a domain label may not start or end with a hyphen,
+        /// and the last label is at least 2 letters. Written without backslashes so main.js can hold the identical text.
+        /// </summary>
+        public const string Pattern = "^[A-Za-z0-9_%+-]+([.][A-Za-z0-9_%+-]+)*@[A-Za-z0-9]+(-+[A-Za-z0-9]+)*([.][A-Za-z0-9]+(-+[A-Za-z0-9]+)*)*[.][A-Za-z]{2,}$";
     }
 }

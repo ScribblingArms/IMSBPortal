@@ -8,72 +8,72 @@ namespace IMSB.Dto.Models
     public class Stall
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>A-01. Fixed once created: products and sales refer to stalls by this code.</summary>
         [Required]
-        [Column("stall_code")]
+        [Column("StallCode")]
         [MaxLength(20)]
         public string StallCode { get; set; } = string.Empty;
 
         [Required]
-        [Column("name")]
+        [Column("Name")]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [Column("block")]
+        [Column("Block")]
         [MaxLength(20)]
         public string Block { get; set; } = string.Empty;   // "A" (Block A)
 
-        [Column("row_label")]
+        [Column("RowLabel")]
         [MaxLength(20)]
         public string? RowLabel { get; set; }
 
-        [Column("location")]
+        [Column("Location")]
         [MaxLength(500)]
         public string? Location { get; set; }
 
         [Required]
-        [Column("status")]
+        [Column("Status")]
         [MaxLength(20)]
         public string Status { get; set; } = StallStatuses.Vacant;
 
-        [Column("category_id")]
+        [Column("CategoryId")]
         public Guid? CategoryId { get; set; }
 
         public ProductCategory? Category { get; set; }
 
-        [Column("artisan_id")]
+        [Column("ArtisanId")]
         public Guid? ArtisanId { get; set; }
 
         public Artisan? Artisan { get; set; }
 
-        [Column("allotted_date", TypeName = "date")]
+        [Column("AllottedDate", TypeName = "date")]
         public DateTime? AllottedDate { get; set; }
 
-        [Column("agreement_end_date", TypeName = "date")]
+        [Column("AgreementEndDate", TypeName = "date")]
         public DateTime? AgreementEndDate { get; set; }
 
-        [Column("monthly_rent", TypeName = "decimal(18,2)")]
+        [Column("MonthlyRent", TypeName = "decimal(18,2)")]
         public decimal? MonthlyRent { get; set; }
 
-        [Column("remarks")]
+        [Column("Remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
 
-        [Column("updated_at")]
+        [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
-        [Column("updated_by")]
+        [Column("UpdatedBy")]
         [MaxLength(100)]
         public string? UpdatedBy { get; set; }
     }
@@ -96,71 +96,71 @@ namespace IMSB.Dto.Models
     public class StallReallocation
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("request_no")]
+        [Column("RequestNo")]
         [MaxLength(20)]
         public string RequestNo { get; set; } = string.Empty;   // REA-0001
 
-        [Column("stall_id")]
+        [Column("StallId")]
         public Guid StallId { get; set; }
 
         public Stall? Stall { get; set; }
 
         [Required]
-        [Column("stall_code")]
+        [Column("StallCode")]
         [MaxLength(20)]
         public string StallCode { get; set; } = string.Empty;
 
-        [Column("current_artisan_id")]
+        [Column("CurrentArtisanId")]
         public Guid? CurrentArtisanId { get; set; }
 
-        [Column("current_artisan_name")]
+        [Column("CurrentArtisanName")]
         [MaxLength(100)]
         public string? CurrentArtisanName { get; set; }
 
         /// <summary>The artisan who gets the stall on approval; null = the stall is vacated.</summary>
-        [Column("new_artisan_id")]
+        [Column("NewArtisanId")]
         public Guid? NewArtisanId { get; set; }
 
-        [Column("new_artisan_name")]
+        [Column("NewArtisanName")]
         [MaxLength(100)]
         public string? NewArtisanName { get; set; }
 
         [Required]
-        [Column("reason")]
+        [Column("Reason")]
         [MaxLength(30)]
         public string Reason { get; set; } = ReallocationReasons.Other;
 
-        [Column("remarks")]
+        [Column("Remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }
 
-        [Column("requested_date", TypeName = "date")]
+        [Column("RequestedDate", TypeName = "date")]
         public DateTime RequestedDate { get; set; }
 
         [Required]
-        [Column("status")]
+        [Column("Status")]
         [MaxLength(20)]
         public string Status { get; set; } = ReallocationStatuses.Pending;
 
-        [Column("decided_at")]
+        [Column("DecidedAt")]
         public DateTime? DecidedAt { get; set; }
 
-        [Column("decided_by")]
+        [Column("DecidedBy")]
         [MaxLength(100)]
         public string? DecidedBy { get; set; }
 
-        [Column("decision_remarks")]
+        [Column("DecisionRemarks")]
         [MaxLength(500)]
         public string? DecisionRemarks { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
     }

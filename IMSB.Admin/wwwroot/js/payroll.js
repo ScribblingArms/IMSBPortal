@@ -9,7 +9,6 @@
   const token = () => document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
   let currentRows = [];
   let isGenerated = false;
-  let hasUnsavedChanges = false;
 
   function period() {
     return { year: $('payBillYear').value, month: $('payBillMonth').value };
@@ -41,17 +40,12 @@
       }
       currentRows = data.rows || [];
       isGenerated = data.isGenerated;
-      hasUnsavedChanges = false;
       $('payBillPeriod').textContent = `${new Date(+data.year, +data.month - 1, 1).toLocaleDateString(document.documentElement.lang, { month: 'long', year: 'numeric' })} · ${data.monthDays} days${data.isGenerated ? '' : ' · ' + t('Draft')}`;
       render();
     } catch (error) {
       console.error(error);
       setError(t('CouldNotReachServer'));
     }
-  }
-
-  function input(row, key) {
-    return `<input class="form-control pay-input" type="number" min="0" step="0.01" value="${Number(row[key] || 0).toFixed(2)}" data-staff="${esc(row.staffId)}" data-key="${key}" aria-label="${esc(t(key === 'allowances' ? 'Allowances' : key === 'overtimeAmount' ? 'OvertimeAmount' : 'Deductions'))}">`;
   }
 
   function render() {
@@ -66,10 +60,8 @@
     $('payBillBody').innerHTML = rows.length ? rows.map(row => `<tr data-row="${esc(row.staffId)}">
       <td>${esc(row.employeeId)}</td><td>${esc(row.employeeName)}</td><td>${esc(row.department || '—')}</td><td>${esc(row.designation || '—')}</td>
       <td>${Number(row.paidDays).toLocaleString(document.documentElement.lang, { maximumFractionDigits: 2 })} / ${row.monthDays}</td>
-      <td>${money(row.monthlySalary)}</td><td class="basic-pay">${money(row.basicPay)}</td>
-      <td>${input(row, 'allowances')}</td><td>${Number(row.overtimeHours || 0).toFixed(2)}</td><td>${input(row, 'overtimeAmount')}</td>
-      <td>${input(row, 'deductions')}</td><td class="net-pay"><strong>${money(row.netPay)}</strong></td>
-    </tr>`).join('') : `<tr><td colspan="12" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
+      <td>${money(row.monthlySalary)}</td><td class="net-pay"><strong>${money(row.netPay)}</strong></td>
+    </tr>`).join('') : `<tr><td colspan="7" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
     renderSummary(rows);
   }
 
@@ -77,9 +69,9 @@
     const departments = new Map();
     rows.forEach(row => {
       const key = row.department || '—';
-      const summary = departments.get(key) || { employees: 0, basicPay: 0, allowances: 0, overtimeAmount: 0, deductions: 0, netPay: 0 };
+      const summary = departments.get(key) || { employees: 0, netPay: 0 };
       summary.employees++;
-      ['basicPay', 'allowances', 'overtimeAmount', 'deductions', 'netPay'].forEach(field => summary[field] += Number(row[field] || 0));
+      summary.netPay += Number(row.netPay || 0);
       departments.set(key, summary);
     });
     const summaries = Array.from(departments.entries());
@@ -92,29 +84,15 @@
       <div><div class="pay-dept-net-label">${esc(t('NetPay'))}</div><div class="pay-dept-net">${money(row.netPay)}</div></div>
     </div>`;
     const overall = summaries.reduce((sum, [, row]) => {
-      ['employees', 'basicPay', 'allowances', 'overtimeAmount', 'deductions', 'netPay'].forEach(field => sum[field] += row[field]);
+      sum.employees += row.employees;
+      sum.netPay += row.netPay;
       return sum;
-    }, { employees: 0, basicPay: 0, allowances: 0, overtimeAmount: 0, deductions: 0, netPay: 0 });
+    }, { employees: 0, netPay: 0 });
     $('payBillSummaryBody').innerHTML = summaries.length
       ? card(t('GrandTotal'), overall, true) + summaries.map(([department, row]) => card(department, row, false)).join('')
       : `<div class="empty-state" style="grid-column:1/-1">${esc(t('NoStaffForAttendance'))}</div>`;
-    $('payBillFoot').innerHTML = `<tr><td colspan="6"><strong>${esc(t('GrandTotal'))}</strong></td><td>${money(rows.reduce((sum, row) => sum + Number(row.basicPay || 0), 0))}</td>
-      <td>${money(rows.reduce((sum, row) => sum + Number(row.allowances || 0), 0))}</td><td></td>
-      <td>${money(rows.reduce((sum, row) => sum + Number(row.overtimeAmount || 0), 0))}</td>
-      <td>${money(rows.reduce((sum, row) => sum + Number(row.deductions || 0), 0))}</td>
+    $('payBillFoot').innerHTML = `<tr><td colspan="6"><strong>${esc(t('GrandTotal'))}</strong></td>
       <td><strong>${money(rows.reduce((sum, row) => sum + Number(row.netPay || 0), 0))}</strong></td></tr>`;
-  }
-
-  function updateAdjustment(event) {
-    const field = event.target.dataset.key;
-    const row = currentRows.find(item => item.staffId === event.target.dataset.staff);
-    if (!row || !field) return;
-    row[field] = Math.max(0, Number(event.target.value || 0));
-    row.netPay = Math.max(0, row.basicPay + row.allowances + row.overtimeAmount - row.deductions);
-    hasUnsavedChanges = true;
-    const line = event.target.closest('tr');
-    line.querySelector('.net-pay').innerHTML = `<strong>${money(row.netPay)}</strong>`;
-    renderSummary();
   }
 
   async function generate() {
@@ -124,6 +102,7 @@
       const response = await fetch('/Payroll/Generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', RequestVerificationToken: token() },
+        // no longer editable here, but amounts already saved on a bill are sent back so regenerating keeps them
         body: JSON.stringify(Object.assign(period(), {
           rows: currentRows.map(row => ({
             staffId: row.staffId,
@@ -149,7 +128,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     ['payBillMonth', 'payBillYear'].forEach(id => $(id).addEventListener('change', load));
     $('payBillStaffFilter').addEventListener('change', render);
-    $('payBillBody').addEventListener('input', updateAdjustment);
     $('payBillGenerate').addEventListener('click', generate);
     load();
   });

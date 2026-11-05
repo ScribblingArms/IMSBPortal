@@ -60,7 +60,6 @@
       ['FullName', s.full_name],
       ['Department', s.department_name],
       ['Designation', s.designation],
-      ['StaffCategory', s.staff_category],
       ['Mobile', s.mobile],
       ['Email', s.email],
       ['DateOfBirth', formatDateDisplay(s.date_of_birth)],
@@ -204,7 +203,7 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', staff_category: 'StaffCategory', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', date_of_birth: 'DOB', department_id: 'Department', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
     return map[name] || name;
   }
 
@@ -212,8 +211,10 @@
     clearFormErrors();
     populateDeptAndShifts();
     const today = new Date();
-    const iso = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    document.getElementById('staffDOB').setAttribute('max', iso);
+    const isoOf = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const iso = isoOf(today);
+    // staff must be 18+, so the picker stops at 18 years ago
+    document.getElementById('staffDOB').setAttribute('max', isoOf(new Date(today.getFullYear() - 18, today.getMonth(), today.getDate())));
     document.getElementById('staffJoinDate').setAttribute('max', iso);
   }
 
@@ -250,7 +251,6 @@
     document.getElementById('staffGender').value = s.gender || 'Female';
     document.getElementById('staffDepartment').value = s.department_id || '';
     document.getElementById('staffDesignation').value = s.designation || '';
-    document.getElementById('staffCategory').value = s.staff_category || 'General';
     document.getElementById('staffJoinDate').value = s.join_date || '';
     const salaryInput = document.getElementById('staffMonthlySalary');
     if (salaryInput) salaryInput.value = s.monthly_salary == null ? '0' : String(s.monthly_salary);
@@ -284,7 +284,6 @@
     else if (new Date(dob.getFullYear() + 18, dob.getMonth(), dob.getDate()) > today) errors.date_of_birth = t('ValMinAge');
     if (!vals.department_id) errors.department_id = t('ValDepartment');
     if (!vals.designation) errors.designation = t('ValDesignation');
-    if (!vals.staff_category || vals.staff_category.length > 100) errors.staff_category = t('ValStaffCategory');
     const join = parseIsoDate(vals.join_date);
     if (!join) errors.join_date = t('ValJoinRequired');
     else if (join > today) errors.join_date = t('ValJoinFuture');
@@ -295,6 +294,17 @@
         errors.monthly_salary = t('ValMonthlySalary');
     }
     return errors;
+  }
+
+  // re-checks the given fields as soon as one changes, without waiting for Save
+  function liveCheck(fields){
+    const errors = validateClient(getFormValues());
+    fields.forEach(f => {
+      const el = document.getElementById('err_' + f);
+      if (!el) return;
+      el.textContent = errors[f] || '';
+      el.closest('.form-group')?.classList.toggle('has-error', !!errors[f]);
+    });
   }
 
   function getFormValues(){
@@ -308,7 +318,6 @@
       gender: v('staffGender'),
       department_id: v('staffDepartment'),
       designation: v('staffDesignation'),
-      staff_category: v('staffCategory'),
       join_date: v('staffJoinDate'),
       monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
       shift: v('staffShift'),
@@ -334,7 +343,7 @@
     const body = {
       fullName: vals.full_name, mobile: vals.mobile, email: vals.email,
       dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id,
-      designation: vals.designation, staffCategory: vals.staff_category, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
+      designation: vals.designation, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
     };
     if (!isCreate) body.status = vals.status;
     const submitBtn = document.getElementById('staffSubmitBtn');
@@ -411,7 +420,6 @@
         department_id: s.departmentId || '',
         department_name: s.departmentName || '',
         designation: s.designation || '',
-        staff_category: s.staffCategory || 'General',
         monthly_salary: s.monthlySalary,
         mobile: s.mobile || '',
         email: s.email || null,
@@ -470,6 +478,7 @@
     form.addEventListener('submit', submitCreateOrUpdate);
     form.addEventListener('input', () => { formDirty = true; });
     form.addEventListener('change', () => { formDirty = true; });
+    document.getElementById('staffDOB').addEventListener('change', () => liveCheck(['date_of_birth']));
     document.getElementById('staffModalClose').addEventListener('click', tryClose);
     document.getElementById('staffCancelBtn').addEventListener('click', e => { e.preventDefault(); tryClose(); });
     document.getElementById('staffExportBtn')?.addEventListener('click', e => { e.preventDefault(); exportData(); });

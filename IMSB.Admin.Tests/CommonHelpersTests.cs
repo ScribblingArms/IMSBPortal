@@ -34,31 +34,4 @@ public class CommonHelpersTests
     [InlineData("", false)]
     [InlineData(null, false)]
     public void TryParseTime_reads_hh_mm(string? value, bool ok) => Assert.Equal(ok, TryParseTime(value, out _));
-
-    [Theory]
-    [InlineData(null, null, null)]
-    [InlineData("", "", null)]
-    [InlineData("18:00", "21:00", null)]
-    [InlineData("18:00", "18:01", null)]
-    [InlineData("18:00", null, "ot_to_time:ValOtTimes")]
-    [InlineData(null, "21:00", "ot_from_time:ValOtTimes")]
-    [InlineData("18:00", "18:00", "ot_to_time:ValOtToAfterFrom")]
-    [InlineData("21:00", "18:00", "ot_to_time:ValOtToAfterFrom")]
-    [InlineData("22:00", "02:00", "ot_to_time:ValOtToAfterFrom")]   // no window past midnight
-    [InlineData("6pm", "21:00", "ot_from_time:ValTime")]
-    public void ValidateOvertime_needs_both_times_with_to_after_from(string? from, string? to, string? expected)
-    {
-        var dto = new CreateStaffDto { OtFromTime = from, OtToTime = to };
-        var error = dto.ValidateOvertime();
-        Assert.Equal(expected, error == null ? null : $"{error.Value.Field}:{error.Value.Key}");
-    }
-
-    [Fact]
-    public void Ot_timings_are_listed_only_with_salary_access()
-    {
-        var staff = new Staff { EmployeeId = "EMP001", OtFromTime = new TimeSpan(18, 0, 0), OtToTime = new TimeSpan(21, 30, 0) };
-        var names = new Dictionary<Guid, string>();
-        Assert.Equal(("18:00", "21:30"), (staff.ToListItem(names, includeSalary: true).OtFromTime, staff.ToListItem(names, includeSalary: true).OtToTime));
-        Assert.Null(staff.ToListItem(names).OtFromTime);
-    }
 }

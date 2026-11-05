@@ -25,7 +25,7 @@ namespace IMSB.Backend
             values.GroupBy(v => v).Select(g => new { g.Key, Count = g.Count() }).ToDictionaryAsync(g => g.Key, g => g.Count);
 
         /// <summary>
-        /// Attendance in a calendar year as a date range, so the attendance_date index is used
+        /// Attendance in a calendar year as a date range, so the AttendanceDate index is used
         /// (<c>AttendanceDate.Year == year</c> makes SQL Server scan the whole table).
         /// </summary>
         internal IQueryable<AttendanceRecord> AttendanceInYear(int year, bool tracking = false)

@@ -58,6 +58,11 @@
 
   // ── Stats ─────────────────────────────────────────────────────
   function renderStats(s){
+    setEl('stat-total-staff', s.totalStaff);
+    setEl('stat-present', s.presentToday);
+    setEl('stat-absent', s.absentToday);
+    setEl('stat-onleave', s.onLeaveToday);
+    // the cards below are hidden from the dashboard; setEl skips missing elements
     setEl('stat-stalls', s.totalStalls);
     setEl('stat-occupied', s.occupiedStalls);
     setEl('stat-vacant', s.vacantStalls);

@@ -7,7 +7,7 @@ namespace IMSB.Dto.Models
     public class Shift
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]

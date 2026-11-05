@@ -8,21 +8,21 @@ namespace IMSB.Dto.Models
     public class PasswordResetToken
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("login_id")]
+        [Column("LoginId")]
         public Guid LoginId { get; set; }
 
         [Required]
-        [Column("token")]
+        [Column("Token")]
         public string Token { get; set; } = string.Empty;
 
-        [Column("expires_at")]
+        [Column("ExpiresAt")]
         public DateTime ExpiresAt { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("LoginId")]

@@ -82,7 +82,7 @@ public class LeavesControllerTests
             var model = Assert.IsType<LeaveManagementViewModel>(result.Model);
             var balance = Assert.Single(model.Balances);
             Assert.Equal(Year, model.Year);
-            Assert.Equal("Operators", balance.StaffCategory);
+            Assert.Equal("Sales", balance.StaffCategory);
             Assert.Equal(1m, balance.Taken);
             Assert.Equal(4m, balance.Balance);
         }

@@ -12,138 +12,138 @@ namespace IMSB.Dto.Models
     public class ArtisanApplication
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("application_no")]
+        [Column("ApplicationNo")]
         [MaxLength(20)]
         public string ApplicationNo { get; set; } = string.Empty;   // APP-0001
 
         [Required]
-        [Column("full_name")]
+        [Column("FullName")]
         [MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
 
-        [Column("date_of_birth", TypeName = "date")]
+        [Column("DateOfBirth", TypeName = "date")]
         public DateTime DateOfBirth { get; set; }
 
         [Required]
-        [Column("gender")]
+        [Column("Gender")]
         [MaxLength(10)]
         public string Gender { get; set; } = "Female";
 
         [Required]
-        [Column("mobile")]
+        [Column("Mobile")]
         [MaxLength(15)]
         public string Mobile { get; set; } = string.Empty;
 
-        [Column("email")]
+        [Column("Email")]
         [MaxLength(200)]
         public string? Email { get; set; }
 
         [Required]
-        [Column("address")]
+        [Column("Address")]
         [MaxLength(500)]
         public string Address { get; set; } = string.Empty;
 
         [Required]
-        [Column("aadhaar_hash")]
+        [Column("AadhaarHash")]
         [MaxLength(64)]
         public string AadhaarHash { get; set; } = string.Empty;
 
         [Required]
-        [Column("aadhaar_last4")]
+        [Column("AadhaarLast4")]
         [MaxLength(4)]
         public string AadhaarLast4 { get; set; } = string.Empty;
 
         [Required]
-        [Column("district")]
+        [Column("District")]
         [MaxLength(60)]
         public string District { get; set; } = string.Empty;
 
-        [Column("category_id")]
+        [Column("CategoryId")]
         public Guid CategoryId { get; set; }
 
         public ProductCategory? Category { get; set; }
 
-        [Column("years_of_experience")]
+        [Column("YearsOfExperience")]
         public int YearsOfExperience { get; set; }
 
-        [Column("skills")]
+        [Column("Skills")]
         [MaxLength(1000)]
         public string? Skills { get; set; }
 
         /// <summary>Notes entered with the application.</summary>
-        [Column("remarks")]
+        [Column("Remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }
 
         [Required]
-        [Column("status")]
+        [Column("Status")]
         [MaxLength(20)]
         public string Status { get; set; } = ApplicationStatuses.Pending;
 
-        [Column("submitted_date", TypeName = "date")]
+        [Column("SubmittedDate", TypeName = "date")]
         public DateTime SubmittedDate { get; set; }
 
         /// <summary>Optional period entered on the form; carried over to the artisan on approval.</summary>
-        [Column("from_date", TypeName = "date")]
+        [Column("FromDate", TypeName = "date")]
         public DateTime? FromDate { get; set; }
 
-        [Column("to_date", TypeName = "date")]
+        [Column("ToDate", TypeName = "date")]
         public DateTime? ToDate { get; set; }
 
         /// <summary>The admin who processed it (moved it to UNDER_REVIEW).</summary>
-        [Column("reviewer")]
+        [Column("Reviewer")]
         [MaxLength(100)]
         public string? Reviewer { get; set; }
 
-        [Column("review_started_at")]
+        [Column("ReviewStartedAt")]
         public DateTime? ReviewStartedAt { get; set; }
 
-        [Column("decided_at")]
+        [Column("DecidedAt")]
         public DateTime? DecidedAt { get; set; }
 
-        [Column("decided_by")]
+        [Column("DecidedBy")]
         [MaxLength(100)]
         public string? DecidedBy { get; set; }
 
-        [Column("decision_remarks")]
+        [Column("DecisionRemarks")]
         [MaxLength(500)]
         public string? DecisionRemarks { get; set; }
 
         /// <summary>The artisan registered on approval (null once that artisan is deleted; ArtisanCode keeps the reference).</summary>
-        [Column("artisan_id")]
+        [Column("ArtisanId")]
         public Guid? ArtisanId { get; set; }
 
         public Artisan? Artisan { get; set; }
 
-        [Column("artisan_code")]
+        [Column("ArtisanCode")]
         [MaxLength(20)]
         public string? ArtisanCode { get; set; }
 
         /// <summary>Stall allotted on approval (snapshot).</summary>
-        [Column("stall_code")]
+        [Column("StallCode")]
         [MaxLength(20)]
         public string? StallCode { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
 
-        [Column("updated_at")]
+        [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
-        [Column("updated_by")]
+        [Column("UpdatedBy")]
         [MaxLength(100)]
         public string? UpdatedBy { get; set; }
 
         [NotMapped]
-        public string MaskedAadhaar => "XXXX XXXX " + AadhaarLast4;
+        public string MaskedAadhaar => "XXXX-XXXX-" + AadhaarLast4;
     }
 
     public static class ApplicationStatuses

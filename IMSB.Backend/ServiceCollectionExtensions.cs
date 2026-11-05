@@ -20,6 +20,7 @@ namespace IMSB.Backend
                 .AddScoped<IInventoryInterface, Inventory>()
                 .AddScoped<ILeavesInterface, Leaves>()
                 .AddScoped<INotificationsInterface, Notifications>()
+                .AddScoped<IOtAssignmentsInterface, OtAssignments>()
                 .AddScoped<IPayrollInterface, Payroll>()
                 .AddScoped<IReportsInterface, Reports>()
                 .AddScoped<ISalesInterface, Sales>()

@@ -23,8 +23,12 @@
     padding: 0;
 }
 
-html, body {
+/* The page scrolls here when the card is taller than the window. Setting this on html keeps body's
+   overflow: hidden on body itself, where it only clips the decorative circles. */
+html {
     height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 body {
@@ -409,6 +413,7 @@ body {
 
 /* Submit Button */
 .btn-login {
+    position: relative;
     width: 100%;
     padding: 12px;
     border: none;
@@ -517,7 +522,14 @@ body {
 }
 
 .btn-login.loading .spinner {
-    display: inline-block;
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 1em;
+    height: 1em;
+    margin: auto;
+    line-height: 1;
+    text-align: center;
     animation: spin .7s linear infinite;
 }
 

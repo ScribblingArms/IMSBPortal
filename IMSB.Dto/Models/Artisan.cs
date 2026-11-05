@@ -5,109 +5,109 @@ namespace IMSB.Dto.Models
 {
     /// <summary>
     /// A registered artisan. The Aadhaar number itself is never stored: only a SHA-256 hash (to stop duplicate
-    /// registrations) and the last four digits (to show XXXX XXXX 1234).
+    /// registrations) and the last four digits (to show XXXX-XXXX-1234).
     /// </summary>
     [Table("artisans")]
     public class Artisan
     {
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [Column("artisan_code")]
+        [Column("ArtisanCode")]
         [MaxLength(20)]
         public string ArtisanCode { get; set; } = string.Empty;   // ART-0001
 
         [Required]
-        [Column("full_name")]
+        [Column("FullName")]
         [MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
 
-        [Column("date_of_birth", TypeName = "date")]
+        [Column("DateOfBirth", TypeName = "date")]
         public DateTime DateOfBirth { get; set; }
 
         [Required]
-        [Column("gender")]
+        [Column("Gender")]
         [MaxLength(10)]
         public string Gender { get; set; } = "Female";
 
         [Required]
-        [Column("mobile")]
+        [Column("Mobile")]
         [MaxLength(15)]
         public string Mobile { get; set; } = string.Empty;
 
-        [Column("email")]
+        [Column("Email")]
         [MaxLength(200)]
         public string? Email { get; set; }
 
         [Required]
-        [Column("address")]
+        [Column("Address")]
         [MaxLength(500)]
         public string Address { get; set; } = string.Empty;
 
         [Required]
-        [Column("aadhaar_hash")]
+        [Column("AadhaarHash")]
         [MaxLength(64)]
         public string AadhaarHash { get; set; } = string.Empty;
 
         [Required]
-        [Column("aadhaar_last4")]
+        [Column("AadhaarLast4")]
         [MaxLength(4)]
         public string AadhaarLast4 { get; set; } = string.Empty;
 
         [Required]
-        [Column("district")]
+        [Column("District")]
         [MaxLength(60)]
         public string District { get; set; } = string.Empty;
 
-        [Column("category_id")]
+        [Column("CategoryId")]
         public Guid CategoryId { get; set; }
 
         public ProductCategory? Category { get; set; }
 
-        [Column("years_of_experience")]
+        [Column("YearsOfExperience")]
         public int YearsOfExperience { get; set; }
 
-        [Column("skills")]
+        [Column("Skills")]
         [MaxLength(1000)]
         public string? Skills { get; set; }
 
         [Required]
-        [Column("status")]
+        [Column("Status")]
         [MaxLength(20)]
         public string Status { get; set; } = ArtisanStatuses.Active;
 
-        [Column("joined_date", TypeName = "date")]
+        [Column("JoinedDate", TypeName = "date")]
         public DateTime JoinedDate { get; set; }
 
         /// <summary>Optional period entered on the registration / edit form.</summary>
-        [Column("from_date", TypeName = "date")]
+        [Column("FromDate", TypeName = "date")]
         public DateTime? FromDate { get; set; }
 
-        [Column("to_date", TypeName = "date")]
+        [Column("ToDate", TypeName = "date")]
         public DateTime? ToDate { get; set; }
 
-        [Column("remarks")]
+        [Column("Remarks")]
         [MaxLength(500)]
         public string? Remarks { get; set; }
 
-        [Column("created_at")]
+        [Column("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("created_by")]
+        [Column("CreatedBy")]
         [MaxLength(100)]
         public string? CreatedBy { get; set; }
 
-        [Column("updated_at")]
+        [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
-        [Column("updated_by")]
+        [Column("UpdatedBy")]
         [MaxLength(100)]
         public string? UpdatedBy { get; set; }
 
         [NotMapped]
-        public string MaskedAadhaar => "XXXX XXXX " + AadhaarLast4;
+        public string MaskedAadhaar => "XXXX-XXXX-" + AadhaarLast4;
     }
 
     public static class ArtisanStatuses

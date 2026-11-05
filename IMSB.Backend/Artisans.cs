@@ -105,7 +105,7 @@ namespace IMSB.Backend
                 if (r.CurrentArtisanId == artisan.Id) r.CurrentArtisanId = null;
                 if (r.NewArtisanId == artisan.Id) r.NewArtisanId = null;
             }
-            // the approved application stays on record; its artisan_code snapshot keeps the reference
+            // the approved application stays on record; its ArtisanCode snapshot keeps the reference
             foreach (var app in await _context.ArtisanApplications.Where(x => x.ArtisanId == artisan.Id).ToListAsync())
                 app.ArtisanId = null;
             _context.Artisans.Remove(artisan);

@@ -167,6 +167,7 @@ public class AppLocalizationTests
     [InlineData("Applications", "applications.js")]
     [InlineData("Reports", "reports.js")]
     [InlineData("Attendance", "attendance.js")]
+    [InlineData("OtAssignments", "ot-assignments.js")]
     public void Page_scripts_only_use_strings_their_view_provides(string page, string script)
     {
         var provided = ArrayKeys(Read("Views", page, "Index.cshtml"), "jsKeys");

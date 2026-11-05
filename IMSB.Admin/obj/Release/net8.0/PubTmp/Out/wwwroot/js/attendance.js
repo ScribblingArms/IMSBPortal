@@ -1,14 +1,12 @@
-// Attendance page: the day's Attendance Entry sheet (saved in bulk), department-wise cards and the Attendance History
+// Attendance page: the day's Attendance Entry sheet (view-only), department-wise cards and the Attendance History
 // list with view / edit / delete, through the /Attendance endpoints. Localized strings come from window.AttendanceI18n
 // (rendered by Views/Attendance/Index.cshtml).
 (function AttendanceModule(){
-  const DEFAULT_IN = '09:00';   // when a staff member's shift has no times in its name
-
   let day = isoOf(new Date());  // selected date (yyyy-MM-dd)
   let data = null;              // /Attendance/Data for that day
   let historyRows = [];
   let editingId = null;
-  let dirty = false, saving = false, loadSeq = 0, histSeq = 0, histTimer = null;
+  let saving = false, loadSeq = 0, histSeq = 0, histTimer = null;
 
   // ── i18n / formatting ─────────────────────────────────────────
   const I18N = window.AttendanceI18n || {};
@@ -42,7 +40,6 @@
   }
   const hours = v => String(Math.round(Number(v || 0) * 100) / 100);
   const minutes = hhmm => { const m = /^(\d{2}):(\d{2})$/.exec(hhmm || ''); return m ? +m[1] * 60 + +m[2] : null; };
-  const fromMinutes = n => `${String(Math.floor(n / 60)).padStart(2,'0')}:${String(n % 60).padStart(2,'0')}`;
 
   const STATUS = {
     PRESENT:  { key: 'Present', badge: 'badge-success', dot: 'present', icon: 'fa-check' },
@@ -57,14 +54,6 @@
     + (leaveWithoutPay ? ` <span class="badge badge-danger">${esc(t('LeaveWithoutPay'))}</span>` : '');
   const leaveBalanceChannel = 'BroadcastChannel' in window ? new BroadcastChannel('imsb-leave-balances') : null;
   const notifyAttendanceChanged = () => leaveBalanceChannel?.postMessage('attendance-saved');
-
-  // same rule as AttendanceRules.Hours on the server (which stays authoritative)
-  function calc(status, inTime, outTime, shiftHours){
-    const a = minutes(inTime), b = minutes(outTime);
-    if (!worked(status) || a == null || b == null || b <= a) return { worked: 0, overtime: 0 };
-    const w = Math.round((b - a) / 60 * 100) / 100;
-    return { worked: w, overtime: status === 'PRESENT' ? Math.max(0, Math.round((w - shiftHours) * 100) / 100) : 0 };
-  }
 
   // ── Load the selected day ─────────────────────────────────────
   async function load(){
@@ -89,7 +78,6 @@
     if (!iso) return;
     if (iso > todayIso()) iso = todayIso();
     if (iso === day && data){ $('attDate').value = day; return; }
-    if (dirty && !confirm(t('DiscardChanges'))){ $('attDate').value = day; return; }
     day = iso;
     load();
   }
@@ -109,7 +97,6 @@
     $('attDate').value = data.date;
     $('attDate').max = data.today;
     $('futureNote').style.display = data.isFuture ? '' : 'none';
-    ['saveSheetBtn', 'markAllPresentBtn'].forEach(id => { $(id).disabled = data.isFuture; });
   }
 
   function renderWeek(){
@@ -127,16 +114,8 @@
     }).join('');
   }
 
-  // ── Attendance Entry sheet ────────────────────────────────────
+  // ── Attendance Entry sheet (view-only) ────────────────────────
   const rowEls = () => [...document.querySelectorAll('#attendanceRows .att-row')];
-  const rowData = el => data.rows[+el.dataset.i];
-  function values(el){
-    return {
-      status: el.querySelector('.att-status').value,
-      inTime: el.querySelector('.att-in').value,
-      outTime: el.querySelector('.att-out').value
-    };
-  }
 
   function actionButtons(id, withEdit){
     return [['view', 'fa-eye', t('View'), ''], withEdit ? ['edit', 'fa-pen', t('Edit'), ''] : null, ['delete', 'fa-trash', t('Delete'), 'color:var(--danger)']]
@@ -147,84 +126,30 @@
   }
 
   function rowHtml(r, i){
-    const rec = r.record;
-    // a saved record can be changed but not "unmarked" here; the delete button removes it
-    const options = (rec ? '' : `<option value="">${esc(t('NotMarkedOption'))}</option>`) +
-      Object.keys(STATUS).map(k => `<option value="${k}"${rec?.status === k ? ' selected' : ''}>${esc(statusLabel(k))}</option>`).join('');
+    const rec = r.record, s = STATUS[rec?.status];
     return `<div class="att-entry-grid att-row" data-i="${i}">
-      <div><div class="att-status-dot"><i class="fa-solid"></i></div></div>
+      <div><div class="att-status-dot ${s ? s.dot : 'none'}"><i class="fa-solid ${s ? s.icon : 'fa-minus'}"></i></div></div>
       <div>
         <div class="att-name">${esc(r.name)}</div>
         <div class="att-sub">${esc(r.employeeId)} · ${esc(r.designation)}</div>
-        <div class="form-error row-err-employee_id" style="display:none"></div>
       </div>
       <div><span class="badge badge-info" style="font-size:.65rem">${esc(r.departmentName || '—')}</span><div class="att-sub">${esc(r.shift || '')}</div></div>
-      <div class="form-group">
-        <input type="time" class="form-control att-in" value="${esc(rec?.inTime || '')}" aria-label="${esc(t('InTime'))}">
-        <div class="form-error row-err-in_time"></div>
-      </div>
-      <div class="form-group">
-        <input type="time" class="form-control att-out" value="${esc(rec?.outTime || '')}" aria-label="${esc(t('OutTime'))}">
-        <div class="form-error row-err-out_time"></div>
-      </div>
-      <div class="att-hours">—</div>
-      <div class="att-ot">—</div>
-      <div class="form-group">
-        <select class="form-control att-status" aria-label="${esc(t('Status'))}">${options}</select>
-        <div class="form-error row-err-status"></div>
-      </div>
+      <div class="att-in-text">${esc(rec?.inTime || '—')}</div>
+      <div class="att-out-text">${esc(rec?.outTime || '—')}</div>
+      <div class="att-hours">${rec?.workedHours > 0 ? hours(rec.workedHours) + 'h' : '—'}</div>
+      <div class="att-ot">${rec?.overtimeHours > 0 ? `<span class="overtime-chip"><i class="fa-solid fa-clock"></i>${hours(rec.overtimeHours)}h</span>` : '—'}</div>
+      <div>${attendanceStatusBadge(rec?.status, rec?.leaveWithoutPay)}</div>
       <div class="att-actions">${rec ? actionButtons(rec.id, false) : ''}</div>
     </div>`;
   }
 
   function renderSheet(){
     const box = $('attendanceRows');
-    clearErrors();
     if (!data.rows.length){
       box.innerHTML = `<div class="att-empty">${esc(t('NoStaffForAttendance'))}</div>`;
     } else {
       box.innerHTML = data.rows.map(rowHtml).join('') + '<div class="att-empty" id="sheetEmpty" style="display:none"></div>';
-      rowEls().forEach(updateRow);
       applySheetFilter();
-    }
-    updateDirty();
-  }
-
-  function isChanged(el){
-    const rec = rowData(el).record, v = values(el);
-    if (!rec) return v.status !== '';
-    if (v.status !== rec.status) return true;
-    return worked(v.status) && (v.inTime !== (rec.inTime || '') || v.outTime !== (rec.outTime || ''));
-  }
-
-  function updateRow(el){
-    const r = rowData(el), v = values(el), s = STATUS[v.status];
-    const dot = el.querySelector('.att-status-dot');
-    dot.className = 'att-status-dot ' + (s ? s.dot : 'none');
-    dot.querySelector('i').className = 'fa-solid ' + (s ? s.icon : 'fa-minus');
-    const editable = !data.isFuture;
-    el.querySelectorAll('.att-in, .att-out').forEach(input => { input.disabled = !editable || !worked(v.status); });
-    el.querySelector('.att-status').disabled = !editable;
-    const h = calc(v.status, v.inTime, v.outTime, r.shiftHours);
-    el.querySelector('.att-hours').textContent = h.worked > 0 ? hours(h.worked) + 'h' : '—';
-    el.querySelector('.att-ot').innerHTML = h.overtime > 0 ? `<span class="overtime-chip"><i class="fa-solid fa-clock"></i>${hours(h.overtime)}h</span>` : '—';
-    el.classList.toggle('changed', isChanged(el));
-  }
-
-  function updateDirty(){
-    dirty = rowEls().some(el => el.classList.contains('changed'));
-    $('unsavedNote').style.display = dirty ? '' : 'none';
-  }
-
-  // choosing Present / Half Day fills the shift's times; Absent / Leave clear them
-  function onStatusChange(el){
-    const r = rowData(el), v = values(el);
-    const inEl = el.querySelector('.att-in'), outEl = el.querySelector('.att-out');
-    if (!worked(v.status)){ inEl.value = ''; outEl.value = ''; return; }
-    if (!inEl.value) inEl.value = r.shiftStart || DEFAULT_IN;
-    if (!outEl.value){
-      const end = minutes(inEl.value) + Math.round((v.status === 'HALF_DAY' ? r.shiftHours / 2 : r.shiftHours) * 60);
-      if (end < 24 * 60) outEl.value = fromMinutes(end);
     }
   }
 
@@ -232,7 +157,7 @@
     const dept = $('entryDept').value, q = $('entrySearch').value.trim().toLowerCase();
     let shown = 0;
     rowEls().forEach(el => {
-      const r = rowData(el);
+      const r = data.rows[+el.dataset.i];
       const ok = (!dept || r.departmentId === dept) && (!q || `${r.name} ${r.employeeId} ${r.designation}`.toLowerCase().includes(q));
       el.classList.toggle('hidden', !ok);
       if (ok) shown++;
@@ -244,107 +169,11 @@
     }
   }
 
-  function markAllPresent(){
-    if (!data || data.isFuture) return;
-    rowEls().filter(el => !el.classList.contains('hidden') && values(el).status === '').forEach(el => {
-      el.querySelector('.att-status').value = 'PRESENT';
-      onStatusChange(el);
-      updateRow(el);
-    });
-    updateDirty();
-  }
-
-  // ── Validation / errors ───────────────────────────────────────
-  function clearErrors(){
-    const form = $('attendanceForm');
-    form.querySelectorAll('.form-group.has-error').forEach(g => g.classList.remove('has-error'));
-    form.querySelectorAll('.form-error').forEach(e => { e.textContent = ''; e.style.display = ''; });
-  }
   function showError(el, msg){
-    if (!el) return null;
+    if (!el) return;
     el.textContent = msg;
     const group = el.closest('.form-group');
     if (group) group.classList.add('has-error'); else el.style.display = 'block';
-    return group?.querySelector('input,select') || null;
-  }
-  // server keys: date, entries, entries_{i}_employee_id|status|in_time|out_time|remarks (i = index in the submitted list)
-  function showSheetErrors(errors, rows){
-    if (Object.keys(errors).some(k => { const m = /^entries_(\d+)_/.exec(k); return m && rows[+m[1]]?.classList.contains('hidden'); })){
-      $('entryDept').value = '';
-      $('entrySearch').value = '';
-      applySheetFilter();
-    }
-    let first = null;
-    Object.entries(errors).forEach(([k, msg]) => {
-      const m = /^entries_(\d+)_(\w+)$/.exec(k);
-      const target = m ? rows[+m[1]]?.querySelector('.row-err-' + m[2]) || rows[+m[1]]?.querySelector('.row-err-status') : $('err_' + k);
-      const focus = showError(target, msg);
-      if (!first) first = focus;
-    });
-    first?.focus();
-  }
-  function validateEntries(entries){
-    const e = {};
-    entries.forEach((x, i) => {
-      if (!x.status) e[`entries_${i}_status`] = t('ValAttendanceStatus');
-      else if (worked(x.status)){
-        if (!x.inTime) e[`entries_${i}_in_time`] = t('ValInTimeRequired');
-        else if (x.outTime && minutes(x.outTime) <= minutes(x.inTime)) e[`entries_${i}_out_time`] = t('ValOutBeforeIn');
-      }
-    });
-    return e;
-  }
-
-  function setSaving(on){
-    saving = on;
-    ['saveSheetBtn'].forEach(id => { $(id).disabled = on || !!data?.isFuture; });
-  }
-
-  async function save(){
-    if (saving || !data || data.isFuture) return;
-    clearErrors();
-    const rows = rowEls().filter(isChanged);
-    if (!rows.length){ toast(t('Error'), t('NothingToSave'), 'warning'); return; }
-    const entries = rows.map(el => {
-      const r = rowData(el), v = values(el);
-      return {
-        employeeId: r.employeeId,
-        status: v.status,
-        inTime: worked(v.status) ? (v.inTime || null) : null,
-        outTime: worked(v.status) ? (v.outTime || null) : null,
-        remarks: r.record?.remarks || null
-      };
-    });
-    const errors = validateEntries(entries);
-    if (Object.keys(errors).length){ showSheetErrors(errors, rows); toast(t('Error'), t('CheckForm'), 'error'); return; }
-
-    setSaving(true);
-    try {
-      const res = await fetch('/Attendance/Save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token() },
-        body: JSON.stringify({ date: data.date, entries })
-      });
-      if (res.status === 400){
-        const json = await res.json().catch(() => ({}));
-        if (json.errors) showSheetErrors(json.errors, rows);
-        toast(t('Error'), t('CheckForm'), 'error');
-        return;
-      }
-      if (!res.ok){ toast(t('Error'), `${t('CheckForm')} (${res.status})`, 'error'); return; }
-      const result = await res.json();
-      notifyAttendanceChanged();
-      const savedMessage = t('AttendanceSavedMsg', formatDate(data.date));
-      const lopMessage = result.lopCount > 0 ? ` ${t('AttendanceLopMessage', result.lopCount)}` : '';
-      toast(t('AttendanceSaved'), savedMessage + lopMessage, 'success');
-      dirty = false;
-      await Promise.all([load(), loadHistory()]);
-    } catch (e) {
-      console.error(e);
-      toast(t('Error'), t('CouldNotReachServer'), 'error');
-    } finally {
-      setSaving(false);
-    }
   }
 
   // ── Department-wise ───────────────────────────────────────────
@@ -433,8 +262,7 @@
 
   // ── Single records: view / edit / delete ──────────────────────
   async function refreshAfterChange(){
-    // a sheet with unsaved marks is left alone so they are not lost
-    await Promise.all([dirty ? Promise.resolve() : load(), loadHistory()]);
+    await Promise.all([load(), loadHistory()]);
   }
 
   async function getRecord(id){
@@ -593,29 +421,7 @@
 
     $('entryDept').addEventListener('change', applySheetFilter);
     $('entrySearch').addEventListener('input', applySheetFilter);
-    $('markAllPresentBtn').addEventListener('click', markAllPresent);
-    const rows = $('attendanceRows');
-    rows.addEventListener('change', e => {
-      const el = e.target.closest('.att-row');
-      if (!el) return;
-      if (e.target.classList.contains('att-status')) onStatusChange(el);
-      e.target.closest('.form-group')?.classList.remove('has-error');
-      updateRow(el);
-      updateDirty();
-    });
-    rows.addEventListener('input', e => {
-      const el = e.target.closest('.att-row');
-      if (!el || !e.target.matches('.att-in, .att-out')) return;
-      e.target.closest('.form-group')?.classList.remove('has-error');
-      updateRow(el);
-      updateDirty();
-    });
-    rows.addEventListener('click', onAction);
-    $('saveSheetBtn').addEventListener('click', save);
-    $('resetSheetBtn').addEventListener('click', () => {
-      if (dirty && !confirm(t('DiscardChanges'))) return;
-      if (data) renderSheet();
-    });
+    $('attendanceRows').addEventListener('click', onAction);
 
     $('deptAttCards').addEventListener('click', e => {
       const btn = e.target.closest('[data-dept]');
@@ -638,7 +444,6 @@
     $('editSaveBtn').addEventListener('click', saveEdit);
     $('attEditForm').addEventListener('submit', e => { e.preventDefault(); saveEdit(); });
 
-    window.addEventListener('beforeunload', e => { if (dirty){ e.preventDefault(); e.returnValue = ''; } });
 
     load();
     loadHistory();

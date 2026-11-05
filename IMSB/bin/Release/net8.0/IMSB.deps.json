@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "IMSB/1.0.0": {
+        "dependencies": {
+          "IMSB.LoggerLibrary": "1.0.0"
+        },
+        "runtime": {
+          "IMSB.dll": {}
+        }
+      },
+      "IMSB.LoggerLibrary/1.0.0": {
+        "runtime": {
+          "IMSB.LoggerLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "IMSB/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IMSB.LoggerLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

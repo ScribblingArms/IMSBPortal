@@ -155,7 +155,7 @@ public class StaffControllerQueryTests
         Assert.EndsWith(".xls", file.FileDownloadName);
         var lines = ExcelExportTestHelpers.CsvText(file).Split("\r\n", StringSplitOptions.RemoveEmptyEntries)
             .Select(l => l.TrimEnd('\n', '\r')).ToArray();
-        Assert.Equal("EmployeeId,FullName,Department,Designation,StaffCategory,Mobile,Email,DateOfBirth,Gender,JoinDate,Shift,Status", lines[0]);
+        Assert.Equal("EmployeeId,FullName,StaffCategory,Designation,Mobile,Email,DateOfBirth,Gender,JoinDate,Shift,Status", lines[0]);
         Assert.Equal(3, lines.Length);
         Assert.StartsWith("EMP004,Kiran Kumar,Admin,", lines[1]);
     }

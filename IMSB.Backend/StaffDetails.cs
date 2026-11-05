@@ -55,6 +55,9 @@ namespace IMSB.Backend
         public Task<bool> MobileExistsAsync(string mobile, Guid? exceptId) =>
             _context.Staff.AnyAsync(s => s.Mobile == mobile && s.Id != exceptId);
 
+        public Task<bool> AadhaarExistsAsync(string aadhaarHash, Guid? exceptId) =>
+            _context.Staff.AnyAsync(s => s.AadhaarHash == aadhaarHash && s.Id != exceptId);
+
         public Task<bool> EmailExistsAsync(string email, Guid? exceptId) =>
             _context.Staff.AnyAsync(s => s.Email != null && s.Email.ToLower() == email && s.Id != exceptId);
 

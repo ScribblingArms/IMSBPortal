@@ -47,9 +47,9 @@
             <label class="form-label" for="leaveType">@L["LeaveType"]</label>
             <select id="leaveType" name="LeaveType" class="form-control" required>
               <option value="">@L["SelectPlaceholder"]</option>
-              @foreach (var entitlement in Model.Entitlements)
+              @foreach (var leaveType in Model.LeaveTypes)
               {
-                <option value="@entitlement.LeaveType" data-staff-id="@entitlement.StaffId">@entitlement.LeaveType</option>
+                <option value="@leaveType">@leaveType</option>
               }
             </select>
           </div>
@@ -122,8 +122,6 @@
 @section Scripts {
 <script>
 (() => {
-  const staff = document.getElementById('leaveStaff');
-  const types = document.getElementById('leaveType');
   const from = document.getElementById('leaveFrom');
   const to = document.getElementById('leaveTo');
   const days = document.getElementById('leaveDays');
@@ -136,15 +134,6 @@
     const toDate = new Date(`${end.value}T00:00:00Z`);
     output.value = String(Math.floor((toDate - fromDate) / 86400000) + 1);
   }
-  function filterTypes() {
-    const staffId = staff.value;
-    types.value = '';
-    Array.from(types.options).forEach(option => {
-      option.hidden = Boolean(option.value) && option.dataset.staffId !== staffId;
-      option.disabled = option.hidden;
-    });
-  }
-  staff.addEventListener('change', filterTypes);
   from.addEventListener('change', () => {
     to.min = from.value || from.min;
     if (to.value && to.value < to.min) to.value = to.min;
@@ -167,7 +156,6 @@
     editTo.addEventListener('change', refresh);
     refresh();
   });
-  filterTypes();
 })();
 </script>
 }

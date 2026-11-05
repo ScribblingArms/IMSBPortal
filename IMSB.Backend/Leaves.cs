@@ -10,11 +10,27 @@ namespace IMSB.Backend
 
         private static int CurrentYear => DateTime.Today.Year;
 
-        public Task<List<Staff>> StaffAsync() =>
-            _context.Staff.AsNoTracking().OrderBy(s => s.StaffCategory).ThenBy(s => s.FullName).ToListAsync();
+        public async Task<List<LeaveStaffOption>> StaffAsync() =>
+            (await OptionsAsync(_context.Staff.AsNoTracking()))
+                .OrderBy(s => s.StaffCategory).ThenBy(s => s.FullName).ToList();
 
-        public Task<List<Staff>> ActiveStaffAsync() =>
-            _context.Staff.AsNoTracking().Where(s => s.Status.ToUpper() != "INACTIVE").OrderBy(s => s.FullName).ToListAsync();
+        public Task<List<LeaveStaffOption>> ActiveStaffAsync() =>
+            OptionsAsync(_context.Staff.AsNoTracking().Where(s => s.Status.ToUpper() != "INACTIVE").OrderBy(s => s.FullName));
+
+        private async Task<List<LeaveStaffOption>> OptionsAsync(IQueryable<Staff> staff)
+        {
+            var categories = await StaffCategoryNamesAsync();
+            return (await staff.ToListAsync())
+                .Select(s => new LeaveStaffOption(s.Id, s.EmployeeId, s.FullName, categories.GetValueOrDefault(s.DepartmentId) ?? string.Empty))
+                .ToList();
+        }
+
+        // A staff member's category is their department
+        private Task<Dictionary<Guid, string>> StaffCategoryNamesAsync() =>
+            _context.Departments.AsNoTracking().ToDictionaryAsync(d => d.Id, d => d.Name);
+
+        public Task<List<string>> LeaveTypesAsync() =>
+            _context.LeaveTypes.AsNoTracking().OrderBy(t => t.Name).Select(t => t.Name).ToListAsync();
 
         public Task<List<LeaveEntitlement>> EntitlementsWithStaffAsync(int year) =>
             _context.LeaveEntitlements.Include(e => e.Staff).AsNoTracking().Where(e => e.Year == year)
@@ -33,8 +49,10 @@ namespace IMSB.Backend
             var staffQuery = _context.Staff.AsNoTracking();
             if (!string.IsNullOrWhiteSpace(employeeId))
                 staffQuery = staffQuery.Where(person => person.EmployeeId == employeeId);
-            var staff = await staffQuery
-                .OrderBy(person => person.StaffCategory).ThenBy(person => person.FullName).ToListAsync();
+            var categories = await StaffCategoryNamesAsync();
+            string CategoryOf(Staff person) => categories.GetValueOrDefault(person.DepartmentId) ?? string.Empty;
+            var staff = (await staffQuery.ToListAsync())
+                .OrderBy(CategoryOf).ThenBy(person => person.FullName).ToList();
             var entitlements = await EntitlementsAsync(year);
             if (!string.IsNullOrWhiteSpace(leaveType))
                 entitlements = entitlements.Where(item =>
@@ -50,7 +68,7 @@ namespace IMSB.Backend
             {
                 var taken = LeaveBalanceRules.Taken(employee.Id, year, entitlement.LeaveType,
                     entitlement.IsAttendanceLeaveType, entriesByStaff[employee.Id].ToList(), attendanceByStaff[employee.Id]);
-                return new LeaveBalanceRow(employee.EmployeeId, employee.FullName, employee.StaffCategory,
+                return new LeaveBalanceRow(employee.EmployeeId, employee.FullName, CategoryOf(employee),
                     entitlement.LeaveType, entitlement.AnnualQuota, taken, entitlement.AnnualQuota - taken);
             })).ToList();
         }
@@ -83,6 +101,10 @@ namespace IMSB.Backend
             await using var transaction = _context.Database.IsRelational()
                 ? await _context.Database.BeginTransactionAsync()
                 : null;
+            // a quota for a new type must still be selectable when applying for leave
+            if (!await _context.LeaveTypes.AnyAsync(t => t.Name.ToUpper() == type.ToUpper()))
+                _context.LeaveTypes.Add(new LeaveType { Name = type });
+
             LeaveEntitlement entitlement;
             if (existing == null)
             {

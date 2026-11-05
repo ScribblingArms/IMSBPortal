@@ -23,6 +23,7 @@ namespace IMSB.Interfaces
         Task<bool> AnyShiftsAsync();
         Task<bool> ShiftExistsAsync(string code);
         Task<bool> MobileExistsAsync(string mobile, Guid? exceptId);
+        Task<bool> AadhaarExistsAsync(string aadhaarHash, Guid? exceptId);
 
         /// <summary>email is lower-case.</summary>
         Task<bool> EmailExistsAsync(string email, Guid? exceptId);
