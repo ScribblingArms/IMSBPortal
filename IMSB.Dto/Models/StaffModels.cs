@@ -33,6 +33,13 @@ namespace IMSB.Dto.Models
         public const string Pattern = "^(Department|Agency)$";
     }
 
+    /// <summary>Annual days of one leave type. Null removes the quota, which only editing a staff member allows.</summary>
+    public class LeaveQuotaDto
+    {
+        public string LeaveType { get; set; } = "";
+        public decimal? AnnualQuota { get; set; }
+    }
+
     public class CreateStaffDto
     {
         // ErrorMessage values are SharedResource keys, translated by the DataAnnotations localizer (Program.cs)
@@ -60,6 +67,8 @@ namespace IMSB.Dto.Models
         [Required(ErrorMessage = "ValJoinRequired")]
         public string JoinDate { get; set; } = "";
         public string Shift { get; set; } = "";
+        /// <summary>This year's leave quotas. On edit only the listed types change; the controllers check them.</summary>
+        public List<LeaveQuotaDto>? LeaveQuotas { get; set; }
     }
 
     public class UpdateStaffDto : CreateStaffDto

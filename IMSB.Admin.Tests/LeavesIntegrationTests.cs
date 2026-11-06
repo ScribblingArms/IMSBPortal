@@ -76,9 +76,8 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
         Assert.Contains("id=\"leaveType\"", add);
         Assert.Contains("<option value=\"Study\">Study</option>", add);   // from the leave type table, no quota needed to be listed
         Assert.Contains("id=\"leaveFrom\"", add);
-        var futureDate = DateTime.Today.AddDays(1);
-        Assert.Contains($"value=\"{futureDate:yyyy-MM-dd}\"", add);
-        Assert.Contains($"value=\"{futureDate:yyyy-MM-dd}\"", add);
+        Assert.Contains($"id=\"leaveFrom\" name=\"FromDate\" type=\"date\" class=\"form-control\" min=\"{DateTime.Today.Year}-01-01\"", add);   // back-dating allowed
+        Assert.Contains($"value=\"{DateTime.Today:yyyy-MM-dd}\"", add);
         Assert.Contains("id=\"leaveDays\" name=\"Days\" type=\"number\"", add);
         Assert.Contains("readonly", add);
         Assert.Contains("btn btn-primary btn-sm", add);

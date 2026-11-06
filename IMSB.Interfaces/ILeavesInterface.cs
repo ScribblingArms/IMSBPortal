@@ -35,7 +35,13 @@ namespace IMSB.Interfaces
         /// <summary>Removes an entitlement that no leave has been taken against.</summary>
         Task<BackendResult> DeleteEntitlementAsync(Guid id);
 
-        /// <summary>Records future leave (from/to null = not a valid date).</summary>
+        /// <summary>The first quota change that cannot be made for this employee, or null when all can.</summary>
+        Task<LeaveQuotaProblem?> LeaveQuotaProblemAsync(Guid staffId, IReadOnlyCollection<LeaveQuotaDto>? changes);
+
+        /// <summary>Adds, changes or (null days) removes the listed quotas, keeping an attendance policy on a type with days.</summary>
+        Task<BackendResult> SaveQuotasAsync(Guid staffId, IReadOnlyCollection<LeaveQuotaDto> changes);
+
+        /// <summary>Records leave on any date this year from the join date on (from/to null = not a valid date).</summary>
         Task<BackendResult> RecordEntryAsync(Guid staffId, string leaveType, DateTime? from, DateTime? to, string? remarks, string? user);
 
         Task<BackendResult> UpdateEntryAsync(Guid id, DateTime? from, DateTime? to, string? remarks, string? user);

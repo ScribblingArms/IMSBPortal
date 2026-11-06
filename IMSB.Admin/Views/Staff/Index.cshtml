@@ -15,7 +15,7 @@
         "EmployeeID", "FullName", "Department", "EmployeeType", "EmployeeTypeDepartment", "EmployeeTypeAgency", "Designation", "Mobile", "Email", "DateOfBirth",
         "Gender", "JoinDate", "Shift", "Status", "MonthlySalary", "AadhaarNumber", "AadhaarKeepHint", "AadhaarStoredHint",
         "ValFullName", "ValMobile", "ValEmail", "ValAadhaar", "ValDobRequired", "ValDobFuture", "ValMinAge", "ValDepartment",
-        "ValDesignation", "ValJoinRequired", "ValJoinFuture", "ValJoinAfterDob", "ValMonthlySalary"
+        "ValDesignation", "ValJoinRequired", "ValJoinFuture", "ValJoinAfterDob", "ValMonthlySalary", "ValLeaveQuotas", "Days", "Taken", "Balance"
     };
     var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
 }
@@ -187,6 +187,13 @@
           </div>
         </div>
 
+        <!-- The fields come from the leave types in IndexData; editing also shows what is on record -->
+        <div id="staffLeaveQuotaSection" style="display:none">
+          <div class="form-section-title" style="margin-top:18px"><i class="fa-solid fa-calendar-days"></i> @L["AnnualQuota"] (@DateTime.Today.Year)</div>
+          <div class="form-hint" style="font-size:.7rem;color:var(--text-muted);margin-bottom:8px">@L["LeaveQuotaHint"]</div>
+          <div class="form-grid col-3" id="staffLeaveQuotaFields"></div>
+          <div class="form-group"><div class="form-error" id="err_leave_quotas"></div></div>
+        </div>
       </form>
     </div>
     <div class="modal-footer">

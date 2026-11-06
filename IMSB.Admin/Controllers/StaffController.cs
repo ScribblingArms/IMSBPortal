@@ -15,11 +15,13 @@ namespace IMSB.Admin.Controllers
         private const int ContractExpiryWindowDays = 30;
 
         private readonly IStaffInterface _staff;
+        private readonly ILeavesInterface _leaves;
         private readonly IStringLocalizer _L;
 
-        public StaffController(IStaffInterface staff, IStringLocalizerFactory localizerFactory)
+        public StaffController(IStaffInterface staff, ILeavesInterface leaves, IStringLocalizerFactory localizerFactory)
         {
             _staff = staff;
+            _leaves = leaves;
             // Same shared resources the views use (Resources/SharedResource.<culture>.resx)
             _L = localizerFactory.Create("SharedResource", typeof(StaffController).Assembly.GetName().Name!);
         }
@@ -71,9 +73,18 @@ namespace IMSB.Admin.Controllers
             {
                 depts = departments.Select(d => new DepartmentItem(d.Id.ToString(), d.Name, perDept.GetValueOrDefault(d.Id), "#2558a8")),
                 shifts = shifts.Select(s => s.ToOption()),
+                leaveTypes = await _staff.LeaveTypesAsync(),
                 staff = filtered.Select(s => s.ToListItem(deptNames, User.IsInRole("Admin"))),
                 stats = ComputeStats(allStaff)
             });
+        }
+
+        // Quota, taken and balance per leave type this year, shown when editing a staff member
+        [HttpGet]
+        public async Task<IActionResult> LeaveQuotas(string id)
+        {
+            if (await _staff.FindAsync(id) == null) return NotFound();
+            return Ok(new { rows = await _leaves.BalancesAsync(DateTime.Today.Year, id) });
         }
 
         [HttpGet]
@@ -112,7 +123,7 @@ namespace IMSB.Admin.Controllers
             };
             dto.ApplyTo(entity);
             if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
-            await _staff.AddAsync(entity);
+            await _staff.AddAsync(entity, dto.LeaveQuotas);
 
             return Ok(new { employeeId = entity.EmployeeId });
         }
@@ -134,6 +145,14 @@ namespace IMSB.Admin.Controllers
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = User.Identity?.Name;
             await _staff.UpdateAsync(entity);
+
+            // after the staff save, so the quotas take a changed department as their category
+            if (dto.LeaveQuotas is { Count: > 0 })
+            {
+                var saved = await _leaves.SaveQuotasAsync(entity.Id, dto.LeaveQuotas);
+                if (saved.ErrorKey != null)
+                    return BadRequest(new { errors = new Dictionary<string, string> { ["leave_quotas"] = _L[saved.ErrorKey] } });
+            }
 
             return Ok(new { employeeId = entity.EmployeeId });
         }
@@ -189,6 +208,11 @@ namespace IMSB.Admin.Controllers
             var email = dto.Email?.Trim().ToLower();
             if (!string.IsNullOrEmpty(email) && await _staff.EmailExistsAsync(email, existingId))
                 errors["email"] = _L["ValEmailExists"];
+
+            if (!await _staff.LeaveQuotasValidAsync(dto.LeaveQuotas, allowRemoval: existingId != null))
+                errors["leave_quotas"] = _L["ValLeaveQuotas"];
+            else if (existingId != null && await _leaves.LeaveQuotaProblemAsync(existingId.Value, dto.LeaveQuotas) is { } problem)
+                errors["leave_quotas"] = $"{problem.LeaveType}: {_L[problem.ErrorKey]}";
 
             return errors;
         }

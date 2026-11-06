@@ -2704,10 +2704,13 @@
   <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>Configure at least one leave entitlement before recording leave.</value></data>
   <data name="ValLeaveEntitlement" xml:space="preserve"><value>Enter a valid category, leave type and annual quota.</value></data>
   <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>The quota cannot be lower than leave already taken.</value></data>
+  <data name="ValLeaveQuotas" xml:space="preserve"><value>Enter leave days from 0 to 366, in half-day steps (for example 12 or 7.5).</value></data>
+  <data name="LeaveQuotaHint" xml:space="preserve"><value>Days allowed this year. Leave a type blank if it does not apply to this employee.</value></data>
   <data name="ValLeaveTypeInUse" xml:space="preserve"><value>This leave type has entries and cannot be deleted.</value></data>
   <data name="ValLeaveEntry" xml:space="preserve"><value>Enter valid employee, leave type, dates and days.</value></data>
   <data name="ValLeaveDates" xml:space="preserve"><value>Enter a valid date range within the current year.</value></data>
-  <data name="ValLeaveFutureDate" xml:space="preserve"><value>Both leave dates must be after today.</value></data>
+  <data name="ValLeaveBeforeJoin" xml:space="preserve"><value>Leave cannot start before the employee's join date.</value></data>
+  <data name="ValLeaveDayWorked" xml:space="preserve"><value>Attendance shows the employee worked on a day in this range. Correct the attendance first.</value></data>
   <data name="ValLeaveDays" xml:space="preserve"><value>Days must be in half-day increments and not exceed the date range.</value></data>
   <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>This leave type is not configured for the employee's category.</value></data>
   <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>This employee already has a leave entry overlapping those dates.</value></data>

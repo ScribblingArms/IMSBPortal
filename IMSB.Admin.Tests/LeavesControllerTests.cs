@@ -12,6 +12,7 @@ public class LeavesControllerTests
 {
     private static readonly int Year = DateTime.Today.Year;
     private static readonly DateTime LeaveDay = DateTime.Today.AddDays(2);
+    private static readonly DateTime BackDay = new(DateTime.Today.Year, 1, 1);
 
     private static (IMSBContext Context, LeavesController Controller, Staff Staff) Create()
     {
@@ -178,8 +179,8 @@ public class LeavesControllerTests
             Assert.Equal("hr@imsb", recorded.CreatedBy);
             Assert.Equal(4m, Assert.Single(((LeaveManagementViewModel)Assert.IsType<ViewResult>(await controller.Index()).Model!).Balances).Balance);
 
-            Assert.IsType<RedirectToActionResult>(await controller.UpdateEntry(recorded.Id,
-                DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Today.ToString("yyyy-MM-dd"), "past date"));
+            var lastYear = new DateTime(Year - 1, 6, 1).ToString("yyyy-MM-dd");
+            Assert.IsType<RedirectToActionResult>(await controller.UpdateEntry(recorded.Id, lastYear, lastYear, "last year"));
             Assert.Equal(LeaveDay, (await context.StaffLeaveEntries.SingleAsync()).FromDate);
 
             controller.ModelState.Clear();
@@ -261,7 +262,7 @@ public class LeavesControllerTests
     }
 
     [Fact]
-    public async Task Record_rejects_today_and_accepts_future_leave_dates_within_current_year()
+    public async Task Record_accepts_past_today_and_future_leave_dates_within_current_year()
     {
         var (context, controller, staff) = Create();
         using (context)
@@ -271,13 +272,20 @@ public class LeavesControllerTests
                 StaffId = staff.Id, StaffCategory = "Operators", LeaveType = "Casual", Year = Year, AnnualQuota = 5m
             });
             await context.SaveChangesAsync();
-            var future = Entry(staff.Id, DateTime.Today, 1m);
-            Bind(controller, future);
+            var backDated = Entry(staff.Id, BackDay);
+            Bind(controller, backDated);
+            Assert.IsType<RedirectToActionResult>(await controller.Record(backDated));
+            Assert.Equal(BackDay, (await context.StaffLeaveEntries.SingleAsync()).FromDate);
+            context.StaffLeaveEntries.RemoveRange(context.StaffLeaveEntries);
+            await context.SaveChangesAsync();
 
-            var result = await controller.Record(future);
-
-            Assert.IsType<RedirectToActionResult>(result);
-            Assert.Empty(context.StaffLeaveEntries);
+            controller.ModelState.Clear();
+            var today = Entry(staff.Id, DateTime.Today);
+            Bind(controller, today);
+            Assert.IsType<RedirectToActionResult>(await controller.Record(today));
+            Assert.Equal(DateTime.Today, (await context.StaffLeaveEntries.SingleAsync()).FromDate);
+            context.StaffLeaveEntries.RemoveRange(context.StaffLeaveEntries);
+            await context.SaveChangesAsync();
 
             controller.ModelState.Clear();
             var upcoming = Entry(staff.Id, DateTime.Today.AddDays(1), 0.5m);
@@ -288,6 +296,103 @@ public class LeavesControllerTests
             Assert.Equal(DateTime.Today.AddDays(1), saved.FromDate);
             Assert.Equal(DateTime.Today.AddDays(2), saved.ToDate);
             Assert.Equal(2m, saved.Days);
+        }
+    }
+
+    private static AttendanceRecord Mark(Staff staff, DateTime day, string status, bool withoutPay = false) => new()
+    {
+        StaffId = staff.Id, AttendanceDate = day, Status = status, LeaveWithoutPay = withoutPay
+    };
+
+    private static void AddQuota(IMSBContext context, Staff staff, decimal quota) => context.LeaveEntitlements.Add(new LeaveEntitlement
+    {
+        StaffId = staff.Id, StaffCategory = "Operators", LeaveType = "Casual", Year = Year, AnnualQuota = quota, IsAttendanceLeaveType = true
+    });
+
+    private string? ErrorOf(LeavesController controller) => controller.TempData["LeaveError"] as string;
+
+    [Fact]
+    public async Task Back_dated_leave_cannot_start_before_the_join_date()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            staff.JoinDate = BackDay.AddDays(1);
+            AddQuota(context, staff, 5m);
+            await context.SaveChangesAsync();
+            var form = Entry(staff.Id, BackDay);
+            Bind(controller, form);
+
+            await controller.Record(form);
+
+            Assert.Empty(context.StaffLeaveEntries);
+            Assert.False(string.IsNullOrEmpty(ErrorOf(controller)));
+        }
+    }
+
+    [Theory]
+    [InlineData(AttendanceStatuses.Present)]
+    [InlineData(AttendanceStatuses.HalfDay)]
+    public async Task Back_dated_leave_is_rejected_on_a_day_marked_as_worked(string status)
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            AddQuota(context, staff, 5m);
+            context.AttendanceRecords.Add(Mark(staff, BackDay, status));
+            await context.SaveChangesAsync();
+            var form = Entry(staff.Id, BackDay);
+            Bind(controller, form);
+
+            await controller.Record(form);
+
+            Assert.Empty(context.StaffLeaveEntries);
+            Assert.False(string.IsNullOrEmpty(ErrorOf(controller)));
+        }
+    }
+
+    [Fact]
+    public async Task Back_dated_leave_makes_a_day_marked_without_pay_paid_and_deleting_it_reverses_that()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            AddQuota(context, staff, 1m);
+            var usesQuota = Mark(staff, BackDay.AddDays(1), AttendanceStatuses.Leave);
+            var unpaid = Mark(staff, BackDay.AddDays(2), AttendanceStatuses.Leave, withoutPay: true);
+            context.AttendanceRecords.AddRange(usesQuota, unpaid);
+            await context.SaveChangesAsync();
+            context.LeaveEntitlements.Single().AnnualQuota = 2m;   // room for this entry
+            await context.SaveChangesAsync();
+            var form = Entry(staff.Id, BackDay.AddDays(2));
+            Bind(controller, form);
+
+            Assert.IsType<RedirectToActionResult>(await controller.Record(form));
+            Assert.False((await context.AttendanceRecords.AsNoTracking().SingleAsync(r => r.Id == unpaid.Id)).LeaveWithoutPay);
+
+            context.LeaveEntitlements.Single().AnnualQuota = 1m;
+            await context.SaveChangesAsync();
+            Assert.IsType<RedirectToActionResult>(await controller.DeleteEntry((await context.StaffLeaveEntries.SingleAsync()).Id));
+            Assert.True((await context.AttendanceRecords.AsNoTracking().SingleAsync(r => r.Id == unpaid.Id)).LeaveWithoutPay);
+        }
+    }
+
+    [Fact]
+    public async Task Back_dated_leave_on_a_day_marked_leave_counts_that_day_once()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            AddQuota(context, staff, 1m);
+            context.AttendanceRecords.Add(Mark(staff, BackDay, AttendanceStatuses.Leave));
+            await context.SaveChangesAsync();
+            var form = Entry(staff.Id, BackDay);
+            Bind(controller, form);
+
+            Assert.IsType<RedirectToActionResult>(await controller.Record(form));
+
+            Assert.Single(context.StaffLeaveEntries);
+            Assert.Equal(0m, Assert.Single(((LeaveManagementViewModel)Assert.IsType<ViewResult>(await controller.Index()).Model!).Balances).Balance);
         }
     }
 

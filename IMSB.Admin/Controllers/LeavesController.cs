@@ -74,12 +74,12 @@ public class LeavesController : Controller
     public async Task<IActionResult> Add()
     {
         var year = DateTime.Today.Year;
-        var firstFutureDate = DateTime.Today.AddDays(1).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var today = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         ViewData["Title"] = _L["AddLeaveTaken"].Value;
         return View(new LeaveEntryViewModel
         {
             Year = year,
-            Form = new LeaveEntryForm { FromDate = firstFutureDate, ToDate = firstFutureDate },
+            Form = new LeaveEntryForm { FromDate = today, ToDate = today },
             Staff = await _leaves.ActiveStaffAsync(),
             LeaveTypes = await _leaves.LeaveTypesAsync(),
             Entitlements = await _leaves.EntitlementsAsync(year),

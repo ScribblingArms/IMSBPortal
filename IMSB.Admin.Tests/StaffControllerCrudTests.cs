@@ -668,6 +668,272 @@ public class StaffControllerUpdateTests
         Assert.Equal("Admin", (await ctx.LeaveEntitlements.SingleAsync()).StaffCategory);
     }
 
+    // ── Leave quotas captured when registering ────────────────────
+
+    private static IMSB.Dto.Models.IMSBContext ContextWithLeaveTypes()
+    {
+        var ctx = TestHelpers.CreateContext();
+        ctx.LeaveTypes.AddRange(new LeaveType { Name = "Casual" }, new LeaveType { Name = "Earned" }, new LeaveType { Name = "Sick" });
+        ctx.SaveChanges();
+        return ctx;
+    }
+
+    private static LeaveQuotaDto Quota(string type, decimal? days) => new() { LeaveType = type, AnnualQuota = days };
+
+    private static async Task<(IMSB.Dto.Models.IMSBContext Ctx, Staff Staff)> EditableWithLeaveTypes()
+    {
+        var ctx = ContextWithLeaveTypes();
+        var staff = TestHelpers.ExistingStaff("EMP001", "Older Record", "9876500009", dept: TestHelpers.AdminDept);
+        ctx.Staff.Add(staff);
+        await ctx.SaveChangesAsync();
+        return (ctx, staff);
+    }
+
+    private static LeaveEntitlement StoredQuota(Staff staff, string type, decimal days, bool attendance = false) => new()
+    {
+        StaffId = staff.Id, StaffCategory = "Admin", LeaveType = type, Year = DateTime.Today.Year, AnnualQuota = days, IsAttendanceLeaveType = attendance
+    };
+
+    private static StaffLeaveEntry TakenLeave(Staff staff, string type, decimal days) => new()
+    {
+        StaffId = staff.Id, LeaveType = type, Year = DateTime.Today.Year, FromDate = DateTime.Today, ToDate = DateTime.Today, Days = days
+    };
+
+    [Fact]
+    public async Task Registering_saves_each_leave_quota_with_all_its_details()
+    {
+        using var ctx = ContextWithLeaveTypes();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.DepartmentId = TestHelpers.AdminDept.ToString();
+        dto.LeaveQuotas = new() { Quota("Sick", 7.5m), Quota(" Casual ", 12m) };
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(dto));
+
+        var staff = await ctx.Staff.SingleAsync();
+        var saved = await ctx.LeaveEntitlements.OrderBy(e => e.LeaveType).ToListAsync();
+        Assert.Equal(new[] { "Casual", "Sick" }, saved.Select(e => e.LeaveType));
+        Assert.Equal(new[] { 12m, 7.5m }, saved.Select(e => e.AnnualQuota));
+        Assert.All(saved, e =>
+        {
+            Assert.Equal(staff.Id, e.StaffId);
+            Assert.Equal("Admin", e.StaffCategory);
+            Assert.Equal(DateTime.Today.Year, e.Year);
+        });
+    }
+
+    [Fact]
+    public async Task Registered_quotas_appear_in_the_leave_balances()
+    {
+        using var ctx = ContextWithLeaveTypes();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.LeaveQuotas = new() { Quota("Casual", 12m) };
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(dto));
+
+        var row = Assert.Single(await new IMSB.Backend.Leaves(ctx).BalancesAsync(DateTime.Today.Year));
+        Assert.Equal("Casual", row.LeaveType);
+        Assert.Equal(12m, row.Entitlement);
+        Assert.Equal(12m, row.Balance);
+    }
+
+    [Fact]
+    public async Task Attendance_leave_draws_on_the_first_type_with_days()
+    {
+        using var ctx = ContextWithLeaveTypes();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.LeaveQuotas = new() { Quota("Sick", 6m), Quota("Casual", 0m), Quota("Earned", 10m) };
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(dto));
+
+        Assert.Equal("Earned", (await ctx.LeaveEntitlements.SingleAsync(e => e.IsAttendanceLeaveType)).LeaveType);
+    }
+
+    [Fact]
+    public async Task Registering_without_quotas_saves_none()
+    {
+        using var ctx = ContextWithLeaveTypes();
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Create(TestHelpers.ValidCreateDto()));
+
+        Assert.Single(ctx.Staff);
+        Assert.Empty(ctx.LeaveEntitlements);
+    }
+
+    public static TheoryData<string, decimal, string?> InvalidQuotas => new()
+    {
+        { "Casual", -1m, null },
+        { "Casual", 366.5m, null },
+        { "Casual", 1.25m, null },
+        { "Sabbatical", 5m, null },
+        { "Casual", 5m, "casual" },
+    };
+
+    [Theory]
+    [MemberData(nameof(InvalidQuotas))]
+    public async Task Invalid_quota_rejects_the_registration_and_saves_nothing(string type, decimal days, string? duplicate)
+    {
+        using var ctx = ContextWithLeaveTypes();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.LeaveQuotas = new() { Quota(type, days) };
+        if (duplicate != null) dto.LeaveQuotas.Add(Quota(duplicate, days));
+
+        var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(dto));
+
+        Assert.True(errors.ContainsKey("leave_quotas"));
+        Assert.Empty(ctx.Staff);
+        Assert.Empty(ctx.LeaveEntitlements);
+    }
+
+    [Fact]
+    public async Task Registering_cannot_remove_a_quota()
+    {
+        using var ctx = ContextWithLeaveTypes();
+        var dto = TestHelpers.ValidCreateDto();
+        dto.LeaveQuotas = new() { Quota("Casual", null) };
+
+        Assert.True(TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(dto)).ContainsKey("leave_quotas"));
+        Assert.Empty(ctx.Staff);
+    }
+
+    [Fact]
+    public async Task Editing_adds_quotas_missed_at_registration_with_all_their_details()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        var dto = DtoFor(staff);
+        dto.LeaveQuotas = new() { Quota("Casual", 0m), Quota("Sick", 7.5m) };
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+
+        var saved = await ctx.LeaveEntitlements.OrderBy(e => e.LeaveType).ToListAsync();
+        Assert.Equal(new[] { "Casual", "Sick" }, saved.Select(e => e.LeaveType));
+        Assert.Equal(new[] { 0m, 7.5m }, saved.Select(e => e.AnnualQuota));
+        Assert.All(saved, e =>
+        {
+            Assert.Equal(staff.Id, e.StaffId);
+            Assert.Equal("Admin", e.StaffCategory);
+            Assert.Equal(DateTime.Today.Year, e.Year);
+        });
+        Assert.Equal("Sick", saved.Single(e => e.IsAttendanceLeaveType).LeaveType);   // the one with days to draw on
+    }
+
+    [Fact]
+    public async Task Editing_only_changes_the_listed_quotas()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        ctx.LeaveEntitlements.AddRange(StoredQuota(staff, "Casual", 5m, attendance: true), StoredQuota(staff, "Sick", 6m));
+        await ctx.SaveChangesAsync();
+        var dto = DtoFor(staff);
+        dto.LeaveQuotas = new() { Quota("Sick", 8m) };
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+
+        var saved = await ctx.LeaveEntitlements.AsNoTracking().OrderBy(e => e.LeaveType).ToListAsync();
+        Assert.Equal(new[] { 5m, 8m }, saved.Select(e => e.AnnualQuota));
+        Assert.True(saved[0].IsAttendanceLeaveType);
+    }
+
+    [Fact]
+    public async Task Editing_with_a_quota_below_leave_taken_saves_nothing_and_names_the_type()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        ctx.LeaveEntitlements.Add(StoredQuota(staff, "Casual", 5m, attendance: true));
+        ctx.StaffLeaveEntries.Add(TakenLeave(staff, "Casual", 3m));
+        await ctx.SaveChangesAsync();
+        var dto = DtoFor(staff);
+        dto.FullName = "Changed Name";
+        dto.LeaveQuotas = new() { Quota("Casual", 2m) };
+
+        var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+
+        Assert.StartsWith("Casual: ", errors["leave_quotas"]);
+        Assert.Equal(5m, (await ctx.LeaveEntitlements.AsNoTracking().SingleAsync()).AnnualQuota);
+        Assert.Equal("Older Record", (await ctx.Staff.AsNoTracking().SingleAsync()).FullName);
+    }
+
+    [Fact]
+    public async Task Editing_rejects_an_unknown_leave_type()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        var dto = DtoFor(staff);
+        dto.LeaveQuotas = new() { Quota("Sabbatical", 5m) };
+
+        Assert.True(TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto)).ContainsKey("leave_quotas"));
+        Assert.Empty(ctx.LeaveEntitlements);
+    }
+
+    [Fact]
+    public async Task Clearing_an_unused_quota_removes_it_and_moves_the_attendance_policy()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        ctx.LeaveEntitlements.AddRange(StoredQuota(staff, "Casual", 5m, attendance: true), StoredQuota(staff, "Sick", 6m));
+        await ctx.SaveChangesAsync();
+        var dto = DtoFor(staff);
+        dto.LeaveQuotas = new() { Quota("Casual", null) };
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+
+        var left = await ctx.LeaveEntitlements.AsNoTracking().SingleAsync();
+        Assert.Equal("Sick", left.LeaveType);
+        Assert.True(left.IsAttendanceLeaveType);
+    }
+
+    [Fact]
+    public async Task Clearing_a_quota_with_leave_taken_is_refused()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        ctx.LeaveEntitlements.Add(StoredQuota(staff, "Casual", 5m, attendance: true));
+        ctx.StaffLeaveEntries.Add(TakenLeave(staff, "Casual", 1m));
+        await ctx.SaveChangesAsync();
+        var dto = DtoFor(staff);
+        dto.LeaveQuotas = new() { Quota("Casual", null) };
+
+        Assert.StartsWith("Casual: ", TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto))["leave_quotas"]);
+        Assert.Single(ctx.LeaveEntitlements);
+    }
+
+    [Fact]
+    public async Task Giving_days_to_another_type_moves_the_policy_off_a_type_with_none()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        ctx.LeaveEntitlements.Add(StoredQuota(staff, "Casual", 0m, attendance: true));
+        var unpaid = new AttendanceRecord { StaffId = staff.Id, AttendanceDate = DateTime.Today, Status = AttendanceStatuses.Leave, LeaveWithoutPay = true };
+        ctx.AttendanceRecords.Add(unpaid);
+        await ctx.SaveChangesAsync();
+        var dto = DtoFor(staff);
+        dto.LeaveQuotas = new() { Quota("Earned", 10m) };
+
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
+
+        Assert.Equal("Earned", (await ctx.LeaveEntitlements.AsNoTracking().SingleAsync(e => e.IsAttendanceLeaveType)).LeaveType);
+        Assert.False((await ctx.AttendanceRecords.AsNoTracking().SingleAsync()).LeaveWithoutPay);
+    }
+
+    [Fact]
+    public async Task Edit_form_reads_quota_taken_and_balance()
+    {
+        var (ctx, staff) = await EditableWithLeaveTypes();
+        using var _ = ctx;
+        ctx.LeaveEntitlements.Add(StoredQuota(staff, "Casual", 5m, attendance: true));
+        ctx.StaffLeaveEntries.Add(TakenLeave(staff, "Casual", 2m));
+        await ctx.SaveChangesAsync();
+        var controller = TestHelpers.CreateController(ctx);
+
+        var row = TestHelpers.OkJson(await controller.LeaveQuotas("EMP001")).GetProperty("rows")[0];
+
+        Assert.Equal("Casual", row.GetProperty("leaveType").GetString());
+        Assert.Equal(5m, row.GetProperty("entitlement").GetDecimal());
+        Assert.Equal(2m, row.GetProperty("taken").GetDecimal());
+        Assert.Equal(3m, row.GetProperty("balance").GetDecimal());
+        Assert.IsType<NotFoundResult>(await controller.LeaveQuotas("EMP999"));
+    }
+
     // ── Employee type (separate from the staff category) ──────────
 
     private static string ColumnOf(string property) =>

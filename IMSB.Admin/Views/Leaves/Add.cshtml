@@ -4,7 +4,7 @@
 @{
     var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
     ViewData["Title"] = L["AddLeaveTaken"].Value;
-    var minDate = DateTime.Today.AddDays(1).ToString("yyyy-MM-dd");
+    var minDate = new DateTime(Model.Year, 1, 1).ToString("yyyy-MM-dd");
     var maxDate = new DateTime(Model.Year, 12, 31).ToString("yyyy-MM-dd");
 }
 

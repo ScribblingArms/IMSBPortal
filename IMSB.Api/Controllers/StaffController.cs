@@ -14,8 +14,13 @@ namespace IMSB.Api.Controllers
         private const int ContractExpiryWindowDays = 30;
 
         private readonly IStaffInterface _staff;
+        private readonly ILeavesInterface _leaves;
 
-        public StaffController(IStaffInterface staff) => _staff = staff;
+        public StaffController(IStaffInterface staff, ILeavesInterface leaves)
+        {
+            _staff = staff;
+            _leaves = leaves;
+        }
 
         public record StaffStats(int Total, int Active, int OnLeave, int Departments, int ContractExpiring);
 
@@ -32,6 +37,7 @@ namespace IMSB.Api.Controllers
             {
                 depts = departments.Select(d => new DepartmentItem(d.Id.ToString(), d.Name, perDept.GetValueOrDefault(d.Id), "#2558a8")),
                 shifts = (await _staff.ShiftsAsync()).Select(s => s.ToOption()),
+                leaveTypes = await _staff.LeaveTypesAsync(),
                 staff = (await _staff.FilterAsync(q, departmentId, status)).Select(s => s.ToListItem(deptNames, User.IsInRole("Admin"))),
                 stats = ComputeStats(allStaff)
             });
@@ -60,7 +66,7 @@ namespace IMSB.Api.Controllers
             };
             dto.ApplyTo(entity);
             if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
-            await _staff.AddAsync(entity);
+            await _staff.AddAsync(entity, dto.LeaveQuotas);
             return Ok(new { employeeId = entity.EmployeeId });
         }
 
@@ -78,6 +84,13 @@ namespace IMSB.Api.Controllers
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = UserName;
             await _staff.UpdateAsync(entity);
+
+            // after the staff save, so the quotas take a changed department as their category
+            if (dto.LeaveQuotas is { Count: > 0 })
+            {
+                var saved = await _leaves.SaveQuotasAsync(entity.Id, dto.LeaveQuotas);
+                if (saved.ErrorKey != null) return Invalid(new Dictionary<string, string> { ["leave_quotas"] = L[saved.ErrorKey] });
+            }
             return Ok(new { employeeId = entity.EmployeeId });
         }
 
@@ -137,6 +150,11 @@ namespace IMSB.Api.Controllers
 
             var email = dto.Email?.Trim().ToLower();
             if (!string.IsNullOrEmpty(email) && await _staff.EmailExistsAsync(email, existingId)) errors["email"] = L["ValEmailExists"];
+
+            if (!await _staff.LeaveQuotasValidAsync(dto.LeaveQuotas, allowRemoval: existingId != null))
+                errors["leave_quotas"] = L["ValLeaveQuotas"];
+            else if (existingId != null && await _leaves.LeaveQuotaProblemAsync(existingId.Value, dto.LeaveQuotas) is { } problem)
+                errors["leave_quotas"] = $"{problem.LeaveType}: {L[problem.ErrorKey]}";
             return errors;
         }
     }

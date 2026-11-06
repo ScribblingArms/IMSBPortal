@@ -28,7 +28,14 @@ namespace IMSB.Interfaces
         /// <summary>email is lower-case.</summary>
         Task<bool> EmailExistsAsync(string email, Guid? exceptId);
 
-        Task AddAsync(Staff staff);
+        /// <summary>The leave types offered when registering, by name.</summary>
+        Task<List<string>> LeaveTypesAsync();
+
+        /// <summary>False unless each quota is for a different known leave type, in half-days from 0 to 366 (or null, when removal is allowed).</summary>
+        Task<bool> LeaveQuotasValidAsync(IReadOnlyCollection<LeaveQuotaDto>? quotas, bool allowRemoval = false);
+
+        /// <summary>Saves a new staff member together with their leave quotas for this year.</summary>
+        Task AddAsync(Staff staff, IReadOnlyCollection<LeaveQuotaDto>? quotas = null);
 
         /// <summary>Saves the changes made to a tracked staff member.</summary>
         Task UpdateAsync(Staff staff);

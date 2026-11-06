@@ -2704,10 +2704,13 @@
   <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>अवकाश दर्ज करने से पहले कम से कम एक पात्रता निर्धारित करें।</value></data>
   <data name="ValLeaveEntitlement" xml:space="preserve"><value>मान्य श्रेणी, अवकाश प्रकार और वार्षिक सीमा दर्ज करें।</value></data>
   <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>सीमा पहले से लिए गए अवकाश से कम नहीं हो सकती।</value></data>
+  <data name="ValLeaveQuotas" xml:space="preserve"><value>0 से 366 तक अवकाश दिन आधे दिन के अंतराल में दर्ज करें (जैसे 12 या 7.5)।</value></data>
+  <data name="LeaveQuotaHint" xml:space="preserve"><value>इस वर्ष के लिए अनुमत दिन। जो प्रकार इस कर्मचारी पर लागू नहीं है उसे खाली छोड़ दें।</value></data>
   <data name="ValLeaveTypeInUse" xml:space="preserve"><value>प्रविष्टियाँ मौजूद हैं, इसलिए यह अवकाश प्रकार हटाया नहीं जा सकता।</value></data>
   <data name="ValLeaveEntry" xml:space="preserve"><value>मान्य कर्मचारी, अवकाश प्रकार, तारीखें और दिन दर्ज करें।</value></data>
   <data name="ValLeaveDates" xml:space="preserve"><value>वर्तमान वर्ष के भीतर मान्य तारीख सीमा दर्ज करें।</value></data>
-  <data name="ValLeaveFutureDate" xml:space="preserve"><value>अवकाश की दोनों तारीखें आज के बाद की होनी चाहिए।</value></data>
+  <data name="ValLeaveBeforeJoin" xml:space="preserve"><value>अवकाश कर्मचारी की कार्यग्रहण तिथि से पहले शुरू नहीं हो सकता।</value></data>
+  <data name="ValLeaveDayWorked" xml:space="preserve"><value>उपस्थिति के अनुसार कर्मचारी ने इस अवधि के किसी दिन काम किया है। पहले उपस्थिति ठीक करें।</value></data>
   <data name="ValLeaveDays" xml:space="preserve"><value>दिन आधे दिन के गुणक में हों और तारीख सीमा से अधिक न हों।</value></data>
   <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>कर्मचारी श्रेणी के लिए यह अवकाश प्रकार निर्धारित नहीं है।</value></data>
   <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>इन तारीखों पर कर्मचारी की अवकाश प्रविष्टि पहले से है।</value></data>

@@ -62,11 +62,42 @@ namespace IMSB.Backend
         public Task<bool> EmailExistsAsync(string email, Guid? exceptId) =>
             _context.Staff.AnyAsync(s => s.Email != null && s.Email.ToLower() == email && s.Id != exceptId);
 
-        public async Task AddAsync(Staff staff)
+        public Task<List<string>> LeaveTypesAsync() =>
+            _context.LeaveTypes.AsNoTracking().OrderBy(t => t.Name).Select(t => t.Name).ToListAsync();
+
+        public async Task<bool> LeaveQuotasValidAsync(IReadOnlyCollection<LeaveQuotaDto>? quotas, bool allowRemoval = false)
+        {
+            if (quotas == null || quotas.Count == 0) return true;
+            var known = new HashSet<string>(await LeaveTypesAsync(), StringComparer.OrdinalIgnoreCase);
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            return quotas.All(q => q != null
+                && (q.AnnualQuota == null ? allowRemoval : q.AnnualQuota is >= 0m and <= 366m && q.AnnualQuota % 0.5m == 0m)
+                && known.Contains(q.LeaveType?.Trim() ?? "") && seen.Add(q.LeaveType!.Trim()));
+        }
+
+        public async Task AddAsync(Staff staff, IReadOnlyCollection<LeaveQuotaDto>? quotas = null)
         {
             await CopyCategoryFromDepartmentAsync(staff);
             _context.Staff.Add(staff);
+            AddLeaveQuotas(staff, quotas);
             await _context.SaveChangesAsync();
+        }
+
+        private void AddLeaveQuotas(Staff staff, IReadOnlyCollection<LeaveQuotaDto>? quotas)
+        {
+            if (quotas == null || quotas.Count == 0) return;
+            var ordered = quotas.OrderBy(q => q.LeaveType.Trim(), StringComparer.OrdinalIgnoreCase).ToList();
+            // Leave marked on attendance draws on one type per staff member: the first that has days to draw on
+            var attendanceType = ordered.FirstOrDefault(q => q.AnnualQuota > 0m) ?? ordered[0];
+            _context.LeaveEntitlements.AddRange(ordered.Select(q => new LeaveEntitlement
+            {
+                StaffId = staff.Id,
+                StaffCategory = staff.StaffCategory,
+                LeaveType = q.LeaveType.Trim(),
+                Year = DateTime.Today.Year,
+                AnnualQuota = q.AnnualQuota!.Value,
+                IsAttendanceLeaveType = ReferenceEquals(q, attendanceType)
+            }));
         }
 
         public async Task UpdateAsync(Staff staff)

@@ -172,6 +172,9 @@ public class LeaveManagementViewModel
     public List<LeaveBalanceRow> Balances { get; set; } = new();
 }
 
+/// <summary>Why a quota change is refused: the leave type and a shared resource key.</summary>
+public record LeaveQuotaProblem(string LeaveType, string ErrorKey);
+
 public record LeaveStaffOption(Guid Id, string EmployeeId, string FullName, string StaffCategory);
 
 public class LeaveEntryViewModel

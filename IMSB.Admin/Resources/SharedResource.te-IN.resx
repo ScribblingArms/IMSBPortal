@@ -2704,10 +2704,13 @@
   <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>సెలవు నమోదు చేసే ముందు కనీసం ఒక పరిమితిని సెట్ చేయండి.</value></data>
   <data name="ValLeaveEntitlement" xml:space="preserve"><value>చెల్లుబాటు అయ్యే వర్గం, సెలవు రకం మరియు వార్షిక పరిమితిని నమోదు చేయండి.</value></data>
   <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>ఇప్పటికే తీసుకున్న సెలవు కంటే పరిమితి తక్కువగా ఉండకూడదు.</value></data>
+  <data name="ValLeaveQuotas" xml:space="preserve"><value>0 నుండి 366 వరకు సెలవు రోజులను అర్ధ రోజు విభాగాలలో నమోదు చేయండి (ఉదా. 12 లేదా 7.5).</value></data>
+  <data name="LeaveQuotaHint" xml:space="preserve"><value>ఈ సంవత్సరానికి అనుమతించిన రోజులు. ఈ ఉద్యోగికి వర్తించని రకాన్ని ఖాళీగా వదిలేయండి.</value></data>
   <data name="ValLeaveTypeInUse" xml:space="preserve"><value>నమోదులు ఉన్నందున ఈ సెలవు రకాన్ని తొలగించలేరు.</value></data>
   <data name="ValLeaveEntry" xml:space="preserve"><value>చెల్లుబాటు అయ్యే ఉద్యోగి, సెలవు రకం, తేదీలు మరియు రోజులను నమోదు చేయండి.</value></data>
   <data name="ValLeaveDates" xml:space="preserve"><value>ప్రస్తుత సంవత్సరంలో సరైన తేదీ పరిధిని నమోదు చేయండి.</value></data>
-  <data name="ValLeaveFutureDate" xml:space="preserve"><value>సెలవు రెండు తేదీలు ఈ రోజు తర్వాత ఉండాలి.</value></data>
+  <data name="ValLeaveBeforeJoin" xml:space="preserve"><value>ఉద్యోగి చేరిన తేదీకి ముందు సెలవు ప్రారంభం కాకూడదు.</value></data>
+  <data name="ValLeaveDayWorked" xml:space="preserve"><value>ఈ వ్యవధిలోని ఒక రోజున ఉద్యోగి పని చేసినట్లు హాజరు చూపుతోంది. ముందుగా హాజరును సరిచేయండి.</value></data>
   <data name="ValLeaveDays" xml:space="preserve"><value>రోజులు అర్ధ-రోజు పెరుగుదలలో ఉండాలి మరియు తేదీ పరిధిని మించకూడదు.</value></data>
   <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>ఉద్యోగి వర్గానికి ఈ సెలవు రకం సెట్ చేయలేదు.</value></data>
   <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>ఈ తేదీలకు ఉద్యోగికి ఇప్పటికే సెలవు నమోదు ఉంది.</value></data>

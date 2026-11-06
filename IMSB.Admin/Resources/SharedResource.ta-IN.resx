@@ -2704,10 +2704,13 @@
   <data name="ConfigureLeaveEntitlementsFirst" xml:space="preserve"><value>விடுப்பைப் பதிவு செய்வதற்கு முன் குறைந்தது ஒரு ஒதுக்கீட்டை அமைக்கவும்.</value></data>
   <data name="ValLeaveEntitlement" xml:space="preserve"><value>சரியான வகை, விடுப்பு வகை மற்றும் ஆண்டு ஒதுக்கீட்டை உள்ளிடவும்.</value></data>
   <data name="ValLeaveQuotaBelowTaken" xml:space="preserve"><value>ஏற்கனவே எடுத்த விடுப்பை விட ஒதுக்கீடு குறைவாக இருக்க முடியாது.</value></data>
+  <data name="ValLeaveQuotas" xml:space="preserve"><value>0 முதல் 366 வரையிலான விடுப்பு நாட்களை அரை நாள் அளவுகளில் உள்ளிடவும் (எ.கா. 12 அல்லது 7.5).</value></data>
+  <data name="LeaveQuotaHint" xml:space="preserve"><value>இந்த ஆண்டுக்கு அனுமதிக்கப்பட்ட நாட்கள். இந்தப் பணியாளருக்குப் பொருந்தாத வகையை காலியாக விடவும்.</value></data>
   <data name="ValLeaveTypeInUse" xml:space="preserve"><value>பதிவுகள் உள்ளதால் இந்த விடுப்பு வகையை நீக்க முடியாது.</value></data>
   <data name="ValLeaveEntry" xml:space="preserve"><value>சரியான பணியாளர், விடுப்பு வகை, தேதிகள் மற்றும் நாட்களை உள்ளிடவும்.</value></data>
   <data name="ValLeaveDates" xml:space="preserve"><value>நடப்பு ஆண்டிற்குள் சரியான தேதிகளை உள்ளிடவும்.</value></data>
-  <data name="ValLeaveFutureDate" xml:space="preserve"><value>விடுப்பின் இரண்டு தேதிகளும் இன்றைய தேதிக்குப் பிறகு இருக்க வேண்டும்.</value></data>
+  <data name="ValLeaveBeforeJoin" xml:space="preserve"><value>பணியாளர் சேர்ந்த தேதிக்கு முன் விடுப்பு தொடங்க முடியாது.</value></data>
+  <data name="ValLeaveDayWorked" xml:space="preserve"><value>இந்தக் காலத்தில் ஒரு நாளில் பணியாளர் பணிபுரிந்ததாக வருகைப் பதிவு காட்டுகிறது. முதலில் வருகைப் பதிவைத் திருத்தவும்.</value></data>
   <data name="ValLeaveDays" xml:space="preserve"><value>நாட்கள் அரை நாள் அளவிலும், தேதிகளுக்குள் இருக்க வேண்டும்.</value></data>
   <data name="ValLeaveTypeNotConfigured" xml:space="preserve"><value>இந்த பணியாளர் வகைக்கு இந்த விடுப்பு வகை அமைக்கப்படவில்லை.</value></data>
   <data name="ValLeaveDatesOverlap" xml:space="preserve"><value>இந்த தேதிகளில் பணியாளருக்கு ஏற்கனவே விடுப்பு பதிவு உள்ளது.</value></data>

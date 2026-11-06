@@ -54,7 +54,7 @@ internal static class TestHelpers
             new Claim(ClaimTypes.Name, userName),
             new Claim(ClaimTypes.Role, role)
         }, "Test");
-        return new StaffController(new IMSB.Backend.StaffDetails(ctx), LocalizerFactory())
+        return new StaffController(new IMSB.Backend.StaffDetails(ctx), new IMSB.Backend.Leaves(ctx), LocalizerFactory())
         {
             ControllerContext = new ControllerContext
             {
