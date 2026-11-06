@@ -539,7 +539,8 @@ public class StaffControllerUpdateTests
 
     private static readonly string[] NewShifts =
     {
-        "06:00 AM to 02:00 PM", "02:00 PM to 10:00 PM", "10:00 PM to 06:00 AM", "08:00 AM to 04:00 PM", "01:00 PM to 09:00 PM"
+        "06:00 AM to 02:00 PM", "02:00 PM to 10:00 PM", "10:00 PM to 06:00 AM", "08:00 AM to 04:00 PM", "01:00 PM to 09:00 PM",
+        "10:00 AM to 05:00 PM", "10:00 AM to 06:00 PM"
     };
 
     private static async Task<IMSB.Dto.Models.IMSBContext> ContextWithNewShifts()
@@ -564,6 +565,8 @@ public class StaffControllerUpdateTests
     [Theory]
     [InlineData("06:00 AM to 02:00 PM")]
     [InlineData("10:00 PM to 06:00 AM")]
+    [InlineData("10:00 AM to 05:00 PM")]
+    [InlineData("10:00 AM to 06:00 PM")]
     public async Task New_staff_can_take_a_new_shift(string shift)
     {
         using var ctx = await ContextWithNewShifts();

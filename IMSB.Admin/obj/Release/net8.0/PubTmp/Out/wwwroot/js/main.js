@@ -49,7 +49,7 @@ const IMSBValidate = {
 
 /* ── Date fields ─────────────────────────────────────────────── */
 // Browsers show "dd-mm-yyyy" in an empty date field and CSS cannot detect that, so empty fields get .date-empty,
-// which forms.css uses to hide the text until the field is focused. Half-typed dates stay visible (badInput).
+// which forms.css uses to hide the text. It comes back as soon as a key is pressed in the field, and half-typed dates stay visible (badInput).
 (function initDateFields() {
   const DATE_TYPES = ['date', 'datetime-local', 'month', 'week'];
   const isDateField = el => el instanceof HTMLInputElement && DATE_TYPES.includes(el.type);
@@ -69,6 +69,10 @@ const IMSBValidate = {
   });
 
   ['input', 'change', 'focusout'].forEach(type => document.addEventListener(type, e => sync(e.target), true));
+  // typing must be seen from the first key; leaving the field untouched hides the text again (focusout above)
+  document.addEventListener('keydown', e => {
+    if (isDateField(e.target) && !['Tab', 'Shift', 'Escape', 'Enter', 'Alt', 'Control', 'Meta'].includes(e.key)) e.target.classList.remove('date-empty');
+  }, true);
   // the fields are only cleared after the reset event has finished
   document.addEventListener('reset', e => setTimeout(() => syncAll(e.target)));
   syncAll(document);

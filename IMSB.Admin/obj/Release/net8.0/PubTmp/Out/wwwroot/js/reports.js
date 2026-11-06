@@ -26,8 +26,9 @@
   let loadSeq = 0, monthlyReportSeq = 0, salaryReportSeq = 0;
 
   const page = () => ({ month: $('reportMonth').value, categoryId: $('reportCategory').value });
-  const stallFilters = () => ({ q: $('stallReportSearch').value.trim(), status: $('stallReportStatus').value, block: $('stallReportBlock').value });
-  const artisanFilters = () => ({ q: $('artisanReportSearch').value.trim(), status: $('artisanReportStatus').value });
+  // the report library's cards export without these filters when the page has none
+  const stallFilters = () => $('stallReportSearch') ? { q: $('stallReportSearch').value.trim(), status: $('stallReportStatus').value, block: $('stallReportBlock').value } : {};
+  const artisanFilters = () => $('artisanReportSearch') ? { q: $('artisanReportSearch').value.trim(), status: $('artisanReportStatus').value } : {};
   const monthlyAttendanceFilters = () => ({
     year: $('monthlyReportYear').value,
     month: $('monthlyReportMonth').value,

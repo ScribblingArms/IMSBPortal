@@ -75,6 +75,8 @@ public class AttendanceRulesTests
     [InlineData("10:00 PM to 06:00 AM", "22:00", "06:00", 8)]
     [InlineData("08:00 AM to 04:00 PM", "08:00", "16:00", 8)]
     [InlineData("01:00 PM to 09:00 PM", "13:00", "21:00", 8)]
+    [InlineData("10:00 AM to 05:00 PM", "10:00", "17:00", 7)]
+    [InlineData("10:00 AM to 06:00 PM", "10:00", "18:00", 8)]
     public void Shift_times_and_length_are_read_from_the_shift_name(string name, string start, string end, decimal hours)
     {
         var t = AttendanceRules.ShiftTimes(name);
