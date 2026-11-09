@@ -2588,6 +2588,8 @@
   <data name="Allowances" xml:space="preserve"><value>படிகள்</value></data>
   <data name="OvertimeAmount" xml:space="preserve"><value>கூடுதல் நேரத் தொகை</value></data>
   <data name="Deductions" xml:space="preserve"><value>பிடித்தங்கள்</value></data>
+  <data name="LOPDeduction" xml:space="preserve"><value>சம்பளமில்லா விடுப்பு (LOP) பிடித்தம்</value></data>
+  <data name="PdfExportFailed" xml:space="preserve"><value>PDF உருவாக்க முடியவில்லை. இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும், அல்லது Excel ஏற்றுமதியைப் பயன்படுத்தவும்.</value></data>
   <data name="NetPay" xml:space="preserve"><value>நிகர ஊதியம்</value></data>
   <data name="PayrollSaved" xml:space="preserve"><value>ஊதியப் பட்டியல் உருவாக்கப்பட்டு சேமிக்கப்பட்டது.</value></data>
   <data name="PayrollLoadFailed" xml:space="preserve"><value>ஊதியப் பட்டியல் தரவை ஏற்ற முடியவில்லை.</value></data>
@@ -2752,6 +2754,20 @@
   <data name="NoOTAssignments" xml:space="preserve"><value>இன்னும் மிகைநேர ஒதுக்கீடுகள் இல்லை.</value></data>
   <data name="ValOtSelectStaff" xml:space="preserve"><value>ஒரு பணியாளரைத் தேர்ந்தெடுக்கவும்</value></data>
   <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>இந்தப் பணியாளருக்கு ஏற்கனவே மிகைநேர ஒதுக்கீடு உள்ளது. அதையே திருத்தவும்.</value></data>
+  <data name="OTDate" xml:space="preserve"><value>மிகைநேரத் தேதி</value></data>
+  <data name="OTNextDay" xml:space="preserve"><value>அடுத்த நாள்</value></data>
+  <data name="ValOtPastLocked" xml:space="preserve"><value>கடந்த தேதிகளுக்கான மிகைநேர ஒதுக்கீடுகளைத் திருத்த முடியாது</value></data>
+  <data name="ValOtSelectDate" xml:space="preserve"><value>மிகைநேரத் தேதியைத் தேர்ந்தெடுக்கவும்</value></data>
+  <data name="ValOtDatePast" xml:space="preserve"><value>மிகைநேரத் தேதி இன்றைக்கு முந்தையதாக இருக்கக்கூடாது</value></data>
+  <data name="ValOtDateThisMonth" xml:space="preserve"><value>மிகைநேரத் தேதி நடப்பு மாதத்திற்குள் இருக்க வேண்டும்</value></data>
+  <data name="ValOtOneDay" xml:space="preserve"><value>மிகைநேரம் தொடங்கிய 24 மணி நேரத்திற்குள் முடிய வேண்டும்</value></data>
+  <data name="ShiftTimings" xml:space="preserve"><value>பணி நேர அளவு</value></data>
+  <data name="OtShiftAlert" xml:space="preserve"><value>{0} தற்போது {1} பணி நேரத்தில் பணிபுரிகிறார்.</value></data>
+  <data name="OtAllowedWindow" xml:space="preserve"><value>பணி நேரம் முடிந்த பின்னரே மிகைநேரம் ஒதுக்க முடியும்: {0} முதல் அடுத்த பணி நேரம் தொடங்கும் {1} வரை.</value></data>
+  <data name="OtShiftTimesUnknown" xml:space="preserve"><value>இந்தப் பணி நேரத்தின் நேர அளவு தெரியவில்லை, எனவே மிகைநேரம் அதனுடன் சரிபார்க்கப்படாது.</value></data>
+  <data name="OtNoShift" xml:space="preserve"><value>இந்தப் பணியாளருக்குப் பணி நேரம் ஒதுக்கப்படவில்லை, எனவே மிகைநேரம் சரிபார்க்கப்படாது.</value></data>
+  <data name="ValOtBeforeShiftEnd" xml:space="preserve"><value>பணியாளரின் பணி நேரம் முடிந்த பின்னரே மிகைநேரம் தொடங்க முடியும்</value></data>
+  <data name="ValOtIntoNextShift" xml:space="preserve"><value>பணியாளரின் அடுத்த பணி நேரம் தொடங்கும் முன் மிகைநேரம் முடிய வேண்டும்</value></data>
   <data name="ValEmployeeType" xml:space="preserve"><value>சரியான பணியாளர் வகையைத் தேர்ந்தெடுக்கவும்</value></data>
   <data name="EmployeeTypeDepartment" xml:space="preserve"><value>துறை</value></data>
   <data name="EmployeeTypeAgency" xml:space="preserve"><value>முகமை</value></data>

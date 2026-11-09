@@ -27,8 +27,19 @@ public class OtAssignmentsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Data() =>
-        Ok(new { rows = await _assignments.ListAsync(), staff = await _assignments.UnassignedStaffAsync() });
+    public async Task<IActionResult> Data()
+    {
+        var data = (new
+        {
+            rows = await _assignments.ListAsync(),
+            staff = await _assignments.UnassignedStaffAsync(),
+            // the server's date, so the page offers the same days the server accepts and locks the same past ones
+            today = DateTime.Today.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)
+        }
+);
+        return Ok(data);
+    }
+  
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -54,7 +65,7 @@ public class OtAssignmentsController : Controller
         if (errors.Count > 0) return BadRequest(new { errors });
 
         var (from, to) = dto.Times();
-        return FromResult(await _assignments.UpdateAsync(id, from, to, User.Identity?.Name), "staff_id", "OTAssignmentSaved");
+        return FromResult(await _assignments.UpdateAsync(id, from, to, User.Identity?.Name), "request", "OTAssignmentSaved");
     }
 
     [HttpPost]
@@ -65,14 +76,14 @@ public class OtAssignmentsController : Controller
     private Dictionary<string, string> TimeErrors(OtAssignmentDto dto)
     {
         var errors = new Dictionary<string, string>();
-        if (dto.ValidateTimes() is { } invalid) errors[invalid.Field] = _L[invalid.Key].Value;
+        if (dto.ValidateTimes(DateTime.Today) is { } invalid) errors[invalid.Field] = _L[invalid.Key].Value;
         return errors;
     }
 
     private IActionResult FromResult(BackendResult result, string errorField, string successKey)
     {
         if (!result.Found) return NotFound();
-        if (result.ErrorKey != null) return ErrorResult(errorField, _L[result.ErrorKey].Value);
+        if (result.ErrorKey != null) return ErrorResult(OtAssignmentMapper.ErrorField(result.ErrorKey, errorField), _L[result.ErrorKey].Value);
         return Ok(new { message = _L[successKey].Value });
     }
 }

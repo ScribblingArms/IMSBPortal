@@ -24,6 +24,7 @@ namespace IMSB.Backend
             var (staff, attendance) = await PayableStaffAsync(monthStart, savedByStaff.Keys.ToList(), tracking: false);
             var departments = await DepartmentNamesAsync();
             var days = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
+            var overtime = await OvertimePay.ForMonthAsync(_context, staff, departments, monthStart);
 
             var rows = staff.Select(employee =>
             {
@@ -32,7 +33,9 @@ namespace IMSB.Backend
                 var paidDays = entry?.PaidDays ?? PaidDays(records);
                 var basicPay = entry?.BasicPay ?? ProratedPay(employee.MonthlySalary, paidDays, days);
                 var allowances = entry?.Allowances ?? 0m;
-                var overtimeAmount = entry?.OvertimeAmount ?? 0m;
+                // a generated month keeps its saved figures; otherwise OT is worked out from the OT assignments
+                var ot = overtime.GetValueOrDefault(employee.Id) ?? OvertimeResult.None;
+                var overtimeAmount = entry?.OvertimeAmount ?? ot.Amount;
                 var deductions = entry?.Deductions ?? 0m;
                 return new PayBillRow(
                     employee.Id,
@@ -45,7 +48,7 @@ namespace IMSB.Backend
                     entry?.MonthlySalary ?? employee.MonthlySalary,
                     basicPay,
                     allowances,
-                    entry?.OvertimeHours ?? records.Sum(record => record.OvertimeHours),
+                    entry?.OvertimeHours ?? ot.Hours,
                     overtimeAmount,
                     deductions,
                     entry?.NetPay ?? NetPay(basicPay, allowances, overtimeAmount, deductions));
@@ -75,6 +78,7 @@ namespace IMSB.Backend
             var departments = await DepartmentNamesAsync();
             var adjustments = rows.ToDictionary(row => row.StaffId);
             var monthDays = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
+            var overtime = await OvertimePay.ForMonthAsync(_context, staff, departments, monthStart);
 
             foreach (var employee in staff)
             {
@@ -84,7 +88,9 @@ namespace IMSB.Backend
                 var paidDays = PaidDays(attendanceRows);
                 var basicPay = ProratedPay(employee.MonthlySalary, paidDays, monthDays);
                 var allowances = adjustment?.Allowances ?? entry?.Allowances ?? 0m;
-                var overtimeAmount = adjustment?.OvertimeAmount ?? entry?.OvertimeAmount ?? 0m;
+                // worked out again from the OT assignments on every generate, unless an amount is given for this employee
+                var ot = overtime.GetValueOrDefault(employee.Id) ?? OvertimeResult.None;
+                var overtimeAmount = adjustment?.OvertimeAmount ?? ot.Amount;
                 var deductions = adjustment?.Deductions ?? entry?.Deductions ?? 0m;
 
                 if (entry == null)
@@ -102,7 +108,7 @@ namespace IMSB.Backend
                 entry.MonthlySalary = employee.MonthlySalary;
                 entry.BasicPay = basicPay;
                 entry.Allowances = allowances;
-                entry.OvertimeHours = attendanceRows.Sum(record => record.OvertimeHours);
+                entry.OvertimeHours = ot.Hours;
                 entry.OvertimeAmount = overtimeAmount;
                 entry.Deductions = deductions;
                 entry.NetPay = NetPay(basicPay, allowances, overtimeAmount, deductions);

@@ -65,15 +65,13 @@ public class PayrollController : Controller
     public async Task<IActionResult> Export([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q, [FromQuery] string? employeeId = null)
     {
         if (!TryResolvePeriod(year, month, out var start)) return BadRequest();
-        var rows = await _payroll.RowsAsync(start, q);
-        if (!string.IsNullOrWhiteSpace(employeeId))
-            rows = rows.Where(row => string.Equals(row.EmployeeId, employeeId.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+        var rows = await BillRowsAsync(start, q, employeeId);
 
         var output = new List<string?[]>
         {
             new[] { _L["EmployeeID"].Value, _L["StaffName"].Value, _L["Department"].Value, _L["Designation"].Value,
                 _L["PaidDays"].Value, _L["MonthlySalary"].Value, _L["BasicPay"].Value, _L["Allowances"].Value, _L["OTHours"].Value,
-                _L["OvertimeAmount"].Value, _L["Deductions"].Value, _L["NetPay"].Value }
+                _L["OvertimeAmount"].Value, _L["LOPDeduction"].Value, _L["Deductions"].Value, _L["NetPay"].Value }
         };
         output.AddRange(rows.Select(row => new string?[]
         {
@@ -84,24 +82,51 @@ public class PayrollController : Controller
             Money(row.Allowances),
             row.OvertimeHours.ToString("0.##", CultureInfo.InvariantCulture),
             Money(row.OvertimeAmount),
+            Money(row.LopDeduction),
             Money(row.Deductions),
             Money(row.NetPay)
         }));
-        output.Add(new string?[] { _L["GrandTotal"].Value, null, null, null, null, null, null, null, null, null, null, Money(rows.Sum(row => row.NetPay)) });
+        output.Add(new string?[] { _L["GrandTotal"].Value, null, null, null, null, null, null, null, null, null, null, null, Money(rows.Sum(row => row.NetPay)) });
         return ExportExcel($"pay_bill_{start:yyyyMM}.xls", output);
     }
 
+    /// <summary>A print-ready page of the month's pay bill as on screen (employeeId = the staff filter, exact; q matches name or id).</summary>
     [HttpGet]
-    public async Task<IActionResult> Print([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q)
+    public async Task<IActionResult> Print([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q, [FromQuery] string? employeeId = null)
     {
         if (!TryResolvePeriod(year, month, out var start)) return BadRequest();
         ViewData["Title"] = _L["PayBillTitle"].Value;
-        var rows = await _payroll.RowsAsync(start, q);
-        return View("Print", new PayBillPrintModel(
+        return View("Print", await PrintModelAsync(start, q, employeeId));
+    }
+
+    /// <summary>
+    /// The PDF export: the pay bill document alone (no page around it), which payroll.js turns into a downloaded
+    /// pay_bill_yyyyMM.pdf. Same rows and filters as the Excel export.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> PdfDocument([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q, [FromQuery] string? employeeId = null)
+    {
+        if (!TryResolvePeriod(year, month, out var start)) return BadRequest();
+        return PartialView("_PayBillDocument", await PrintModelAsync(start, q, employeeId));
+    }
+
+    private async Task<PayBillPrintModel> PrintModelAsync(DateTime start, string? q, string? employeeId)
+    {
+        var rows = await BillRowsAsync(start, q, employeeId);
+        return new PayBillPrintModel(
             _L["PayBillTitle"].Value,
             start.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
             rows,
-            rows.Sum(row => row.NetPay)));
+            rows.Sum(row => row.NetPay));
+    }
+
+    /// <summary>The month's rows, narrowed by q (name or id contains) and the staff filter (exact employee id).</summary>
+    private async Task<List<PayBillRow>> BillRowsAsync(DateTime start, string? q, string? employeeId)
+    {
+        var rows = await _payroll.RowsAsync(start, q);
+        return string.IsNullOrWhiteSpace(employeeId)
+            ? rows
+            : rows.Where(row => string.Equals(row.EmployeeId, employeeId.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
     }
 
     private static bool TryResolvePeriod(int? year, int? month, out DateTime start)

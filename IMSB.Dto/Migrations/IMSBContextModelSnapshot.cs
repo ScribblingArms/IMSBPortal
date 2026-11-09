@@ -587,6 +587,10 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("FromDateTime");
 
+                    b.Property<decimal>("OtHours")
+                        .HasColumnType("decimal(5,2)")
+                        .HasColumnName("OtHours");
+
                     b.Property<Guid>("StaffId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("StaffId");
@@ -606,8 +610,7 @@ namespace IMSB.Dto.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StaffId")
-                        .IsUnique();
+                    b.HasIndex("StaffId");
 
                     b.ToTable("ot_assignments");
                 });

@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -70,11 +70,15 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
         Assert.Contains("id=\"otViewModal\"", html);
         Assert.Contains("id=\"otFrom\"", html);
         Assert.Contains("id=\"otTo\"", html);
-        Assert.Equal(2, Regex.Matches(html, "type=\"datetime-local\"").Count);
+        // a calendar for the date (built by the script), and separate time pickers for From and To
+        Assert.Contains("id=\"otCalendar\"", html);
+        Assert.Contains("id=\"otHours\"", html);
+        Assert.Equal(2, Regex.Matches(html, "type=\"time\"").Count);
+        Assert.DoesNotContain("datetime-local", html);
         Assert.Contains("window.OtAssignmentI18n", html);
         Assert.Contains("/js/ot-assignments.js", html);
         var headers = Regex.Matches(html, "<th>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()).ToList();
-        Assert.Equal(new[] { "Staff ID", "Name", "Staff Category", "Designation", "OT From", "OT To", "Actions" }, headers);
+        Assert.Equal(new[] { "Staff ID", "Name", "Staff Category", "Designation", "OT Date", "OT From", "OT To", "OT Hrs", "Actions" }, headers);
     }
 
     [Fact]
@@ -98,6 +102,9 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
         Assert.Contains(title, html);
     }
 
+    // OT can only be assigned from today, so the round trip runs on today's date
+    private static readonly string D = DateTime.Today.ToString("yyyy-MM-dd");
+
     [Fact]
     public async Task Add_view_update_delete_round_trip_over_http()
     {
@@ -105,30 +112,30 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
         var token = await Token(client);
 
         // add
-        var created = await client.SendAsync(Post("/OtAssignments/Create", token, new { staffId = StaffId, fromDateTime = "2026-11-05T18:00", toDateTime = "2026-11-05T20:00" }));
+        var created = await client.SendAsync(Post("/OtAssignments/Create", token, new { staffId = StaffId, fromDateTime = D + "T18:00", toDateTime = D + "T20:00" }));
         Assert.Equal(HttpStatusCode.OK, created.StatusCode);
 
         // view
         var data = await client.GetFromJsonAsync<JsonElement>("/OtAssignments/Data");
         var row = Assert.Single(data.GetProperty("rows").EnumerateArray());
         Assert.Equal("Http Ot Tester", row.GetProperty("staffName").GetString());
-        Assert.Equal("2026-11-05T18:00", row.GetProperty("fromDateTime").GetString());
+        Assert.Equal(D + "T18:00", row.GetProperty("fromDateTime").GetString());
         Assert.Empty(data.GetProperty("staff").EnumerateArray());
         var id = row.GetProperty("id").GetString();
 
         // a second one for the same person is refused
-        var duplicate = await client.SendAsync(Post("/OtAssignments/Create", token, new { staffId = StaffId, fromDateTime = "2026-11-06T06:00", toDateTime = "2026-11-06T07:00" }));
+        var duplicate = await client.SendAsync(Post("/OtAssignments/Create", token, new { staffId = StaffId, fromDateTime = D + "T06:00", toDateTime = D + "T07:00" }));
         Assert.Equal(HttpStatusCode.BadRequest, duplicate.StatusCode);
 
         // update
-        var updated = await client.SendAsync(Post($"/OtAssignments/Update/{id}", token, new { fromDateTime = "2026-11-07T19:00", toDateTime = "2026-11-07T22:30" }));
+        var updated = await client.SendAsync(Post($"/OtAssignments/Update/{id}", token, new { fromDateTime = D + "T19:00", toDateTime = D + "T22:30" }));
         Assert.Equal(HttpStatusCode.OK, updated.StatusCode);
         data = await client.GetFromJsonAsync<JsonElement>("/OtAssignments/Data");
         row = Assert.Single(data.GetProperty("rows").EnumerateArray());
-        Assert.Equal(("2026-11-07T19:00", "2026-11-07T22:30"), (row.GetProperty("fromDateTime").GetString(), row.GetProperty("toDateTime").GetString()));
+        Assert.Equal((D + "T19:00", D + "T22:30"), (row.GetProperty("fromDateTime").GetString(), row.GetProperty("toDateTime").GetString()));
 
         // invalid update is refused with the field's error
-        var invalid = await client.SendAsync(Post($"/OtAssignments/Update/{id}", token, new { fromDateTime = "2026-11-07T22:00", toDateTime = "2026-11-07T21:00" }));
+        var invalid = await client.SendAsync(Post($"/OtAssignments/Update/{id}", token, new { fromDateTime = D + "T22:00", toDateTime = D + "T21:00" }));
         Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
         var errors = await invalid.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal("OT To time must be later than OT From time", errors.GetProperty("errors").GetProperty("to_datetime").GetString());
@@ -153,7 +160,7 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
         var client = _factory.ClientAs("Admin");
         await Token(client);   // gets the cookie, but the header is missing below
 
-        var response = await client.PostAsJsonAsync(url, new { staffId = StaffId, fromDateTime = "2026-11-05T18:00", toDateTime = "2026-11-05T20:00" });
+        var response = await client.PostAsJsonAsync(url, new { staffId = StaffId, fromDateTime = D + "T18:00", toDateTime = D + "T20:00" });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -161,7 +168,7 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
     [Fact]
     public async Task Staff_role_cannot_change_assignments()
     {
-        var response = await _factory.ClientAs("Staff").PostAsJsonAsync("/OtAssignments/Create", new { staffId = StaffId, fromDateTime = "2026-11-05T18:00", toDateTime = "2026-11-05T20:00" });
+        var response = await _factory.ClientAs("Staff").PostAsJsonAsync("/OtAssignments/Create", new { staffId = StaffId, fromDateTime = D + "T18:00", toDateTime = D + "T20:00" });
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }

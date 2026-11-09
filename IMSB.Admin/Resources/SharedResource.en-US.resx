@@ -2588,6 +2588,8 @@
   <data name="Allowances" xml:space="preserve"><value>Allowances</value></data>
   <data name="OvertimeAmount" xml:space="preserve"><value>Overtime Amount</value></data>
   <data name="Deductions" xml:space="preserve"><value>Deductions</value></data>
+  <data name="LOPDeduction" xml:space="preserve"><value>LOP Deduction</value></data>
+  <data name="PdfExportFailed" xml:space="preserve"><value>The PDF could not be created. Check your internet connection and try again, or use Export Excel.</value></data>
   <data name="NetPay" xml:space="preserve"><value>Net Pay</value></data>
   <data name="PayrollSaved" xml:space="preserve"><value>Pay bill generated and saved.</value></data>
   <data name="PayrollLoadFailed" xml:space="preserve"><value>Could not load pay bill data.</value></data>
@@ -2752,6 +2754,20 @@
   <data name="NoOTAssignments" xml:space="preserve"><value>No OT assignments yet.</value></data>
   <data name="ValOtSelectStaff" xml:space="preserve"><value>Select a staff member</value></data>
   <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>This staff member already has an OT assignment. Edit it instead.</value></data>
+  <data name="OTDate" xml:space="preserve"><value>OT Date</value></data>
+  <data name="OTNextDay" xml:space="preserve"><value>next day</value></data>
+  <data name="ValOtPastLocked" xml:space="preserve"><value>OT assignments for past dates cannot be edited</value></data>
+  <data name="ValOtSelectDate" xml:space="preserve"><value>Select the OT date</value></data>
+  <data name="ValOtDatePast" xml:space="preserve"><value>The OT date cannot be before today</value></data>
+  <data name="ValOtDateThisMonth" xml:space="preserve"><value>The OT date must be within the current month</value></data>
+  <data name="ValOtOneDay" xml:space="preserve"><value>OT must end within 24 hours of its start</value></data>
+  <data name="ShiftTimings" xml:space="preserve"><value>Shift Timings</value></data>
+  <data name="OtShiftAlert" xml:space="preserve"><value>{0} is currently working in the {1} shift.</value></data>
+  <data name="OtAllowedWindow" xml:space="preserve"><value>OT can be assigned only after the shift ends: from {0} until {1}, when the next shift starts.</value></data>
+  <data name="OtShiftTimesUnknown" xml:space="preserve"><value>The timings of this shift are not known, so OT is not checked against it.</value></data>
+  <data name="OtNoShift" xml:space="preserve"><value>No shift is assigned to this employee, so OT is not checked against a shift.</value></data>
+  <data name="ValOtBeforeShiftEnd" xml:space="preserve"><value>OT can start only after the employee&apos;s shift ends</value></data>
+  <data name="ValOtIntoNextShift" xml:space="preserve"><value>OT must end before the employee&apos;s next shift starts</value></data>
   <data name="ValEmployeeType" xml:space="preserve"><value>Select a valid employee type</value></data>
   <data name="EmployeeTypeDepartment" xml:space="preserve"><value>Department</value></data>
   <data name="EmployeeTypeAgency" xml:space="preserve"><value>Agency</value></data>

@@ -57,7 +57,8 @@ public class PayrollControllerTests
         var saved =Assert.Single(context.PayBillEntries.Where(entry => entry.Year == start.Year && entry.Month == start.Month));
         Assert.Equal(2.5m, saved.PaidDays);
         Assert.Equal(250m, saved.BasicPay);
-        Assert.Equal(2.5m, saved.OvertimeHours);
+        // OT hours on the bill are approved hours (worked inside an OT assignment); this employee has no assignment
+        Assert.Equal(0m, saved.OvertimeHours);
         Assert.Equal(100m, saved.Allowances);
         Assert.Equal(30m, saved.OvertimeAmount);
         Assert.Equal(20m, saved.Deductions);
@@ -150,6 +151,49 @@ public class PayrollControllerTests
         Assert.Equal("Grand Total", rows[3][0]);
         Assert.Equal("300.00", rows[3][^1]);
     }
+
+    [Fact]
+    public async Task Pay_bill_data_shows_the_ot_amount_and_the_salary_lost_to_unpaid_days()
+    {
+        using var context = await ContextWithBill();
+
+        var rows = TestHelpers.OkJson(await Controller(context).Data(2026, 10)).GetProperty("rows").EnumerateArray().ToList();
+
+        // 1 paid day of 31: 3100 → 100 earned, so 3000 is loss of pay; no OT amount is set before the bill is generated
+        var anita = rows.Single(row => row.GetProperty("employeeId").GetString() == "EMP-1");
+        Assert.Equal(3100m, anita.GetProperty("monthlySalary").GetDecimal());
+        Assert.Equal(0m, anita.GetProperty("overtimeAmount").GetDecimal());
+        Assert.Equal(3000m, anita.GetProperty("lopDeduction").GetDecimal());
+        Assert.Equal(100m, anita.GetProperty("netPay").GetDecimal());
+    }
+
+    [Fact]
+    public async Task Lop_deduction_uses_the_saved_figures_of_a_generated_month()
+    {
+        using var context = await ContextWithBill();
+        var staff = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        context.PayBillEntries.Add(new PayBillEntry
+        {
+            StaffId = staff.Id, Year = 2026, Month = 10, EmployeeId = staff.EmployeeId, EmployeeName = staff.FullName,
+            MonthDays = 31, PaidDays = 30, MonthlySalary = 3100m, BasicPay = 3000m, OvertimeAmount = 250m, NetPay = 3250m
+        });
+        await context.SaveChangesAsync();
+
+        var anita = TestHelpers.OkJson(await Controller(context).Data(2026, 10)).GetProperty("rows").EnumerateArray()
+            .Single(row => row.GetProperty("employeeId").GetString() == "EMP-1");
+
+        Assert.Equal(250m, anita.GetProperty("overtimeAmount").GetDecimal());
+        Assert.Equal(100m, anita.GetProperty("lopDeduction").GetDecimal());
+
+        var export = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "EMP-1")).FileContents);
+        var lopColumn = Array.IndexOf(export[0], "LOP Deduction");
+        Assert.True(lopColumn > 0);
+        Assert.Equal("100.00", export[1][lopColumn]);
+    }
+
+    [Fact]
+    public void Lop_deduction_is_never_negative() =>
+        Assert.Equal(0m, new IMSB.Interfaces.PayBillRow(Guid.NewGuid(), "E", "N", "D", "X", 30, 30, 1000m, 1200m, 0, 0, 0, 0, 1200m).LopDeduction);
 
     [Fact]
     public async Task Export_with_the_staff_filter_has_only_that_employee()
@@ -266,6 +310,102 @@ public class PayrollControllerTests
         var model = Assert.IsType<PayrollController.PayBillPrintModel>(result.Model);
 
         Assert.Equal(expectedEmployeeId, Assert.Single(model.Rows).EmployeeId);
+    }
+
+    // ── PDF export (the document payroll.js downloads as a .pdf) ──
+
+    private static async Task<PayrollController.PayBillPrintModel> PdfModel(IMSBContext context, int? year, int? month, string? employeeId = null)
+    {
+        var view = Assert.IsType<PartialViewResult>(await Controller(context).PdfDocument(year, month, null, employeeId));
+        Assert.Equal("_PayBillDocument", view.ViewName);
+        return Assert.IsType<PayrollController.PayBillPrintModel>(view.Model);
+    }
+
+    [Fact]
+    public async Task Pdf_export_has_the_whole_month_with_its_net_pay_total()
+    {
+        using var context = await ContextWithBill();
+
+        var model = await PdfModel(context, 2026, 10);
+
+        Assert.Equal(new[] { "EMP-1", "EMP-10" }, model.Rows.Select(row => row.EmployeeId).OrderBy(id => id, StringComparer.Ordinal));
+        Assert.Equal(300m, model.TotalNetPay);
+        Assert.Contains("2026", model.Period);
+    }
+
+    [Fact]
+    public async Task Pdf_export_with_the_staff_filter_has_only_that_employee()
+    {
+        using var context = await ContextWithBill();
+
+        // EMP-1 must not also pick up EMP-10
+        var model = await PdfModel(context, 2026, 10, "emp-1");
+
+        Assert.Equal("EMP-1", Assert.Single(model.Rows).EmployeeId);
+        Assert.Equal(100m, model.TotalNetPay);
+    }
+
+    [Fact]
+    public async Task Pdf_and_excel_exports_have_the_same_rows_and_total()
+    {
+        using var context = await ContextWithBill();
+
+        var model = await PdfModel(context, 2026, 10, "EMP-10");
+        var excel = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "EMP-10")).FileContents);
+
+        Assert.Equal(model.Rows.Select(row => row.EmployeeId), excel.Skip(1).SkipLast(1).Select(row => row[0]));
+        Assert.Equal(model.TotalNetPay.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), excel[^1][^1]);
+    }
+
+    [Fact]
+    public async Task Pdf_export_uses_the_saved_figures_of_a_generated_month()
+    {
+        using var context = await ContextWithBill();
+        var staff = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        context.PayBillEntries.Add(new PayBillEntry
+        {
+            StaffId = staff.Id, Year = 2026, Month = 10, EmployeeId = staff.EmployeeId, EmployeeName = staff.FullName,
+            MonthDays = 31, PaidDays = 30, MonthlySalary = 3100m, BasicPay = 3000m, OvertimeAmount = 250m, NetPay = 3250m
+        });
+        await context.SaveChangesAsync();
+
+        var row = Assert.Single((await PdfModel(context, 2026, 10, "EMP-1")).Rows);
+
+        Assert.Equal((3250m, 250m, 100m), (row.NetPay, row.OvertimeAmount, row.LopDeduction));
+    }
+
+    [Theory]
+    [InlineData(null, 10)]
+    [InlineData(2026, null)]
+    [InlineData(2026, 13)]
+    [InlineData(1999, 10)]
+    public async Task Pdf_export_refuses_an_invalid_month(int? year, int? month)
+    {
+        using var context = TestHelpers.CreateContext();
+        Assert.IsType<BadRequestResult>(await Controller(context).PdfDocument(year, month, null));
+        Assert.IsType<BadRequestResult>(await Controller(context).Print(year, month, null));
+    }
+
+    [Fact]
+    public async Task Pdf_export_of_a_month_without_staff_is_empty_with_a_zero_total()
+    {
+        using var context = TestHelpers.CreateContext();
+
+        var model = await PdfModel(context, 2026, 10);
+
+        Assert.Empty(model.Rows);
+        Assert.Equal(0m, model.TotalNetPay);
+    }
+
+    [Fact]
+    public async Task Print_page_has_the_same_rows_as_the_pdf()
+    {
+        using var context = await ContextWithBill();
+
+        var print = Assert.IsType<PayrollController.PayBillPrintModel>(
+            Assert.IsType<ViewResult>(await Controller(context).Print(2026, 10, null, "EMP-1")).Model);
+
+        Assert.Equal((await PdfModel(context, 2026, 10, "EMP-1")).Rows, print.Rows);
     }
 
     private static PayrollController Controller(IMSBContext context) => new(new IMSB.Backend.Payroll(context), TestHelpers.LocalizerFactory())

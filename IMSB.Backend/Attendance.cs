@@ -194,14 +194,16 @@ namespace IMSB.Backend
             var recordsByStaff = (await MonthRecordsAsync(monthStart, end)).ToLookup(r => r.StaffId);
             var monthDays = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
             var weekOffs = Enumerable.Range(0, monthDays).Count(d => monthStart.AddDays(d).DayOfWeek == DayOfWeek.Sunday);
+            var overtime = await OvertimePay.ForMonthAsync(_context, staff, await DepartmentNamesAsync(), monthStart);
             var rows = staff.Select(s =>
                 {
                     var records = recordsByStaff[s.Id].ToList();
+                    var ot = overtime.GetValueOrDefault(s.Id) ?? OvertimeResult.None;
                     return new MonthlyAttendanceRow(s.EmployeeId, s.FullName, s.Designation, monthDays, monthDays - weekOffs, weekOffs,
                         records.Count(r => AttendanceStatuses.Worked(r.Status)),
                         records.Count(r => r.Status == AttendanceStatuses.Absent),
                         records.Count(r => r.Status == AttendanceStatuses.Leave),
-                        records.Sum(r => r.OvertimeHours));
+                        ot.Hours);
                 })
                 .ToList();
 
@@ -221,6 +223,7 @@ namespace IMSB.Backend
 
             var recordsByStaff = (await MonthRecordsAsync(monthStart, end)).ToLookup(r => r.StaffId);
             var monthDays = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
+            var overtime = await OvertimePay.ForMonthAsync(_context, staff, departments, monthStart);
             var rows = staff.Select(s =>
             {
                 var workedDays = recordsByStaff[s.Id].Sum(r => r.Status switch
@@ -229,9 +232,10 @@ namespace IMSB.Backend
                     AttendanceStatuses.HalfDay => 0.5m,
                     _ => 0m
                 });
-                var totalSalary = Math.Round(s.MonthlySalary * workedDays / monthDays, 2, MidpointRounding.AwayFromZero);
+                var earned = Math.Round(s.MonthlySalary * workedDays / monthDays, 2, MidpointRounding.AwayFromZero);
+                var ot = overtime.GetValueOrDefault(s.Id) ?? OvertimeResult.None;
                 return new SalaryReportRow(s.EmployeeId, s.FullName, departments.GetValueOrDefault(s.DepartmentId) ?? string.Empty,
-                    s.Designation, monthDays, workedDays, totalSalary);
+                    s.Designation, monthDays, workedDays, earned, ot.Hours, ot.Amount, earned + ot.Amount);
             }).Where(row => MatchesSalaryQuery(row, q))
               .OrderBy(row => row.Department, StringComparer.OrdinalIgnoreCase)
               .ThenBy(row => row.Name, StringComparer.OrdinalIgnoreCase)

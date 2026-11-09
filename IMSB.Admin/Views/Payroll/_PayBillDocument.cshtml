@@ -1,0 +1,61 @@
+@model IMSB.Admin.Controllers.PayrollController.PayBillPrintModel
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    // The pay bill document shared by the print page and the PDF download (payroll.js turns it into a .pdf file).
+    // Its styles are scoped to .pay-bill-doc because the PDF download places it inside the pay bill page.
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    // amounts with Indian digit grouping, whatever the page language
+    var inr = new System.Globalization.CultureInfo("en-IN");
+    string Money(decimal value) => value.ToString("N2", inr);
+    string Number(decimal value) => value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+}
+<div class="pay-bill-doc">
+  <style>
+    .pay-bill-doc { font:10.5px Arial,'Nirmala UI','Noto Sans',sans-serif; color:#1e293b; background:#fff; }
+    .pay-bill-doc header { border-bottom:3px solid #1a3c6e; margin-bottom:14px; padding-bottom:8px; }
+    .pay-bill-doc h1 { color:#1a3c6e; font-size:18px; margin:0 0 4px; }
+    .pay-bill-doc .meta { color:#64748b; }
+    .pay-bill-doc table { width:100%; border-collapse:collapse; }
+    .pay-bill-doc tr { page-break-inside:avoid; break-inside:avoid; }
+    .pay-bill-doc thead { display:table-header-group; }
+    .pay-bill-doc th,.pay-bill-doc td { border:1px solid #d6dce8; padding:4px 5px; text-align:right; white-space:nowrap; }
+    .pay-bill-doc th { background:#e8f0fb; white-space:normal; }
+    .pay-bill-doc th:nth-child(-n+4),.pay-bill-doc td:nth-child(-n+4) { text-align:left; }
+    .pay-bill-doc td:nth-child(2),.pay-bill-doc td:nth-child(4) { white-space:normal; }
+    .pay-bill-doc tfoot td { background:#f5f8fc; font-weight:700; }
+    .pay-bill-doc tfoot td:first-child { text-align:left; }
+    .pay-bill-doc tfoot td:not(:first-child) { text-align:right; }
+    .pay-bill-doc .empty { text-align:center !important; color:#64748b; }
+  </style>
+  <header><h1>@Model.Title</h1><div class="meta">@Model.Period · @L["GeneratedOn"]: @DateTime.Now.ToString("dd MMM yyyy HH:mm")</div></header>
+  <table>
+    <thead><tr>
+      <th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["Department"]</th><th>@L["Designation"]</th>
+      <th>@L["PaidDays"]</th><th>@L["MonthlySalary"]</th><th>@L["LOPDeduction"]</th><th>@L["BasicPay"]</th><th>@L["Allowances"]</th>
+      <th>@L["OTHours"]</th><th>@L["OvertimeAmount"]</th><th>@L["Deductions"]</th><th>@L["NetPay"]</th>
+    </tr></thead>
+    <tbody>
+      @if (Model.Rows.Count == 0)
+      {
+        <tr><td colspan="13" class="empty">@L["NoStaffForAttendance"]</td></tr>
+      }
+      @foreach (var row in Model.Rows)
+      {
+        <tr>
+          <td>@row.EmployeeId</td><td>@row.EmployeeName</td><td>@row.Department</td><td>@row.Designation</td>
+          <td>@Number(row.PaidDays) / @row.MonthDays</td><td>@Money(row.MonthlySalary)</td><td>@Money(row.LopDeduction)</td>
+          <td>@Money(row.BasicPay)</td><td>@Money(row.Allowances)</td><td>@Number(row.OvertimeHours)</td>
+          <td>@Money(row.OvertimeAmount)</td><td>@Money(row.Deductions)</td><td>@Money(row.NetPay)</td>
+        </tr>
+      }
+    </tbody>
+    <tfoot><tr>
+      <td colspan="5">@L["GrandTotal"]</td>
+      <td>@Money(Model.Rows.Sum(r => r.MonthlySalary))</td><td>@Money(Model.Rows.Sum(r => r.LopDeduction))</td>
+      <td>@Money(Model.Rows.Sum(r => r.BasicPay))</td><td>@Money(Model.Rows.Sum(r => r.Allowances))</td>
+      <td>@Number(Model.Rows.Sum(r => r.OvertimeHours))</td><td>@Money(Model.Rows.Sum(r => r.OvertimeAmount))</td>
+      <td>@Money(Model.Rows.Sum(r => r.Deductions))</td><td>@Money(Model.TotalNetPay)</td>
+    </tr></tfoot>
+  </table>
+</div>

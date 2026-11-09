@@ -184,6 +184,12 @@
         <member name="M:IMSB.Api.Controllers.OtAssignmentsController.List">
             <summary>Every assignment, and the staff who can still be given one.</summary>
         </member>
+        <member name="M:IMSB.Api.Controllers.OtAssignmentsController.Create(IMSB.Dto.Models.OtAssignmentDto)">
+            <summary>
+            OT can be assigned from today to the last day of this month, only between the end of the staff member's shift
+            and the start of their next one; past assignments cannot be edited.
+            </summary>
+        </member>
         <member name="T:IMSB.Api.Controllers.PayrollController">
             <summary>Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.</summary>
         </member>

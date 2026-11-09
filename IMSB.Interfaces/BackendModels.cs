@@ -47,7 +47,14 @@ namespace IMSB.Interfaces
     public sealed record PayBillRow(
         Guid StaffId, string EmployeeId, string EmployeeName, string Department, string Designation,
         int MonthDays, decimal PaidDays, decimal MonthlySalary, decimal BasicPay, decimal Allowances,
-        decimal OvertimeHours, decimal OvertimeAmount, decimal Deductions, decimal NetPay);
+        decimal OvertimeHours, decimal OvertimeAmount, decimal Deductions, decimal NetPay)
+    {
+        /// <summary>
+        /// Loss of pay: the part of the monthly salary not earned because of unpaid days (Monthly Salary − Basic Pay,
+        /// where Basic Pay is the salary prorated by paid days). Separate from <see cref="Deductions"/>.
+        /// </summary>
+        public decimal LopDeduction => Math.Max(0m, MonthlySalary - BasicPay);
+    }
 
     /// <summary>A month of an employee's saved pay bill history.</summary>
     public record PayBillHistoryRow(int Year, int Month, decimal PaidDays, decimal BasicPay, decimal Allowances,
@@ -61,12 +68,20 @@ namespace IMSB.Interfaces
     /// One staff line of the monthly report. Week offs are the month's Sundays and working days = total days - week offs.
     /// Present counts Present and Half Day records; OT hours is the month's overtime from attendance.
     /// </summary>
+    /// <remarks>
+    /// OtHours = approved OT hours: time worked inside an OT assignment (IMSB.Backend.OvertimePay), the hours the
+    /// Pay Bill's Overtime Amount is paid for (Housekeeping: × ₹50). Same figure as the Salary Report's OT Hrs.
+    /// </remarks>
     public record MonthlyAttendanceRow(string EmployeeId, string Name, string Designation, int TotalDaysInMonth, int TotalWorkingDays,
         int WeekOffs, int Present, int Absent, int Leaves, decimal OtHours);
     public record MonthlyAttendanceData(int Year, int Month, int TotalDaysInMonth, List<string> Types, List<MonthlyAttendanceRow> Rows);
 
+    /// <summary>
+    /// EarnedSalary = monthly salary × worked days ÷ days in month; OtHours / OtAmount = approved OT and its pay
+    /// (IMSB.Backend.OvertimePay); TotalSalary = EarnedSalary + OtAmount.
+    /// </summary>
     public record SalaryReportRow(string EmployeeId, string Name, string Department, string Designation,
-        int MonthDays, decimal WorkedDays, decimal TotalSalary);
+        int MonthDays, decimal WorkedDays, decimal EarnedSalary, decimal OtHours, decimal OtAmount, decimal TotalSalary);
     public record SalaryReportData(int Year, int Month, int MonthDays, List<string> Types, List<SalaryReportRow> Rows, decimal GrandTotalSalary);
 
     public record AbstractSection(string Key, string Name, int Total, int? Attended, int? NotAttended);

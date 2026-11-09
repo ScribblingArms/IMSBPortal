@@ -12,7 +12,15 @@
       <div class="page-subtitle">@L["PayBillSubtitle"]</div>
     </div>
     <div class="page-actions">
-      <button type="button" class="btn btn-outline btn-sm" id="payBillExportBtn"><i class="fa-solid fa-download"></i> @L["Export"]</button>
+      <div class="export-menu" id="payBillExportMenu">
+        <button type="button" class="btn btn-outline btn-sm" id="payBillExportBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="payBillExportList">
+          <i class="fa-solid fa-download"></i> @L["Export"] <i class="fa-solid fa-chevron-down export-caret" aria-hidden="true"></i>
+        </button>
+        <div class="export-list" id="payBillExportList" role="menu" aria-labelledby="payBillExportBtn" hidden>
+          <button type="button" role="menuitem" id="payBillExportPdfBtn"><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> @L["ExportPdf"]</button>
+          <button type="button" role="menuitem" id="payBillExportExcelBtn"><i class="fa-solid fa-file-excel" style="color:#16a34a"></i> @L["ExportCsv"]</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -51,7 +59,7 @@
       <table class="data-table pay-bill-table">
         <thead><tr>
           <th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["Department"]</th><th>@L["Designation"]</th>
-          <th>@L["PaidDays"]</th><th>@L["MonthlySalary"]</th><th>@L["NetPay"]</th>
+          <th>@L["PaidDays"]</th><th>@L["MonthlySalary"]</th><th>@L["OvertimeAmount"]</th><th>@L["LOPDeduction"]</th><th>@L["NetPay"]</th>
         </tr></thead>
         <tbody id="payBillBody"></tbody>
         <tfoot id="payBillFoot"></tfoot>
@@ -61,19 +69,25 @@
 </main>
 @section Styles {
   <style>
-    .pay-bill-controls { margin-bottom:18px; }
-    .pay-bill-filter { display:flex; gap:14px; align-items:end; flex-wrap:wrap; }
+    .export-menu { position:relative; display:inline-block; }
+    .export-caret { font-size:.7em; margin-left:4px; transition:transform .15s; }
+    .export-menu [aria-expanded="true"] .export-caret { transform:rotate(180deg); }
+    .export-list { position:absolute; right:0; top:calc(100% + 4px); z-index:50; min-width:170px; padding:4px; background:var(--surface); border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 24px rgba(15,23,42,.14); }
+    .export-list button { display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border:0; border-radius:6px; background:none; color:var(--text); font:inherit; font-size:.85rem; text-align:left; cursor:pointer; }
+    .export-list button:hover,.export-list button:focus-visible { background:var(--primary-xlight); outline:none; }
+    .pay-bill-controls { margin-bottom:18px; }    .pay-bill-filter { display:flex; gap:14px; align-items:end; flex-wrap:wrap; }
     .pay-bill-filter .form-group { margin:0; min-width:150px; }
     .pay-bill-filter .pay-bill-staff-filter { min-width:240px; }
     .pay-bill-period { color:var(--text-muted); font-size:.85rem; padding:10px 0; }
-    .pay-bill-table { min-width:800px; }
+    .pay-bill-table { min-width:1000px; }
     .pay-bill-table th,.pay-bill-table td { text-align:right; white-space:nowrap; }
     .pay-bill-table th:first-child,.pay-bill-table td:first-child,
     .pay-bill-table th:nth-child(2),.pay-bill-table td:nth-child(2),
     .pay-bill-table th:nth-child(3),.pay-bill-table td:nth-child(3),
     .pay-bill-table th:nth-child(4),.pay-bill-table td:nth-child(4) { text-align:left; }
-    /* the total's cell is only the 2nd in its row (the label spans six), but it sits under Net Pay */
-    .pay-bill-table tfoot td:last-child { text-align:right; }
+    /* the label spans the first five columns, so the totals are the 2nd-5th cells but sit under the money columns */
+    .pay-bill-table tfoot td:not(:first-child) { text-align:right; }
+    .pay-bill-table .lop { color:var(--danger); }
     /* every card on a single row; scrolls sideways only if the screen is too narrow */
     .pay-dept-grid { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(140px, 1fr); gap:12px; overflow-x:auto; padding-bottom:4px; margin-bottom:18px; }
     .pay-dept-card { min-width:0; border:1px solid var(--border); border-top:3px solid var(--primary-light); border-radius:12px; padding:12px 14px; background:var(--card, #fff); box-shadow:var(--shadow-sm, 0 1px 3px rgba(15,23,42,.06)); display:flex; flex-direction:column; gap:8px; }
@@ -94,11 +108,11 @@
     window.PayBillI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
       EmployeeID = L["EmployeeID"].Value, StaffName = L["StaffName"].Value, Department = L["Department"].Value,
       Designation = L["Designation"].Value, PaidDays = L["PaidDays"].Value, MonthlySalary = L["MonthlySalary"].Value,
-      NetPay = L["NetPay"].Value,
+      NetPay = L["NetPay"].Value, OvertimeAmount = L["OvertimeAmount"].Value, LOPDeduction = L["LOPDeduction"].Value,
       Employees = L["Employees"].Value, GrandTotal = L["GrandTotal"].Value, SelectEmployee = L["SelectEmployee"].Value,
       NoStaffForAttendance = L["NoStaffForAttendance"].Value, NoPayrollHistory = L["NoPayrollHistory"].Value,
       PayrollLoadFailed = L["PayrollLoadFailed"].Value, CouldNotReachServer = L["CouldNotReachServer"].Value,
-      AllStaff = L["AllStaff"].Value
+      AllStaff = L["AllStaff"].Value, PdfExportFailed = L["PdfExportFailed"].Value
     }));
   </script>
   <script src="~/js/payroll.js" asp-append-version="true"></script>

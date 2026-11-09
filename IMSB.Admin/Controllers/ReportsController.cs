@@ -266,7 +266,7 @@ namespace IMSB.Admin.Controllers
             var rows = new List<string?[]>
             {
                 new[] { _L["SerialNumber"].Value, _L["EmployeeID"].Value, _L["StaffName"].Value, _L["Department"].Value,
-                    _L["Designation"].Value, _L["TotalDaysInMonth"].Value, _L["WorkedDays"].Value, _L["TotalSalary"].Value }
+                    _L["Designation"].Value, _L["TotalDaysInMonth"].Value, _L["WorkedDays"].Value, _L["OTHours"].Value, _L["TotalSalary"].Value }
             };
             rows.AddRange(report.Rows.Select((row, index) => new string?[]
             {
@@ -277,12 +277,14 @@ namespace IMSB.Admin.Controllers
                 row.Designation,
                 row.MonthDays.ToString(CultureInfo.InvariantCulture),
                 row.WorkedDays.ToString("0.##", CultureInfo.InvariantCulture),
+                row.OtHours.ToString("0.##", CultureInfo.InvariantCulture),
                 row.TotalSalary.ToString("0.00", CultureInfo.InvariantCulture)
             }));
 
-            var totalRow = new string?[8];
+            var totalRow = new string?[9];
             totalRow[0] = _L["GrandTotal"].Value;
-            totalRow[7] = report.GrandTotalSalary.ToString("0.00", CultureInfo.InvariantCulture);
+            totalRow[7] = report.Rows.Sum(row => row.OtHours).ToString("0.##", CultureInfo.InvariantCulture);
+            totalRow[8] = report.GrandTotalSalary.ToString("0.00", CultureInfo.InvariantCulture);
             rows.Add(totalRow);
             return ExportExcel($"salary_report_{start:yyyyMM}.xls", rows);
         }

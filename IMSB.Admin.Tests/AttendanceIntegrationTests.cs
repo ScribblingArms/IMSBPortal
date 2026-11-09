@@ -111,12 +111,13 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     }
 
     [Fact]
-    public async Task Pay_bill_statement_only_lists_the_salary_columns()
+    public async Task Pay_bill_statement_lists_salary_ot_lop_and_net_pay_columns()
     {
         var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Payroll/Index"));
 
         var headers = Regex.Matches(html, "<th>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()).ToList();
-        Assert.Equal(new[] { "Employee ID", "Staff Name", "Staff Category", "Designation", "Paid Days", "Monthly Salary (₹)", "Net Pay" }, headers);
+        Assert.Equal(new[] { "Employee ID", "Staff Name", "Staff Category", "Designation", "Paid Days", "Monthly Salary (₹)",
+            "Overtime Amount", "LOP Deduction", "Net Pay" }, headers);
     }
 
     [Fact]
@@ -125,10 +126,24 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         var client = _factory.ClientAs("Admin");
         var html = WebUtility.HtmlDecode(await client.GetStringAsync("/Payroll/Index"));
 
-        Assert.Contains("id=\"payBillExportBtn\"", html);
+        // one Export button opening a menu (hidden until opened) with PDF and Excel in it
+        Assert.Matches("id=\"payBillExportBtn\"[^>]*aria-haspopup=\"menu\"[^>]*aria-expanded=\"false\"", html);
+        var menu = Regex.Match(html, "<div class=\"export-list\" id=\"payBillExportList\" role=\"menu\"[^>]*hidden>(.*?)</div>", RegexOptions.Singleline);
+        Assert.True(menu.Success);
+        var items = Regex.Matches(menu.Groups[1].Value, "role=\"menuitem\" id=\"(\\w+)\"><i[^>]*></i>\\s*([^<]+)</button>")
+            .Select(m => (m.Groups[1].Value, m.Groups[2].Value.Trim())).ToList();
+        Assert.Equal(new[] { ("payBillExportPdfBtn", "Export PDF"), ("payBillExportExcelBtn", "Export Excel") }, items);
         Assert.DoesNotContain("payBillGenerate", html);
         Assert.DoesNotContain("Generate Pay Bill", html);
-        Assert.DoesNotContain("/Payroll/Generate", await client.GetStringAsync("/js/payroll.js"));
+        var js = await client.GetStringAsync("/js/payroll.js");
+        Assert.DoesNotContain("/Payroll/Generate", js);
+        // Excel downloads in place; the PDF is built from the pay bill document and saved as a .pdf file (no print dialog)
+        Assert.Contains("window.location.href = '/Payroll/Export?' + exportQuery()", js);
+        Assert.Contains("fetch('/Payroll/PdfDocument?' + exportQuery())", js);
+        Assert.Contains("filename: pdfFileName()", js);
+        Assert.Contains(".save()", js);
+        Assert.Contains("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js", js);
+        Assert.DoesNotContain("window.open('/Payroll/Print", js);
 
         var generate = await client.PostAsync("/Payroll/Generate", new StringContent("{}", System.Text.Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.NotFound, generate.StatusCode);
@@ -154,10 +169,10 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     }
 
     [Fact]
-    public async Task Pay_bill_grand_total_lines_up_with_the_net_pay_column()
+    public async Task Pay_bill_grand_totals_line_up_with_the_money_columns()
     {
         var html = await _factory.ClientAs("Admin").GetStringAsync("/Payroll/Index");
-        Assert.Contains(".pay-bill-table tfoot td:last-child { text-align:right; }", html);
+        Assert.Contains(".pay-bill-table tfoot td:not(:first-child) { text-align:right; }", html);
     }
 
     [Fact]
@@ -165,6 +180,58 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     {
         var export = await _factory.ClientAs("Inventory").GetAsync("/Payroll/Export?year=2026&month=10");
         Assert.Equal(HttpStatusCode.Forbidden, export.StatusCode);
+        var print = await _factory.ClientAs("Inventory").GetAsync("/Payroll/Print?year=2026&month=10");
+        Assert.Equal(HttpStatusCode.Forbidden, print.StatusCode);
+        var pdf = await _factory.ClientAs("Inventory").GetAsync("/Payroll/PdfDocument?year=2026&month=10");
+        Assert.Equal(HttpStatusCode.Forbidden, pdf.StatusCode);
+    }
+
+    private static readonly string[] PayBillDocumentHeaders =
+    {
+        "Employee ID", "Staff Name", "Staff Category", "Designation", "Paid Days", "Monthly Salary (₹)",
+        "LOP Deduction", "Basic Pay", "Allowances", "OT Hrs", "Overtime Amount", "Deductions", "Net Pay"
+    };
+
+    [Fact]
+    public async Task Pay_bill_pdf_document_is_the_bill_alone_for_the_pdf_download()
+    {
+        var response = await _factory.ClientAs("Admin").GetAsync("/Payroll/PdfDocument?year=2026&month=10&employeeId=");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("text/html", response.Content.Headers.ContentType?.MediaType);
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
+
+        // a fragment placed inside the pay bill page: no page of its own, and styles that only touch the document
+        Assert.StartsWith("<div class=\"pay-bill-doc\">", html.TrimStart());
+        Assert.DoesNotContain("<html", html);
+        Assert.DoesNotContain("<body", html);
+        Assert.DoesNotContain("window.print", html);
+        Assert.All(Regex.Matches(html, @"^\s*([^{}\n@]+)\{", RegexOptions.Multiline).Select(m => m.Groups[1].Value.Trim()),
+            selector => Assert.All(selector.Split(','), part => Assert.StartsWith(".pay-bill-doc", part.Trim())));
+        Assert.Contains("October 2026", html);
+        Assert.Equal(PayBillDocumentHeaders, Regex.Matches(html, "<th>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()));
+    }
+
+    [Fact]
+    public async Task Pay_bill_print_page_shows_the_same_document()
+    {
+        var response = await _factory.ClientAs("Admin").GetAsync("/Payroll/Print?year=2026&month=10&employeeId=");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
+
+        Assert.Contains("@page { size:A4 landscape;", html);
+        Assert.Contains("Print / Save as PDF", html);
+        Assert.Contains("<div class=\"pay-bill-doc\">", html);
+        Assert.Equal(PayBillDocumentHeaders, Regex.Matches(html, "<th>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()));
+    }
+
+    [Theory]
+    [InlineData("/Payroll/PdfDocument?year=2026&month=13")]
+    [InlineData("/Payroll/PdfDocument?year=1999&month=10")]
+    [InlineData("/Payroll/Print?year=2026&month=13")]
+    public async Task Pay_bill_pdf_refuses_an_invalid_month(string url)
+    {
+        var response = await _factory.ClientAs("Admin").GetAsync(url);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

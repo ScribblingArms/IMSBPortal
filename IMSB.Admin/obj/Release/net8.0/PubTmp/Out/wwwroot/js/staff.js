@@ -4,6 +4,8 @@
   let depts = [];
   let staff = [];
   let shifts = [];
+  let leaveTypes = [];
+  let quotaLoadSeq = 0;   // ignores a quota response for a form that has since been reopened
   let formDirty = false;
   let submitting = false;
   let loadSeq = 0;   // ignores out-of-order responses when filters change quickly
@@ -157,6 +159,36 @@
     }
   }
 
+  // one days field per leave type, filled from the balances on record when editing
+  function renderLeaveQuotas(types, balances){
+    const onRecord = new Map((balances || []).map(b => [String(b.leaveType).toLowerCase(), b]));
+    document.getElementById('staffLeaveQuotaSection').style.display = types.length ? '' : 'none';
+    document.getElementById('staffLeaveQuotaFields').innerHTML = types.map((type, i) => {
+      const row = onRecord.get(String(type).toLowerCase());
+      const days = row ? String(Number(row.entitlement)) : '';
+      return `
+      <div class="form-group">
+        <label class="form-label" for="staffLeaveQuota${i}">${esc(type)}</label>
+        <input id="staffLeaveQuota${i}" class="form-control" type="number" min="0" max="366" step="0.5" data-leave-type="${esc(type)}" data-original="${esc(days)}" value="${esc(days)}" placeholder="${esc(t('Days'))}" />
+        ${row ? `<div class="form-hint" style="font-size:.7rem;color:var(--text-muted)">${esc(t('Taken'))}: ${esc(Number(row.taken))} · ${esc(t('Balance'))}: ${esc(Number(row.balance))}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  async function loadEditQuotas(empId, seq){
+    try {
+      const res = await fetch('/Staff/LeaveQuotas/' + encodeURIComponent(empId), { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Quota load failed (${res.status})`);
+      const json = await res.json();
+      if (seq === quotaLoadSeq) renderLeaveQuotas(leaveTypes, json.rows || []);
+    } catch (err){
+      console.error('StaffModule.loadEditQuotas error', err);
+      if (seq !== quotaLoadSeq) return;
+      document.getElementById('staffLeaveQuotaSection').style.display = '';
+      showFieldErrors({ leave_quotas: t('CouldNotReachServer') });
+    }
+  }
+
   // ── Modal ─────────────────────────────────────────────────────
   function openModal(){
     const overlay = document.getElementById('addStaffModal');
@@ -205,7 +237,7 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', aadhaar: 'Aadhaar', date_of_birth: 'DOB', department_id: 'Department', employee_type: 'EmployeeType', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', aadhaar: 'Aadhaar', date_of_birth: 'DOB', department_id: 'Department', employee_type: 'EmployeeType', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status', leave_quotas: 'LeaveQuota0' };
     return map[name] || name;
   }
 
@@ -235,6 +267,8 @@
     document.getElementById('staffForm').reset();
     prepareForm();
     prepareAadhaar(null);
+    quotaLoadSeq++;
+    renderLeaveQuotas(leaveTypes);
     document.getElementById('staffEmployeeId').value = '';   // placeholder shows "Auto-generated"
     document.getElementById('staffInternalId').value = '';
     document.getElementById('staffGender').value = 'Female';
@@ -253,6 +287,8 @@
     document.getElementById('staffSubmitBtnText').textContent = modal.dataset.updateText;
     prepareForm();
     prepareAadhaar(s);
+    renderLeaveQuotas([]);
+    loadEditQuotas(s.id, ++quotaLoadSeq);
     document.getElementById('staffInternalId').value = s.id;
     document.getElementById('staffEmployeeId').value = s.id;
     document.getElementById('staffFullName').value = s.full_name || '';
@@ -309,6 +345,8 @@
       if (vals.monthly_salary === '' || !Number.isFinite(salary) || salary < 0 || salary > 999999999.99)
         errors.monthly_salary = t('ValMonthlySalary');
     }
+    if (vals.leave_quotas.some(q => q.annualQuota !== null && (!Number.isInteger(q.annualQuota * 2) || q.annualQuota < 0 || q.annualQuota > 366)))
+      errors.leave_quotas = t('ValLeaveQuotas');
     return errors;
   }
 
@@ -340,6 +378,10 @@
       monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
       shift: v('staffShift'),
       status: v('staffStatus'),
+      // only changed fields: null clears a quota on record; text the browser can't read as a number must fail validation, not vanish
+      leave_quotas: [...document.querySelectorAll('#staffLeaveQuotaFields input')]
+        .filter(i => i.validity.badInput || i.value.trim() !== i.dataset.original)
+        .map(i => ({ leaveType: i.dataset.leaveType, annualQuota: i.validity.badInput ? NaN : i.value.trim() === '' ? null : Number(i.value) })),
     };
   }
 
@@ -363,6 +405,7 @@
       dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id, employeeType: vals.employee_type,
       designation: vals.designation, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
     };
+    body.leaveQuotas = vals.leave_quotas;
     if (!isCreate) body.status = vals.status;
     const submitBtn = document.getElementById('staffSubmitBtn');
     submitting = true;
@@ -432,6 +475,7 @@
       if (seq !== loadSeq) return true;   // a newer request is in flight; let it render
       depts = (json.depts || []).map(d => ({ id: d.id, name: d.name, count: d.count || 0, color: d.color || '#2558a8' }));
       shifts = (json.shifts || []).map(s => ({ id: s.id, name: s.name }));
+      leaveTypes = json.leaveTypes || [];
       staff = (json.staff || []).map(s => ({
         id: s.employeeId,
         full_name: s.fullName || '',

@@ -1,4 +1,4 @@
-@using IMSB.Admin.Resources
+﻿@using IMSB.Admin.Resources
 @inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
 @{
     var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
@@ -8,7 +8,10 @@
         "Success", "Error", "CouldNotReachServer", "CheckForm", "View", "Edit", "Delete", "SelectPlaceholder",
         "EmployeeID", "StaffName", "Department", "Designation", "OTFromTime", "OTToTime", "UpdatedBy",
         "AddOTAssignment", "EditOTAssignment", "OTAssignmentSaved", "OTAssignmentDeleted", "ConfirmDeleteOTAssignment",
-        "NoOTAssignments", "ValOtSelectStaff", "ValOtTimes", "ValOtToAfterFrom"
+        "NoOTAssignments", "ValOtSelectStaff", "ValOtTimes", "ValOtToAfterFrom",
+        "OTDate", "OTHours", "OTNextDay", "ValOtPastLocked", "ValOtSelectDate", "ValOtDatePast",
+        "Shift", "ShiftTimings", "OtShiftAlert", "OtAllowedWindow", "OtShiftTimesUnknown", "OtNoShift",
+        "ValOtBeforeShiftEnd", "ValOtIntoNextShift"
     };
     var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
 }
@@ -29,7 +32,7 @@
       </div>
       <div class="table-container">
         <table class="data-table" id="otTable">
-          <thead><tr><th>@L["StaffID"]</th><th>@L["Name"]</th><th>@L["Department"]</th><th>@L["Designation"]</th><th>@L["OTFromTime"]</th><th>@L["OTToTime"]</th><th>@L["Actions"]</th></tr></thead>
+          <thead><tr><th>@L["StaffID"]</th><th>@L["Name"]</th><th>@L["Department"]</th><th>@L["Designation"]</th><th>@L["OTDate"]</th><th>@L["OTFromTime"]</th><th>@L["OTToTime"]</th><th>@L["OTHours"]</th><th>@L["Actions"]</th></tr></thead>
           <tbody id="otBody"></tbody>
         </table>
       </div>
@@ -52,17 +55,29 @@
           <select id="otStaff" class="form-control" required></select>
           <div class="form-error" id="err_staff_id"></div>
         </div>
+        @* the selected employee's shift and the hours OT may run in (filled by ot-assignments.js) *@
+        <div class="ot-shift" id="otShiftInfo" role="alert" hidden></div>
+        <div class="form-group">
+          <div class="form-label" id="otDateLabel">@L["OTDate"] <span class="req">*</span></div>
+          @* current month only, no month navigation; days before today are disabled (built by ot-assignments.js) *@
+          <div class="ot-calendar" id="otCalendar" role="group" aria-labelledby="otDateLabel"></div>
+          <div class="form-error" id="err_ot_date"></div>
+        </div>
         <div class="form-grid col-2">
           <div class="form-group">
             <label class="form-label" for="otFrom">@L["OTFromTime"] <span class="req">*</span></label>
-            <input id="otFrom" type="datetime-local" class="form-control" required />
+            <input id="otFrom" type="time" step="60" class="form-control" required />
             <div class="form-error" id="err_from_datetime"></div>
           </div>
           <div class="form-group">
             <label class="form-label" for="otTo">@L["OTToTime"] <span class="req">*</span></label>
-            <input id="otTo" type="datetime-local" class="form-control" required />
+            <input id="otTo" type="time" step="60" class="form-control" required />
             <div class="form-error" id="err_to_datetime"></div>
           </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">@L["OTHours"]</div>
+          <div class="ot-hours" id="otHours" aria-live="polite">—</div>
         </div>
       </form>
     </div>
@@ -85,6 +100,29 @@
     </div>
   </div>
 </div>
+
+@section Styles {
+  <style>
+    .ot-calendar { border:1px solid var(--border); border-radius:8px; padding:10px; background:var(--surface); }
+    .ot-cal-title { font-weight:700; text-align:center; margin-bottom:8px; }
+    .ot-cal-grid { display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; }
+    .ot-cal-dow { font-size:12px; color:var(--text-muted); text-align:center; padding:2px 0; }
+    .ot-cal-day { border:1px solid transparent; border-radius:6px; background:none; color:inherit; padding:6px 0; font:inherit; cursor:pointer; }
+    .ot-cal-day:hover:not(:disabled) { background:var(--primary-xlight); }
+    .ot-cal-day:focus-visible { outline:2px solid var(--primary-light); outline-offset:1px; }
+    .ot-cal-day.today { border-color:var(--primary-light); }
+    .ot-cal-day.selected { background:var(--primary-light); color:#fff; font-weight:700; }
+    .ot-cal-day:disabled { color:var(--text-muted); opacity:.45; cursor:not-allowed; }
+    .ot-shift { border:1px solid var(--primary-light); border-left-width:4px; border-radius:8px; background:var(--primary-xlight); padding:10px 12px; margin:14px 0 16px; }
+    .ot-shift.warn { border-color:var(--warning, #d97706); background:transparent; }
+    .ot-shift-msg { font-weight:600; margin-bottom:8px; }
+    .ot-shift-msg i { margin-right:6px; }
+    .ot-shift-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px 14px; font-size:13px; }
+    .ot-shift-grid span { display:block; color:var(--text-muted); font-size:12px; }
+    .ot-hours { font-weight:700; font-size:18px; }
+    .ot-hours small { font-weight:400; font-size:13px; color:var(--text-muted); margin-left:6px; }
+  </style>
+}
 
 @section Scripts {
   <script>window.OtAssignmentI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>

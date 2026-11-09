@@ -101,10 +101,15 @@ public class ReportsControllerTests
         priya.JoinDate = new DateTime(2025, 1, 1);
         ctx.Staff.Add(priya);
         AttendanceRecord Day(int d, string status, decimal ot = 0) =>
-            new() { StaffId = priya.Id, AttendanceDate = new DateTime(2026, 2, d), Status = status, OvertimeHours = ot };
+            new() { StaffId = priya.Id, AttendanceDate = new DateTime(2026, 2, d), Status = status, OvertimeHours = ot,
+                InTime = ot > 0 ? TimeSpan.FromHours(8) : null, OutTime = ot > 0 ? TimeSpan.FromHours(16 + (double)ot) : null };
         ctx.AttendanceRecords.AddRange(
             Day(2, AttendanceStatuses.Present, 2), Day(3, AttendanceStatuses.Present, 1.5m), Day(4, AttendanceStatuses.HalfDay),
             Day(5, AttendanceStatuses.Absent), Day(6, AttendanceStatuses.Leave), Day(7, AttendanceStatuses.Leave));
+        // OT Hrs are the hours saved on the OT assignments: 2 on the 2nd and 1.5 on the 3rd
+        ctx.OtAssignments.AddRange(
+            new OtAssignment { StaffId = priya.Id, FromDateTime = new DateTime(2026, 2, 2, 16, 0, 0), ToDateTime = new DateTime(2026, 2, 2, 18, 0, 0), OtHours = 2m },
+            new OtAssignment { StaffId = priya.Id, FromDateTime = new DateTime(2026, 2, 3, 16, 0, 0), ToDateTime = new DateTime(2026, 2, 3, 17, 30, 0), OtHours = 1.5m });
         await ctx.SaveChangesAsync();
 
         // February 2026: 28 days, Sundays on the 1st, 8th, 15th and 22nd
@@ -130,10 +135,13 @@ public class ReportsControllerTests
             new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart, Status = AttendanceStatuses.Present },
             new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddDays(1), Status = AttendanceStatuses.Absent },
             new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddDays(2), Status = AttendanceStatuses.HalfDay },
-            new AttendanceRecord { StaffId = security.Id, AttendanceDate = MonthStart, Status = AttendanceStatuses.Present, OvertimeHours = 2.5m },
+            new AttendanceRecord { StaffId = security.Id, AttendanceDate = MonthStart, Status = AttendanceStatuses.Present, OvertimeHours = 2.5m,
+                InTime = TimeSpan.FromHours(8), OutTime = TimeSpan.FromHours(18.5) },
             new AttendanceRecord { StaffId = security.Id, AttendanceDate = MonthStart.AddDays(1), Status = AttendanceStatuses.Leave },
             new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddMonths(-1), Status = AttendanceStatuses.Present },
             new AttendanceRecord { StaffId = executive.Id, AttendanceDate = MonthStart.AddYears(-1), Status = AttendanceStatuses.Present });
+        // OT Hrs are the hours saved on the OT assignment (16:00-18:30)
+        ctx.OtAssignments.Add(new OtAssignment { StaffId = security.Id, FromDateTime = MonthStart.AddHours(16), ToDateTime = MonthStart.AddHours(18.5), OtHours = 2.5m });
         await ctx.SaveChangesAsync();
 
         var json = TestHelpers.OkJson(await Reports(ctx).MonthlyAttendance(Today.Year, Today.Month, null));
@@ -319,9 +327,9 @@ public class ReportsControllerTests
         var export = Assert.IsType<FileContentResult>(await controller.SalaryExport(Today.Year, Today.Month, "Admin", "security"));
         Assert.Equal($"salary_report_{MonthStart:yyyyMM}.xls", export.FileDownloadName);
         var csv = CsvText(export);
-        Assert.Contains("S.No,Employee ID,Staff Name,Staff Category,Designation,Total Days in Month,Worked Days,Total Salary", csv);
-        Assert.Contains($"1,EMP002,Ravi,Admin,Security,{monthDays},15,{Math.Round(62000m * 15m / monthDays, 2, MidpointRounding.AwayFromZero).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}", csv);
-        Assert.Contains($"Grand Total,,,,,,,{Math.Round(62000m * 15m / monthDays, 2, MidpointRounding.AwayFromZero).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}", csv);
+        Assert.Contains("S.No,Employee ID,Staff Name,Staff Category,Designation,Total Days in Month,Worked Days,OT Hrs,Total Salary", csv);
+        Assert.Contains($"1,EMP002,Ravi,Admin,Security,{monthDays},15,0,{Math.Round(62000m * 15m / monthDays, 2, MidpointRounding.AwayFromZero).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}", csv);
+        Assert.Contains($"Grand Total,,,,,,,0,{Math.Round(62000m * 15m / monthDays, 2, MidpointRounding.AwayFromZero).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}", csv);
         Assert.DoesNotContain("Meena", csv);
     }
 

@@ -189,7 +189,8 @@ public class IMSBContext : DbContext
 
         modelBuilder.Entity<OtAssignment>(b =>
         {
-            b.HasIndex(a => a.StaffId).IsUnique();
+            // past assignments stay as history, so a staff member can have many; one for today or later is enforced in IMSB.Backend.OtAssignments
+            b.HasIndex(a => a.StaffId);
             b.HasOne(a => a.Staff).WithMany().HasForeignKey(a => a.StaffId).OnDelete(DeleteBehavior.Cascade);
         });
 

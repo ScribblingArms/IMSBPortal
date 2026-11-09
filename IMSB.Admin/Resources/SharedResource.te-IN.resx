@@ -2588,6 +2588,8 @@
   <data name="Allowances" xml:space="preserve"><value>భత్యాలు</value></data>
   <data name="OvertimeAmount" xml:space="preserve"><value>ఓవర్‌టైమ్ మొత్తం</value></data>
   <data name="Deductions" xml:space="preserve"><value>తగ్గింపులు</value></data>
+  <data name="LOPDeduction" xml:space="preserve"><value>జీతం నష్టం (LOP) కోత</value></data>
+  <data name="PdfExportFailed" xml:space="preserve"><value>PDF సృష్టించలేకపోయాము. మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి, లేదా Excel ఎగుమతిని ఉపయోగించండి.</value></data>
   <data name="NetPay" xml:space="preserve"><value>నికర జీతం</value></data>
   <data name="PayrollSaved" xml:space="preserve"><value>జీతం బిల్లు రూపొందించి సేవ్ చేయబడింది.</value></data>
   <data name="PayrollLoadFailed" xml:space="preserve"><value>జీతం బిల్లు డేటాను లోడ్ చేయలేకపోయాము.</value></data>
@@ -2752,6 +2754,20 @@
   <data name="NoOTAssignments" xml:space="preserve"><value>ఇంకా ఓటీ కేటాయింపులు లేవు.</value></data>
   <data name="ValOtSelectStaff" xml:space="preserve"><value>సిబ్బందిని ఎంచుకోండి</value></data>
   <data name="ValOtAlreadyAssigned" xml:space="preserve"><value>ఈ సిబ్బందికి ఇప్పటికే ఓటీ కేటాయింపు ఉంది. దానినే సవరించండి.</value></data>
+  <data name="OTDate" xml:space="preserve"><value>ఓటీ తేదీ</value></data>
+  <data name="OTNextDay" xml:space="preserve"><value>మరుసటి రోజు</value></data>
+  <data name="ValOtPastLocked" xml:space="preserve"><value>గత తేదీల ఓటీ కేటాయింపులను సవరించలేరు</value></data>
+  <data name="ValOtSelectDate" xml:space="preserve"><value>ఓటీ తేదీని ఎంచుకోండి</value></data>
+  <data name="ValOtDatePast" xml:space="preserve"><value>ఓటీ తేదీ ఈరోజు కంటే ముందు ఉండకూడదు</value></data>
+  <data name="ValOtDateThisMonth" xml:space="preserve"><value>ఓటీ తేదీ ప్రస్తుత నెలలోనే ఉండాలి</value></data>
+  <data name="ValOtOneDay" xml:space="preserve"><value>ఓటీ ప్రారంభమైన 24 గంటలలోపు ముగియాలి</value></data>
+  <data name="ShiftTimings" xml:space="preserve"><value>షిఫ్ట్ సమయాలు</value></data>
+  <data name="OtShiftAlert" xml:space="preserve"><value>{0} ప్రస్తుతం {1} షిఫ్ట్‌లో పని చేస్తున్నారు.</value></data>
+  <data name="OtAllowedWindow" xml:space="preserve"><value>షిఫ్ట్ ముగిసిన తర్వాతే ఓటీ కేటాయించవచ్చు: {0} నుండి తదుపరి షిఫ్ట్ ప్రారంభమయ్యే {1} వరకు.</value></data>
+  <data name="OtShiftTimesUnknown" xml:space="preserve"><value>ఈ షిఫ్ట్ సమయాలు తెలియవు, కాబట్టి ఓటీని దానితో తనిఖీ చేయరు.</value></data>
+  <data name="OtNoShift" xml:space="preserve"><value>ఈ ఉద్యోగికి షిఫ్ట్ కేటాయించలేదు, కాబట్టి ఓటీని షిఫ్ట్‌తో తనిఖీ చేయరు.</value></data>
+  <data name="ValOtBeforeShiftEnd" xml:space="preserve"><value>ఉద్యోగి షిఫ్ట్ ముగిసిన తర్వాతే ఓటీ ప్రారంభం కావాలి</value></data>
+  <data name="ValOtIntoNextShift" xml:space="preserve"><value>ఉద్యోగి తదుపరి షిఫ్ట్ ప్రారంభమయ్యే ముందే ఓటీ ముగియాలి</value></data>
   <data name="ValEmployeeType" xml:space="preserve"><value>సరైన ఉద్యోగి రకాన్ని ఎంచుకోండి</value></data>
   <data name="EmployeeTypeDepartment" xml:space="preserve"><value>విభాగం</value></data>
   <data name="EmployeeTypeAgency" xml:space="preserve"><value>ఏజెన్సీ</value></data>
