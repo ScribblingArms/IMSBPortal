@@ -68,7 +68,7 @@ namespace IMSB.Api.Controllers
             {
                 year = Year,
                 staff = await _leaves.ActiveStaffAsync(),
-                leaveTypes = await _leaves.LeaveTypesAsync(),
+                leaveTypes = LeaveBalanceRules.WithLop(await _leaves.LeaveTypesAsync()),
                 entitlements = (await _leaves.EntitlementsAsync(Year)).Select(e => new { id = e.Id, staffId = e.StaffId, leaveType = e.LeaveType, annualQuota = e.AnnualQuota }),
                 entries = (await _leaves.EntriesAsync(Year)).Select(ToItem)
             });

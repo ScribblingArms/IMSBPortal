@@ -249,7 +249,7 @@ namespace IMSB.Backend
             _context.StaffLeaveEntries.Add(new StaffLeaveEntry
             {
                 StaffId = staff.Id,
-                LeaveType = leaveType.Trim(),
+                LeaveType = LeaveBalanceRules.IsLop(leaveType) ? LeaveBalanceRules.LopLeaveType : leaveType.Trim(),
                 Year = CurrentYear,
                 FromDate = from.Value,
                 ToDate = to.Value,
@@ -311,10 +311,12 @@ namespace IMSB.Backend
             if (from.Year != year || to.Year != year || to < from) return "ValLeaveDates";
             if (from.Date < staff.JoinDate.Date) return "ValLeaveBeforeJoin";
 
-            var entitlement = await _context.LeaveEntitlements.AsNoTracking().FirstOrDefaultAsync(e => e.Year == year
+            // LOP needs no quota and has no balance to run out of
+            var isLop = LeaveBalanceRules.IsLop(leaveType);
+            var entitlement = isLop ? null : await _context.LeaveEntitlements.AsNoTracking().FirstOrDefaultAsync(e => e.Year == year
                 && e.StaffId == staff.Id
                 && e.LeaveType.ToUpper() == leaveType.Trim().ToUpper());
-            if (entitlement == null) return "ValLeaveTypeNotConfigured";
+            if (!isLop && entitlement == null) return "ValLeaveTypeNotConfigured";
 
             var existing = await _context.StaffLeaveEntries.AsNoTracking().Where(e => e.StaffId == staff.Id && e.Year == year
                 && (!excludingEntryId.HasValue || e.Id != excludingEntryId.Value)).ToListAsync();
@@ -323,6 +325,7 @@ namespace IMSB.Backend
             bool InRange(AttendanceRecord r) => r.AttendanceDate.Date >= from.Date && r.AttendanceDate.Date <= to.Date;
             // a day marked as worked is paid, so it cannot also use up leave
             if (attendance.Any(r => InRange(r) && AttendanceStatuses.Worked(r.Status))) return "ValLeaveDayWorked";
+            if (entitlement == null) return null;
             // days in the range marked Leave count once, through this entry
             var taken = LeaveBalanceRules.Taken(staff.Id, year, entitlement.LeaveType,
                 entitlement.IsAttendanceLeaveType, existing, attendance.Where(r => !InRange(r)));
@@ -344,9 +347,10 @@ namespace IMSB.Backend
             foreach (var record in attendance)
             {
                 var days = LeaveBalanceRules.AttendanceDays(record);
-                if (days == 0m || LeaveBalanceRules.IsCoveredByManualLeave(record, leaveEntries))
+                var unpaidByEntry = days == 0m ? false : LeaveBalanceRules.UnpaidByManualLeave(record, leaveEntries);
+                if (unpaidByEntry.HasValue)
                 {
-                    record.LeaveWithoutPay = false;
+                    record.LeaveWithoutPay = unpaidByEntry.Value;
                     continue;
                 }
                 if (policy == null || remaining < days)

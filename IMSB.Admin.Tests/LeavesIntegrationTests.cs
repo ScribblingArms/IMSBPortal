@@ -137,7 +137,7 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
 
     private static string ReadStaffId(string html)
     {
-        var match = Regex.Match(html, @"<option value=""([^""]+)"" data-category=""Sales"">EMP951");
+        var match = Regex.Match(html, @"<option value=""([^""]+)"" data-category=""Sales""[^>]*>EMP951");
         Assert.True(match.Success, "staff option was not rendered");
         return match.Groups[1].Value;
     }

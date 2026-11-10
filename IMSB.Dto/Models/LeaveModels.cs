@@ -51,6 +51,34 @@ public class LeaveEntitlement
 
 public static class LeaveBalanceRules
 {
+    /// <summary>
+    /// Loss of pay: the built-in leave type taken when no balance is left. It needs no quota, draws on no balance,
+    /// and the days it covers are unpaid.
+    /// </summary>
+    public const string LopLeaveType = "LOP";
+
+    public static bool IsLop(string? leaveType) =>
+        string.Equals(leaveType?.Trim(), LopLeaveType, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>The types offered when applying for leave: the configured ones, plus LOP when it is not among them.</summary>
+    public static List<string> WithLop(IEnumerable<string> leaveTypes)
+    {
+        var types = leaveTypes.ToList();
+        if (!types.Any(IsLop)) types.Add(LopLeaveType);
+        return types;
+    }
+
+    /// <summary>
+    /// Whether a Leave / Half Day mark is unpaid because of the manual leave entries alone: true when an LOP entry
+    /// covers the day, false when another entry covers it, null when no entry does (the attendance policy decides).
+    /// </summary>
+    public static bool? UnpaidByManualLeave(AttendanceRecord record, IEnumerable<StaffLeaveEntry> entries)
+    {
+        var covering = entries.Where(entry => entry.StaffId == record.StaffId && entry.Year == record.AttendanceDate.Year
+            && entry.FromDate.Date <= record.AttendanceDate.Date && entry.ToDate.Date >= record.AttendanceDate.Date).ToList();
+        return covering.Count == 0 ? null : covering.Any(entry => IsLop(entry.LeaveType));
+    }
+
     public static decimal AttendanceDays(AttendanceRecord record) => record.Status switch
     {
         AttendanceStatuses.Leave => 1m,
@@ -185,4 +213,6 @@ public class LeaveEntryViewModel
     public List<string> LeaveTypes { get; set; } = new();
     public List<LeaveEntitlement> Entitlements { get; set; } = new();
     public List<StaffLeaveEntry> Entries { get; set; } = new();
+    /// <summary>The year's balances, shown when a staff member and leave type are picked.</summary>
+    public List<LeaveBalanceRow> Balances { get; set; } = new();
 }

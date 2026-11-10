@@ -116,8 +116,8 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         var html = WebUtility.HtmlDecode(await _factory.ClientAs("Admin").GetStringAsync("/Payroll/Index"));
 
         var headers = Regex.Matches(html, "<th>([^<]*)</th>").Select(m => m.Groups[1].Value.Trim()).ToList();
-        Assert.Equal(new[] { "Employee ID", "Staff Name", "Staff Category", "Designation", "Paid Days", "Monthly Salary (₹)",
-            "Overtime Amount", "LOP Deduction", "Net Pay" }, headers);
+        Assert.Equal(new[] { "Employee ID", "Staff Name", "Staff Category", "Designation", "Payable Days", "Monthly Salary (₹)",
+            "OT Hrs", "Overtime Amount", "LOP Days", "LOP Deduction", "Net Pay" }, headers);
     }
 
     [Fact]
@@ -188,7 +188,7 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
 
     private static readonly string[] PayBillDocumentHeaders =
     {
-        "Employee ID", "Staff Name", "Staff Category", "Designation", "Paid Days", "Monthly Salary (₹)",
+        "Employee ID", "Staff Name", "Staff Category", "Designation", "Payable Days", "Monthly Salary (₹)", "LOP Days",
         "LOP Deduction", "Basic Pay", "Allowances", "OT Hrs", "Overtime Amount", "Deductions", "Net Pay"
     };
 

@@ -2771,4 +2771,11 @@
   <data name="ValEmployeeType" xml:space="preserve"><value>சரியான பணியாளர் வகையைத் தேர்ந்தெடுக்கவும்</value></data>
   <data name="EmployeeTypeDepartment" xml:space="preserve"><value>துறை</value></data>
   <data name="EmployeeTypeAgency" xml:space="preserve"><value>முகமை</value></data>
+  <data name="LeaveBalance" xml:space="preserve"><value>விடுப்பு இருப்பு</value></data>
+  <data name="LopLeaveTitle" xml:space="preserve"><value>விடுப்பு இருப்பு பூஜ்ஜியம்</value></data>
+  <data name="LopLeaveConfirm" xml:space="preserve"><value>உங்கள் {0} விடுப்பு இருப்பு பூஜ்ஜியம். இந்த விடுப்பு LOP (சம்பள இழப்பு) ஆக பதிவு செய்யப்படும். உறுதியாக உள்ளீர்களா?</value></data>
+  <data name="Yes" xml:space="preserve"><value>ஆம்</value></data>
+  <data name="No" xml:space="preserve"><value>இல்லை</value></data>
+  <data name="PayableDays" xml:space="preserve"><value>செலுத்த வேண்டிய நாட்கள்</value></data>
+  <data name="LOPDays" xml:space="preserve"><value>LOP நாட்கள்</value></data>
 </root>

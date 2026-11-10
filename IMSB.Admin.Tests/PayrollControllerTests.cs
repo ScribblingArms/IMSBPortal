@@ -8,19 +8,123 @@ namespace IMSB.Admin.Tests;
 
 public class PayrollControllerTests
 {
+    // ── LOP days: only Absent, unpaid leave, LOP leave entries and days before joining ──
+
+    private static readonly DateTime Nov = new(2026, 11, 1);   // 30 days
+
+    private static AttendanceRecord MarkOn(int day, string status, bool withoutPay = false) =>
+        new() { AttendanceDate = Nov.AddDays(day - 1), Status = status, LeaveWithoutPay = withoutPay };
+
     [Fact]
-    public void Paid_days_include_present_half_day_and_paid_leave_only()
+    public void Lop_days_count_absent_and_unpaid_leave_and_unmarked_days_are_payable()
     {
         var records = new[]
         {
-            new AttendanceRecord { Status = AttendanceStatuses.Present },
-            new AttendanceRecord { Status = AttendanceStatuses.HalfDay },
-            new AttendanceRecord { Status = AttendanceStatuses.Leave },
-            new AttendanceRecord { Status = AttendanceStatuses.Leave, LeaveWithoutPay = true },
-            new AttendanceRecord { Status = AttendanceStatuses.Absent }
+            MarkOn(1, AttendanceStatuses.Present),
+            MarkOn(2, AttendanceStatuses.HalfDay),                        // other half on paid leave
+            MarkOn(3, AttendanceStatuses.Leave),                          // paid leave
+            MarkOn(4, AttendanceStatuses.Leave, withoutPay: true),        // 1
+            MarkOn(5, AttendanceStatuses.Absent),                         // 1
+            MarkOn(6, AttendanceStatuses.HalfDay, withoutPay: true)       // 0.5
         };
 
-        Assert.Equal(2.5m, IMSB.Backend.Payroll.PaidDays(records));
+        Assert.Equal(2.5m, IMSB.Backend.Payroll.LopDays(Nov, new DateTime(2020, 1, 1), records, Array.Empty<StaffLeaveEntry>()));
+    }
+
+    [Fact]
+    public void Lop_days_with_no_attendance_marked_are_zero()
+    {
+        Assert.Equal(0m, IMSB.Backend.Payroll.LopDays(Nov, new DateTime(2020, 1, 1),
+            Array.Empty<AttendanceRecord>(), Array.Empty<StaffLeaveEntry>()));
+    }
+
+    [Fact]
+    public void Lop_leave_entries_count_on_unmarked_days_only_once_and_other_types_do_not_count()
+    {
+        var entries = new[]
+        {
+            new StaffLeaveEntry { LeaveType = "LOP", FromDate = Nov.AddDays(9), ToDate = Nov.AddDays(11) },      // 10th–12th
+            new StaffLeaveEntry { LeaveType = "Casual", FromDate = Nov.AddDays(19), ToDate = Nov.AddDays(20) }  // not LOP
+        };
+        // the 11th is also marked Leave without pay: counted once
+        var records = new[] { MarkOn(11, AttendanceStatuses.Leave, withoutPay: true) };
+
+        Assert.Equal(3m, IMSB.Backend.Payroll.LopDays(Nov, new DateTime(2020, 1, 1), records, entries));
+    }
+
+    [Fact]
+    public void Lop_leave_entries_from_last_month_count_only_their_days_in_this_month()
+    {
+        var entries = new[] { new StaffLeaveEntry { LeaveType = "LOP", FromDate = Nov.AddDays(-3), ToDate = Nov.AddDays(1) } };
+
+        Assert.Equal(2m, IMSB.Backend.Payroll.LopDays(Nov, new DateTime(2020, 1, 1), Array.Empty<AttendanceRecord>(), entries));
+    }
+
+    [Fact]
+    public void Days_before_joining_are_not_payable()
+    {
+        Assert.Equal(10m, IMSB.Backend.Payroll.LopDays(Nov, Nov.AddDays(10), Array.Empty<AttendanceRecord>(), Array.Empty<StaffLeaveEntry>()));
+    }
+
+    [Theory]
+    // salary, LOP days, OT → LOP deduction, net (30-day month)
+    [InlineData(10000, 0, 100, 0, 10100)]
+    [InlineData(10000, 3, 205.42, 1000, 9205.42)]
+    [InlineData(10000, 30, 100, 10000, 100)]
+    [InlineData(31000, 2.5, 0, 2583.33, 28416.67)]
+    public void Net_pay_is_reduced_by_the_salary_of_the_lop_days(decimal salary, decimal lopDays, decimal ot, decimal lop, decimal net)
+    {
+        var basicPay = IMSB.Backend.Payroll.ProratedPay(salary, 30 - lopDays, 30);
+        var row = new IMSB.Interfaces.PayBillRow(Guid.NewGuid(), "E", "N", "D", "X", 30, 30 - lopDays, salary, basicPay, 0, 1.5m, ot, 0,
+            IMSB.Backend.Payroll.NetPay(salary, ot, basicPay));
+
+        Assert.Equal((lopDays, lop, net), (row.LopDays, row.LopDeduction, row.NetPay));
+    }
+
+    [Fact]
+    public async Task Statement_row_shows_payable_days_lop_days_and_ot_hours_from_lop_leave()
+    {
+        using var context = TestHelpers.CreateContext();
+        var staff = TestHelpers.ExistingStaff("EMP-LOP-01", "Lop Test", "9000000191");
+        staff.MonthlySalary = 3000m;
+        staff.JoinDate = new DateTime(2020, 1, 1);
+        context.Staff.Add(staff);
+        context.AttendanceRecords.Add(new AttendanceRecord { StaffId = staff.Id, AttendanceDate = Nov.AddDays(1), Status = AttendanceStatuses.Absent });
+        context.StaffLeaveEntries.Add(new StaffLeaveEntry
+        {
+            StaffId = staff.Id, LeaveType = "LOP", Year = 2026, FromDate = Nov.AddDays(4), ToDate = Nov.AddDays(5), Days = 2m
+        });
+        await context.SaveChangesAsync();
+
+        var row = (await new IMSB.Backend.Payroll(context).RowsAsync(Nov)).Single(r => r.EmployeeId == "EMP-LOP-01");
+
+        // 1 absent + 2 LOP leave = 3 LOP days of 30; ₹100 a day
+        Assert.Equal((27m, 3m, 300m, 2700m), (row.PaidDays, row.LopDays, row.LopDeduction, row.NetPay));
+        var json = System.Text.Json.JsonSerializer.Serialize(row, new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web));
+        Assert.Contains("\"lopDays\":3", json);
+        Assert.Contains("\"overtimeHours\":", json);
+    }
+
+    [Fact]
+    public void Statement_screen_and_exports_show_payable_days_lop_days_and_ot_hours()
+    {
+        var dir = typeof(PayrollControllerTests).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyMetadataAttribute), false)
+            .Cast<System.Reflection.AssemblyMetadataAttribute>().Single(a => a.Key == "AdminProjectDir").Value!;
+        var index = File.ReadAllText(Path.Combine(dir, "Views", "Payroll", "Index.cshtml"));
+        var js = File.ReadAllText(Path.Combine(dir, "wwwroot", "js", "payroll.js"));
+        var pdf = File.ReadAllText(Path.Combine(dir, "Views", "Payroll", "_PayBillDocument.cshtml"));
+
+        Assert.Contains("<th>@L[\"PayableDays\"]</th><th>@L[\"MonthlySalary\"]</th><th>@L[\"OTHours\"]</th><th>@L[\"OvertimeAmount\"]</th>"
+            + "<th>@L[\"LOPDays\"]</th><th>@L[\"LOPDeduction\"]</th>", index);
+        Assert.Contains("<th>@L[\"LOPDays\"]</th><th>@L[\"LOPDeduction\"]</th>", pdf);
+        // the cells follow the headers: LOP days straight before LOP deduction
+        Assert.True(js.IndexOf("row.lopDays", StringComparison.Ordinal) < js.IndexOf("row.lopDeduction", StringComparison.Ordinal));
+        Assert.True(js.IndexOf("row.overtimeAmount", StringComparison.Ordinal) < js.IndexOf("row.lopDays", StringComparison.Ordinal));
+        Assert.DoesNotContain("@L[\"PaidDays\"]", index);
+        Assert.Contains("row.lopDays", js);
+        Assert.Contains("row.overtimeHours", js);
+        Assert.Contains("@L[\"PayableDays\"]", pdf);
+        Assert.Contains("@L[\"LOPDays\"]", pdf);
     }
 
     [Fact]
@@ -55,8 +159,9 @@ public class PayrollControllerTests
             new[] { new PayBillAdjustmentDto { StaffId = staff.Id, Allowances = 100m, OvertimeAmount = 30m, Deductions = 20m } }));
 
         var saved =Assert.Single(context.PayBillEntries.Where(entry => entry.Year == start.Year && entry.Month == start.Month));
-        Assert.Equal(2.5m, saved.PaidDays);
-        Assert.Equal(250m, saved.BasicPay);
+        // only the Leave without pay is LOP (the other 27 unmarked days are payable): 30 of 31 days
+        Assert.Equal(30m, saved.PaidDays);
+        Assert.Equal(3000m, saved.BasicPay);
         // OT hours on the bill are approved hours (worked inside an OT assignment); this employee has no assignment
         Assert.Equal(0m, saved.OvertimeHours);
         Assert.Equal(100m, saved.Allowances);
@@ -125,6 +230,34 @@ public class PayrollControllerTests
         Assert.Equal(salary - basicPay, IMSB.Backend.Payroll.LopDeduction(salary, basicPay));
         Assert.Equal(expected, IMSB.Backend.Payroll.NetPay(salary, ot, basicPay));
         Assert.Equal(salary + ot - IMSB.Backend.Payroll.LopDeduction(salary, basicPay), IMSB.Backend.Payroll.NetPay(salary, ot, basicPay));
+    }
+
+    [Theory]
+    [InlineData(2026, 11, true)]
+    [InlineData(2000, 1, true)]
+    [InlineData(1999, 12, false)]
+    [InlineData(2026, 0, false)]
+    [InlineData(2026, 13, false)]
+    [InlineData(null, 5, false)]
+    [InlineData(2026, null, false)]
+    public void Month_start_is_resolved_only_for_a_valid_year_and_month(int? year, int? month, bool valid)
+    {
+        Assert.Equal(valid, IMSB.Common.CommonHelpers.TryMonthStart(year, month, out var start));
+        Assert.Equal(valid ? new DateTime(year!.Value, month!.Value, 1) : default, start);
+    }
+
+    [Fact]
+    public async Task Backend_rows_are_narrowed_to_the_exact_employee_id()
+    {
+        using var context = await ContextWithBill();
+        var payroll = new IMSB.Backend.Payroll(context);
+
+        var all = await payroll.RowsAsync(new DateTime(2026, 10, 1));
+        var one = await payroll.RowsAsync(new DateTime(2026, 10, 1), employeeId: " emp-1 ");
+
+        Assert.True(all.Count > 1);
+        Assert.Equal("EMP-1", Assert.Single(one).EmployeeId);
+        Assert.Empty(await payroll.RowsAsync(new DateTime(2026, 10, 1), employeeId: "EMP-"));   // exact, not contains
     }
 
     [Fact]
@@ -210,8 +343,13 @@ public class PayrollControllerTests
         second.MonthlySalary = 6200m;
         context.Staff.AddRange(first, second);
         var start = new DateTime(2026, 10, 1);
+        // 1 day present and the other 30 absent: 1 payable day and 30 LOP days of 31
         foreach (var employee in new[] { first, second })
+        {
             context.AttendanceRecords.Add(new AttendanceRecord { StaffId = employee.Id, AttendanceDate = start, Status = AttendanceStatuses.Present });
+            for (var day = 1; day < 31; day++)
+                context.AttendanceRecords.Add(new AttendanceRecord { StaffId = employee.Id, AttendanceDate = start.AddDays(day), Status = AttendanceStatuses.Absent });
+        }
         await context.SaveChangesAsync();
         return context;
     }
@@ -233,8 +371,11 @@ public class PayrollControllerTests
         Assert.Equal(new[] { "EMP-1", "EMP-10" }, rows.Skip(1).Take(2).Select(row => row[0]).OrderBy(id => id, StringComparer.Ordinal));
         var anita = rows.Single(row => row[0] == "EMP-1");
         Assert.Equal("Anita Sharma", anita[1]);
-        Assert.Equal("1", anita[4]);
+        Assert.Equal("1", anita[4]);         // payable days
         Assert.Equal("3100.00", anita[5]);
+        var lopDays = Array.IndexOf(rows[0], "LOP Days");
+        Assert.Equal(lopDays + 1, Array.IndexOf(rows[0], "LOP Deduction"));   // LOP Days beside LOP Deduction
+        Assert.Equal("30", anita[lopDays]);
         Assert.Equal("100.00", anita[^1]);
         Assert.Equal("Grand Total", rows[3][0]);
         Assert.Equal("300.00", rows[3][^1]);

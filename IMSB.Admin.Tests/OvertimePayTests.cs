@@ -4,8 +4,8 @@ using IMSB.Dto.Models;
 namespace IMSB.Admin.Tests;
 
 /// <summary>
-/// OT pay by staff category: Security = monthly salary ÷ 30 a day (hours as a share of the shift), everyone else ₹50 an
-/// hour; approved hours = the OT Hrs saved on the OT assignments. Shown on the Pay Bill and the monthly Salary Report.
+/// OT pay by staff category: Security = approved OT hours × (monthly salary ÷ 30), everyone else ₹50 an hour;
+/// approved hours = the OT Hrs saved on the OT assignments. Shown on the Pay Bill and the monthly Salary Report.
 /// </summary>
 public class OvertimePayTests
 {
@@ -15,24 +15,24 @@ public class OvertimePayTests
 
     // ── The rates ─────────────────────────────────────────────────
     [Theory]
-    [InlineData("Housekeeping", 10000, 8, 3, 150)]          // 3 h × ₹50
-    [InlineData("Housekeeping", 10000, 8, 2.5, 125)]
-    [InlineData("Admin", 40000, 8, 2, 100)]                 // every other category is paid like housekeeping
-    [InlineData("Security", 16500, 8, 8, 550)]              // supervisor: ₹16,500 ÷ 30 = ₹550 a day
-    [InlineData("Security", 16500, 8, 4, 275)]              // half a shift = half a day
-    [InlineData("Security", 15000, 8, 8, 500)]              // guard: ₹15,000 ÷ 30 = ₹500 a day
-    [InlineData("Security", 15000, 8, 12, 750)]             // 1½ shifts
-    [InlineData("Security", 15000, 7, 7, 500)]              // a 7-hour shift: 7 hours is a full day
-    [InlineData("security guards", 15000, 8, 8, 500)]       // any category name containing "Security", any case
-    [InlineData("Security", 16500, 8, 1, 68.75)]
-    [InlineData("Security", 16500, 8, 0, 0)]
-    [InlineData("Housekeeping", 10000, 8, 0, 0)]
-    public void Amount_follows_the_staff_category(string category, decimal salary, decimal shiftHours, decimal hours, decimal expected) =>
-        Assert.Equal(expected, OvertimePay.Amount(hours, category, salary, shiftHours));
+    [InlineData("Housekeeping", 10000, 3, 150)]             // 3 h × ₹50
+    [InlineData("Housekeeping", 10000, 2.5, 125)]
+    [InlineData("Admin", 40000, 2, 100)]                    // every other category is paid like housekeeping
+    [InlineData("Security", 16500, 1, 550)]                 // supervisor: ₹16,500 ÷ 30 = ₹550, × 1 h
+    [InlineData("Security", 16500, 4, 2200)]                // 4 h × ₹550
+    [InlineData("Security Supervisor", 16500, 8, 4400)]     // 8 h × ₹550
+    [InlineData("Security", 15000, 3, 1500)]                // guard: ₹15,000 ÷ 30 = ₹500, × 3 h
+    [InlineData("security guards", 15000, 2, 1000)]         // any category name containing "Security", any case
+    [InlineData("Security", 16500, 0.5, 275)]
+    [InlineData("Security", 10000, 1, 333.33)]              // ₹333.333… rounded to the paisa
+    [InlineData("Security", 16500, 0, 0)]
+    [InlineData("Housekeeping", 10000, 0, 0)]
+    public void Amount_follows_the_staff_category(string category, decimal salary, decimal hours, decimal expected) =>
+        Assert.Equal(expected, OvertimePay.Amount(hours, category, salary));
 
     [Fact]
-    public void Security_amount_uses_8_hours_when_the_shift_length_is_missing() =>
-        Assert.Equal(550m, OvertimePay.Amount(8m, "Security", 16500m, 0m));
+    public void Security_rate_is_monthly_salary_divided_by_30() =>
+        Assert.Equal(550m, OvertimePay.SecurityRate(16500m));
 
     // ── Saved OT hours ────────────────────────────────────────────
     private static OtAssignment Saved(DateTime day, double fromHour, double toHour) =>
@@ -121,8 +121,8 @@ public class OvertimePayTests
             Assert.Equal(hk.BasicPay + 200m, hk.NetPay);
 
             var ss = rows[supervisor.Id];
-            Assert.Equal((4m, 275m), (ss.OvertimeHours, ss.OvertimeAmount));               // ₹550 a day × 4/8
-            Assert.Equal(ss.BasicPay + 275m, ss.NetPay);
+            Assert.Equal((4m, 2200m), (ss.OvertimeHours, ss.OvertimeAmount));              // 4 h × ₹550 (₹16,500 ÷ 30)
+            Assert.Equal(ss.BasicPay + 2200m, ss.NetPay);
 
             var sl = rows[sales.Id];
             Assert.Equal((0m, 0m), (sl.OvertimeHours, sl.OvertimeAmount));                 // late, but no OT assignment
@@ -140,8 +140,8 @@ public class OvertimePayTests
 
             var saved = context.PayBillEntries.ToDictionary(entry => entry.StaffId);
             Assert.Equal((4m, 200m), (saved[housekeeper.Id].OvertimeHours, saved[housekeeper.Id].OvertimeAmount));
-            Assert.Equal((4m, 275m), (saved[supervisor.Id].OvertimeHours, saved[supervisor.Id].OvertimeAmount));
-            Assert.Equal(saved[supervisor.Id].BasicPay + 275m, saved[supervisor.Id].NetPay);
+            Assert.Equal((4m, 2200m), (saved[supervisor.Id].OvertimeHours, saved[supervisor.Id].OvertimeAmount));
+            Assert.Equal(saved[supervisor.Id].BasicPay + 2200m, saved[supervisor.Id].NetPay);
         }
     }
 
@@ -191,11 +191,11 @@ public class OvertimePayTests
             Assert.Equal(hk.EarnedSalary + 200m, hk.TotalSalary);
 
             var ss = rows[supervisor.EmployeeId];
-            Assert.Equal((4m, 275m), (ss.OtHours, ss.OtAmount));
-            Assert.Equal(ss.EarnedSalary + 275m, ss.TotalSalary);
+            Assert.Equal((4m, 2200m), (ss.OtHours, ss.OtAmount));
+            Assert.Equal(ss.EarnedSalary + 2200m, ss.TotalSalary);
 
             Assert.Equal((0m, 0m), (rows[sales.EmployeeId].OtHours, rows[sales.EmployeeId].OtAmount));
-            Assert.Equal(report.Rows.Sum(row => row.EarnedSalary) + 475m, report.GrandTotalSalary);
+            Assert.Equal(report.Rows.Sum(row => row.EarnedSalary) + 2400m, report.GrandTotalSalary);   // 200 + 2200
         }
     }
 

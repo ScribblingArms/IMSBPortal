@@ -39,7 +39,7 @@
               <option value="">@L["SelectPlaceholder"]</option>
               @foreach (var person in Model.Staff)
               {
-                <option value="@person.Id" data-category="@person.StaffCategory">@person.EmployeeId – @person.FullName (@person.StaffCategory)</option>
+                <option value="@person.Id" data-category="@person.StaffCategory" data-employee-id="@person.EmployeeId">@person.EmployeeId – @person.FullName (@person.StaffCategory)</option>
               }
             </select>
           </div>
@@ -61,13 +61,18 @@
             <label class="form-label" for="leaveTo">@L["ToDate"]</label>
             <input id="leaveTo" name="ToDate" type="date" class="form-control" min="@minDate" max="@maxDate" value="@Model.Form.ToDate" required />
           </div>
+          @* Leave Balance and Days Taken side by side *@
+          <div class="form-group">
+            <label class="form-label" for="leaveBalance">@L["LeaveBalance"]</label>
+            <input id="leaveBalance" type="text" class="form-control" disabled />
+          </div>
           <div class="form-group">
             <label class="form-label" for="leaveDays">@L["DaysTaken"]</label>
             <input id="leaveDays" name="Days" type="number" class="form-control" min="1" step="1" max="366" value="1" readonly required />
           </div>
-          <div class="form-group">
+          <div class="form-group form-full">
             <label class="form-label" for="leaveRemarks">@L["Remarks"]</label>
-            <input id="leaveRemarks" name="Remarks" class="form-control" maxlength="500" />
+            <textarea id="leaveRemarks" name="Remarks" class="form-control" rows="3" maxlength="500"></textarea>
           </div>
         </div>
         <div class="leave-entry-actions">
@@ -88,14 +93,17 @@
           {
             <tr>
               <td><code>@entry.Staff?.EmployeeId</code></td><td>@entry.Staff?.FullName</td><td>@entry.LeaveType</td>
-              <td colspan="4">
-                <form asp-action="UpdateEntry" method="post" class="leave-edit-form" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              @* the dates and days of a recorded leave are fixed; only the remarks can be changed *@
+              <td class="leave-from-date">@entry.FromDate.ToString("dd-MM-yyyy")</td>
+              <td class="leave-to-date">@entry.ToDate.ToString("dd-MM-yyyy")</td>
+              <td class="leave-days">@((entry.ToDate.Date - entry.FromDate.Date).Days + 1)</td>
+              <td>
+                <form asp-action="UpdateEntry" method="post" class="leave-edit-form" style="display:flex;gap:6px;align-items:center">
                   @Html.AntiForgeryToken()
                   <input type="hidden" name="id" value="@entry.Id" />
-                  <input name="fromDate" type="date" min="@minDate" max="@maxDate" value="@entry.FromDate.ToString("yyyy-MM-dd")" class="form-control leave-from-date" style="width:150px" aria-label="@L["FromDate"]" required />
-                  <input name="toDate" type="date" min="@minDate" max="@maxDate" value="@entry.ToDate.ToString("yyyy-MM-dd")" class="form-control leave-to-date" style="width:150px" aria-label="@L["ToDate"]" required />
-                  <input name="daysDisplay" type="number" min="1" max="366" step="1" value="@((entry.ToDate.Date - entry.FromDate.Date).Days + 1)" class="form-control leave-days" style="width:90px" aria-label="@L["DaysTaken"]" readonly />
-                  <input name="remarks" value="@entry.Remarks" maxlength="500" class="form-control" style="width:150px" aria-label="@L["Remarks"]" />
+                  <input type="hidden" name="fromDate" value="@entry.FromDate.ToString("yyyy-MM-dd")" />
+                  <input type="hidden" name="toDate" value="@entry.ToDate.ToString("yyyy-MM-dd")" />
+                  <input name="remarks" value="@entry.Remarks" maxlength="500" class="form-control" style="width:180px" aria-label="@L["Remarks"]" />
                   <button type="submit" class="btn btn-outline btn-sm">@L["Update"]</button>
                 </form>
               </td>
@@ -119,9 +127,87 @@
   </div>
 </main>
 
+<div class="modal-overlay" id="lopConfirmModal" aria-hidden="true">
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="lopConfirmTitle" aria-describedby="lopConfirmText" style="max-width:460px">
+    <div class="modal-header">
+      <div class="modal-title" id="lopConfirmTitle"><i class="fa-solid fa-triangle-exclamation"></i> @L["LopLeaveTitle"]</div>
+    </div>
+    <div class="modal-body"><p id="lopConfirmText" style="margin:0"></p></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline btn-sm" id="lopConfirmNo">@L["No"]</button>
+      <button type="button" class="btn btn-primary btn-sm" id="lopConfirmYes">@L["Yes"]</button>
+    </div>
+  </div>
+</div>
+
 @section Scripts {
 <script>
 (() => {
+  // ── Leave balance and the switch to LOP when it is used up ──
+  const lopType = @Json.Serialize(IMSB.Dto.Models.LeaveBalanceRules.LopLeaveType);
+  const lopMessage = @Json.Serialize(L["LopLeaveConfirm"].Value);
+  const balances = new Map(@Json.Serialize(Model.Balances.Select(b => new[] { $"{b.EmployeeId}|{b.LeaveType}".ToUpperInvariant(), b.Balance.ToString(System.Globalization.CultureInfo.InvariantCulture) })));
+  const form = document.querySelector('.leave-entry-form');
+  const staffSelect = document.getElementById('leaveStaff');
+  const typeSelect = document.getElementById('leaveType');
+  const balanceBox = document.getElementById('leaveBalance');
+  const modal = document.getElementById('lopConfirmModal');
+  const isLop = type => type.trim().toUpperCase() === lopType;
+
+  /** The selected staff member's balance of the selected type (0 when not configured); null when nothing to show. */
+  function currentBalance() {
+    const employeeId = staffSelect.selectedOptions[0]?.dataset.employeeId;
+    const type = typeSelect.value;
+    if (!employeeId || !type || isLop(type)) return null;
+    return Number(balances.get(`${employeeId}|${type}`.toUpperCase()) ?? 0);
+  }
+
+  function refreshBalance() {
+    const balance = currentBalance();
+    balanceBox.value = balance === null ? '' : String(balance);
+    return balance;
+  }
+
+  function askForLop() {
+    document.getElementById('lopConfirmText').textContent = lopMessage.replace('{0}', typeSelect.value);
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.getElementById('lopConfirmYes').focus();
+  }
+
+  function closeLop() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function checkBalance() {
+    const balance = refreshBalance();
+    if (balance !== null && balance <= 0) askForLop();
+  }
+
+  document.getElementById('lopConfirmYes').addEventListener('click', () => {
+    typeSelect.value = [...typeSelect.options].find(option => isLop(option.value))?.value ?? lopType;
+    refreshBalance();
+    closeLop();
+  });
+  document.getElementById('lopConfirmNo').addEventListener('click', () => {
+    typeSelect.value = '';
+    refreshBalance();
+    closeLop();
+    typeSelect.focus();
+  });
+  staffSelect.addEventListener('change', checkBalance);
+  typeSelect.addEventListener('change', checkBalance);
+  // the popup closed another way (Esc, click outside) leaves a type with nothing left: ask again before saving
+  form.addEventListener('submit', event => {
+    const balance = currentBalance();
+    if (balance !== null && balance <= 0) {
+      event.preventDefault();
+      askForLop();
+    }
+  });
+  refreshBalance();
+
   const from = document.getElementById('leaveFrom');
   const to = document.getElementById('leaveTo');
   const days = document.getElementById('leaveDays');
@@ -142,20 +228,6 @@
   to.addEventListener('change', () => updateDays(from, to, days));
   to.min = from.value || from.min;
   updateDays(from, to, days);
-  document.querySelectorAll('.leave-edit-form').forEach(form => {
-    const editFrom = form.querySelector('.leave-from-date');
-    const editTo = form.querySelector('.leave-to-date');
-    const editDays = form.querySelector('.leave-days');
-    const refresh = () => updateDays(editFrom, editTo, editDays);
-    editFrom.addEventListener('change', () => {
-      editTo.min = editFrom.value || editFrom.min;
-      if (editTo.value && editTo.value < editTo.min) editTo.value = editTo.min;
-      refresh();
-    });
-    editTo.min = editFrom.value || editFrom.min;
-    editTo.addEventListener('change', refresh);
-    refresh();
-  });
 })();
 </script>
 }

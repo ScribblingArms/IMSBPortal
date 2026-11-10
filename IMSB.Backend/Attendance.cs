@@ -128,10 +128,11 @@ namespace IMSB.Backend
             List<StaffLeaveEntry> entries, IEnumerable<AttendanceRecord> attendance)
         {
             var days = LeaveBalanceRules.AttendanceDays(record);
-            if (days == 0m || entries.Any(e => e.StaffId == record.StaffId
-                    && e.FromDate.Date <= record.AttendanceDate.Date && e.ToDate.Date >= record.AttendanceDate.Date))
+            // a day under a manual leave entry is paid, unless that entry is LOP
+            var unpaidByEntry = days == 0m ? false : LeaveBalanceRules.UnpaidByManualLeave(record, entries);
+            if (unpaidByEntry.HasValue)
             {
-                record.LeaveWithoutPay = false;
+                record.LeaveWithoutPay = unpaidByEntry.Value;
                 return;
             }
             if (policy == null)

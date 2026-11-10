@@ -2771,4 +2771,11 @@
   <data name="ValEmployeeType" xml:space="preserve"><value>मान्य कर्मचारी प्रकार चुनें</value></data>
   <data name="EmployeeTypeDepartment" xml:space="preserve"><value>विभाग</value></data>
   <data name="EmployeeTypeAgency" xml:space="preserve"><value>एजेंसी</value></data>
+  <data name="LeaveBalance" xml:space="preserve"><value>अवकाश शेष</value></data>
+  <data name="LopLeaveTitle" xml:space="preserve"><value>अवकाश शेष शून्य है</value></data>
+  <data name="LopLeaveConfirm" xml:space="preserve"><value>आपका {0} अवकाश शेष शून्य है। यह अवकाश LOP (वेतन हानि) के रूप में दर्ज होगा। क्या आप सुनिश्चित हैं?</value></data>
+  <data name="Yes" xml:space="preserve"><value>हाँ</value></data>
+  <data name="No" xml:space="preserve"><value>नहीं</value></data>
+  <data name="PayableDays" xml:space="preserve"><value>देय दिवस</value></data>
+  <data name="LOPDays" xml:space="preserve"><value>LOP दिवस</value></data>
 </root>

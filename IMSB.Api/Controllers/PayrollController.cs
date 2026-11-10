@@ -2,6 +2,7 @@ using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static IMSB.Common.CommonHelpers;
 
 namespace IMSB.Api.Controllers
 {
@@ -19,7 +20,7 @@ namespace IMSB.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Data([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q)
         {
-            if (!TryResolvePeriod(year, month, out var start)) return Invalid("period", "ValDateInvalid");
+            if (!TryMonthStart(year, month, out var start)) return Invalid("period", "ValDateInvalid");
             var rows = await _payroll.RowsAsync(start, q);
             return Ok(new
             {
@@ -36,7 +37,7 @@ namespace IMSB.Api.Controllers
         [HttpPost("generate")]
         public async Task<IActionResult> Generate([FromBody] GeneratePayBillDto dto)
         {
-            if (!TryResolvePeriod(dto.Year, dto.Month, out var start)) return Invalid("period", "ValDateInvalid");
+            if (!TryMonthStart(dto.Year, dto.Month, out var start)) return Invalid("period", "ValDateInvalid");
             if (dto.Rows.Select(row => row.StaffId).Distinct().Count() != dto.Rows.Count
                 || dto.Rows.Any(row => row.StaffId == Guid.Empty)
                 || !await _payroll.GenerateAsync(start, dto.Rows))
@@ -48,16 +49,8 @@ namespace IMSB.Api.Controllers
         [HttpGet("history/{staffId:guid}")]
         public async Task<IActionResult> History(Guid staffId, [FromQuery] int? year, [FromQuery] int? month)
         {
-            if (staffId == Guid.Empty || !TryResolvePeriod(year, month, out var start)) return Invalid("period", "ValDateInvalid");
+            if (staffId == Guid.Empty || !TryMonthStart(year, month, out var start)) return Invalid("period", "ValDateInvalid");
             return Ok(new { rows = await _payroll.HistoryAsync(staffId, start, HistoryMonths) });
-        }
-
-        private static bool TryResolvePeriod(int? year, int? month, out DateTime start)
-        {
-            start = default;
-            if (year is null or < 2000 or > 9999 || month is null or < 1 or > 12) return false;
-            start = new DateTime(year.Value, month.Value, 1);
-            return true;
         }
     }
 }

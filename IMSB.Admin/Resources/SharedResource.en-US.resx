@@ -2771,4 +2771,11 @@
   <data name="ValEmployeeType" xml:space="preserve"><value>Select a valid employee type</value></data>
   <data name="EmployeeTypeDepartment" xml:space="preserve"><value>Department</value></data>
   <data name="EmployeeTypeAgency" xml:space="preserve"><value>Agency</value></data>
+  <data name="LeaveBalance" xml:space="preserve"><value>Leave Balance</value></data>
+  <data name="LopLeaveTitle" xml:space="preserve"><value>Leave balance is zero</value></data>
+  <data name="LopLeaveConfirm" xml:space="preserve"><value>Your {0} leave balance is zero. This leave will be recorded as LOP (loss of pay). Are you sure?</value></data>
+  <data name="Yes" xml:space="preserve"><value>Yes</value></data>
+  <data name="No" xml:space="preserve"><value>No</value></data>
+  <data name="PayableDays" xml:space="preserve"><value>Payable Days</value></data>
+  <data name="LOPDays" xml:space="preserve"><value>LOP Days</value></data>
 </root>

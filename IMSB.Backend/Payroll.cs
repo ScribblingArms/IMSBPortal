@@ -15,52 +15,55 @@ namespace IMSB.Backend
             (await _context.Departments.AsNoTracking().Select(department => department.Name).Distinct().ToListAsync())
                 .OrderBy(name => name, StringComparer.CurrentCultureIgnoreCase).ToList();
 
-        public async Task<List<PayBillRow>> RowsAsync(DateTime monthStart, string? query = null)
+        public async Task<List<PayBillRow>> RowsAsync(DateTime monthStart, string? query = null, string? employeeId = null)
         {
             var saved = await _context.PayBillEntries.AsNoTracking()
                 .Where(entry => entry.Year == monthStart.Year && entry.Month == monthStart.Month)
                 .ToListAsync();
             var savedByStaff = saved.ToDictionary(entry => entry.StaffId);
-            var (staff, attendance) = await PayableStaffAsync(monthStart, savedByStaff.Keys.ToList(), tracking: false);
+            var (staff, attendance, lopLeave) = await PayableStaffAsync(monthStart, savedByStaff.Keys.ToList(), tracking: false);
             var departments = await DepartmentNamesAsync();
             var days = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
             var overtime = await OvertimePay.ForMonthAsync(_context, staff, departments, monthStart);
 
             var rows = staff.Select(employee =>
             {
-                savedByStaff.TryGetValue(employee.Id, out var entry);
-                var records = attendance[employee.Id].Where(record => record.AttendanceDate.Date >= employee.JoinDate.Date).ToList();
-                var paidDays = entry?.PaidDays ?? PaidDays(records);
-                var basicPay = entry?.BasicPay ?? ProratedPay(employee.MonthlySalary, paidDays, days);
-                var allowances = entry?.Allowances ?? 0m;
-                // a generated month keeps its saved figures; otherwise OT is worked out from the OT assignments
-                var ot = overtime.GetValueOrDefault(employee.Id) ?? OvertimeResult.None;
-                var overtimeAmount = entry?.OvertimeAmount ?? ot.Amount;
-                var deductions = entry?.Deductions ?? 0m;
+                // a generated month keeps its saved figures; otherwise they are worked out from attendance and OT assignments
+                if (savedByStaff.TryGetValue(employee.Id, out var entry))
+                    return SavedRow(entry) with
+                    {
+                        // current details of staff still on the books
+                        EmployeeId = employee.EmployeeId,
+                        EmployeeName = employee.FullName,
+                        Department = departments.GetValueOrDefault(employee.DepartmentId) ?? string.Empty,
+                        Designation = employee.Designation
+                    };
+                var (paidDays, basicPay, ot) = Fresh(employee, monthStart, attendance, lopLeave, overtime);
                 return new PayBillRow(
                     employee.Id,
                     employee.EmployeeId,
                     employee.FullName,
                     departments.GetValueOrDefault(employee.DepartmentId) ?? string.Empty,
                     employee.Designation,
-                    entry?.MonthDays ?? days,
+                    days,
                     paidDays,
-                    entry?.MonthlySalary ?? employee.MonthlySalary,
+                    employee.MonthlySalary,
                     basicPay,
-                    allowances,
-                    entry?.OvertimeHours ?? ot.Hours,
-                    overtimeAmount,
-                    deductions,
-                    NetPay(entry?.MonthlySalary ?? employee.MonthlySalary, overtimeAmount, basicPay));
+                    0m,
+                    ot.Hours,
+                    ot.Amount,
+                    0m,
+                    NetPay(employee.MonthlySalary, ot.Amount, basicPay));
             }).ToList();
 
             // saved rows of staff who have since been removed
             var currentIds = rows.Select(row => row.StaffId).ToHashSet();
-            rows.AddRange(saved.Where(entry => !currentIds.Contains(entry.StaffId)).Select(entry => new PayBillRow(
-                entry.StaffId, entry.EmployeeId, entry.EmployeeName, entry.Department, entry.Designation, entry.MonthDays,
-                entry.PaidDays, entry.MonthlySalary, entry.BasicPay, entry.Allowances, entry.OvertimeHours,
-                entry.OvertimeAmount, entry.Deductions, NetPay(entry.MonthlySalary, entry.OvertimeAmount, entry.BasicPay))));
-            return rows.Where(row => MatchesStaffFilter(row, query))
+            rows.AddRange(saved.Where(entry => !currentIds.Contains(entry.StaffId)).Select(entry => SavedRow(entry)));
+
+            var search = query?.Trim();
+            var exactId = employeeId?.Trim();
+            return rows.Where(row => MatchesStaffFilter(row, search)
+                    && (string.IsNullOrEmpty(exactId) || string.Equals(row.EmployeeId, exactId, StringComparison.OrdinalIgnoreCase)))
                 .OrderBy(row => row.Department, StringComparer.CurrentCultureIgnoreCase)
                 .ThenBy(row => row.EmployeeName, StringComparer.CurrentCultureIgnoreCase)
                 .ThenBy(row => row.EmployeeId, StringComparer.OrdinalIgnoreCase).ToList();
@@ -71,7 +74,7 @@ namespace IMSB.Backend
             var existing = await _context.PayBillEntries
                 .Where(entry => entry.Year == monthStart.Year && entry.Month == monthStart.Month)
                 .ToDictionaryAsync(entry => entry.StaffId);
-            var (staff, attendance) = await PayableStaffAsync(monthStart, existing.Keys.ToList(), tracking: true);
+            var (staff, attendance, lopLeave) = await PayableStaffAsync(monthStart, existing.Keys.ToList(), tracking: true);
             var staffIds = staff.Select(employee => employee.Id).ToHashSet();
             if (rows.Any(row => !staffIds.Contains(row.StaffId))) return false;
 
@@ -84,12 +87,9 @@ namespace IMSB.Backend
             {
                 existing.TryGetValue(employee.Id, out var entry);
                 adjustments.TryGetValue(employee.Id, out var adjustment);
-                var attendanceRows = attendance[employee.Id].Where(record => record.AttendanceDate.Date >= employee.JoinDate.Date).ToList();
-                var paidDays = PaidDays(attendanceRows);
-                var basicPay = ProratedPay(employee.MonthlySalary, paidDays, monthDays);
+                var (paidDays, basicPay, ot) = Fresh(employee, monthStart, attendance, lopLeave, overtime);
                 var allowances = adjustment?.Allowances ?? entry?.Allowances ?? 0m;
-                // worked out again from the OT assignments on every generate, unless an amount is given for this employee
-                var ot = overtime.GetValueOrDefault(employee.Id) ?? OvertimeResult.None;
+                // OT is worked out again from the OT assignments on every generate, unless an amount is given for this employee
                 var overtimeAmount = adjustment?.OvertimeAmount ?? ot.Amount;
                 var deductions = adjustment?.Deductions ?? entry?.Deductions ?? 0m;
 
@@ -131,9 +131,9 @@ namespace IMSB.Backend
 
         /// <summary>
         /// Staff on the month's pay bill (joined by its end and active, already on the saved bill, or marked during the
-        /// month), by department and name, with their attendance records in the month.
+        /// month), by department and name, with their attendance records and LOP leave entries in the month.
         /// </summary>
-        private async Task<(List<Staff> Staff, ILookup<Guid, AttendanceRecord> Attendance)> PayableStaffAsync(
+        private async Task<(List<Staff> Staff, ILookup<Guid, AttendanceRecord> Attendance, ILookup<Guid, StaffLeaveEntry> LopLeave)> PayableStaffAsync(
             DateTime monthStart, List<Guid> savedStaffIds, bool tracking)
         {
             var end = monthStart.AddMonths(1).AddDays(-1);
@@ -152,31 +152,73 @@ namespace IMSB.Backend
                 .Where(record => staffIds.Contains(record.StaffId)
                     && record.AttendanceDate >= monthStart && record.AttendanceDate <= end)
                 .ToListAsync();
-            return (staff, attendance.ToLookup(record => record.StaffId));
+            var lop = LeaveBalanceRules.LopLeaveType;
+            var lopLeave = await _context.StaffLeaveEntries.AsNoTracking()
+                .Where(entry => staffIds.Contains(entry.StaffId) && entry.LeaveType.ToUpper() == lop
+                    && entry.FromDate <= end && entry.ToDate >= monthStart)
+                .ToListAsync();
+            return (staff, attendance.ToLookup(record => record.StaffId), lopLeave.ToLookup(entry => entry.StaffId));
         }
 
         private Task<Dictionary<Guid, string>> DepartmentNamesAsync() =>
             _context.Departments.AsNoTracking().ToDictionaryAsync(department => department.Id, department => department.Name);
 
-        private static bool MatchesStaffFilter(PayBillRow row, string? query) =>
-            string.IsNullOrWhiteSpace(query)
-            || row.EmployeeName.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase)
-            || row.EmployeeId.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase);
+        /// <summary>
+        /// Payable days (month days − LOP days), the salary for them and OT, worked out from the month's attendance,
+        /// LOP leave entries, join date and OT assignments.
+        /// </summary>
+        private static (decimal PayableDays, decimal BasicPay, OvertimeResult Ot) Fresh(Staff employee, DateTime monthStart,
+            ILookup<Guid, AttendanceRecord> attendance, ILookup<Guid, StaffLeaveEntry> lopLeave, IReadOnlyDictionary<Guid, OvertimeResult> overtime)
+        {
+            var monthDays = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
+            var payableDays = monthDays - LopDays(monthStart, employee.JoinDate, attendance[employee.Id], lopLeave[employee.Id]);
+            return (payableDays, ProratedPay(employee.MonthlySalary, payableDays, monthDays),
+                overtime.GetValueOrDefault(employee.Id) ?? OvertimeResult.None);
+        }
 
-        /// <summary>Present = 1, Half Day = 0.5, paid leave = 1; absent and loss-of-pay leave are unpaid.</summary>
-        public static decimal PaidDays(IEnumerable<AttendanceRecord> records) =>
-            records.Sum(record => record.Status switch
+        /// <summary>A pay bill row from the saved figures, with Net Pay recomputed from them.</summary>
+        private static PayBillRow SavedRow(PayBillEntry entry) => new(
+            entry.StaffId, entry.EmployeeId, entry.EmployeeName, entry.Department, entry.Designation, entry.MonthDays,
+            entry.PaidDays, entry.MonthlySalary, entry.BasicPay, entry.Allowances, entry.OvertimeHours,
+            entry.OvertimeAmount, entry.Deductions, NetPay(entry.MonthlySalary, entry.OvertimeAmount, entry.BasicPay));
+
+        /// <summary>query is already trimmed: matches name or employee id (contains).</summary>
+        private static bool MatchesStaffFilter(PayBillRow row, string? query) =>
+            string.IsNullOrEmpty(query)
+            || row.EmployeeName.Contains(query, StringComparison.OrdinalIgnoreCase)
+            || row.EmployeeId.Contains(query, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// The month's loss-of-pay days, day by day: Absent = 1, Leave without pay = 1, Half Day without pay = 0.5,
+        /// a day under an LOP leave entry with no attendance mark = 1, a day before joining = 1. Every other day,
+        /// marked or not, is payable.
+        /// </summary>
+        public static decimal LopDays(DateTime monthStart, DateTime joinDate,
+            IEnumerable<AttendanceRecord> attendance, IEnumerable<StaffLeaveEntry> lopLeave)
+        {
+            var marks = attendance.GroupBy(record => record.AttendanceDate.Date).ToDictionary(day => day.Key, day => day.First());
+            var lopEntries = lopLeave.Where(entry => LeaveBalanceRules.IsLop(entry.LeaveType)).ToList();
+            var lopDays = 0m;
+            for (var day = monthStart.Date; day.Month == monthStart.Month; day = day.AddDays(1))
             {
-                AttendanceStatuses.Present => 1m,
-                AttendanceStatuses.HalfDay => 0.5m,
-                AttendanceStatuses.Leave when !record.LeaveWithoutPay => 1m,
-                _ => 0m
-            });
+                if (day < joinDate.Date) { lopDays += 1m; continue; }
+                lopDays += marks.TryGetValue(day, out var record)
+                    ? record.Status switch
+                    {
+                        AttendanceStatuses.Absent => 1m,
+                        AttendanceStatuses.Leave when record.LeaveWithoutPay => 1m,
+                        AttendanceStatuses.HalfDay when record.LeaveWithoutPay => 0.5m,
+                        _ => 0m
+                    }
+                    : lopEntries.Any(entry => entry.FromDate.Date <= day && entry.ToDate.Date >= day) ? 1m : 0m;
+            }
+            return lopDays;
+        }
 
         public static decimal ProratedPay(decimal monthlySalary, decimal paidDays, int monthDays) =>
             Math.Round(monthlySalary * paidDays / monthDays, 2, MidpointRounding.AwayFromZero);
 
-        /// <summary>LOP Deduction: the salary not earned for unpaid days (Monthly Salary − pay for the paid days).</summary>
+        /// <summary>LOP Deduction: the salary not earned for LOP days (Monthly Salary − pay for the payable days).</summary>
         public static decimal LopDeduction(decimal monthlySalary, decimal basicPay) => Math.Max(0m, monthlySalary - basicPay);
 
         /// <summary>

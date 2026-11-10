@@ -5,8 +5,11 @@ namespace IMSB.Interfaces
     /// <summary>Monthly pay bill: basic pay prorated by paid attendance days, plus allowances / overtime less deductions.</summary>
     public interface IPayrollInterface
     {
-        /// <summary>The month's rows by department and name; query matches name or employee id.</summary>
-        Task<List<PayBillRow>> RowsAsync(DateTime monthStart, string? query = null);
+        /// <summary>
+        /// The month's rows by department and name; query matches name or employee id (contains),
+        /// employeeId is the staff filter (exact, case-insensitive).
+        /// </summary>
+        Task<List<PayBillRow>> RowsAsync(DateTime monthStart, string? query = null, string? employeeId = null);
 
         Task<bool> IsGeneratedAsync(DateTime monthStart);
 

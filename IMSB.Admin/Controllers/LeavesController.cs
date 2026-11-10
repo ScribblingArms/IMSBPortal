@@ -81,9 +81,11 @@ public class LeavesController : Controller
             Year = year,
             Form = new LeaveEntryForm { FromDate = today, ToDate = today },
             Staff = await _leaves.ActiveStaffAsync(),
-            LeaveTypes = await _leaves.LeaveTypesAsync(),
+            // LOP is always offered: it is what a leave becomes once the balance is used up
+            LeaveTypes = LeaveBalanceRules.WithLop(await _leaves.LeaveTypesAsync()),
             Entitlements = await _leaves.EntitlementsAsync(year),
-            Entries = await _leaves.EntriesAsync(year)
+            Entries = await _leaves.EntriesAsync(year),
+            Balances = await _leaves.BalancesAsync(year)
         });
     }
 

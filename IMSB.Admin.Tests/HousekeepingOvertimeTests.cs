@@ -28,7 +28,7 @@ public class HousekeepingOvertimeTests
     public void Housekeeping_ot_amount_is_approved_hours_times_50(decimal hours, decimal expected)
     {
         Assert.Equal(expected, OvertimePay.HousekeepingAmount(hours));
-        Assert.Equal(expected, OvertimePay.Amount(hours, "Housekeeping", 12000m, 8m));
+        Assert.Equal(expected, OvertimePay.Amount(hours, "Housekeeping", 12000m));
     }
 
     [Fact]
@@ -49,11 +49,8 @@ public class HousekeepingOvertimeTests
     [InlineData(8000)]
     [InlineData(12000)]
     [InlineData(25000)]
-    public void Housekeeping_ot_does_not_depend_on_salary_or_shift(decimal salary)
-    {
-        Assert.Equal(200m, OvertimePay.Amount(4m, "Housekeeping", salary, 8m));
-        Assert.Equal(200m, OvertimePay.Amount(4m, "Housekeeping", salary, 7m));
-    }
+    public void Housekeeping_ot_does_not_depend_on_salary(decimal salary) =>
+        Assert.Equal(200m, OvertimePay.Amount(4m, "Housekeeping", salary));
 
     // ── The three screens ─────────────────────────────────────────
     /// <summary>

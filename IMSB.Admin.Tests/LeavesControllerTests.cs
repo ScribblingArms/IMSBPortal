@@ -396,6 +396,223 @@ public class LeavesControllerTests
         }
     }
 
+    // ── LOP: leave taken once the balance is zero ──
+
+    private static LeaveEntryForm Lop(Guid staffId, DateTime day, string type = "LOP")
+    {
+        var form = Entry(staffId, day);
+        form.LeaveType = type;
+        return form;
+    }
+
+    [Fact]
+    public async Task Add_offers_lop_and_the_balances_for_the_leave_balance_box()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            AddQuota(context, staff, 1m);
+            context.StaffLeaveEntries.Add(new StaffLeaveEntry
+            {
+                StaffId = staff.Id, LeaveType = "Casual", Year = Year, FromDate = LeaveDay, ToDate = LeaveDay, Days = 1m
+            });
+            await context.SaveChangesAsync();
+
+            var model = Assert.IsType<LeaveEntryViewModel>(Assert.IsType<ViewResult>(await controller.Add()).Model);
+
+            Assert.Contains(LeaveBalanceRules.LopLeaveType, model.LeaveTypes);
+            var balance = Assert.Single(model.Balances);
+            Assert.Equal(("EMP901", "Casual", 0m), (balance.EmployeeId, balance.LeaveType, balance.Balance));
+        }
+    }
+
+    [Theory]
+    [InlineData(new[] { "Casual", "Sick" }, new[] { "Casual", "Sick", "LOP" })]
+    [InlineData(new[] { "Casual", "lop" }, new[] { "Casual", "lop" })]   // already configured: not added twice
+    [InlineData(new string[0], new[] { "LOP" })]
+    public void With_lop_adds_lop_once(string[] configured, string[] expected) =>
+        Assert.Equal(expected, LeaveBalanceRules.WithLop(configured));
+
+    [Theory]
+    [InlineData("LOP", true)]
+    [InlineData(" lop ", true)]
+    [InlineData("Casual", false)]
+    [InlineData(null, false)]
+    public void Is_lop_ignores_case_and_spaces(string? type, bool expected) =>
+        Assert.Equal(expected, LeaveBalanceRules.IsLop(type));
+
+    [Fact]
+    public async Task Lop_is_recorded_with_zero_balance_and_without_a_quota()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            var form = Lop(staff.Id, LeaveDay, " lop ");
+            Bind(controller, form);
+
+            Assert.IsType<RedirectToActionResult>(await controller.Record(form));
+
+            var saved = await context.StaffLeaveEntries.SingleAsync();
+            Assert.Equal(LeaveBalanceRules.LopLeaveType, saved.LeaveType);
+            Assert.Null(ErrorOf(controller));
+        }
+    }
+
+    [Fact]
+    public async Task Lop_does_not_use_up_the_balance_of_other_leave_types()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            AddQuota(context, staff, 2m);
+            await context.SaveChangesAsync();
+            var form = Lop(staff.Id, LeaveDay);
+            form.ToDate = LeaveDay.AddDays(4).ToString("yyyy-MM-dd");
+            Bind(controller, form);
+
+            Assert.IsType<RedirectToActionResult>(await controller.Record(form));
+
+            Assert.Equal(5m, (await context.StaffLeaveEntries.SingleAsync()).Days);
+            Assert.Equal(2m, Assert.Single(((LeaveManagementViewModel)Assert.IsType<ViewResult>(await controller.Index()).Model!).Balances).Balance);
+        }
+    }
+
+    [Fact]
+    public async Task Lop_still_rejects_overlapping_dates_and_days_marked_as_worked()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            context.AttendanceRecords.Add(Mark(staff, BackDay, AttendanceStatuses.Present));
+            await context.SaveChangesAsync();
+
+            var worked = Lop(staff.Id, BackDay);
+            Bind(controller, worked);
+            await controller.Record(worked);
+            Assert.Empty(context.StaffLeaveEntries);
+
+            controller.ModelState.Clear();
+            var first = Lop(staff.Id, LeaveDay);
+            Bind(controller, first);
+            await controller.Record(first);
+            controller.ModelState.Clear();
+            var overlap = Lop(staff.Id, LeaveDay);
+            Bind(controller, overlap);
+            await controller.Record(overlap);
+            Assert.Single(context.StaffLeaveEntries);
+        }
+    }
+
+    [Fact]
+    public async Task Lop_makes_a_day_marked_leave_unpaid_and_deleting_it_reverses_that()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            AddQuota(context, staff, 5m);
+            var leave = Mark(staff, BackDay, AttendanceStatuses.Leave);
+            context.AttendanceRecords.Add(leave);
+            await context.SaveChangesAsync();
+            var form = Lop(staff.Id, BackDay);
+            Bind(controller, form);
+
+            Assert.IsType<RedirectToActionResult>(await controller.Record(form));
+            Assert.True((await context.AttendanceRecords.AsNoTracking().SingleAsync(r => r.Id == leave.Id)).LeaveWithoutPay);
+            Assert.Equal(1m, IMSB.Backend.Payroll.LopDays(new DateTime(BackDay.Year, BackDay.Month, 1), staff.JoinDate.Date > BackDay ? BackDay : staff.JoinDate,
+                context.AttendanceRecords.AsNoTracking().ToList(), context.StaffLeaveEntries.AsNoTracking().ToList()));
+
+            Assert.IsType<RedirectToActionResult>(await controller.DeleteEntry((await context.StaffLeaveEntries.SingleAsync()).Id));
+            Assert.False((await context.AttendanceRecords.AsNoTracking().SingleAsync(r => r.Id == leave.Id)).LeaveWithoutPay);   // back on the quota
+        }
+    }
+
+    [Fact]
+    public void Unpaid_by_manual_leave_is_true_for_lop_false_for_other_types_and_null_when_not_covered()
+    {
+        var staffId = Guid.NewGuid();
+        var record = new AttendanceRecord { StaffId = staffId, AttendanceDate = BackDay, Status = AttendanceStatuses.Leave };
+        StaffLeaveEntry Covering(string type) => new() { StaffId = staffId, LeaveType = type, Year = Year, FromDate = BackDay, ToDate = BackDay, Days = 1m };
+
+        Assert.Null(LeaveBalanceRules.UnpaidByManualLeave(record, Array.Empty<StaffLeaveEntry>()));
+        Assert.False(LeaveBalanceRules.UnpaidByManualLeave(record, new[] { Covering("Casual") }));
+        Assert.True(LeaveBalanceRules.UnpaidByManualLeave(record, new[] { Covering("LOP") }));
+    }
+
+    private static string AdminFile(params string[] path) => File.ReadAllText(Path.Combine(
+        new[] { typeof(LeavesControllerTests).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyMetadataAttribute), false)
+            .Cast<System.Reflection.AssemblyMetadataAttribute>().Single(a => a.Key == "AdminProjectDir").Value! }.Concat(path).ToArray()));
+
+    [Fact]
+    public void Apply_leave_form_has_leave_balance_beside_days_taken()
+    {
+        var view = AdminFile("Views", "Leaves", "Add.cshtml");
+        int At(string id) => view.IndexOf($"id=\"{id}\"", StringComparison.Ordinal);
+
+        // a two-column grid: From | To, then Leave Balance | Days Taken
+        Assert.True(At("leaveTo") < At("leaveBalance"));
+        Assert.True(At("leaveBalance") < At("leaveDays"));
+        Assert.True(At("leaveDays") < At("leaveRemarks"));
+    }
+
+    [Fact]
+    public void Leave_entries_show_from_to_and_days_as_text_and_only_remarks_can_be_edited()
+    {
+        var view = AdminFile("Views", "Leaves", "Add.cshtml");
+
+        Assert.Contains("<td class=\"leave-from-date\">@entry.FromDate.ToString(\"dd-MM-yyyy\")</td>", view);
+        Assert.Contains("<td class=\"leave-to-date\">@entry.ToDate.ToString(\"dd-MM-yyyy\")</td>", view);
+        Assert.Contains("<td class=\"leave-days\">", view);
+        Assert.Contains("<input type=\"hidden\" name=\"fromDate\"", view);
+        Assert.Contains("<input type=\"hidden\" name=\"toDate\"", view);
+        Assert.DoesNotContain("name=\"fromDate\" type=\"date\"", view);
+        Assert.DoesNotContain("name=\"daysDisplay\"", view);
+        Assert.Contains("name=\"remarks\"", view);
+    }
+
+    [Fact]
+    public async Task Updating_only_the_remarks_keeps_the_dates_and_days()
+    {
+        var (context, controller, staff) = Create();
+        using (context)
+        {
+            AddQuota(context, staff, 5m);
+            await context.SaveChangesAsync();
+            var form = Entry(staff.Id);
+            Bind(controller, form);
+            await controller.Record(form);
+            var entry = await context.StaffLeaveEntries.SingleAsync();
+            var day = entry.FromDate.ToString("yyyy-MM-dd");
+
+            Assert.IsType<RedirectToActionResult>(await controller.UpdateEntry(entry.Id, day, day, "doctor visit"));
+
+            var saved = await context.StaffLeaveEntries.AsNoTracking().SingleAsync();
+            Assert.Equal((LeaveDay, LeaveDay, 1m, "doctor visit"), (saved.FromDate, saved.ToDate, saved.Days, saved.Remarks));
+        }
+    }
+
+    [Fact]
+    public void Filled_link_buttons_keep_white_text_on_hover()
+    {
+        var css = AdminFile("wwwroot", "css", "style.css");
+
+        Assert.Contains("a:hover { color: var(--accent); }", css);   // links in general still turn accent
+        foreach (var button in new[] { "primary", "accent", "success", "danger" })
+            Assert.Matches($@"\.btn-{button}:hover \{{[^}}]*color: #fff;", css);
+    }
+
+    [Fact]
+    public void Apply_leave_view_has_a_remarks_textarea_a_disabled_balance_box_and_the_lop_popup()
+    {
+        var view = AdminFile("Views", "Leaves", "Add.cshtml");
+
+        Assert.Contains("<textarea id=\"leaveRemarks\" name=\"Remarks\"", view);
+        Assert.Contains("<input id=\"leaveBalance\" type=\"text\" class=\"form-control\" disabled />", view);
+        Assert.Contains("id=\"lopConfirmModal\"", view);
+        Assert.Contains("id=\"lopConfirmYes\"", view);
+        Assert.Contains("id=\"lopConfirmNo\"", view);
+        Assert.Contains("balance <= 0", view);
+    }
+
     private sealed class TestTempDataProvider : ITempDataProvider
     {
         public IDictionary<string, object> LoadTempData(HttpContext context) => new Dictionary<string, object>();

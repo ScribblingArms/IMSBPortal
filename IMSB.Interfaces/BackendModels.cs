@@ -54,6 +54,9 @@ namespace IMSB.Interfaces
         /// where Basic Pay is the salary prorated by paid days). Separate from <see cref="Deductions"/>.
         /// </summary>
         public decimal LopDeduction => Math.Max(0m, MonthlySalary - BasicPay);
+
+        /// <summary>Loss-of-pay days: the month's days that are not payable (PaidDays holds the payable days).</summary>
+        public decimal LopDays => Math.Max(0m, MonthDays - PaidDays);
     }
 
     /// <summary>A month of an employee's saved pay bill history.</summary>

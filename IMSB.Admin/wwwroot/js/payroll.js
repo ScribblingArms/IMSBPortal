@@ -6,6 +6,7 @@
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const qs = values => Object.entries(values).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
   const money = value => '₹' + Number(value || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const num = value => Number(value || 0).toLocaleString(document.documentElement.lang, { maximumFractionDigits: 2 });
   let currentRows = [];
   let allDepartments = [];
 
@@ -58,11 +59,12 @@
     $('payBillCount').textContent = rows.length;
     $('payBillBody').innerHTML = rows.length ? rows.map(row => `<tr data-row="${esc(row.staffId)}">
       <td>${esc(row.employeeId)}</td><td>${esc(row.employeeName)}</td><td>${esc(row.department || '—')}</td><td>${esc(row.designation || '—')}</td>
-      <td>${Number(row.paidDays).toLocaleString(document.documentElement.lang, { maximumFractionDigits: 2 })} / ${row.monthDays}</td>
-      <td>${money(row.monthlySalary)}</td><td>${money(row.overtimeAmount)}</td>
+      <td>${num(row.paidDays)} / ${row.monthDays}</td>
+      <td>${money(row.monthlySalary)}</td><td>${num(row.overtimeHours)}</td><td>${money(row.overtimeAmount)}</td>
+      <td class="${Number(row.lopDays) > 0 ? 'lop' : ''}">${num(row.lopDays)}</td>
       <td class="${Number(row.lopDeduction) > 0 ? 'lop' : ''}">${money(row.lopDeduction)}</td>
       <td class="net-pay"><strong>${money(row.netPay)}</strong></td>
-    </tr>`).join('') : `<tr><td colspan="9" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="11" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
     renderSummary(rows);
   }
 
@@ -92,9 +94,12 @@
     }, { employees: 0, netPay: 0 });
     $('payBillSummaryBody').innerHTML = card(t('GrandTotal'), overall, true)
       + summaries.map(([department, row]) => card(department, row, false)).join('');
-    const total = key => money(rows.reduce((sum, row) => sum + Number(row[key] || 0), 0));
+    const sum = key => rows.reduce((total, row) => total + Number(row[key] || 0), 0);
+    // label over the first five columns; then salary, OT hours, OT amount, LOP days, LOP deduction, net pay
+    const totals = [money(sum('monthlySalary')), num(sum('overtimeHours')), money(sum('overtimeAmount')),
+      num(sum('lopDays')), money(sum('lopDeduction')), money(sum('netPay'))];
     $('payBillFoot').innerHTML = `<tr><td colspan="5"><strong>${esc(t('GrandTotal'))}</strong></td>
-      ${['monthlySalary', 'overtimeAmount', 'lopDeduction', 'netPay'].map(key => `<td><strong>${total(key)}</strong></td>`).join('')}</tr>`;
+      ${totals.map(value => `<td><strong>${value}</strong></td>`).join('')}</tr>`;
   }
 
   // the same month and staff member as on screen

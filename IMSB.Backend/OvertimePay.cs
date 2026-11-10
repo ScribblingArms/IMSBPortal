@@ -15,8 +15,8 @@ namespace IMSB.Backend
     /// <item>Approved OT hours: the OT Hrs saved on the staff member's OT assignments (ot_assignments.OtHours), totalled
     /// for the month the OT date (From) falls in.</item>
     /// <item>Housekeeping, and every category other than Security: ₹50 per hour.</item>
-    /// <item>Security (Staff Category name containing "Security"): a day's pay is monthly salary ÷ 30, and the hours are
-    /// turned into days by the employee's shift length. ₹16,500 on an 8-hour shift: ₹550 a day, so 4 hours = ₹275.</item>
+    /// <item>Security (Staff Category name containing "Security", Security Supervisor included): the rate is a day's pay,
+    /// monthly salary ÷ 30, and OT Amount = total approved OT hours × that rate. ₹16,500 ÷ 30 = ₹550, so 4 hours = ₹2,200.</item>
     /// </list>
     /// </summary>
     public static class OvertimePay
@@ -39,13 +39,18 @@ namespace IMSB.Backend
         public static decimal HousekeepingAmount(decimal hours) =>
             hours <= 0m ? 0m : Math.Round(hours * HousekeepingHourlyRate, 2, MidpointRounding.AwayFromZero);
 
-        /// <summary>The pay for <paramref name="hours"/> of approved OT, rounded to the paisa.</summary>
-        public static decimal Amount(decimal hours, string? staffCategory, decimal monthlySalary, decimal shiftHours)
+        /// <summary>Security OT rate: a day's pay, monthly salary ÷ 30 (₹16,500 → ₹550).</summary>
+        public static decimal SecurityRate(decimal monthlySalary) => monthlySalary / SecurityDaysPerMonth;
+
+        /// <summary>
+        /// The pay for <paramref name="hours"/> of approved OT, rounded to the paisa: Security = hours × (salary ÷ 30),
+        /// every other category = hours × ₹50.
+        /// </summary>
+        public static decimal Amount(decimal hours, string? staffCategory, decimal monthlySalary)
         {
             if (hours <= 0m) return 0m;
             if (!IsSecurity(staffCategory)) return HousekeepingAmount(hours);   // Housekeeping, and every other category
-            var amount = monthlySalary / SecurityDaysPerMonth * hours / (shiftHours > 0m ? shiftHours : AttendanceRules.DefaultShiftHours);
-            return Math.Round(amount, 2, MidpointRounding.AwayFromZero);
+            return Math.Round(hours * SecurityRate(monthlySalary), 2, MidpointRounding.AwayFromZero);
         }
 
         /// <summary>The month's approved OT hours: the saved OT Hrs of the assignments whose OT date is in that month.</summary>
@@ -65,17 +70,13 @@ namespace IMSB.Backend
                     .Where(a => staffIds.Contains(a.StaffId) && a.FromDateTime >= monthStart && a.FromDateTime < monthEnd)
                     .ToListAsync())
                 .ToLookup(a => a.StaffId);
-            var shifts = (await context.Shifts.AsNoTracking().ToListAsync())
-                .GroupBy(s => s.Code.Trim().ToUpperInvariant())
-                .ToDictionary(g => g.Key, g => g.First().Name);
 
             return staff.ToDictionary(s => s.Id, s =>
             {
                 var hours = MonthHours(assignments[s.Id], monthStart);
-                if (hours == 0m) return OvertimeResult.None;
-                var shiftName = string.IsNullOrWhiteSpace(s.Shift) ? null : shifts.GetValueOrDefault(s.Shift.Trim().ToUpperInvariant()) ?? s.Shift;
-                var amount = Amount(hours, categories.GetValueOrDefault(s.DepartmentId), s.MonthlySalary, AttendanceRules.ShiftHours(shiftName));
-                return new OvertimeResult(hours, amount);
+                return hours == 0m
+                    ? OvertimeResult.None
+                    : new OvertimeResult(hours, Amount(hours, categories.GetValueOrDefault(s.DepartmentId), s.MonthlySalary));
             });
         }
     }

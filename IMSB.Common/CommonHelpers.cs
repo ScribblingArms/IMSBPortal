@@ -69,6 +69,15 @@ namespace IMSB.Common
 
         public static string Money(decimal v) => v.ToString("0.00", CultureInfo.InvariantCulture);
 
+        /// <summary>The first day of the given month; false when the year (2000–9999) or month (1–12) is missing or out of range.</summary>
+        public static bool TryMonthStart(int? year, int? month, out DateTime start)
+        {
+            start = default;
+            if (year is null or < 2000 or > 9999 || month is null or < 1 or > 12) return false;
+            start = new DateTime(year.Value, month.Value, 1);
+            return true;
+        }
+
         public static string Int(int v) => v.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>400 with a single error, in the { errors: { key: message } } shape the pages read.</summary>

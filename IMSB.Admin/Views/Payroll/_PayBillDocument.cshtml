@@ -32,19 +32,19 @@
   <table>
     <thead><tr>
       <th>@L["EmployeeID"]</th><th>@L["StaffName"]</th><th>@L["Department"]</th><th>@L["Designation"]</th>
-      <th>@L["PaidDays"]</th><th>@L["MonthlySalary"]</th><th>@L["LOPDeduction"]</th><th>@L["BasicPay"]</th><th>@L["Allowances"]</th>
+      <th>@L["PayableDays"]</th><th>@L["MonthlySalary"]</th><th>@L["LOPDays"]</th><th>@L["LOPDeduction"]</th><th>@L["BasicPay"]</th><th>@L["Allowances"]</th>
       <th>@L["OTHours"]</th><th>@L["OvertimeAmount"]</th><th>@L["Deductions"]</th><th>@L["NetPay"]</th>
     </tr></thead>
     <tbody>
       @if (Model.Rows.Count == 0)
       {
-        <tr><td colspan="13" class="empty">@L["NoStaffForAttendance"]</td></tr>
+        <tr><td colspan="14" class="empty">@L["NoStaffForAttendance"]</td></tr>
       }
       @foreach (var row in Model.Rows)
       {
         <tr>
           <td>@row.EmployeeId</td><td>@row.EmployeeName</td><td>@row.Department</td><td>@row.Designation</td>
-          <td>@Number(row.PaidDays) / @row.MonthDays</td><td>@Money(row.MonthlySalary)</td><td>@Money(row.LopDeduction)</td>
+          <td>@Number(row.PaidDays) / @row.MonthDays</td><td>@Money(row.MonthlySalary)</td><td>@Number(row.LopDays)</td><td>@Money(row.LopDeduction)</td>
           <td>@Money(row.BasicPay)</td><td>@Money(row.Allowances)</td><td>@Number(row.OvertimeHours)</td>
           <td>@Money(row.OvertimeAmount)</td><td>@Money(row.Deductions)</td><td>@Money(row.NetPay)</td>
         </tr>
@@ -52,7 +52,7 @@
     </tbody>
     <tfoot><tr>
       <td colspan="5">@L["GrandTotal"]</td>
-      <td>@Money(Model.Rows.Sum(r => r.MonthlySalary))</td><td>@Money(Model.Rows.Sum(r => r.LopDeduction))</td>
+      <td>@Money(Model.Rows.Sum(r => r.MonthlySalary))</td><td>@Number(Model.Rows.Sum(r => r.LopDays))</td><td>@Money(Model.Rows.Sum(r => r.LopDeduction))</td>
       <td>@Money(Model.Rows.Sum(r => r.BasicPay))</td><td>@Money(Model.Rows.Sum(r => r.Allowances))</td>
       <td>@Number(Model.Rows.Sum(r => r.OvertimeHours))</td><td>@Money(Model.Rows.Sum(r => r.OvertimeAmount))</td>
       <td>@Money(Model.Rows.Sum(r => r.Deductions))</td><td>@Money(Model.TotalNetPay)</td>

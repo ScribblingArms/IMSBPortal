@@ -36,7 +36,7 @@ public class PayrollController : Controller
     [HttpGet]
     public async Task<IActionResult> Data([FromQuery] int? year, [FromQuery] int? month)
     {
-        if (!TryResolvePeriod(year, month, out var start)) return ErrorResult("period", _L["ValDateInvalid"].Value);
+        if (!TryMonthStart(year, month, out var start)) return ErrorResult("period", _L["ValDateInvalid"].Value);
 
         var rows = await _payroll.RowsAsync(start);
         return Ok(new
@@ -54,7 +54,7 @@ public class PayrollController : Controller
     [HttpGet]
     public async Task<IActionResult> EmployeeHistory([FromQuery] Guid? staffId, [FromQuery] int? year, [FromQuery] int? month)
     {
-        if (staffId == null || staffId == Guid.Empty || !TryResolvePeriod(year, month, out var start))
+        if (staffId == null || staffId == Guid.Empty || !TryMonthStart(year, month, out var start))
             return ErrorResult("period", _L["ValDateInvalid"].Value);
 
         return Ok(new { rows = await _payroll.HistoryAsync(staffId.Value, start, HistoryMonths) });
@@ -64,14 +64,14 @@ public class PayrollController : Controller
     [HttpGet]
     public async Task<IActionResult> Export([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q, [FromQuery] string? employeeId = null)
     {
-        if (!TryResolvePeriod(year, month, out var start)) return BadRequest();
-        var rows = await BillRowsAsync(start, q, employeeId);
+        if (!TryMonthStart(year, month, out var start)) return BadRequest();
+        var rows = await _payroll.RowsAsync(start, q, employeeId);
 
         var output = new List<string?[]>
         {
             new[] { _L["EmployeeID"].Value, _L["StaffName"].Value, _L["Department"].Value, _L["Designation"].Value,
-                _L["PaidDays"].Value, _L["MonthlySalary"].Value, _L["BasicPay"].Value, _L["Allowances"].Value, _L["OTHours"].Value,
-                _L["OvertimeAmount"].Value, _L["LOPDeduction"].Value, _L["Deductions"].Value, _L["NetPay"].Value }
+                _L["PayableDays"].Value, _L["MonthlySalary"].Value, _L["BasicPay"].Value, _L["Allowances"].Value, _L["OTHours"].Value,
+                _L["OvertimeAmount"].Value, _L["LOPDays"].Value, _L["LOPDeduction"].Value, _L["Deductions"].Value, _L["NetPay"].Value }
         };
         output.AddRange(rows.Select(row => new string?[]
         {
@@ -82,11 +82,12 @@ public class PayrollController : Controller
             Money(row.Allowances),
             row.OvertimeHours.ToString("0.##", CultureInfo.InvariantCulture),
             Money(row.OvertimeAmount),
+            row.LopDays.ToString("0.##", CultureInfo.InvariantCulture),
             Money(row.LopDeduction),
             Money(row.Deductions),
             Money(row.NetPay)
         }));
-        output.Add(new string?[] { _L["GrandTotal"].Value, null, null, null, null, null, null, null, null, null, null, null, Money(rows.Sum(row => row.NetPay)) });
+        output.Add(new string?[] { _L["GrandTotal"].Value, null, null, null, null, null, null, null, null, null, null, null, null, Money(rows.Sum(row => row.NetPay)) });
         return ExportExcel($"pay_bill_{start:yyyyMM}.xls", output);
     }
 
@@ -94,7 +95,7 @@ public class PayrollController : Controller
     [HttpGet]
     public async Task<IActionResult> Print([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q, [FromQuery] string? employeeId = null)
     {
-        if (!TryResolvePeriod(year, month, out var start)) return BadRequest();
+        if (!TryMonthStart(year, month, out var start)) return BadRequest();
         ViewData["Title"] = _L["PayBillTitle"].Value;
         return View("Print", await PrintModelAsync(start, q, employeeId));
     }
@@ -106,35 +107,18 @@ public class PayrollController : Controller
     [HttpGet]
     public async Task<IActionResult> PdfDocument([FromQuery] int? year, [FromQuery] int? month, [FromQuery] string? q, [FromQuery] string? employeeId = null)
     {
-        if (!TryResolvePeriod(year, month, out var start)) return BadRequest();
+        if (!TryMonthStart(year, month, out var start)) return BadRequest();
         return PartialView("_PayBillDocument", await PrintModelAsync(start, q, employeeId));
     }
 
     private async Task<PayBillPrintModel> PrintModelAsync(DateTime start, string? q, string? employeeId)
     {
-        var rows = await BillRowsAsync(start, q, employeeId);
+        var rows = await _payroll.RowsAsync(start, q, employeeId);
         return new PayBillPrintModel(
             _L["PayBillTitle"].Value,
             start.ToString("MMMM yyyy", CultureInfo.CurrentCulture),
             rows,
             rows.Sum(row => row.NetPay));
-    }
-
-    /// <summary>The month's rows, narrowed by q (name or id contains) and the staff filter (exact employee id).</summary>
-    private async Task<List<PayBillRow>> BillRowsAsync(DateTime start, string? q, string? employeeId)
-    {
-        var rows = await _payroll.RowsAsync(start, q);
-        return string.IsNullOrWhiteSpace(employeeId)
-            ? rows
-            : rows.Where(row => string.Equals(row.EmployeeId, employeeId.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
-    }
-
-    private static bool TryResolvePeriod(int? year, int? month, out DateTime start)
-    {
-        start = default;
-        if (year is null or < 2000 or > 9999 || month is null or < 1 or > 12) return false;
-        start = new DateTime(year.Value, month.Value, 1);
-        return true;
     }
 
     internal sealed record PayBillPrintModel(string Title, string Period, List<PayBillRow> Rows, decimal TotalNetPay);
