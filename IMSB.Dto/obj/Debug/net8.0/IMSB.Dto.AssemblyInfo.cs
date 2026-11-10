@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.Dto")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bc13b6d14ca92346664cddb893e42ac9fe99207")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bf33ac133d5f0f5c2a2a763078ffcbc3f827d7f")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.Dto")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.Dto")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

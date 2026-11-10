@@ -51,7 +51,7 @@ namespace IMSB.Backend
                     entry?.OvertimeHours ?? ot.Hours,
                     overtimeAmount,
                     deductions,
-                    entry?.NetPay ?? NetPay(basicPay, allowances, overtimeAmount, deductions));
+                    NetPay(entry?.MonthlySalary ?? employee.MonthlySalary, overtimeAmount, basicPay));
             }).ToList();
 
             // saved rows of staff who have since been removed
@@ -59,7 +59,7 @@ namespace IMSB.Backend
             rows.AddRange(saved.Where(entry => !currentIds.Contains(entry.StaffId)).Select(entry => new PayBillRow(
                 entry.StaffId, entry.EmployeeId, entry.EmployeeName, entry.Department, entry.Designation, entry.MonthDays,
                 entry.PaidDays, entry.MonthlySalary, entry.BasicPay, entry.Allowances, entry.OvertimeHours,
-                entry.OvertimeAmount, entry.Deductions, entry.NetPay)));
+                entry.OvertimeAmount, entry.Deductions, NetPay(entry.MonthlySalary, entry.OvertimeAmount, entry.BasicPay))));
             return rows.Where(row => MatchesStaffFilter(row, query))
                 .OrderBy(row => row.Department, StringComparer.CurrentCultureIgnoreCase)
                 .ThenBy(row => row.EmployeeName, StringComparer.CurrentCultureIgnoreCase)
@@ -111,7 +111,7 @@ namespace IMSB.Backend
                 entry.OvertimeHours = ot.Hours;
                 entry.OvertimeAmount = overtimeAmount;
                 entry.Deductions = deductions;
-                entry.NetPay = NetPay(basicPay, allowances, overtimeAmount, deductions);
+                entry.NetPay = NetPay(employee.MonthlySalary, overtimeAmount, basicPay);
                 entry.GeneratedAt = DateTime.UtcNow;
             }
 
@@ -176,7 +176,14 @@ namespace IMSB.Backend
         public static decimal ProratedPay(decimal monthlySalary, decimal paidDays, int monthDays) =>
             Math.Round(monthlySalary * paidDays / monthDays, 2, MidpointRounding.AwayFromZero);
 
-        private static decimal NetPay(decimal basicPay, decimal allowances, decimal overtimeAmount, decimal deductions) =>
-            Math.Max(0m, basicPay + allowances + overtimeAmount - deductions);
+        /// <summary>LOP Deduction: the salary not earned for unpaid days (Monthly Salary − pay for the paid days).</summary>
+        public static decimal LopDeduction(decimal monthlySalary, decimal basicPay) => Math.Max(0m, monthlySalary - basicPay);
+
+        /// <summary>
+        /// Net Pay = Monthly Salary + Overtime Amount − LOP Deduction, the three amounts on the Employee-wise Salary
+        /// Statement. Allowances and other deductions are kept on the bill but are not part of Net Pay.
+        /// </summary>
+        public static decimal NetPay(decimal monthlySalary, decimal overtimeAmount, decimal basicPay) =>
+            Math.Max(0m, monthlySalary + overtimeAmount - LopDeduction(monthlySalary, basicPay));
     }
 }

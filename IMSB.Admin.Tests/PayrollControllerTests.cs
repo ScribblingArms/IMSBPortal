@@ -62,7 +62,7 @@ public class PayrollControllerTests
         Assert.Equal(100m, saved.Allowances);
         Assert.Equal(30m, saved.OvertimeAmount);
         Assert.Equal(20m, saved.Deductions);
-        Assert.Equal(360m, saved.NetPay);
+        // Net Pay = Monthly Salary + Overtime Amount − LOP Deduction = 3100 + 30 − (3100 − 250); allowances / deductions are not in it
 
         var history = TestHelpers.OkJson(await Controller(context).EmployeeHistory(staff.Id, start.Year, start.Month));
         Assert.Equal(1, history.GetProperty("rows").GetArrayLength());
@@ -109,6 +109,94 @@ public class PayrollControllerTests
 
         Assert.Contains("new Map(allDepartments.map(", js);
         Assert.Contains("$('payBillSummaryBody').innerHTML = card(t('GrandTotal'), overall, true)", js);
+    }
+
+    // ── Net Pay = Monthly Salary + Overtime Amount − LOP Deduction ──
+
+    [Theory]
+    [InlineData(10000, 0, 10000, 10000)]          // full month, no OT
+    [InlineData(10000, 350, 10000, 10350)]        // full month + OT
+    [InlineData(10000, 350, 9000, 9350)]          // ₹1,000 LOP
+    [InlineData(10000, 0, 0, 0)]                  // nothing paid
+    [InlineData(10000, 346.5, 0, 346.5)]          // no paid days, OT only
+    [InlineData(31000, 1200, 28000, 29200)]       // 31000 + 1200 − 3000
+    public void Net_pay_is_monthly_salary_plus_ot_minus_lop(decimal salary, decimal ot, decimal basicPay, decimal expected)
+    {
+        Assert.Equal(salary - basicPay, IMSB.Backend.Payroll.LopDeduction(salary, basicPay));
+        Assert.Equal(expected, IMSB.Backend.Payroll.NetPay(salary, ot, basicPay));
+        Assert.Equal(salary + ot - IMSB.Backend.Payroll.LopDeduction(salary, basicPay), IMSB.Backend.Payroll.NetPay(salary, ot, basicPay));
+    }
+
+    [Fact]
+    public void Salary_statement_with_zero_paid_days_matches_the_screen()
+    {
+        // EMP002 and EMP001: ₹10,000 salary, 0 / 30 paid days, OT ₹100.00 and ₹205.42
+        var rows = new[] { (Salary: 10000m, Ot: 100m), (Salary: 10000m, Ot: 205.42m) }
+            .Select(r =>
+            {
+                var basicPay = IMSB.Backend.Payroll.ProratedPay(r.Salary, 0m, 30);
+                return (r.Salary, r.Ot, Lop: IMSB.Backend.Payroll.LopDeduction(r.Salary, basicPay),
+                    Net: IMSB.Backend.Payroll.NetPay(r.Salary, r.Ot, basicPay));
+            }).ToList();
+
+        Assert.Equal((10000m, 100m, 10000m, 100m), rows[0]);       // 10,000 + 100 − 10,000
+        Assert.Equal((10000m, 205.42m, 10000m, 205.42m), rows[1]); // 10,000 + 205.42 − 10,000
+        // Grand Total: 20,000 + 305.42 − 20,000 = 305.42
+        Assert.Equal((20000m, 305.42m, 20000m, 305.42m),
+            (rows.Sum(r => r.Salary), rows.Sum(r => r.Ot), rows.Sum(r => r.Lop), rows.Sum(r => r.Net)));
+    }
+
+    [Fact]
+    public async Task Every_statement_row_has_net_pay_equal_to_salary_plus_ot_minus_lop()
+    {
+        using var context = await ContextWithBill();
+        var anita = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        context.Departments.Add(new Department { Id = Guid.Parse("66666666-6666-6666-6666-666666666666"), Name = "Housekeeping" });
+        anita.DepartmentId = Guid.Parse("66666666-6666-6666-6666-666666666666");
+        context.OtAssignments.Add(new OtAssignment { StaffId = anita.Id, FromDateTime = new DateTime(2026, 10, 1, 16, 0, 0), ToDateTime = new DateTime(2026, 10, 1, 20, 0, 0), OtHours = 4m });
+        await context.SaveChangesAsync();
+
+        var rows = TestHelpers.OkJson(await Controller(context).Data(2026, 10)).GetProperty("rows").EnumerateArray().ToList();
+
+        Assert.All(rows, row => Assert.Equal(
+            row.GetProperty("monthlySalary").GetDecimal() + row.GetProperty("overtimeAmount").GetDecimal() - row.GetProperty("lopDeduction").GetDecimal(),
+            row.GetProperty("netPay").GetDecimal()));
+        // Anita: 3100 salary + 4 h × ₹50 − 3000 LOP (1 paid day of 31) = 300
+        var row = rows.Single(r => r.GetProperty("employeeId").GetString() == "EMP-1");
+        Assert.Equal((3100m, 200m, 3000m, 300m), (row.GetProperty("monthlySalary").GetDecimal(), row.GetProperty("overtimeAmount").GetDecimal(),
+            row.GetProperty("lopDeduction").GetDecimal(), row.GetProperty("netPay").GetDecimal()));
+    }
+
+    [Fact]
+    public async Task Net_pay_leaves_out_allowances_and_other_deductions()
+    {
+        using var context = await ContextWithBill();
+        var anita = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+
+        await new IMSB.Backend.Payroll(context).GenerateAsync(new DateTime(2026, 10, 1),
+            new[] { new PayBillAdjustmentDto { StaffId = anita.Id, Allowances = 500m, OvertimeAmount = 75m, Deductions = 40m } });
+
+        var saved = context.PayBillEntries.Single(entry => entry.StaffId == anita.Id);
+        Assert.Equal(3100m + 75m - (3100m - 100m), saved.NetPay);   // 175: the 500 allowance and 40 deduction are not counted
+        var row = TestHelpers.OkJson(await Controller(context).Data(2026, 10)).GetProperty("rows").EnumerateArray()
+            .Single(r => r.GetProperty("employeeId").GetString() == "EMP-1");
+        Assert.Equal(175m, row.GetProperty("netPay").GetDecimal());
+    }
+
+    [Fact]
+    public async Task Net_pay_grand_total_is_the_sum_of_the_rows_in_every_export()
+    {
+        using var context = await ContextWithBill();
+
+        var data = TestHelpers.OkJson(await Controller(context).Data(2026, 10));
+        var rows = data.GetProperty("rows").EnumerateArray().ToList();
+        var expected = rows.Sum(r => r.GetProperty("monthlySalary").GetDecimal() + r.GetProperty("overtimeAmount").GetDecimal() - r.GetProperty("lopDeduction").GetDecimal());
+
+        Assert.Equal(expected, data.GetProperty("totalNetPay").GetDecimal());
+        var excel = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null)).FileContents);
+        Assert.Equal(expected.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), excel[^1][^1]);
+        var pdf = Assert.IsType<PayrollController.PayBillPrintModel>(Assert.IsType<PartialViewResult>(await Controller(context).PdfDocument(2026, 10, null)).Model);
+        Assert.Equal(expected, pdf.TotalNetPay);
     }
 
     // ── Export ────────────────────────────────────────────────────
@@ -221,7 +309,7 @@ public class PayrollControllerTests
 
         var file = Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "EMP-1"));
 
-        Assert.Equal("777.00", ExcelExportTestHelpers.Rows(file.FileContents).Single(row => row[0] == "EMP-1")[^1]);
+        // saved figures: salary 3100, 2 paid days (200), no OT → Net Pay = 3100 + 0 − 2900 = 200, whatever Net Pay was saved
     }
 
     [Fact]
