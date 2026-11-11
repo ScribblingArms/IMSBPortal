@@ -44,7 +44,7 @@ namespace IMSB.Dto.Models
                 context.Products.Add(product);
                 context.StockMovements.Add(new StockMovement
                 {
-                    ProductId = product.Id,
+                    Product = product,   // not saved yet, so no id: link by navigation
                     ProductCode = product.ProductCode,
                     ProductName = product.Name,
                     MovementType = StockMovementTypes.Initial,

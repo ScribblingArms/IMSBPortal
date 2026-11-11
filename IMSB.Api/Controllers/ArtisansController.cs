@@ -126,13 +126,13 @@ namespace IMSB.Api.Controllers
             return Ok(new { code });
         }
 
-        private record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, string Status, DateTime JoinedDate, string District, string Gender,
+        private record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, int CategoryId, string Status, DateTime JoinedDate, string District, string Gender,
             DateTime? FromDate, DateTime? ToDate);
 
         private async Task<(Dictionary<string, string> Errors, Validated V)> ValidateAsync(ArtisanDto dto, Artisan? existing)
         {
             var errors = new Dictionary<string, string>();
-            var selfId = existing?.Id ?? Guid.Empty;
+            var selfId = existing?.Id ?? 0;
 
             if (!TryParseDate(dto.DateOfBirth, out var dob)) errors["date_of_birth"] = L["ValDobInvalid"];
             else if (dob > DateTime.Today) errors["date_of_birth"] = L["ValDobFuture"];
@@ -159,7 +159,7 @@ namespace IMSB.Api.Controllers
             var district = TelanganaDistricts.All.FirstOrDefault(d => d.Equals(dto.District?.Trim(), StringComparison.OrdinalIgnoreCase));
             if (district == null) errors["district"] = L["ValDistrict"];
 
-            if (!Guid.TryParse(dto.CategoryId, out var categoryId) || !await _artisans.CategoryExistsAsync(categoryId))
+            if (!int.TryParse(dto.CategoryId, out var categoryId) || !await _artisans.CategoryExistsAsync(categoryId))
                 errors["category_id"] = L["ValCraftCategory"];
 
             var status = string.IsNullOrWhiteSpace(dto.Status) ? existing?.Status ?? ArtisanStatuses.Active : dto.Status.Trim().ToUpperInvariant();

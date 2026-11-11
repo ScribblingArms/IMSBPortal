@@ -289,25 +289,10 @@ namespace IMSB.Admin.Controllers
             return ExportExcel($"salary_report_{start:yyyyMM}.xls", rows);
         }
 
-        private static bool TryResolveAttendanceMonth(int? year, int? month, out DateTime start)
-        {
-            var today = DateTime.Today;
-            var selectedYear = year ?? today.Year;
-            var selectedMonth = month ?? today.Month;
-            if (selectedYear < today.Year - 10 || selectedYear > today.Year || selectedMonth < 1 || selectedMonth > 12)
-            {
-                start = default;
-                return false;
-            }
-
-            start = new DateTime(selectedYear, selectedMonth, 1);
-            return true;
-        }
-
         // ── Calculations (in the Reports backend) ─────────────────────
 
         private async Task<ProductCategory?> CategoryAsync(string? categoryId) =>
-            Guid.TryParse(categoryId, out var id) ? await _reports.CategoryAsync(id) : null;
+            int.TryParse(categoryId, out var id) ? await _reports.CategoryAsync(id) : null;
 
         internal Task<ReportKpis> KpisAsync(ReportPeriod period, ProductCategory? category) => _reports.KpisAsync(period, category);
 
@@ -315,7 +300,7 @@ namespace IMSB.Admin.Controllers
         internal Task<List<(DateTime Month, decimal Current, decimal Previous)>> SalesTrendAsync(ReportPeriod period, string? categoryName) =>
             _reports.SalesTrendAsync(period, categoryName, TrendMonths);
 
-        internal Task<List<(DateTime Month, int Occupied, int Total)>> OccupancyTrendAsync(ReportPeriod period, Guid? categoryId) =>
+        internal Task<List<(DateTime Month, int Occupied, int Total)>> OccupancyTrendAsync(ReportPeriod period, int? categoryId) =>
             _reports.OccupancyTrendAsync(period, categoryId, TrendMonths);
 
         internal Task<List<StallReportRow>> StallRowsAsync(ReportPeriod period, string? q, string? status, string? block, string? categoryId) =>

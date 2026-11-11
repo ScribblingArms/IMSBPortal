@@ -20,6 +20,6 @@ namespace IMSB.Interfaces
         Task<bool> GenerateAsync(DateTime monthStart, IReadOnlyCollection<PayBillAdjustmentDto> rows);
 
         /// <summary>The employee's saved pay bills before the month, newest first.</summary>
-        Task<List<PayBillHistoryRow>> HistoryAsync(Guid staffId, DateTime monthStart, int take);
+        Task<List<PayBillHistoryRow>> HistoryAsync(int staffId, DateTime monthStart, int take);
     }
 }

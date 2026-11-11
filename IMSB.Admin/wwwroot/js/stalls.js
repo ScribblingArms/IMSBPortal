@@ -431,7 +431,7 @@
   }
 
   async function decide(id, approve){
-    const r = reallocations.find(x => x.id === id);
+    const r = reallocations.find(x => String(x.id) === String(id));
     if (approve && r && !confirm(t('ConfirmApproveReallocation', r.stallCode, r.newArtisanName || t('VacateStallOption')))) return;
     const remarks = prompt(t('DecisionRemarksPrompt'), '');
     if (remarks === null) return;

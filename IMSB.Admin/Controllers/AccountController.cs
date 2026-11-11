@@ -1,12 +1,13 @@
 ﻿using IMSB.Dto.Models;
 using IMSB.Backend;
+using IMSB.Common;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 using IMSB.Interfaces;
-using IMSB.Admin.Models;
+using IMSB.Models;
 using System.Globalization;
 
 namespace IMSB.Admin.Controllers
@@ -247,11 +248,9 @@ namespace IMSB.Admin.Controllers
 
         // ── Session management ───────────────────────────────────────
 
-        private Guid? CurrentSessionId() =>
-            Guid.TryParse(User.FindFirstValue(SessionService.ClaimType), out var id) ? id : null;
+        private Guid? CurrentSessionId() => User.GuidClaim(SessionService.ClaimType);
 
-        private Guid? CurrentLoginId() =>
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
+        private int? CurrentLoginId() => User.IntClaim(ClaimTypes.NameIdentifier);
 
         /// <summary>"Stay signed in": the request itself is the activity; returns how long the session now has left.</summary>
         [HttpPost]
@@ -271,7 +270,7 @@ namespace IMSB.Admin.Controllers
         {
             ViewData["Title"] = _L["ActiveSessions"].Value;
             var loginId = CurrentLoginId();
-            var mine = await _account.UserSessions(loginId ?? Guid.Empty);
+            var mine = await _account.UserSessions(loginId ?? 0);
             var active = await _sessions.ActiveIdsAsync();
 
             List<SessionRow>? everyone = null;
@@ -316,7 +315,7 @@ namespace IMSB.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RevokeOtherSessions()
         {
-            if (CurrentLoginId() is not Guid loginId) return Unauthorized();
+            if (CurrentLoginId() is not int loginId) return Unauthorized();
             var n = await _sessions.RevokeAllAsync(loginId, SessionEndReasons.Revoked, except: CurrentSessionId());
             TempData["SessionsMessage"] = string.Format(_L["OtherSessionsRevokedMsg"].Value, n);
             return RedirectToAction(nameof(Sessions));

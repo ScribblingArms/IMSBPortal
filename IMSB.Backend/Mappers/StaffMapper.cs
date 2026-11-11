@@ -11,7 +11,7 @@ namespace IMSB.Backend.Mappers
     public static class StaffMapper
     {
         /// <summary>Salary is admin-only and left null otherwise.</summary>
-        public static StaffListItem ToListItem(this Staff s, IReadOnlyDictionary<Guid, string> departmentNames, bool includeSalary = false) => new(
+        public static StaffListItem ToListItem(this Staff s, IReadOnlyDictionary<int, string> departmentNames, bool includeSalary = false) => new(
             s.EmployeeId, s.FullName, s.DepartmentId.ToString(), departmentNames.GetValueOrDefault(s.DepartmentId) ?? string.Empty, s.Designation,
             s.Mobile, s.Email, s.DateOfBirth.ToString("yyyy-MM-dd"), s.Gender, s.JoinDate.ToString("yyyy-MM-dd"), s.Shift, s.Status,
             includeSalary ? s.MonthlySalary : null, s.MaskedAadhaar, s.EmployeeType);
@@ -31,7 +31,7 @@ namespace IMSB.Backend.Mappers
             }
             entity.DateOfBirth = DateTime.ParseExact(dto.DateOfBirth, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             entity.Gender = dto.Gender;
-            entity.DepartmentId = Guid.Parse(dto.DepartmentId);
+            entity.DepartmentId = int.Parse(dto.DepartmentId);
             entity.EmployeeType = string.IsNullOrWhiteSpace(dto.EmployeeType) ? null : dto.EmployeeType;
             entity.Designation = dto.Designation.Trim();
             entity.JoinDate = DateTime.ParseExact(dto.JoinDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);

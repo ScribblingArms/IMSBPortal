@@ -12,15 +12,15 @@ namespace IMSB.Interfaces
 
         Task<List<ProductCategory>> CategoriesAsync();
         Task<int> CategoryCountAsync();
-        Task<Dictionary<Guid, string>> CategoryNamesAsync();
-        Task<bool> CategoryExistsAsync(Guid categoryId);
+        Task<Dictionary<int, string>> CategoryNamesAsync();
+        Task<bool> CategoryExistsAsync(int categoryId);
 
         Task<List<StockMovement>> RecentMovementsAsync(int take);
 
         Task<List<string>> ProductCodesAsync();
 
         /// <summary>Whether another product in the stall has this name (case-insensitive).</summary>
-        Task<bool> ProductExistsAsync(string name, string stallCode, Guid? exceptId);
+        Task<bool> ProductExistsAsync(string name, string stallCode, int? exceptId);
 
         /// <summary>Tracked product by code.</summary>
         Task<Product?> FindAsync(string productCode);

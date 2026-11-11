@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using IMSB.Models;
 using IMSB.Api.Auth;
 using IMSB.Backend;
+using IMSB.Common;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -40,7 +42,7 @@ namespace IMSB.Api.Controllers
 
         public record LoginResponse(string Token, DateTime ExpiresAt, bool Persistent, int IdleTimeoutMinutes, UserInfo User);
 
-        public record UserInfo(Guid Id, string Username, string Role);
+        public record UserInfo(int Id, string Username, string Role);
 
         /// <summary>Signs in and returns the bearer token to send as "Authorization: Bearer {token}".</summary>
         [HttpPost("login")]
@@ -101,7 +103,7 @@ namespace IMSB.Api.Controllers
         {
             var current = CurrentSessionId();
             var active = await _sessions.ActiveIdsAsync();
-            var mine = (await _account.UserSessions(CurrentLoginId() ?? Guid.Empty))
+            var mine = (await _account.UserSessions(CurrentLoginId() ?? 0))
                 .Select(s => new SessionItem(s.Id, UserName ?? "", s.Role, Utc(s.CreatedAt), Utc(s.LastSeenAt), Utc(s.ExpiresAt),
                     s.IsPersistent, s.IpAddress, s.UserAgent, s.RevokedReason, active.Contains(s.Id), s.Id == current));
             var everyone = User.IsInRole("Admin")
@@ -126,7 +128,7 @@ namespace IMSB.Api.Controllers
         [HttpPost("sessions/revoke-others")]
         public async Task<IActionResult> RevokeOtherSessions()
         {
-            if (CurrentLoginId() is not Guid loginId) return Unauthorized();
+            if (CurrentLoginId() is not int loginId) return Unauthorized();
             var revoked = await _sessions.RevokeAllAsync(loginId, SessionEndReasons.Revoked, except: CurrentSessionId());
             return Ok(new { revoked });
         }
@@ -159,10 +161,8 @@ namespace IMSB.Api.Controllers
             return Ok(new { message = L["PasswordResetDone"].Value });
         }
 
-        private Guid? CurrentSessionId() =>
-            Guid.TryParse(User.FindFirst(ApiClaims.SessionId)?.Value, out var id) ? id : null;
+        private Guid? CurrentSessionId() => User.GuidClaim(ApiClaims.SessionId);
 
-        private Guid? CurrentLoginId() =>
-            Guid.TryParse(User.FindFirst(ApiClaims.LoginId)?.Value, out var id) ? id : null;
+        private int? CurrentLoginId() => User.IntClaim(ApiClaims.LoginId);
     }
 }

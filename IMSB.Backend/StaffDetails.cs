@@ -23,7 +23,7 @@ namespace IMSB.Backend
                 var term = q.Trim().ToLower();
                 query = query.Where(s => s.FullName.ToLower().Contains(term) || s.Mobile.Contains(term) || s.EmployeeId.ToLower().Contains(term));
             }
-            if (!string.IsNullOrWhiteSpace(departmentId) && Guid.TryParse(departmentId, out var deptGuid))
+            if (!string.IsNullOrWhiteSpace(departmentId) && int.TryParse(departmentId, out var deptGuid))
             {
                 query = query.Where(s => s.DepartmentId == deptGuid);
             }
@@ -37,7 +37,7 @@ namespace IMSB.Backend
 
         public Task<List<Department>> DepartmentsAsync() => _context.Departments.AsNoTracking().ToListAsync();
 
-        public Task<Dictionary<Guid, string>> DepartmentNamesAsync() =>
+        public Task<Dictionary<int, string>> DepartmentNamesAsync() =>
             _context.Departments.AsNoTracking().ToDictionaryAsync(d => d.Id, d => d.Name);
 
         public Task<List<Shift>> ShiftsAsync() =>
@@ -47,19 +47,19 @@ namespace IMSB.Backend
 
         public Task<Staff?> FindAsync(string employeeId) => _context.Staff.FirstOrDefaultAsync(s => s.EmployeeId == employeeId);
 
-        public Task<bool> DepartmentExistsAsync(Guid departmentId) => _context.Departments.AnyAsync(d => d.Id == departmentId);
+        public Task<bool> DepartmentExistsAsync(int departmentId) => _context.Departments.AnyAsync(d => d.Id == departmentId);
 
         public Task<bool> AnyShiftsAsync() => _context.Shifts.AnyAsync();
 
         public Task<bool> ShiftExistsAsync(string code) => _context.Shifts.AnyAsync(s => s.Code == code && s.DisplayOrder > 0);
 
-        public Task<bool> MobileExistsAsync(string mobile, Guid? exceptId) =>
+        public Task<bool> MobileExistsAsync(string mobile, int? exceptId) =>
             _context.Staff.AnyAsync(s => s.Mobile == mobile && s.Id != exceptId);
 
-        public Task<bool> AadhaarExistsAsync(string aadhaarHash, Guid? exceptId) =>
+        public Task<bool> AadhaarExistsAsync(string aadhaarHash, int? exceptId) =>
             _context.Staff.AnyAsync(s => s.AadhaarHash == aadhaarHash && s.Id != exceptId);
 
-        public Task<bool> EmailExistsAsync(string email, Guid? exceptId) =>
+        public Task<bool> EmailExistsAsync(string email, int? exceptId) =>
             _context.Staff.AnyAsync(s => s.Email != null && s.Email.ToLower() == email && s.Id != exceptId);
 
         public Task<List<string>> LeaveTypesAsync() =>
@@ -91,7 +91,7 @@ namespace IMSB.Backend
             var attendanceType = ordered.FirstOrDefault(q => q.AnnualQuota > 0m) ?? ordered[0];
             _context.LeaveEntitlements.AddRange(ordered.Select(q => new LeaveEntitlement
             {
-                StaffId = staff.Id,
+                Staff = staff,   // the new staff member has no id until saved; EF fills in StaffId
                 StaffCategory = staff.StaffCategory,
                 LeaveType = q.LeaveType.Trim(),
                 Year = DateTime.Today.Year,

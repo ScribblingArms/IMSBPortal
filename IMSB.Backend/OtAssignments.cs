@@ -45,7 +45,7 @@ namespace IMSB.Backend
             }).ToList();
         }
 
-        public async Task<BackendResult> AddAsync(Guid staffId, DateTime from, DateTime to, string? user)
+        public async Task<BackendResult> AddAsync(int staffId, DateTime from, DateTime to, string? user)
         {
             var today = DateTime.Today;
             var staff = await _context.Staff.AsNoTracking().FirstOrDefaultAsync(s => s.Id == staffId);
@@ -62,7 +62,7 @@ namespace IMSB.Backend
             return BackendResult.Done;
         }
 
-        public async Task<BackendResult> UpdateAsync(Guid id, DateTime from, DateTime to, string? user)
+        public async Task<BackendResult> UpdateAsync(int id, DateTime from, DateTime to, string? user)
         {
             var assignment = await _context.OtAssignments.Include(a => a.Staff).FirstOrDefaultAsync(a => a.Id == id);
             if (assignment == null) return BackendResult.Missing;
@@ -78,7 +78,7 @@ namespace IMSB.Backend
             return BackendResult.Done;
         }
 
-        public async Task<BackendResult> DeleteAsync(Guid id)
+        public async Task<BackendResult> DeleteAsync(int id)
         {
             var assignment = await _context.OtAssignments.FirstOrDefaultAsync(a => a.Id == id);
             if (assignment == null) return BackendResult.Missing;

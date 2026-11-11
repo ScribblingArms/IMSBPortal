@@ -119,7 +119,7 @@ namespace IMSB.Backend
             return true;
         }
 
-        public Task<List<PayBillHistoryRow>> HistoryAsync(Guid staffId, DateTime monthStart, int take) =>
+        public Task<List<PayBillHistoryRow>> HistoryAsync(int staffId, DateTime monthStart, int take) =>
             _context.PayBillEntries.AsNoTracking()
                 .Where(entry => entry.StaffId == staffId
                     && (entry.Year < monthStart.Year || (entry.Year == monthStart.Year && entry.Month < monthStart.Month)))
@@ -133,8 +133,8 @@ namespace IMSB.Backend
         /// Staff on the month's pay bill (joined by its end and active, already on the saved bill, or marked during the
         /// month), by department and name, with their attendance records and LOP leave entries in the month.
         /// </summary>
-        private async Task<(List<Staff> Staff, ILookup<Guid, AttendanceRecord> Attendance, ILookup<Guid, StaffLeaveEntry> LopLeave)> PayableStaffAsync(
-            DateTime monthStart, List<Guid> savedStaffIds, bool tracking)
+        private async Task<(List<Staff> Staff, ILookup<int, AttendanceRecord> Attendance, ILookup<int, StaffLeaveEntry> LopLeave)> PayableStaffAsync(
+            DateTime monthStart, List<int> savedStaffIds, bool tracking)
         {
             var end = monthStart.AddMonths(1).AddDays(-1);
             var endExclusive = end.AddDays(1);
@@ -160,7 +160,7 @@ namespace IMSB.Backend
             return (staff, attendance.ToLookup(record => record.StaffId), lopLeave.ToLookup(entry => entry.StaffId));
         }
 
-        private Task<Dictionary<Guid, string>> DepartmentNamesAsync() =>
+        private Task<Dictionary<int, string>> DepartmentNamesAsync() =>
             _context.Departments.AsNoTracking().ToDictionaryAsync(department => department.Id, department => department.Name);
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace IMSB.Backend
         /// LOP leave entries, join date and OT assignments.
         /// </summary>
         private static (decimal PayableDays, decimal BasicPay, OvertimeResult Ot) Fresh(Staff employee, DateTime monthStart,
-            ILookup<Guid, AttendanceRecord> attendance, ILookup<Guid, StaffLeaveEntry> lopLeave, IReadOnlyDictionary<Guid, OvertimeResult> overtime)
+            ILookup<int, AttendanceRecord> attendance, ILookup<int, StaffLeaveEntry> lopLeave, IReadOnlyDictionary<int, OvertimeResult> overtime)
         {
             var monthDays = DateTime.DaysInMonth(monthStart.Year, monthStart.Month);
             var payableDays = monthDays - LopDays(monthStart, employee.JoinDate, attendance[employee.Id], lopLeave[employee.Id]);

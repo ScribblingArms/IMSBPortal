@@ -42,9 +42,9 @@ public class OtAssignmentsControllerTests
     private static string At(int days, string time) => Today.AddDays(days).ToString("yyyy-MM-dd") + "T" + time;
 
     /// <summary>Today 18:00 – 21:30.</summary>
-    private static OtAssignmentDto Form(Guid? staffId) => Form(staffId, At(0, "18:00"), At(0, "21:30"));
+    private static OtAssignmentDto Form(int? staffId) => Form(staffId, At(0, "18:00"), At(0, "21:30"));
 
-    private static OtAssignmentDto Form(Guid? staffId, string? from, string? to) =>
+    private static OtAssignmentDto Form(int? staffId, string? from, string? to) =>
         new() { StaffId = staffId, FromDateTime = from, ToDateTime = to };
 
     // ── Add ───────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ public class OtAssignmentsControllerTests
         var (context, _) = Seed();
         using (context)
         {
-            var errors = TestHelpers.Errors(await Controller(context).Create(Form(Guid.NewGuid())));
+            var errors = TestHelpers.Errors(await Controller(context).Create(Form(999999)));
 
             Assert.Equal("Staff member not found", errors["staff_id"]);
             Assert.Empty(context.OtAssignments);
@@ -115,7 +115,7 @@ public class OtAssignmentsControllerTests
         var (context, _) = Seed();
         using (context)
         {
-            var errors = TestHelpers.Errors(await Controller(context).Create(Form(emptyGuid ? Guid.Empty : null)));
+            var errors = TestHelpers.Errors(await Controller(context).Create(Form(emptyGuid ? 0 : null)));
 
             Assert.Equal("Select a staff member", errors["staff_id"]);
         }
@@ -201,7 +201,7 @@ public class OtAssignmentsControllerTests
             await context.SaveChangesAsync();
 
             var options = TestHelpers.OkJson(await Controller(context).Data()).GetProperty("staff");
-            Assert.Equal(staff.Id, Assert.Single(options.EnumerateArray()).GetProperty("id").GetGuid());
+            Assert.Equal(staff.Id, Assert.Single(options.EnumerateArray()).GetProperty("id").GetInt32());
 
             Assert.IsType<OkObjectResult>(await Controller(context).Create(Form(staff.Id)));
             Assert.Equal(2, await context.OtAssignments.CountAsync());
@@ -427,7 +427,7 @@ public class OtAssignmentsControllerTests
             var options = TestHelpers.OkJson(await Controller(context).Data()).GetProperty("staff");
 
             var option = Assert.Single(options.EnumerateArray());
-            Assert.Equal(unassigned.Id, option.GetProperty("id").GetGuid());
+            Assert.Equal(unassigned.Id, option.GetProperty("id").GetInt32());
         }
     }
 
@@ -468,7 +468,7 @@ public class OtAssignmentsControllerTests
             await Controller(context).Create(Form(staff.Id));
             var id = (await context.OtAssignments.SingleAsync()).Id;
 
-            await Controller(context).Update(id, Form(Guid.NewGuid(), At(0, "19:00"), At(0, "20:00")));
+            await Controller(context).Update(id, Form(999999, At(0, "19:00"), At(0, "20:00")));
 
             Assert.Equal(staff.Id, (await context.OtAssignments.SingleAsync()).StaffId);
         }
@@ -529,7 +529,7 @@ public class OtAssignmentsControllerTests
     public async Task Update_of_an_unknown_assignment_is_not_found()
     {
         var (context, _) = Seed();
-        using (context) Assert.IsType<NotFoundResult>(await Controller(context).Update(Guid.NewGuid(), Form(null)));
+        using (context) Assert.IsType<NotFoundResult>(await Controller(context).Update(999999, Form(null)));
     }
 
     // ── Delete ────────────────────────────────────────────────────
@@ -547,7 +547,7 @@ public class OtAssignmentsControllerTests
             Assert.Equal("OT assignment deleted.", result.GetProperty("message").GetString());
             Assert.Empty(context.OtAssignments);
             var options = TestHelpers.OkJson(await Controller(context).Data()).GetProperty("staff");
-            Assert.Equal(staff.Id, Assert.Single(options.EnumerateArray()).GetProperty("id").GetGuid());
+            Assert.Equal(staff.Id, Assert.Single(options.EnumerateArray()).GetProperty("id").GetInt32());
             Assert.IsType<OkObjectResult>(await Controller(context).Create(Form(staff.Id)));
         }
     }
@@ -556,7 +556,7 @@ public class OtAssignmentsControllerTests
     public async Task Delete_of_an_unknown_assignment_is_not_found()
     {
         var (context, _) = Seed();
-        using (context) Assert.IsType<NotFoundResult>(await Controller(context).Delete(Guid.NewGuid()));
+        using (context) Assert.IsType<NotFoundResult>(await Controller(context).Delete(999999));
     }
 
     // ── Time rules ────────────────────────────────────────────────

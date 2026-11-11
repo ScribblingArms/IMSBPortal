@@ -15,7 +15,7 @@ namespace IMSB.Dto.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Column("LoginId")]
-        public Guid LoginId { get; set; }
+        public int LoginId { get; set; }
 
         public Login? Login { get; set; }
 

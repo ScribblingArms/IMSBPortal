@@ -55,3 +55,4 @@ C:\Users\Kasyap\AppData\Local\Temp\PayrollFilterTestBuild\IMSB.LoggerLibrary.pdb
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.LoggerLibrary.deps.json
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.LoggerLibrary.dll
 C:\Users\Kasyap\AppData\Local\Temp\PayrollDropdownTestBuild\IMSB.LoggerLibrary.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Debug\net8.0\IMSB.LoggerLibrary.csproj.AssemblyReference.cache

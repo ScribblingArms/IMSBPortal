@@ -243,6 +243,7 @@
 
   function renderMonthlyAttendance(report){
     const body = $('monthlyReportBody');
+    const hours = value => Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
     if (!report.rows.length){
       body.innerHTML = `<tr><td colspan="10" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
       return;
@@ -257,7 +258,7 @@
       <td>${row.present}</td>
       <td>${row.absent}</td>
       <td>${row.leaves}</td>
-      <td>${Number(row.otHours || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+      <td>${hours(row.otHours)}</td>
     </tr>`).join('');
   }
 
@@ -299,9 +300,12 @@
   function renderSalaryReport(report){
     const body = $('salaryReportBody');
     $('salaryReportCount').textContent = report.rows.length;
-    $('salaryReportFoot').innerHTML = `<tr><td colspan="7" class="salary-report-total-label">${esc(t('GrandTotal'))}</td><td><strong>${salaryMoney(report.grandTotalSalary)}</strong></td></tr>`;
+    const sum = key => report.rows.reduce((total, row) => total + Number(row[key] || 0), 0);
+    const hours = value => Number(value || 0).toLocaleString(lang(), { maximumFractionDigits: 2 });
+    $('salaryReportFoot').innerHTML = `<tr><td colspan="7" class="salary-report-total-label">${esc(t('GrandTotal'))}</td>
+      <td><strong>${hours(sum('otHours'))}</strong></td><td><strong>${salaryMoney(report.grandTotalSalary)}</strong></td></tr>`;
     if (!report.rows.length){
-      body.innerHTML = `<tr><td colspan="8" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="9" class="empty-state">${esc(t('NoStaffForAttendance'))}</td></tr>`;
       return;
     }
     body.innerHTML = report.rows.map((row, index) => `<tr>
@@ -312,6 +316,7 @@
       <td>${esc(row.designation || '—')}</td>
       <td>${row.monthDays}</td>
       <td>${Number(row.workedDays).toLocaleString(lang(), { maximumFractionDigits: 2 })}</td>
+      <td>${hours(row.otHours)}</td>
       <td><strong>${salaryMoney(row.totalSalary)}</strong></td>
     </tr>`).join('');
   }

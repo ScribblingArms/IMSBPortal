@@ -29,15 +29,15 @@ public class IMSBContext : DbContext
     public DbSet<PayBillEntry> PayBillEntries { get; set; }
 
     // Fixed ids so the seeded categories are stable across environments
-    public static readonly (Guid Id, string Name)[] SeedCategories =
+    public static readonly (int Id, string Name)[] SeedCategories =
     {
-        (Guid.Parse("a1000000-0000-0000-0000-000000000001"), "Textiles"),
-        (Guid.Parse("a1000000-0000-0000-0000-000000000002"), "Handicrafts"),
-        (Guid.Parse("a1000000-0000-0000-0000-000000000003"), "Jewellery"),
-        (Guid.Parse("a1000000-0000-0000-0000-000000000004"), "Pottery"),
-        (Guid.Parse("a1000000-0000-0000-0000-000000000005"), "Paintings"),
-        (Guid.Parse("a1000000-0000-0000-0000-000000000006"), "Herbal"),
-        (Guid.Parse("a1000000-0000-0000-0000-000000000007"), "Food & Snacks"),
+        (1, "Textiles"),
+        (2, "Handicrafts"),
+        (3, "Jewellery"),
+        (4, "Pottery"),
+        (5, "Paintings"),
+        (6, "Herbal"),
+        (7, "Food & Snacks"),
     };
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -198,9 +198,9 @@ public class IMSBContext : DbContext
         {
             b.HasIndex(t => t.Name).IsUnique();
             b.HasData(
-                new LeaveType { Id = Guid.Parse("b1000000-0000-0000-0000-000000000001"), Name = "Casual" },
-                new LeaveType { Id = Guid.Parse("b1000000-0000-0000-0000-000000000002"), Name = "Earned" },
-                new LeaveType { Id = Guid.Parse("b1000000-0000-0000-0000-000000000003"), Name = "Sick" });
+                new LeaveType { Id = 1, Name = "Casual" },
+                new LeaveType { Id = 2, Name = "Earned" },
+                new LeaveType { Id = 3, Name = "Sick" });
         });
 
         modelBuilder.Entity<LeaveEntitlement>(b =>

@@ -117,7 +117,7 @@ namespace IMSB.Backend
         }
 
         /// <summary>Ends every open session of a login (optionally keeping one). Returns how many were ended.</summary>
-        public async Task<int> RevokeAllAsync(Guid loginId, string reason, Guid? except = null)
+        public async Task<int> RevokeAllAsync(int loginId, string reason, Guid? except = null)
         {
             var now = UtcNow;
             var open = await _context.UserSessions

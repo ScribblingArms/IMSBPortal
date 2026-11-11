@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace IMSB.Common
 {
 
-    public static class CommonHelpers
+    /// <summary>Parsing, formatting and response helpers shared by IMSB.Admin, IMSB.Api and IMSB.Backend (imported with using static).</summary>
+    public static partial class CommonHelpers
     {
         /// <summary>First error per field, keyed by the snake_case names the forms use for their err_* elements.</summary>
         public static Dictionary<string, string> ModelStateErrors(ModelStateDictionary modelState)
@@ -24,6 +25,31 @@ namespace IMSB.Common
 
         public static bool TryParseDate(string? value, out DateTime date) =>
             DateTime.TryParseExact(value?.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+
+        /// <summary>yyyy-MM-dd, or null when empty or not a date.</summary>
+        public static DateTime? ParseDate(string? value) => TryParseDate(value, out var date) ? date : null;
+
+        /// <summary>A yyyy-MM-dd day; empty means today.</summary>
+        public static bool TryParseDay(string? value, out DateTime day)
+        {
+            if (string.IsNullOrWhiteSpace(value)) { day = DateTime.Today; return true; }
+            return TryParseDate(value, out day);
+        }
+
+        /// <summary>
+        /// The first day of a report month: the current month when not given; false outside the last ten years
+        /// or after this year, or for a month other than 1–12.
+        /// </summary>
+        public static bool TryResolveAttendanceMonth(int? year, int? month, out DateTime start)
+        {
+            var today = DateTime.Today;
+            var selectedYear = year ?? today.Year;
+            var selectedMonth = month ?? today.Month;
+            start = default;
+            if (selectedYear < today.Year - 10 || selectedYear > today.Year || selectedMonth < 1 || selectedMonth > 12) return false;
+            start = new DateTime(selectedYear, selectedMonth, 1);
+            return true;
+        }
 
         /// <summary>
         /// An optional From/To date pair (yyyy-MM-dd, empty = not set) where To may not be before From.
@@ -49,6 +75,9 @@ namespace IMSB.Common
         public static bool TryParseTime(string? value, out TimeSpan time) =>
             TimeSpan.TryParseExact(value?.Trim(), @"hh\:mm", CultureInfo.InvariantCulture, out time) && time < TimeSpan.FromDays(1);
 
+        /// <summary>HH:mm, or null when there is no time.</summary>
+        public static string? Time(TimeSpan? t) => t?.ToString(@"hh\:mm", CultureInfo.InvariantCulture);
+
         /// <summary>yyyy-MM-ddTHH:mm, as sent by a datetime-local input.</summary>
         public static bool TryParseDateTime(string? value, out DateTime dateTime) =>
             DateTime.TryParseExact(value?.Trim(), "yyyy-MM-dd'T'HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
@@ -58,6 +87,9 @@ namespace IMSB.Common
         private static readonly Regex IndexSegment = new(@"\[(\d+)\]", RegexOptions.Compiled);
 
         public static string? Clean(string? s) => string.IsNullOrWhiteSpace(s) ? null : Whitespace.Replace(s.Trim(), " ");
+
+        /// <summary>Trimmed, or null when empty; unlike <see cref="Clean"/> the spacing inside (e.g. of remarks) is kept.</summary>
+        public static string? TrimOrNull(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
 
         public static string Date(DateTime? d) => d?.ToString("yyyy-MM-dd") ?? string.Empty;
 

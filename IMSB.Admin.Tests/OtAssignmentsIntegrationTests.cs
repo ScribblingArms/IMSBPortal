@@ -14,7 +14,7 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
     private readonly OtAssignmentsAppFactory _factory;
     private static bool _seeded;
     private static readonly object SeedLock = new();
-    private static readonly Guid StaffId = Guid.NewGuid();
+    private static readonly int StaffId = 9101;
 
     public OtAssignmentsIntegrationTests(OtAssignmentsAppFactory factory)
     {
@@ -121,7 +121,7 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
         Assert.Equal("Http Ot Tester", row.GetProperty("staffName").GetString());
         Assert.Equal(D + "T18:00", row.GetProperty("fromDateTime").GetString());
         Assert.Empty(data.GetProperty("staff").EnumerateArray());
-        var id = row.GetProperty("id").GetString();
+        var id = row.GetProperty("id").GetInt32();
 
         // a second one for the same person is refused
         var duplicate = await client.SendAsync(Post("/OtAssignments/Create", token, new { staffId = StaffId, fromDateTime = D + "T06:00", toDateTime = D + "T07:00" }));

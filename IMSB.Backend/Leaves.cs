@@ -26,7 +26,7 @@ namespace IMSB.Backend
         }
 
         // A staff member's category is their department
-        private Task<Dictionary<Guid, string>> StaffCategoryNamesAsync() =>
+        private Task<Dictionary<int, string>> StaffCategoryNamesAsync() =>
             _context.Departments.AsNoTracking().ToDictionaryAsync(d => d.Id, d => d.Name);
 
         public Task<List<string>> LeaveTypesAsync() =>
@@ -73,7 +73,7 @@ namespace IMSB.Backend
             })).ToList();
         }
 
-        public async Task<BackendResult> SaveEntitlementAsync(Guid staffId, string leaveType, decimal annualQuota)
+        public async Task<BackendResult> SaveEntitlementAsync(int staffId, string leaveType, decimal annualQuota)
         {
             var staff = await _context.Staff.FirstOrDefaultAsync(person => person.Id == staffId);
             if (staff == null) return BackendResult.Error("ValStaffNotFound");
@@ -127,7 +127,7 @@ namespace IMSB.Backend
             return BackendResult.Done;
         }
 
-        public async Task<BackendResult> DeleteEntitlementAsync(Guid id)
+        public async Task<BackendResult> DeleteEntitlementAsync(int id)
         {
             var entitlement = await _context.LeaveEntitlements.FirstOrDefaultAsync(e => e.Id == id && e.Year == CurrentYear);
             if (entitlement == null) return BackendResult.Missing;
@@ -143,7 +143,7 @@ namespace IMSB.Backend
         }
 
         /// <summary>The days of this type already used, which its quota cannot go below.</summary>
-        private async Task<decimal> MaximumTakenAsync(Guid staffId, string type, LeaveEntitlement? existing, int year)
+        private async Task<decimal> MaximumTakenAsync(int staffId, string type, LeaveEntitlement? existing, int year)
         {
             var manualEntries = await _context.StaffLeaveEntries.AsNoTracking()
                 .Where(entry => entry.Year == year && entry.StaffId == staffId).ToListAsync();
@@ -171,10 +171,10 @@ namespace IMSB.Backend
                 && (r.Status == AttendanceStatuses.Leave || r.Status == AttendanceStatuses.HalfDay));
         }
 
-        private Task<List<LeaveEntitlement>> StaffQuotasAsync(Guid staffId, int year) =>
+        private Task<List<LeaveEntitlement>> StaffQuotasAsync(int staffId, int year) =>
             _context.LeaveEntitlements.Where(e => e.Year == year && e.StaffId == staffId).ToListAsync();
 
-        public async Task<LeaveQuotaProblem?> LeaveQuotaProblemAsync(Guid staffId, IReadOnlyCollection<LeaveQuotaDto>? changes)
+        public async Task<LeaveQuotaProblem?> LeaveQuotaProblemAsync(int staffId, IReadOnlyCollection<LeaveQuotaDto>? changes)
         {
             if (changes == null || changes.Count == 0) return null;
             var year = CurrentYear;
@@ -192,7 +192,7 @@ namespace IMSB.Backend
             return null;
         }
 
-        public async Task<BackendResult> SaveQuotasAsync(Guid staffId, IReadOnlyCollection<LeaveQuotaDto> changes)
+        public async Task<BackendResult> SaveQuotasAsync(int staffId, IReadOnlyCollection<LeaveQuotaDto> changes)
         {
             var year = CurrentYear;
             var current = await StaffQuotasAsync(staffId, year);
@@ -215,7 +215,7 @@ namespace IMSB.Backend
         }
 
         /// <summary>Without days on the policy type every Leave mark would be unpaid, so the policy moves to the first type that has some.</summary>
-        private async Task KeepAttendancePolicyOnATypeWithDaysAsync(Guid staffId, int year)
+        private async Task KeepAttendancePolicyOnATypeWithDaysAsync(int staffId, int year)
         {
             var quotas = (await StaffQuotasAsync(staffId, year)).OrderBy(e => e.LeaveType, StringComparer.OrdinalIgnoreCase).ToList();
             var policy = quotas.FirstOrDefault(e => e.IsAttendanceLeaveType);
@@ -238,7 +238,7 @@ namespace IMSB.Backend
             if (transaction != null) await transaction.CommitAsync();
         }
 
-        public async Task<BackendResult> RecordEntryAsync(Guid staffId, string leaveType, DateTime? from, DateTime? to, string? remarks, string? user)
+        public async Task<BackendResult> RecordEntryAsync(int staffId, string leaveType, DateTime? from, DateTime? to, string? remarks, string? user)
         {
             var staff = await _context.Staff.FirstOrDefaultAsync(s => s.Id == staffId);
             if (staff == null) return BackendResult.Error("ValStaffNotFound");
@@ -261,7 +261,7 @@ namespace IMSB.Backend
             return BackendResult.Done;
         }
 
-        public async Task<BackendResult> UpdateEntryAsync(Guid id, DateTime? from, DateTime? to, string? remarks, string? user)
+        public async Task<BackendResult> UpdateEntryAsync(int id, DateTime? from, DateTime? to, string? remarks, string? user)
         {
             var entry = await _context.StaffLeaveEntries.Include(e => e.Staff)
                 .FirstOrDefaultAsync(e => e.Id == id && e.Year == CurrentYear);
@@ -281,7 +281,7 @@ namespace IMSB.Backend
             return BackendResult.Done;
         }
 
-        public async Task<BackendResult> DeleteEntryAsync(Guid id)
+        public async Task<BackendResult> DeleteEntryAsync(int id)
         {
             var entry = await _context.StaffLeaveEntries.FirstOrDefaultAsync(e => e.Id == id && e.Year == CurrentYear);
             if (entry == null) return BackendResult.Missing;
@@ -291,7 +291,7 @@ namespace IMSB.Backend
         }
 
         /// <summary>Saves a leave entry change, then re-applies the attendance policy: the entry can cover days already marked.</summary>
-        private async Task SaveEntryChangesAsync(Guid staffId, int year)
+        private async Task SaveEntryChangesAsync(int staffId, int year)
         {
             await using var transaction = _context.Database.IsRelational()
                 ? await _context.Database.BeginTransactionAsync()
@@ -305,7 +305,7 @@ namespace IMSB.Backend
         }
 
         /// <summary>Resource key of the reason the leave cannot be recorded, or null.</summary>
-        private async Task<string?> ValidateEntryAsync(Staff staff, string leaveType, DateTime from, DateTime to, Guid? excludingEntryId)
+        private async Task<string?> ValidateEntryAsync(Staff staff, string leaveType, DateTime from, DateTime to, int? excludingEntryId)
         {
             var year = CurrentYear;
             if (from.Year != year || to.Year != year || to < from) return "ValLeaveDates";
@@ -333,7 +333,7 @@ namespace IMSB.Backend
         }
 
         /// <summary>Re-applies the attendance leave policy to the year's Leave / Half Day records, oldest first.</summary>
-        private async Task ReconcileAttendanceLeavePolicyAsync(Guid staffId, int year, LeaveEntitlement? policy)
+        private async Task ReconcileAttendanceLeavePolicyAsync(int staffId, int year, LeaveEntitlement? policy)
         {
             var leaveEntries = await _context.StaffLeaveEntries.AsNoTracking()
                 .Where(entry => entry.Year == year && entry.StaffId == staffId).ToListAsync();

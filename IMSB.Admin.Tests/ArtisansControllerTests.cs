@@ -230,7 +230,7 @@ public class ArtisansControllerTests
         Assert.IsType<OkObjectResult>(await Artisans(ctx).Delete("ART-0002"));
         Assert.False(ctx.Artisans.Any(a => a.ArtisanCode == "ART-0002"));
         var r = ctx.StallReallocations.AsNoTracking().Single();
-        Assert.Equal((ReallocationStatuses.Rejected, (Guid?)null, "Saroja Murugan", "Closed: the artisan was deleted"),
+        Assert.Equal((ReallocationStatuses.Rejected, (int?)null, "Saroja Murugan", "Closed: the artisan was deleted"),
             (r.Status, r.NewArtisanId, r.NewArtisanName, r.DecisionRemarks));
         Assert.IsType<NotFoundResult>(await Artisans(ctx).Delete("ART-0002"));
     }

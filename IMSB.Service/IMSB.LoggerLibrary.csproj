@@ -1,9 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Database logging for IMSB.Admin and IMSB.Api: an ILoggerProvider that writes to FW.TblLog in the background -->
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>IMSB.LoggerLibrary</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- logging, hosting, options and HttpContext of the .NET 8 shared framework -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- the version EF Core SqlServer 8.0.31 already brings in, so the apps keep a single SqlClient -->
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="IMSB.Admin.Tests" />
+  </ItemGroup>
 
 </Project>

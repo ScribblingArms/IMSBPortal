@@ -13,7 +13,7 @@ namespace IMSB.Interfaces
         Task<List<ArtisanApplication>> ExportAsync(string? q, string? status, string? categoryId, string? district);
 
         Task<List<ProductCategory>> CategoriesAsync();
-        Task<bool> CategoryExistsAsync(Guid categoryId);
+        Task<bool> CategoryExistsAsync(int categoryId);
 
         /// <summary>Vacant stalls (with category) by block and code.</summary>
         Task<List<Stall>> VacantStallsAsync();
@@ -32,8 +32,8 @@ namespace IMSB.Interfaces
         Task<bool> ArtisanExistsAsync(string mobile, string aadhaarHash);
 
         /// <summary>Whether another pending / under-review application uses the mobile or Aadhaar.</summary>
-        Task<bool> OpenApplicationMobileExistsAsync(string mobile, Guid exceptId);
-        Task<bool> OpenApplicationAadhaarExistsAsync(string aadhaarHash, Guid exceptId);
+        Task<bool> OpenApplicationMobileExistsAsync(string mobile, int exceptId);
+        Task<bool> OpenApplicationAadhaarExistsAsync(string aadhaarHash, int exceptId);
 
         /// <summary>Tracked stall by code.</summary>
         Task<Stall?> FindStallAsync(string stallCode);

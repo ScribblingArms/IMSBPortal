@@ -113,7 +113,7 @@ public class StallsControllerTests
     {
         using var ctx = Seeded();
         var dto = NewStall(status: "OCCUPIED");
-        dto.CategoryId = Guid.NewGuid().ToString();
+        dto.CategoryId = "999999";
         var errors = TestHelpers.Errors(await Stalls(ctx).Create(dto));
         Assert.Equal("Select Vacant, Reserved or Maintenance", errors["status"]);
         Assert.Equal("Category is required", errors["category_id"]);
@@ -223,7 +223,7 @@ public class StallsControllerTests
 
         Assert.IsType<OkObjectResult>(await c.Vacate("A-01"));
         var s = Get(ctx, "A-01");
-        Assert.Equal((StallStatuses.Vacant, (Guid?)null, (DateTime?)null), (s.Status, s.ArtisanId, s.AllottedDate));
+        Assert.Equal((StallStatuses.Vacant, (int?)null, (DateTime?)null), (s.Status, s.ArtisanId, s.AllottedDate));
         var r = ctx.StallReallocations.AsNoTracking().Single();
         Assert.Equal((ReallocationStatuses.Rejected, "Closed: the stall was vacated"), (r.Status, r.DecisionRemarks));
 

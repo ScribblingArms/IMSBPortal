@@ -24,10 +24,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.Artisan", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AadhaarHash")
                         .IsRequired()
@@ -53,8 +55,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("ArtisanCode");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
                         .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
@@ -160,10 +162,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.ArtisanApplication", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AadhaarHash")
                         .IsRequired()
@@ -194,12 +198,12 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("ArtisanCode");
 
-                    b.Property<Guid?>("ArtisanId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("ArtisanId")
+                        .HasColumnType("int")
                         .HasColumnName("ArtisanId");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
                         .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
@@ -335,10 +339,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.AttendanceRecord", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("AttendanceDate")
                         .HasColumnType("date")
@@ -374,8 +380,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("Remarks");
 
-                    b.Property<Guid>("StaffId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int")
                         .HasColumnName("StaffId");
 
                     b.Property<string>("Status")
@@ -411,10 +417,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.Department", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -430,10 +438,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.LeaveEntitlement", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("AnnualQuota")
                         .HasColumnType("decimal(8,2)")
@@ -455,8 +465,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("StaffCategory");
 
-                    b.Property<Guid?>("StaffId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("int")
                         .HasColumnName("StaffId");
 
                     b.Property<int>("Year")
@@ -478,10 +488,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.LeaveType", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -499,27 +511,29 @@ namespace IMSB.Dto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b1000000-0000-0000-0000-000000000001"),
+                            Id = 1,
                             Name = "Casual"
                         },
                         new
                         {
-                            Id = new Guid("b1000000-0000-0000-0000-000000000002"),
+                            Id = 2,
                             Name = "Earned"
                         },
                         new
                         {
-                            Id = new Guid("b1000000-0000-0000-0000-000000000003"),
+                            Id = 3,
                             Name = "Sick"
                         });
                 });
 
             modelBuilder.Entity("IMSB.Dto.Models.Login", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -569,10 +583,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.OtAssignment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -591,8 +607,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("decimal(5,2)")
                         .HasColumnName("OtHours");
 
-                    b.Property<Guid>("StaffId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int")
                         .HasColumnName("StaffId");
 
                     b.Property<DateTime>("ToDateTime")
@@ -630,8 +646,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("ExpiresAt");
 
-                    b.Property<Guid>("LoginId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("LoginId")
+                        .HasColumnType("int")
                         .HasColumnName("LoginId");
 
                     b.Property<string>("Token")
@@ -651,10 +667,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.PayBillEntry", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Allowances")
                         .HasColumnType("decimal(18,2)")
@@ -724,8 +742,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("decimal(6,2)")
                         .HasColumnName("PaidDays");
 
-                    b.Property<Guid>("StaffId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int")
                         .HasColumnName("StaffId");
 
                     b.Property<int>("Year")
@@ -744,13 +762,15 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
                         .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
@@ -815,10 +835,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.ProductCategory", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -840,43 +862,43 @@ namespace IMSB.Dto.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a1000000-0000-0000-0000-000000000001"),
+                            Id = 1,
                             Name = "Textiles",
                             SortOrder = 1
                         },
                         new
                         {
-                            Id = new Guid("a1000000-0000-0000-0000-000000000002"),
+                            Id = 2,
                             Name = "Handicrafts",
                             SortOrder = 2
                         },
                         new
                         {
-                            Id = new Guid("a1000000-0000-0000-0000-000000000003"),
+                            Id = 3,
                             Name = "Jewellery",
                             SortOrder = 3
                         },
                         new
                         {
-                            Id = new Guid("a1000000-0000-0000-0000-000000000004"),
+                            Id = 4,
                             Name = "Pottery",
                             SortOrder = 4
                         },
                         new
                         {
-                            Id = new Guid("a1000000-0000-0000-0000-000000000005"),
+                            Id = 5,
                             Name = "Paintings",
                             SortOrder = 5
                         },
                         new
                         {
-                            Id = new Guid("a1000000-0000-0000-0000-000000000006"),
+                            Id = 6,
                             Name = "Herbal",
                             SortOrder = 6
                         },
                         new
                         {
-                            Id = new Guid("a1000000-0000-0000-0000-000000000007"),
+                            Id = 7,
                             Name = "Food & Snacks",
                             SortOrder = 7
                         });
@@ -884,13 +906,15 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.SaleItem", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
 
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uniqueidentifier")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int")
                         .HasColumnName("CategoryId");
 
                     b.Property<string>("CategoryName")
@@ -909,8 +933,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("ProductCode");
 
-                    b.Property<Guid?>("ProductId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int")
                         .HasColumnName("ProductId");
 
                     b.Property<string>("ProductName")
@@ -923,8 +947,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Quantity");
 
-                    b.Property<Guid>("SalesEntryId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("SalesEntryId")
+                        .HasColumnType("int")
                         .HasColumnName("SalesEntryId");
 
                     b.Property<string>("StallCode")
@@ -950,10 +974,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.SalesEntry", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -1008,10 +1034,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.Shift", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -1037,10 +1065,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.Staff", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AadhaarHash")
                         .HasMaxLength(64)
@@ -1067,8 +1097,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("DateOfBirth");
 
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int")
                         .HasColumnName("DepartmentId");
 
                     b.Property<string>("Designation")
@@ -1159,10 +1189,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.StaffLeaveEntry", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -1192,8 +1224,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("Remarks");
 
-                    b.Property<Guid>("StaffId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int")
                         .HasColumnName("StaffId");
 
                     b.Property<DateTime>("ToDate")
@@ -1224,10 +1256,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.Stall", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("AgreementEndDate")
                         .HasColumnType("date")
@@ -1237,8 +1271,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("date")
                         .HasColumnName("AllottedDate");
 
-                    b.Property<Guid?>("ArtisanId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("ArtisanId")
+                        .HasColumnType("int")
                         .HasColumnName("ArtisanId");
 
                     b.Property<string>("Block")
@@ -1247,8 +1281,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("Block");
 
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int")
                         .HasColumnName("CategoryId");
 
                     b.Property<DateTime>("CreatedAt")
@@ -1324,10 +1358,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.StallReallocation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -1338,8 +1374,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("CreatedBy");
 
-                    b.Property<Guid?>("CurrentArtisanId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("CurrentArtisanId")
+                        .HasColumnType("int")
                         .HasColumnName("CurrentArtisanId");
 
                     b.Property<string>("CurrentArtisanName")
@@ -1361,8 +1397,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("DecisionRemarks");
 
-                    b.Property<Guid?>("NewArtisanId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("NewArtisanId")
+                        .HasColumnType("int")
                         .HasColumnName("NewArtisanId");
 
                     b.Property<string>("NewArtisanName")
@@ -1397,8 +1433,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("StallCode");
 
-                    b.Property<Guid>("StallId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("StallId")
+                        .HasColumnType("int")
                         .HasColumnName("StallId");
 
                     b.Property<string>("Status")
@@ -1423,10 +1459,12 @@ namespace IMSB.Dto.Migrations
 
             modelBuilder.Entity("IMSB.Dto.Models.StockMovement", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -1453,8 +1491,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("ProductCode");
 
-                    b.Property<Guid?>("ProductId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int")
                         .HasColumnName("ProductId");
 
                     b.Property<string>("ProductName")
@@ -1517,8 +1555,8 @@ namespace IMSB.Dto.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("LastSeenAt");
 
-                    b.Property<Guid>("LoginId")
-                        .HasColumnType("uniqueidentifier")
+                    b.Property<int>("LoginId")
+                        .HasColumnType("int")
                         .HasColumnName("LoginId");
 
                     b.Property<DateTime?>("RevokedAt")

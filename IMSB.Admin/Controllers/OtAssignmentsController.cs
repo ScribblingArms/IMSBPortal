@@ -48,7 +48,7 @@ public class OtAssignmentsController : Controller
         if (dto == null) return ErrorResult("request", _L["CheckForm"].Value);
 
         var errors = TimeErrors(dto);
-        if (dto.StaffId is null || dto.StaffId == Guid.Empty) errors["staff_id"] = _L["ValOtSelectStaff"].Value;
+        if (dto.StaffId is null || dto.StaffId == 0) errors["staff_id"] = _L["ValOtSelectStaff"].Value;
         if (errors.Count > 0) return BadRequest(new { errors });
 
         var (from, to) = dto.Times();
@@ -57,7 +57,7 @@ public class OtAssignmentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Update(Guid id, [FromBody] OtAssignmentDto? dto)
+    public async Task<IActionResult> Update(int id, [FromBody] OtAssignmentDto? dto)
     {
         if (dto == null) return ErrorResult("request", _L["CheckForm"].Value);
 
@@ -70,7 +70,7 @@ public class OtAssignmentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(Guid id) =>
+    public async Task<IActionResult> Delete(int id) =>
         FromResult(await _assignments.DeleteAsync(id), "request", "OTAssignmentDeleted");
 
     private Dictionary<string, string> TimeErrors(OtAssignmentDto dto)

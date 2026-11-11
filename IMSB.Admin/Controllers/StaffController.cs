@@ -169,7 +169,7 @@ namespace IMSB.Admin.Controllers
         }
 
         // Errors are keyed by the snake_case field names the staff form uses for its err_* elements
-        private async Task<Dictionary<string, string>> ValidateStaffAsync(CreateStaffDto dto, Guid? existingId, string? currentShift, string? currentMobile)
+        private async Task<Dictionary<string, string>> ValidateStaffAsync(CreateStaffDto dto, int? existingId, string? currentShift, string? currentMobile)
         {
             if (!ModelState.IsValid) return ModelStateErrors(ModelState);
             var errors = new Dictionary<string, string>();
@@ -183,7 +183,7 @@ namespace IMSB.Admin.Controllers
             else if (join > today) errors["join_date"] = _L["ValJoinFuture"];
             else if (!errors.ContainsKey("date_of_birth") && join < dob.AddYears(18)) errors["join_date"] = _L["ValJoinAfterDob"];
 
-            if (!Guid.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
+            if (!int.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
                 errors["department_id"] = _L["ValDepartment"];
 
             // an unchanged shift is accepted so records holding older values (e.g. "Night") can still be edited

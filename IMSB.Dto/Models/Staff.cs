@@ -8,7 +8,7 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
         [Column("EmployeeId")]
@@ -44,7 +44,7 @@ namespace IMSB.Dto.Models
 
         [Required]
         [Column("DepartmentId")]
-        public Guid DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
 
         /// <summary>Optional: one of <see cref="EmployeeTypes"/>. Separate from the department, which is "Staff Category" on screen.</summary>
         [MaxLength(20)]

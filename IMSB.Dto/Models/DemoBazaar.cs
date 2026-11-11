@@ -41,7 +41,7 @@ namespace IMSB.Dto.Models
             SeedApplications(context, categories);
         }
 
-        private static void SeedArtisans(IMSBContext context, Dictionary<string, Guid> categories)
+        private static void SeedArtisans(IMSBContext context, Dictionary<string, int> categories)
         {
             if (context.Artisans.Any()) return;
             var i = 0;
@@ -71,7 +71,7 @@ namespace IMSB.Dto.Models
                 var stall = s.Stall == null ? null : context.Stalls.FirstOrDefault(x => x.StallCode == s.Stall && x.ArtisanId == null);
                 if (stall != null)
                 {
-                    stall.ArtisanId = artisan.Id;
+                    stall.Artisan = artisan;   // not saved yet, so no id: link by navigation
                     stall.Status = StallStatuses.Occupied;
                     stall.CategoryId = categoryId;
                     stall.AllottedDate = artisan.JoinedDate;
@@ -94,7 +94,7 @@ namespace IMSB.Dto.Models
         };
 
         /// <summary>A few open applications, only when that table is empty. Skips any whose mobile already belongs to an artisan.</summary>
-        private static void SeedApplications(IMSBContext context, Dictionary<string, Guid> categories)
+        private static void SeedApplications(IMSBContext context, Dictionary<string, int> categories)
         {
             if (context.ArtisanApplications.Any()) return;
             var i = 0;

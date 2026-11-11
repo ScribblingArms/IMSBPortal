@@ -14,7 +14,7 @@ namespace IMSB.Backend
         public Task<Login?> ValidateLogincredentials(string lookup) =>
             _context.Logins.FirstOrDefaultAsync(l => l.Username.ToLower() == lookup || (l.Email != null && l.Email.ToLower() == lookup));
 
-        public async Task<string> ValidatePasswordResetTokens(Guid loginid)
+        public async Task<string> ValidatePasswordResetTokens(int loginid)
         {
             // only the newest link is valid
             var oldTokens = await _context.PasswordResetTokens.Where(p => p.LoginId == loginid).ToListAsync();
@@ -34,7 +34,7 @@ namespace IMSB.Backend
         public Task<PasswordResetToken?> ValidatePasswordResetTokens(string token) =>
             _context.PasswordResetTokens.Include(p => p.Login).FirstOrDefaultAsync(p => p.Token == token);
 
-        public async Task<bool> PasswordResetTokensID(Guid loginId)
+        public async Task<bool> PasswordResetTokensID(int loginId)
         {
             var tokens = await _context.PasswordResetTokens.Where(p => p.LoginId == loginId).ToListAsync();
             _context.PasswordResetTokens.RemoveRange(tokens);
@@ -42,7 +42,7 @@ namespace IMSB.Backend
             return true;
         }
 
-        public Task<List<UserSession>> UserSessions(Guid loginId) =>
+        public Task<List<UserSession>> UserSessions(int loginId) =>
             _context.UserSessions.AsNoTracking()
                 .Where(s => s.LoginId == loginId)
                 .OrderByDescending(s => s.LastSeenAt).Take(50).ToListAsync();
@@ -82,7 +82,7 @@ namespace IMSB.Backend
             return (login, role, null);
         }
 
-        public async Task<(Guid? LoginId, string? ErrorKey)> ResetPasswordAsync(string token, string newPassword)
+        public async Task<(int? LoginId, string? ErrorKey)> ResetPasswordAsync(string token, string newPassword)
         {
             var prt = await ValidatePasswordResetTokens(token);
             if (prt == null || prt.ExpiresAt < DateTime.UtcNow) return (null, "InvalidOrExpiredToken");

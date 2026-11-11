@@ -10,12 +10,12 @@ namespace IMSB.Interfaces
         Task<List<Stall>> AllAsync();
 
         /// <summary>Ids of the stalls matching the filters. q matches code, name, location and the artisan's name or code.</summary>
-        Task<HashSet<Guid>> FilteredIdsAsync(string? q, string? status, string? categoryId, string? block);
+        Task<HashSet<int>> FilteredIdsAsync(string? q, string? status, string? categoryId, string? block);
 
         /// <summary>Filtered stalls (with category and artisan) by block and code.</summary>
         Task<List<Stall>> FilterAsync(string? q, string? status, string? categoryId, string? block);
 
-        Task<HashSet<Guid>> PendingReallocationStallIdsAsync();
+        Task<HashSet<int>> PendingReallocationStallIdsAsync();
 
         /// <summary>Number of products per upper-cased stall code.</summary>
         Task<Dictionary<string, int>> ProductCountsAsync();
@@ -30,7 +30,7 @@ namespace IMSB.Interfaces
         Task<List<StallReallocation>> RecentReallocationsAsync(int take);
 
         Task<List<ProductCategory>> CategoriesAsync();
-        Task<bool> CategoryExistsAsync(Guid categoryId);
+        Task<bool> CategoryExistsAsync(int categoryId);
 
         Task<bool> StallCodeExistsAsync(string stallCode);
 
@@ -38,20 +38,20 @@ namespace IMSB.Interfaces
         Task<Stall?> FindAsync(string stallCode, bool includeArtisan = false);
 
         /// <summary>Tracked stall by id.</summary>
-        Task<Stall?> FindByIdAsync(Guid id);
+        Task<Stall?> FindByIdAsync(int id);
 
         /// <summary>Tracked artisan by code.</summary>
         Task<Artisan?> FindArtisanAsync(string artisanCode);
 
         /// <summary>Tracked artisan by id.</summary>
-        Task<Artisan?> FindArtisanByIdAsync(Guid id);
+        Task<Artisan?> FindArtisanByIdAsync(int id);
 
-        Task<bool> ArtisanHasStallAsync(Guid artisanId);
+        Task<bool> ArtisanHasStallAsync(int artisanId);
 
-        Task<bool> HasPendingReallocationAsync(Guid stallId);
+        Task<bool> HasPendingReallocationAsync(int stallId);
 
         /// <summary>Tracked pending reallocation requests for a stall.</summary>
-        Task<List<StallReallocation>> OpenReallocationsAsync(Guid stallId);
+        Task<List<StallReallocation>> OpenReallocationsAsync(int stallId);
 
         /// <summary>Tracked reallocation request by number.</summary>
         Task<StallReallocation?> FindReallocationAsync(string requestNo);

@@ -9,7 +9,7 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         /// <summary>A-01. Fixed once created: products and sales refer to stalls by this code.</summary>
         [Required]
@@ -41,12 +41,12 @@ namespace IMSB.Dto.Models
         public string Status { get; set; } = StallStatuses.Vacant;
 
         [Column("CategoryId")]
-        public Guid? CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         public ProductCategory? Category { get; set; }
 
         [Column("ArtisanId")]
-        public Guid? ArtisanId { get; set; }
+        public int? ArtisanId { get; set; }
 
         public Artisan? Artisan { get; set; }
 
@@ -97,7 +97,7 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
         [Column("RequestNo")]
@@ -105,7 +105,7 @@ namespace IMSB.Dto.Models
         public string RequestNo { get; set; } = string.Empty;   // REA-0001
 
         [Column("StallId")]
-        public Guid StallId { get; set; }
+        public int StallId { get; set; }
 
         public Stall? Stall { get; set; }
 
@@ -115,7 +115,7 @@ namespace IMSB.Dto.Models
         public string StallCode { get; set; } = string.Empty;
 
         [Column("CurrentArtisanId")]
-        public Guid? CurrentArtisanId { get; set; }
+        public int? CurrentArtisanId { get; set; }
 
         [Column("CurrentArtisanName")]
         [MaxLength(100)]
@@ -123,7 +123,7 @@ namespace IMSB.Dto.Models
 
         /// <summary>The artisan who gets the stall on approval; null = the stall is vacated.</summary>
         [Column("NewArtisanId")]
-        public Guid? NewArtisanId { get; set; }
+        public int? NewArtisanId { get; set; }
 
         [Column("NewArtisanName")]
         [MaxLength(100)]

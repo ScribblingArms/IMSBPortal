@@ -7,5 +7,8 @@ namespace IMSB.Interfaces
         /// Agreements and contracts ending within expiryWindowDays count as expiring.
         /// </summary>
         Task<List<Notification>> BuildAsync(bool isAdmin, bool isInventory, bool isStaff, int expiryWindowDays);
+
+        /// <summary>Sidebar badge counts; a count the role cannot see is 0 and is not queried.</summary>
+        Task<NavBadges> NavBadgesAsync(bool isAdmin, bool isInventory);
     }
 }

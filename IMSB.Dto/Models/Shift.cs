@@ -8,7 +8,7 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
         [Column("Code")]

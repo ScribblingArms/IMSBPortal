@@ -115,7 +115,7 @@ namespace IMSB.Api.Controllers
                 all.Count(x => x.ContractEndDate >= today && x.ContractEndDate <= soon));
         }
 
-        private async Task<Dictionary<string, string>> ValidateAsync(CreateStaffDto dto, Guid? existingId, string? currentShift, string? currentMobile)
+        private async Task<Dictionary<string, string>> ValidateAsync(CreateStaffDto dto, int? existingId, string? currentShift, string? currentMobile)
         {
             var errors = new Dictionary<string, string>();
             var today = DateTime.Today;
@@ -127,7 +127,7 @@ namespace IMSB.Api.Controllers
             else if (join > today) errors["join_date"] = L["ValJoinFuture"];
             else if (!errors.ContainsKey("date_of_birth") && join < dob.AddYears(18)) errors["join_date"] = L["ValJoinAfterDob"];
 
-            if (!Guid.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
+            if (!int.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
                 errors["department_id"] = L["ValDepartment"];
 
             // an unchanged shift is accepted so records holding older values (e.g. "Night") can still be edited

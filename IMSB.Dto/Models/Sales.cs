@@ -12,7 +12,7 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
         [Column("EntryNo")]
@@ -56,15 +56,15 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Column("SalesEntryId")]
-        public Guid SalesEntryId { get; set; }
+        public int SalesEntryId { get; set; }
 
         public SalesEntry? SalesEntry { get; set; }
 
         [Column("ProductId")]
-        public Guid? ProductId { get; set; }
+        public int? ProductId { get; set; }
 
         public Product? Product { get; set; }
 
@@ -79,7 +79,7 @@ namespace IMSB.Dto.Models
         public string ProductName { get; set; } = string.Empty;
 
         [Column("CategoryId")]
-        public Guid? CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         [Column("CategoryName")]
         [MaxLength(100)]

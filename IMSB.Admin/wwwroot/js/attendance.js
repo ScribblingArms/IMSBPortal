@@ -158,7 +158,7 @@
     let shown = 0;
     rowEls().forEach(el => {
       const r = data.rows[+el.dataset.i];
-      const ok = (!dept || r.departmentId === dept) && (!q || `${r.name} ${r.employeeId} ${r.designation}`.toLowerCase().includes(q));
+      const ok = (!dept || String(r.departmentId) === dept) && (!q || `${r.name} ${r.employeeId} ${r.designation}`.toLowerCase().includes(q));
       el.classList.toggle('hidden', !ok);
       if (ok) shown++;
     });

@@ -139,11 +139,103 @@ public class HeaderNotificationTests
     }
 
     [Fact]
+    public async Task Expired_and_expiring_agreements_are_counted_separately()
+    {
+        using var ctx = await Context();
+        var a02 = ctx.Stalls.Single(s => s.StallCode == "A-02");
+        a02.ArtisanId = ctx.Artisans.Single(a => a.ArtisanCode == "ART-0004").Id;
+        a02.AgreementEndDate = DateTime.Today.AddDays(-3);
+        // a vacant stall's old end date is not an alert
+        ctx.Stalls.Single(s => s.StallCode == "B-01").AgreementEndDate = DateTime.Today.AddDays(-3);
+        ctx.SaveChanges();
+        var items = Items(await Notifications(ctx).Data());
+        Assert.Equal(1, items.Single(i => i.Type == "AGREEMENTS_EXPIRED").Count);
+        Assert.Equal(1, items.Single(i => i.Type == "AGREEMENTS_EXPIRING").Count);
+    }
+
+    [Fact]
+    public async Task Agreements_beyond_the_window_or_without_an_artisan_are_ignored()
+    {
+        using var ctx = await Context();
+        var a01 = ctx.Stalls.Single(s => s.StallCode == "A-01");
+        a01.AgreementEndDate = DateTime.Today.AddDays(NotificationsControllerWindow + 1);
+        ctx.SaveChanges();
+        Assert.DoesNotContain(Items(await Notifications(ctx).Data()), i => i.Type.StartsWith("AGREEMENTS_"));
+    }
+
+    private const int NotificationsControllerWindow = IMSB.Admin.Controllers.NotificationsController.ExpiryWindowDays;
+
+    [Fact]
+    public async Task Stock_alerts_split_out_of_stock_from_low()
+    {
+        using var ctx = await Context();
+        InventoryTestHelpers.AddProduct(ctx, "PRD004", "Out too", Textiles, "A-01", -1, 5);
+        InventoryTestHelpers.AddProduct(ctx, "PRD005", "Low too", Textiles, "A-01", 4, 5);
+        var items = Items(await Notifications(ctx).Data());
+        Assert.Equal(2, items.Single(i => i.Type == "OUT_OF_STOCK").Count);
+        Assert.Equal(2, items.Single(i => i.Type == "LOW_STOCK").Count);
+    }
+
+    [Fact]
     public async Task Quiet_database_has_no_alerts()
     {
         using var ctx = InventoryTestHelpers.CreateContext();
         var json = TestHelpers.OkJson(await Notifications(ctx).Data());
         Assert.Equal(0, json.GetProperty("items").GetArrayLength());
         Assert.Equal(0, json.GetProperty("total").GetInt32());
+    }
+}
+
+/// <summary>The sidebar's Inventory and Applications badges (INotificationsInterface.NavBadgesAsync).</summary>
+public class SidebarBadgeTests
+{
+    private static IMSBContext Context()
+    {
+        var ctx = Seeded();
+        AddApplication(ctx, "APP-0001");
+        AddApplication(ctx, "APP-0002", ApplicationStatuses.UnderReview);
+        AddApplication(ctx, "APP-0003", ApplicationStatuses.Approved);
+        AddApplication(ctx, "APP-0004", ApplicationStatuses.Rejected);
+        InventoryTestHelpers.AddProduct(ctx, "PRD001", "Out", Textiles, "A-01", 0, 5);
+        InventoryTestHelpers.AddProduct(ctx, "PRD002", "Low", Textiles, "A-01", 2, 5);
+        InventoryTestHelpers.AddProduct(ctx, "PRD003", "At minimum", Textiles, "A-01", 5, 5);
+        InventoryTestHelpers.AddProduct(ctx, "PRD004", "Fine", Textiles, "A-01", 9, 5);
+        return ctx;
+    }
+
+    [Fact]
+    public async Task Admin_sees_products_below_minimum_and_open_applications()
+    {
+        using var ctx = Context();
+        var badges = await new IMSB.Backend.Notifications(ctx).NavBadgesAsync(isAdmin: true, isInventory: false);
+        // out of stock + low; a product exactly at its minimum is fine
+        Assert.Equal(2, badges.BelowMinimum);
+        // pending + under review; decided applications are not counted
+        Assert.Equal(2, badges.OpenApplications);
+    }
+
+    [Fact]
+    public async Task Inventory_role_only_gets_the_stock_badge()
+    {
+        using var ctx = Context();
+        Assert.Equal(new IMSB.Interfaces.NavBadges(2, 0), await new IMSB.Backend.Notifications(ctx).NavBadgesAsync(isAdmin: false, isInventory: true));
+    }
+
+    [Fact]
+    public async Task Staff_role_gets_no_badges()
+    {
+        using var ctx = Context();
+        Assert.Equal(new IMSB.Interfaces.NavBadges(0, 0), await new IMSB.Backend.Notifications(ctx).NavBadgesAsync(isAdmin: false, isInventory: false));
+    }
+
+    [Fact]
+    public async Task Sidebar_badges_match_the_header_alerts()
+    {
+        using var ctx = Context();
+        var badges = await new IMSB.Backend.Notifications(ctx).NavBadgesAsync(isAdmin: true, isInventory: false);
+        var alerts = await new IMSB.Backend.Notifications(ctx).BuildAsync(true, false, false, 30);
+        int Count(string type) => alerts.SingleOrDefault(a => a.Type == type)?.Count ?? 0;
+        Assert.Equal(Count("OUT_OF_STOCK") + Count("LOW_STOCK"), badges.BelowMinimum);
+        Assert.Equal(Count("APPS_PENDING") + Count("APPS_REVIEW"), badges.OpenApplications);
     }
 }

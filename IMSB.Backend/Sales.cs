@@ -38,7 +38,7 @@ namespace IMSB.Backend
         public Task<Dictionary<string, Product>> ProductsByCodeAsync(List<string> codes) =>
             _context.Products.Include(p => p.Category).Where(p => codes.Contains(p.ProductCode)).ToDictionaryAsync(p => p.ProductCode);
 
-        public Task<Dictionary<Guid, Product>> ProductsByIdAsync(IEnumerable<Guid> ids)
+        public Task<Dictionary<int, Product>> ProductsByIdAsync(IEnumerable<int> ids)
         {
             var list = ids.ToList();
             return _context.Products.Where(p => list.Contains(p.Id)).ToDictionaryAsync(p => p.Id);
@@ -56,7 +56,7 @@ namespace IMSB.Backend
                 var term = q.Trim().ToLower();
                 query = query.Where(i => i.ProductName.ToLower().Contains(term) || i.ProductCode.ToLower().Contains(term));
             }
-            if (!string.IsNullOrWhiteSpace(categoryId) && Guid.TryParse(categoryId, out var catId))
+            if (!string.IsNullOrWhiteSpace(categoryId) && int.TryParse(categoryId, out var catId))
                 query = query.Where(i => i.CategoryId == catId);
             if (!string.IsNullOrWhiteSpace(stall))
             {
@@ -91,7 +91,7 @@ namespace IMSB.Backend
                 .ToList();
         }
 
-        public async Task<(List<StockMovement> Movements, Dictionary<Guid, Product> Products)> DeductionLogAsync(DateTime? day, int take)
+        public async Task<(List<StockMovement> Movements, Dictionary<int, Product> Products)> DeductionLogAsync(DateTime? day, int take)
         {
             var query = _context.StockMovements.AsNoTracking()
                 .Where(m => m.MovementType == StockMovementTypes.Sale || m.MovementType == StockMovementTypes.SaleReversal);
@@ -139,7 +139,7 @@ namespace IMSB.Backend
         public async Task UpdateAsync(SalesEntry entry, IEnumerable<SaleItem> oldItems, IEnumerable<StockMovement> movements)
         {
             _context.SaleItems.RemoveRange(oldItems);
-            // new lines already carry a Guid key, so they must be marked as inserts explicitly;
+            // new lines already carry a int key, so they must be marked as inserts explicitly;
             // found only through the navigation EF would treat them as existing rows and UPDATE them
             _context.SaleItems.AddRange(entry.Items);
             _context.StockMovements.AddRange(movements);

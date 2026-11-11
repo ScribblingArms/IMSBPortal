@@ -24,7 +24,7 @@ namespace IMSB.Api.Controllers
             var categories = await _inventory.CategoriesAsync();
             var all = await _inventory.ProductsAsync();
             var catNames = categories.ToDictionary(c => c.Id, c => c.Name);
-            string CatName(Guid id) => catNames.GetValueOrDefault(id) ?? string.Empty;
+            string CatName(int id) => catNames.GetValueOrDefault(id) ?? string.Empty;
             var byCategory = all.ToLookup(p => p.CategoryId);
 
             return Ok(new
@@ -68,7 +68,7 @@ namespace IMSB.Api.Controllers
             {
                 ProductCode = NextCode(await _inventory.ProductCodesAsync(), "PRD", 3),
                 Name = dto.Name.Trim(),
-                CategoryId = Guid.Parse(dto.CategoryId),
+                CategoryId = int.Parse(dto.CategoryId),
                 StallCode = dto.StallCode.Trim().ToUpperInvariant(),
                 Quantity = 0,
                 MinStock = dto.MinStock,
@@ -91,7 +91,7 @@ namespace IMSB.Api.Controllers
             if (errors.Count > 0) return Invalid(errors);
 
             product.Name = dto.Name.Trim();
-            product.CategoryId = Guid.Parse(dto.CategoryId);
+            product.CategoryId = int.Parse(dto.CategoryId);
             product.StallCode = dto.StallCode.Trim().ToUpperInvariant();
             product.MinStock = dto.MinStock;
             product.UnitPrice = dto.UnitPrice;
@@ -159,10 +159,10 @@ namespace IMSB.Api.Controllers
                 StallsTracked: products.Select(p => p.StallCode.ToUpper()).Distinct().Count());
         }
 
-        private async Task<Dictionary<string, string>> ValidateProductAsync(string name, string categoryId, string stallCode, Guid? existingId)
+        private async Task<Dictionary<string, string>> ValidateProductAsync(string name, string categoryId, string stallCode, int? existingId)
         {
             var errors = new Dictionary<string, string>();
-            if (!Guid.TryParse(categoryId, out var catId) || !await _inventory.CategoryExistsAsync(catId))
+            if (!int.TryParse(categoryId, out var catId) || !await _inventory.CategoryExistsAsync(catId))
                 errors["category_id"] = L["ValCategory"];
             // the same product name may exist in different stalls, but not twice in one stall
             if (await _inventory.ProductExistsAsync(name, stallCode, existingId))

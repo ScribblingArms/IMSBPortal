@@ -8,16 +8,16 @@ namespace IMSB.Interfaces
         Task<Login?> ValidateLogincredentials(string usernameOrEmail);
 
         /// <summary>Replaces the login's reset tokens with a new one-hour token and returns it.</summary>
-        Task<string> ValidatePasswordResetTokens(Guid loginid);
+        Task<string> ValidatePasswordResetTokens(int loginid);
 
         /// <summary>The reset token with its (tracked) login, or null.</summary>
         Task<PasswordResetToken?> ValidatePasswordResetTokens(string token);
 
         /// <summary>Removes every outstanding reset token of the login and saves pending changes.</summary>
-        Task<bool> PasswordResetTokensID(Guid loginId);
+        Task<bool> PasswordResetTokensID(int loginId);
 
         /// <summary>The login's 50 most recently used sessions.</summary>
-        Task<List<UserSession>> UserSessions(Guid loginId);
+        Task<List<UserSession>> UserSessions(int loginId);
 
         Task<UserSession?> GetUserSession(Guid sessionId);
 
@@ -32,6 +32,6 @@ namespace IMSB.Interfaces
         Task<(Login? Login, string Role, string? ErrorKey)> CheckSignInAsync(string usernameOrEmail, string password, string? selectedRole);
 
         /// <summary>Sets a new password with a reset token and removes the login's tokens. Returns the login id, or the resource key of the error.</summary>
-        Task<(Guid? LoginId, string? ErrorKey)> ResetPasswordAsync(string token, string newPassword);
+        Task<(int? LoginId, string? ErrorKey)> ResetPasswordAsync(string token, string newPassword);
     }
 }

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IMSB.Models;
 using IMSB.Admin.Controllers;
 using IMSB.Backend;
 using IMSB.Dto.Models;
@@ -14,7 +15,7 @@ namespace IMSB.Admin.Tests;
 public class HousekeepingOvertimeTests
 {
     private static readonly DateTime October = new(2026, 10, 1);
-    private static readonly Guid HousekeepingDept = Guid.Parse("55555555-5555-5555-5555-555555555555");
+    private static readonly int HousekeepingDept = 9005;
 
     // ── The rule ──────────────────────────────────────────────────
     [Theory]
@@ -225,7 +226,7 @@ public class HousekeepingOvertimeTests
             var otColumn = Array.IndexOf(excel[0], "Overtime Amount");
             Assert.Equal("350.00", excel[1][otColumn]);
 
-            var pdf = Assert.IsType<PayrollController.PayBillPrintModel>(
+            var pdf = Assert.IsType<PayBillPrintModel>(
                 Assert.IsType<PartialViewResult>(await Payroll(context).PdfDocument(2026, 10, null, "EMP-HK1")).Model);
             Assert.Equal(350m, Assert.Single(pdf.Rows).OvertimeAmount);
         }

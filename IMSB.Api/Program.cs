@@ -2,6 +2,7 @@ using System.Globalization;
 using IMSB.Api.Auth;
 using IMSB.Backend;
 using IMSB.Dto.Models;
+using IMSB.LoggerLibrary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
@@ -15,6 +16,9 @@ using static IMSB.Common.CommonHelpers;
 
 var builder = WebApplication.CreateBuilder(args);
 var assemblyName = typeof(Program).Assembly.GetName().Name!;
+
+// Warnings and errors (incl. unhandled exceptions) also go to FW.TblLog (IMSB.LoggerLibrary; DatabaseLogging in appsettings)
+builder.AddImsbLogging("IMSB.Api");
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))

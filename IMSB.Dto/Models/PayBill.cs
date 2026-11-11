@@ -8,10 +8,10 @@ public class PayBillEntry
 {
     [Key]
     [Column("Id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public int Id { get; set; }
 
     [Column("StaffId")]
-    public Guid StaffId { get; set; }
+    public int StaffId { get; set; }
 
     [Column("Year")]
     public int Year { get; set; }
@@ -80,7 +80,7 @@ public class GeneratePayBillDto
 
 public class PayBillAdjustmentDto
 {
-    public Guid StaffId { get; set; }
+    public int StaffId { get; set; }
 
     [Range(typeof(decimal), "0", "999999999.99")]
     public decimal Allowances { get; set; }

@@ -1,3 +1,4 @@
+using static IMSB.Common.CommonHelpers;
 using System.Globalization;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
@@ -26,7 +27,7 @@ namespace IMSB.Api.Controllers
         public async Task<IActionResult> Data([FromQuery] string? month, [FromQuery] string? categoryId)
         {
             var period = ReportPeriod.ForMonth(month, DateTime.Today);
-            var category = Guid.TryParse(categoryId, out var id) ? await _reports.CategoryAsync(id) : null;
+            var category = int.TryParse(categoryId, out var id) ? await _reports.CategoryAsync(id) : null;
             var trend = await _reports.SalesTrendAsync(period, category?.Name, TrendMonths);
             var categories = await _reports.ByCategoryAsync(period.From, period.To);
             var occupancy = await _reports.OccupancyTrendAsync(period, category?.Id, TrendMonths);
@@ -97,17 +98,6 @@ namespace IMSB.Api.Controllers
             if (!DateTime.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day))
                 return Invalid("date", "ValDateInvalid");
             return Ok(await _attendance.AbstractReportAsync(day, L["StaffHR"].Value, L["Artisans"].Value));
-        }
-
-        private static bool TryResolveAttendanceMonth(int? year, int? month, out DateTime start)
-        {
-            var today = DateTime.Today;
-            var selectedYear = year ?? today.Year;
-            var selectedMonth = month ?? today.Month;
-            start = default;
-            if (selectedYear < today.Year - 10 || selectedYear > today.Year || selectedMonth < 1 || selectedMonth > 12) return false;
-            start = new DateTime(selectedYear, selectedMonth, 1);
-            return true;
         }
     }
 }

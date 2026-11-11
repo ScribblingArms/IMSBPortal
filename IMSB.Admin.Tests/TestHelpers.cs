@@ -16,8 +16,8 @@ namespace IMSB.Admin.Tests;
 /// <summary>Shared fixtures: an in-memory IMSBContext with reference data, and a StaffController wired like MVC would.</summary>
 internal static class TestHelpers
 {
-    public static readonly Guid SalesDept = Guid.Parse("11111111-1111-1111-1111-111111111111");
-    public static readonly Guid AdminDept = Guid.Parse("22222222-2222-2222-2222-222222222222");
+    public static readonly int SalesDept = 9001;
+    public static readonly int AdminDept = 9002;
 
     public static IMSBContext CreateContext(bool seedReferenceData = true)
     {
@@ -100,7 +100,7 @@ internal static class TestHelpers
     };
 
     public static Staff ExistingStaff(string employeeId, string fullName, string mobile, string status = "ACTIVE",
-        Guid? dept = null, string shift = "MORNING", string? email = null, DateTime? createdAt = null) => new()
+        int? dept = null, string shift = "MORNING", string? email = null, DateTime? createdAt = null) => new()
     {
         EmployeeId = employeeId,
         FullName = fullName,

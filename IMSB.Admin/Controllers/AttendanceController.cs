@@ -55,7 +55,7 @@ namespace IMSB.Admin.Controllers
                 return BadRequest(new { errors = new Dictionary<string, string> { ["date"] = _L["ValDateInvalid"] } });
 
             var sheet = await SheetAsync(day);
-            var rows = Guid.TryParse(departmentId, out var deptId) ? sheet.Where(r => r.Staff.DepartmentId == deptId).ToList() : sheet;
+            var rows = int.TryParse(departmentId, out var deptId) ? sheet.Where(r => r.Staff.DepartmentId == deptId).ToList() : sheet;
 
             // month to date, per department
             var monthStart = new DateTime(day.Year, day.Month, 1);
@@ -173,7 +173,7 @@ namespace IMSB.Admin.Controllers
                 if (day != DateTime.MinValue && s.JoinDate.Date > day) { errors.TryAdd(prefix + "employee_id", _L["ValBeforeJoining"]); continue; }
 
                 var (status, inTime, outTime) = ValidateEntry(e.Status, e.InTime, e.OutTime, prefix, errors);
-                if (status != null) lines.Add((s, status, inTime, outTime, CleanRemarks(e.Remarks)));
+                if (status != null) lines.Add((s, status, inTime, outTime, TrimOrNull(e.Remarks)));
             }
             if (errors.Count > 0) return BadRequest(new { errors });
 
@@ -232,7 +232,7 @@ namespace IMSB.Admin.Controllers
             if (errors.Count > 0 || status == null) return BadRequest(new { errors });
 
             var shifts = await _attendance.ShiftNamesAsync();
-            Apply(record, status, inTime, outTime, CleanRemarks(dto.Remarks), shifts.GetValueOrDefault(record.Staff!.Shift.Trim().ToUpperInvariant()));
+            Apply(record, status, inTime, outTime, TrimOrNull(dto.Remarks), shifts.GetValueOrDefault(record.Staff!.Shift.Trim().ToUpperInvariant()));
             await _attendance.ApplyLeavePolicyAsync(new[] { record });
             record.UpdatedAt = DateTime.UtcNow;
             record.UpdatedBy = User.Identity?.Name;
@@ -251,7 +251,7 @@ namespace IMSB.Admin.Controllers
         }
 
         private async Task<AttendanceRecord?> FindAsync(string id, bool tracking) =>
-            Guid.TryParse(id, out var guid) ? await _attendance.FindAsync(guid, tracking) : null;
+            int.TryParse(id, out var guid) ? await _attendance.FindAsync(guid, tracking) : null;
 
         // ── Attendance History ────────────────────────────────────────
 
@@ -267,7 +267,7 @@ namespace IMSB.Admin.Controllers
         public async Task<IActionResult> History([FromQuery] string? q, [FromQuery] string? departmentId, [FromQuery] string? status,
             [FromQuery] string? month, [FromQuery] string? from, [FromQuery] string? to)
         {
-            var errors = ResolvePeriod(month, from, to, out var start, out var end);
+            var errors = ResolvePeriod(month, from, to, _L, out var start, out var end);
             if (errors.Count > 0) return BadRequest(new { errors });
 
             var rows = await HistoryRowsAsync(q, departmentId, status, start, end);
@@ -376,7 +376,7 @@ namespace IMSB.Admin.Controllers
             return false;
         }
 
-        private static HistoryRow ToHistoryRow(AttendanceRecord r, Dictionary<Guid, string> depts) => new(
+        private static HistoryRow ToHistoryRow(AttendanceRecord r, Dictionary<int, string> depts) => new(
             r.Id.ToString(), Date(r.AttendanceDate), r.Staff?.EmployeeId ?? string.Empty, r.Staff?.FullName ?? string.Empty,
             r.Staff?.DepartmentId.ToString() ?? string.Empty, r.Staff == null ? string.Empty : depts.GetValueOrDefault(r.Staff.DepartmentId) ?? string.Empty,
             r.Staff?.Designation ?? string.Empty, r.Status, Time(r.InTime), Time(r.OutTime), r.WorkedHours, r.OvertimeHours, r.Remarks,
@@ -390,7 +390,7 @@ namespace IMSB.Admin.Controllers
         public async Task<IActionResult> Export([FromQuery] string? q, [FromQuery] string? departmentId, [FromQuery] string? status,
             [FromQuery] string? month, [FromQuery] string? from, [FromQuery] string? to)
         {
-            var errors = ResolvePeriod(month, from, to, out var start, out var end);
+            var errors = ResolvePeriod(month, from, to, _L, out var start, out var end);
             if (errors.Count > 0) return BadRequest(new { errors });
             var rows = await HistoryRowsAsync(q, departmentId, status, start, end);
 
@@ -449,35 +449,6 @@ namespace IMSB.Admin.Controllers
             record.Remarks = remarks;
         }
 
-        private Dictionary<string, string> ResolvePeriod(string? month, string? from, string? to, out DateTime start, out DateTime end)
-        {
-            var errors = new Dictionary<string, string>();
-            var today = DateTime.Today;
-            start = new DateTime(today.Year, today.Month, 1);
-            end = start.AddMonths(1).AddDays(-1);
-
-            if (!string.IsNullOrWhiteSpace(from) || !string.IsNullOrWhiteSpace(to))
-            {
-                DateTime f = default, t = default;
-                if (!string.IsNullOrWhiteSpace(from) && !TryParseDate(from, out f)) errors["from"] = _L["ValDateInvalid"];
-                if (!string.IsNullOrWhiteSpace(to) && !TryParseDate(to, out t)) errors["to"] = _L["ValDateInvalid"];
-                if (errors.Count > 0) return errors;
-                start = string.IsNullOrWhiteSpace(from) ? t : f;
-                end = string.IsNullOrWhiteSpace(to) ? f : t;
-                if (start > end) errors["to"] = _L["ValDateRange"];
-            }
-            else if (!string.IsNullOrWhiteSpace(month))
-            {
-                if (DateTime.TryParseExact(month.Trim(), "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var m))
-                {
-                    start = m;
-                    end = m.AddMonths(1).AddDays(-1);
-                }
-                else errors["month"] = _L["ValDateInvalid"];
-            }
-            return errors;
-        }
-
         private Dictionary<string, string> BindingErrors()
         {
             var errors = ModelStateErrors(ModelState);
@@ -498,13 +469,6 @@ namespace IMSB.Admin.Controllers
             remarks = r.Remarks,
             by = r.UpdatedBy ?? r.CreatedBy
         };
-
-        private static string? CleanRemarks(string? remarks) => string.IsNullOrWhiteSpace(remarks) ? null : remarks.Trim();
-
-        private static bool TryParseTime(string? value, out TimeSpan time) =>
-            TimeSpan.TryParseExact(value?.Trim(), @"hh\:mm", CultureInfo.InvariantCulture, out time) && time < TimeSpan.FromDays(1);
-
-        internal static string? Time(TimeSpan? t) => t?.ToString(@"hh\:mm", CultureInfo.InvariantCulture);
 
         private static string Hours(decimal v) => v.ToString("0.##", CultureInfo.InvariantCulture);
     }

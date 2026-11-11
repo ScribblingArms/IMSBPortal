@@ -39,17 +39,17 @@ namespace IMSB.Api.Controllers
         {
             if (!TryMonthStart(dto.Year, dto.Month, out var start)) return Invalid("period", "ValDateInvalid");
             if (dto.Rows.Select(row => row.StaffId).Distinct().Count() != dto.Rows.Count
-                || dto.Rows.Any(row => row.StaffId == Guid.Empty)
+                || dto.Rows.Any(row => row.StaffId == 0)
                 || !await _payroll.GenerateAsync(start, dto.Rows))
                 return Invalid("rows", "CheckForm");
             return Ok(new { success = true, message = L["PayrollSaved"].Value });
         }
 
         /// <summary>The employee's saved pay bills before the month, newest first.</summary>
-        [HttpGet("history/{staffId:guid}")]
-        public async Task<IActionResult> History(Guid staffId, [FromQuery] int? year, [FromQuery] int? month)
+        [HttpGet("history/{staffId:int}")]
+        public async Task<IActionResult> History(int staffId, [FromQuery] int? year, [FromQuery] int? month)
         {
-            if (staffId == Guid.Empty || !TryMonthStart(year, month, out var start)) return Invalid("period", "ValDateInvalid");
+            if (staffId == 0 || !TryMonthStart(year, month, out var start)) return Invalid("period", "ValDateInvalid");
             return Ok(new { rows = await _payroll.HistoryAsync(staffId, start, HistoryMonths) });
         }
     }

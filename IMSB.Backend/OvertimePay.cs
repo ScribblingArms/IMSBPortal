@@ -61,8 +61,8 @@ namespace IMSB.Backend
         }
 
         /// <summary>Approved OT hours (saved on the OT assignments) and their pay for each staff member in the month.</summary>
-        public static async Task<Dictionary<Guid, OvertimeResult>> ForMonthAsync(IMSBContext context, IReadOnlyCollection<Staff> staff,
-            IReadOnlyDictionary<Guid, string> categories, DateTime monthStart)
+        public static async Task<Dictionary<int, OvertimeResult>> ForMonthAsync(IMSBContext context, IReadOnlyCollection<Staff> staff,
+            IReadOnlyDictionary<int, string> categories, DateTime monthStart)
         {
             var staffIds = staff.Select(s => s.Id).ToList();
             var monthEnd = monthStart.AddMonths(1);

@@ -10,7 +10,7 @@ public class StaffModelTests
         var before = DateTime.UtcNow;
         var s = new Staff();
 
-        Assert.NotEqual(Guid.Empty, s.Id);
+        Assert.Equal(0, s.Id);   // int IDENTITY: the database assigns it when the staff member is saved
         Assert.Equal("ACTIVE", s.Status);
         Assert.Equal("Female", s.Gender);
         Assert.Equal(string.Empty, s.EmployeeId);
@@ -20,9 +20,16 @@ public class StaffModelTests
     }
 
     [Fact]
-    public void Each_new_staff_gets_a_distinct_id()
+    public void Each_saved_staff_gets_a_distinct_id()
     {
-        Assert.NotEqual(new Staff().Id, new Staff().Id);
+        using var context = TestHelpers.CreateContext();
+        var first = TestHelpers.ExistingStaff("EMP-9001", "First", "9000000001");
+        var second = TestHelpers.ExistingStaff("EMP-9002", "Second", "9000000002");
+        first.Id = second.Id = 0;   // let the store number them
+        context.Staff.AddRange(first, second);
+        context.SaveChanges();
+        Assert.True(first.Id > 0 && second.Id > 0);
+        Assert.NotEqual(first.Id, second.Id);
     }
 
     [Theory]

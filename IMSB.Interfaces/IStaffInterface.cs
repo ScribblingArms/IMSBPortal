@@ -11,7 +11,7 @@ namespace IMSB.Interfaces
         Task<List<Staff>> FilterAsync(string? q, string? departmentId, string? status);
 
         Task<List<Department>> DepartmentsAsync();
-        Task<Dictionary<Guid, string>> DepartmentNamesAsync();
+        Task<Dictionary<int, string>> DepartmentNamesAsync();
         Task<List<Shift>> ShiftsAsync();
 
         Task<List<string>> EmployeeIdsAsync();
@@ -19,14 +19,14 @@ namespace IMSB.Interfaces
         /// <summary>Tracked staff member by employee id.</summary>
         Task<Staff?> FindAsync(string employeeId);
 
-        Task<bool> DepartmentExistsAsync(Guid departmentId);
+        Task<bool> DepartmentExistsAsync(int departmentId);
         Task<bool> AnyShiftsAsync();
         Task<bool> ShiftExistsAsync(string code);
-        Task<bool> MobileExistsAsync(string mobile, Guid? exceptId);
-        Task<bool> AadhaarExistsAsync(string aadhaarHash, Guid? exceptId);
+        Task<bool> MobileExistsAsync(string mobile, int? exceptId);
+        Task<bool> AadhaarExistsAsync(string aadhaarHash, int? exceptId);
 
         /// <summary>email is lower-case.</summary>
-        Task<bool> EmailExistsAsync(string email, Guid? exceptId);
+        Task<bool> EmailExistsAsync(string email, int? exceptId);
 
         /// <summary>The leave types offered when registering, by name.</summary>
         Task<List<string>> LeaveTypesAsync();

@@ -23,4 +23,11 @@
     <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" TargetPath="IMSB.Dto.appsettings.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- raw SQL run by migrations (Migrations/Scripts/MigrationScript.cs), e.g. the gmc_db objects of AddGmcDbObjects -->
+    <None Remove="Migrations\Scripts\**\*.sql" />
+    <EmbeddedResource Include="Migrations\Scripts\**\*.sql"
+                      LogicalName="IMSB.Dto.Migrations.Scripts.$([System.String]::Copy('%(RecursiveDir)').Replace('\','.').Replace('/','.'))%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

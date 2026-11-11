@@ -122,7 +122,8 @@ namespace IMSB.Api.Controllers
                 L["RegisteredFromApplication", app.ApplicationNo], UserName);
             if (stall != null)
             {
-                stall.ArtisanId = artisan.Id;
+                // the new artisan has no id until it is saved: link by navigation, EF fills in ArtisanId
+                stall.Artisan = artisan;
                 stall.Status = StallStatuses.Occupied;
                 stall.AllottedDate = DateTime.Today;
                 stall.CategoryId = artisan.CategoryId;
@@ -132,7 +133,7 @@ namespace IMSB.Api.Controllers
 
             app.Status = ApplicationStatuses.Approved;
             app.Reviewer ??= UserName;
-            app.ArtisanId = artisan.Id;
+            app.Artisan = artisan;
             app.ArtisanCode = artisan.ArtisanCode;
             app.StallCode = stall?.StallCode;
             Decide(app, dto.Remarks);
@@ -170,7 +171,7 @@ namespace IMSB.Api.Controllers
             app.UpdatedBy = UserName;
         }
 
-        private record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, DateTime SubmittedDate, string District, string Gender,
+        private record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, int CategoryId, DateTime SubmittedDate, string District, string Gender,
             DateTime? FromDate, DateTime? ToDate);
 
         /// <summary>
@@ -180,7 +181,7 @@ namespace IMSB.Api.Controllers
         private async Task<(Dictionary<string, string> Errors, Validated V)> ValidateAsync(ApplicationDto dto, ArtisanApplication? existing)
         {
             var errors = new Dictionary<string, string>();
-            var selfId = existing?.Id ?? Guid.Empty;
+            var selfId = existing?.Id ?? 0;
 
             if (!TryParseDate(dto.DateOfBirth, out var dob)) errors["date_of_birth"] = L["ValDobInvalid"];
             else if (dob > DateTime.Today) errors["date_of_birth"] = L["ValDobFuture"];
@@ -210,7 +211,7 @@ namespace IMSB.Api.Controllers
             var district = TelanganaDistricts.All.FirstOrDefault(d => d.Equals(dto.District?.Trim(), StringComparison.OrdinalIgnoreCase));
             if (district == null) errors["district"] = L["ValDistrict"];
 
-            if (!Guid.TryParse(dto.CategoryId, out var categoryId) || !await _applications.CategoryExistsAsync(categoryId))
+            if (!int.TryParse(dto.CategoryId, out var categoryId) || !await _applications.CategoryExistsAsync(categoryId))
                 errors["category_id"] = L["ValCraftCategory"];
 
             var submitted = existing?.SubmittedDate ?? DateTime.Today;

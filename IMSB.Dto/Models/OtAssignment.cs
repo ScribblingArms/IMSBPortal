@@ -9,10 +9,10 @@ public class OtAssignment
 {
     [Key]
     [Column("Id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public int Id { get; set; }
 
     [Column("StaffId")]
-    public Guid StaffId { get; set; }
+    public int StaffId { get; set; }
 
     public Staff? Staff { get; set; }
 
@@ -51,7 +51,7 @@ public class OtAssignment
 /// <summary>The add / edit form. StaffId is only read when adding; date-times are yyyy-MM-ddTHH:mm.</summary>
 public class OtAssignmentDto
 {
-    public Guid? StaffId { get; set; }
+    public int? StaffId { get; set; }
     public string? FromDateTime { get; set; }
     public string? ToDateTime { get; set; }
 }
@@ -60,9 +60,9 @@ public class OtAssignmentDto
 /// ShiftName is the staff member's shift (null when none is set); ShiftStart / ShiftEnd are HH:mm, null when the timings
 /// cannot be read from the shift name (OT is then not checked against the shift).
 /// </summary>
-public record OtAssignmentRow(Guid Id, Guid StaffId, string EmployeeId, string StaffName, string StaffCategory,
+public record OtAssignmentRow(int Id, int StaffId, string EmployeeId, string StaffName, string StaffCategory,
     string Designation, string FromDateTime, string ToDateTime, string? By,
     string? ShiftName = null, string? ShiftStart = null, string? ShiftEnd = null, decimal OtHours = 0m);
 
-public record OtStaffOption(Guid Id, string EmployeeId, string FullName,
+public record OtStaffOption(int Id, string EmployeeId, string FullName,
     string? ShiftName = null, string? ShiftStart = null, string? ShiftEnd = null);

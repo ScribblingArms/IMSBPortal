@@ -28,7 +28,7 @@ namespace IMSB.Api.Controllers
             if (!string.IsNullOrWhiteSpace(date) && !TryParseDate(date, out day)) return Invalid("date", "ValDateInvalid");
 
             var sheet = await _attendance.SheetAsync(day);
-            var rows = Guid.TryParse(departmentId, out var deptId) ? sheet.Where(r => r.Staff.DepartmentId == deptId).ToList() : sheet;
+            var rows = int.TryParse(departmentId, out var deptId) ? sheet.Where(r => r.Staff.DepartmentId == deptId).ToList() : sheet;
             // month to date, per department
             var month = (await _attendance.StatusesBetweenAsync(new DateTime(day.Year, day.Month, 1), day)).ToLookup(r => r.DepartmentId);
             var sheetByDept = sheet.ToLookup(r => r.Staff.DepartmentId);
@@ -99,7 +99,7 @@ namespace IMSB.Api.Controllers
                 if (day != DateTime.MinValue && s.JoinDate.Date > day) { errors.TryAdd(prefix + "employee_id", L["ValBeforeJoining"]); continue; }
 
                 var (status, inTime, outTime) = ValidateEntry(e.Status, e.InTime, e.OutTime, prefix, errors);
-                if (status != null) lines.Add((s, status, inTime, outTime, CleanRemarks(e.Remarks)));
+                if (status != null) lines.Add((s, status, inTime, outTime, TrimOrNull(e.Remarks)));
             }
             if (errors.Count > 0) return Invalid(errors);
 
@@ -130,15 +130,15 @@ namespace IMSB.Api.Controllers
             string Status, string? InTime, string? OutTime, decimal WorkedHours, decimal OvertimeHours, string? Remarks, string? By,
             bool LeaveWithoutPay);
 
-        [HttpGet("records/{id:guid}")]
-        public async Task<IActionResult> Get(Guid id)
+        [HttpGet("records/{id:int}")]
+        public async Task<IActionResult> Get(int id)
         {
             var record = await _attendance.FindAsync(id, tracking: false);
             return record == null ? NotFound() : Ok(ToHistoryRow(record, await _attendance.DepartmentNamesAsync()));
         }
 
-        [HttpPut("records/{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] AttendanceUpdateDto dto)
+        [HttpPut("records/{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] AttendanceUpdateDto dto)
         {
             var record = await _attendance.FindAsync(id, tracking: true);
             if (record == null) return NotFound();
@@ -148,7 +148,7 @@ namespace IMSB.Api.Controllers
             if (errors.Count > 0 || status == null) return Invalid(errors);
 
             var shifts = await _attendance.ShiftNamesAsync();
-            Apply(record, status, inTime, outTime, CleanRemarks(dto.Remarks), shifts.GetValueOrDefault(record.Staff!.Shift.Trim().ToUpperInvariant()));
+            Apply(record, status, inTime, outTime, TrimOrNull(dto.Remarks), shifts.GetValueOrDefault(record.Staff!.Shift.Trim().ToUpperInvariant()));
             await _attendance.ApplyLeavePolicyAsync(new[] { record });
             record.UpdatedAt = DateTime.UtcNow;
             record.UpdatedBy = UserName;
@@ -156,8 +156,8 @@ namespace IMSB.Api.Controllers
             return Ok(ToHistoryRow(record, await _attendance.DepartmentNamesAsync()));
         }
 
-        [HttpDelete("records/{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("records/{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
             var record = await _attendance.FindAsync(id, tracking: true);
             if (record == null) return NotFound();
@@ -170,7 +170,7 @@ namespace IMSB.Api.Controllers
         public async Task<IActionResult> History([FromQuery] string? q, [FromQuery] string? departmentId, [FromQuery] string? status,
             [FromQuery] string? month, [FromQuery] string? from, [FromQuery] string? to)
         {
-            var errors = ResolvePeriod(month, from, to, out var start, out var end);
+            var errors = ResolvePeriod(month, from, to, L, out var start, out var end);
             if (errors.Count > 0) return Invalid(errors);
 
             var depts = await _attendance.DepartmentNamesAsync();
@@ -281,35 +281,7 @@ namespace IMSB.Api.Controllers
             record.Remarks = remarks;
         }
 
-        private Dictionary<string, string> ResolvePeriod(string? month, string? from, string? to, out DateTime start, out DateTime end)
-        {
-            var errors = new Dictionary<string, string>();
-            start = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            end = start.AddMonths(1).AddDays(-1);
-
-            if (!string.IsNullOrWhiteSpace(from) || !string.IsNullOrWhiteSpace(to))
-            {
-                DateTime f = default, t = default;
-                if (!string.IsNullOrWhiteSpace(from) && !TryParseDate(from, out f)) errors["from"] = L["ValDateInvalid"];
-                if (!string.IsNullOrWhiteSpace(to) && !TryParseDate(to, out t)) errors["to"] = L["ValDateInvalid"];
-                if (errors.Count > 0) return errors;
-                start = string.IsNullOrWhiteSpace(from) ? t : f;
-                end = string.IsNullOrWhiteSpace(to) ? f : t;
-                if (start > end) errors["to"] = L["ValDateRange"];
-            }
-            else if (!string.IsNullOrWhiteSpace(month))
-            {
-                if (DateTime.TryParseExact(month.Trim(), "yyyy-MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out var m))
-                {
-                    start = m;
-                    end = m.AddMonths(1).AddDays(-1);
-                }
-                else errors["month"] = L["ValDateInvalid"];
-            }
-            return errors;
-        }
-
-        private static HistoryRow ToHistoryRow(AttendanceRecord r, Dictionary<Guid, string> depts) => new(
+        private static HistoryRow ToHistoryRow(AttendanceRecord r, Dictionary<int, string> depts) => new(
             r.Id.ToString(), Date(r.AttendanceDate), r.Staff?.EmployeeId ?? string.Empty, r.Staff?.FullName ?? string.Empty,
             r.Staff?.DepartmentId.ToString() ?? string.Empty, r.Staff == null ? string.Empty : depts.GetValueOrDefault(r.Staff.DepartmentId) ?? string.Empty,
             r.Staff?.Designation ?? string.Empty, r.Status, Time(r.InTime), Time(r.OutTime), r.WorkedHours, r.OvertimeHours, r.Remarks,
@@ -327,12 +299,5 @@ namespace IMSB.Api.Controllers
             remarks = r.Remarks,
             by = r.UpdatedBy ?? r.CreatedBy
         };
-
-        private static string? CleanRemarks(string? remarks) => string.IsNullOrWhiteSpace(remarks) ? null : remarks.Trim();
-
-        private static bool TryParseTime(string? value, out TimeSpan time) =>
-            TimeSpan.TryParseExact(value?.Trim(), @"hh\:mm", CultureInfo.InvariantCulture, out time) && time < TimeSpan.FromDays(1);
-
-        private static string? Time(TimeSpan? t) => t?.ToString(@"hh\:mm", CultureInfo.InvariantCulture);
     }
 }

@@ -127,7 +127,7 @@
         <member name="M:IMSB.Api.Controllers.AuthController.Forgot(IMSB.Api.Controllers.AuthController.ForgotRequest)">
             <summary>Starts a password reset. The answer is the same whether or not the account exists.</summary>
         </member>
-        <member name="M:IMSB.Api.Controllers.AuthController.Reset(IMSB.Dto.Models.ResetPasswordViewModel)">
+        <member name="M:IMSB.Api.Controllers.AuthController.Reset(IMSB.Models.ResetPasswordViewModel)">
             <summary>Sets a new password with the emailed token; every session of the account is signed out.</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.DashboardController">
@@ -199,7 +199,7 @@
         <member name="M:IMSB.Api.Controllers.PayrollController.Generate(IMSB.Dto.Models.GeneratePayBillDto)">
             <summary>Saves the month's pay bill with the allowances, overtime amounts and deductions given per employee.</summary>
         </member>
-        <member name="M:IMSB.Api.Controllers.PayrollController.History(System.Guid,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:IMSB.Api.Controllers.PayrollController.History(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>The employee's saved pay bills before the month, newest first.</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.ReportsController">
@@ -246,9 +246,6 @@
         </member>
         <member name="M:IMSB.Api.Controllers.SalesController.Move(IMSB.Dto.Models.Product,System.String,System.Int32,System.DateTime,System.String)">
             <summary>Changes the product's quantity and returns the matching stock history row (saved by the backend).</summary>
-        </member>
-        <member name="M:IMSB.Api.Controllers.SalesController.TryParseDay(System.String,System.DateTime@)">
-            <summary>yyyy-MM-dd; an empty value means today.</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.SearchController">
             <summary>Global search, limited to the modules the signed-in role can open.</summary>

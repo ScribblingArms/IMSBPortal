@@ -51,7 +51,7 @@ public class InventoryModelTests
     public void New_product_defaults()
     {
         var p = new Product();
-        Assert.NotEqual(Guid.Empty, p.Id);
+        Assert.Equal(0, p.Id);   // int IDENTITY: assigned by the database on save
         Assert.Equal(0, p.Quantity);
         Assert.Equal(StockStatuses.OutOfStock, p.StockStatus);
         Assert.Null(p.UpdatedAt);

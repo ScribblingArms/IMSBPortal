@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IMSB.Models;
 using IMSB.Admin.Controllers;
 using IMSB.Dto.Models;
 using Microsoft.AspNetCore.Http;
@@ -38,14 +39,14 @@ public class LeavesControllerTests
         return (context, controller, staff);
     }
 
-    private static LeaveEntitlementForm Entitlement(Guid staffId, decimal quota = 5m) => new()
+    private static LeaveEntitlementForm Entitlement(int staffId, decimal quota = 5m) => new()
     {
         StaffId = staffId,
         LeaveType = "Casual",
         AnnualQuota = quota
     };
 
-    private static LeaveEntryForm Entry(Guid staffId, DateTime? day = null, decimal days = 1m) => new()
+    private static LeaveEntryForm Entry(int staffId, DateTime? day = null, decimal days = 1m) => new()
     {
         StaffId = staffId,
         LeaveType = "Casual",
@@ -398,7 +399,7 @@ public class LeavesControllerTests
 
     // ── LOP: leave taken once the balance is zero ──
 
-    private static LeaveEntryForm Lop(Guid staffId, DateTime day, string type = "LOP")
+    private static LeaveEntryForm Lop(int staffId, DateTime day, string type = "LOP")
     {
         var form = Entry(staffId, day);
         form.LeaveType = type;
@@ -529,7 +530,7 @@ public class LeavesControllerTests
     [Fact]
     public void Unpaid_by_manual_leave_is_true_for_lop_false_for_other_types_and_null_when_not_covered()
     {
-        var staffId = Guid.NewGuid();
+        var staffId = 999999;
         var record = new AttendanceRecord { StaffId = staffId, AttendanceDate = BackDay, Status = AttendanceStatuses.Leave };
         StaffLeaveEntry Covering(string type) => new() { StaffId = staffId, LeaveType = type, Year = Year, FromDate = BackDay, ToDate = BackDay, Days = 1m };
 

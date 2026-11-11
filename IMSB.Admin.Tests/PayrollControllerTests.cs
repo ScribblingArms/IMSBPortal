@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IMSB.Models;
 using IMSB.Admin.Controllers;
 using IMSB.Dto.Models;
 using Microsoft.AspNetCore.Http;
@@ -75,7 +76,7 @@ public class PayrollControllerTests
     public void Net_pay_is_reduced_by_the_salary_of_the_lop_days(decimal salary, decimal lopDays, decimal ot, decimal lop, decimal net)
     {
         var basicPay = IMSB.Backend.Payroll.ProratedPay(salary, 30 - lopDays, 30);
-        var row = new IMSB.Interfaces.PayBillRow(Guid.NewGuid(), "E", "N", "D", "X", 30, 30 - lopDays, salary, basicPay, 0, 1.5m, ot, 0,
+        var row = new IMSB.Interfaces.PayBillRow(999999, "E", "N", "D", "X", 30, 30 - lopDays, salary, basicPay, 0, 1.5m, ot, 0,
             IMSB.Backend.Payroll.NetPay(salary, ot, basicPay));
 
         Assert.Equal((lopDays, lop, net), (row.LopDays, row.LopDeduction, row.NetPay));
@@ -180,7 +181,7 @@ public class PayrollControllerTests
         using var context = TestHelpers.CreateContext();
         var start = new DateTime(2026, 10, 1);
 
-        Assert.False(await new IMSB.Backend.Payroll(context).GenerateAsync(start, new[] { new PayBillAdjustmentDto { StaffId = Guid.NewGuid() } }));
+        Assert.False(await new IMSB.Backend.Payroll(context).GenerateAsync(start, new[] { new PayBillAdjustmentDto { StaffId = 999999 } }));
 
         Assert.Empty(context.PayBillEntries);
     }
@@ -284,8 +285,8 @@ public class PayrollControllerTests
     {
         using var context = await ContextWithBill();
         var anita = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
-        context.Departments.Add(new Department { Id = Guid.Parse("66666666-6666-6666-6666-666666666666"), Name = "Housekeeping" });
-        anita.DepartmentId = Guid.Parse("66666666-6666-6666-6666-666666666666");
+        context.Departments.Add(new Department { Id = 9006, Name = "Housekeeping" });
+        anita.DepartmentId = 9006;
         context.OtAssignments.Add(new OtAssignment { StaffId = anita.Id, FromDateTime = new DateTime(2026, 10, 1, 16, 0, 0), ToDateTime = new DateTime(2026, 10, 1, 20, 0, 0), OtHours = 4m });
         await context.SaveChangesAsync();
 
@@ -328,7 +329,7 @@ public class PayrollControllerTests
         Assert.Equal(expected, data.GetProperty("totalNetPay").GetDecimal());
         var excel = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null)).FileContents);
         Assert.Equal(expected.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), excel[^1][^1]);
-        var pdf = Assert.IsType<PayrollController.PayBillPrintModel>(Assert.IsType<PartialViewResult>(await Controller(context).PdfDocument(2026, 10, null)).Model);
+        var pdf = Assert.IsType<PayBillPrintModel>(Assert.IsType<PartialViewResult>(await Controller(context).PdfDocument(2026, 10, null)).Model);
         Assert.Equal(expected, pdf.TotalNetPay);
     }
 
@@ -422,7 +423,7 @@ public class PayrollControllerTests
 
     [Fact]
     public void Lop_deduction_is_never_negative() =>
-        Assert.Equal(0m, new IMSB.Interfaces.PayBillRow(Guid.NewGuid(), "E", "N", "D", "X", 30, 30, 1000m, 1200m, 0, 0, 0, 0, 1200m).LopDeduction);
+        Assert.Equal(0m, new IMSB.Interfaces.PayBillRow(999999, "E", "N", "D", "X", 30, 30, 1000m, 1200m, 0, 0, 0, 0, 1200m).LopDeduction);
 
     [Fact]
     public async Task Export_with_the_staff_filter_has_only_that_employee()
@@ -536,18 +537,18 @@ public class PayrollControllerTests
         await context.SaveChangesAsync();
 
         var result = Assert.IsType<ViewResult>(await Controller(context).Print(2026, 10, filter));
-        var model = Assert.IsType<PayrollController.PayBillPrintModel>(result.Model);
+        var model = Assert.IsType<PayBillPrintModel>(result.Model);
 
         Assert.Equal(expectedEmployeeId, Assert.Single(model.Rows).EmployeeId);
     }
 
     // ── PDF export (the document payroll.js downloads as a .pdf) ──
 
-    private static async Task<PayrollController.PayBillPrintModel> PdfModel(IMSBContext context, int? year, int? month, string? employeeId = null)
+    private static async Task<PayBillPrintModel> PdfModel(IMSBContext context, int? year, int? month, string? employeeId = null)
     {
         var view = Assert.IsType<PartialViewResult>(await Controller(context).PdfDocument(year, month, null, employeeId));
         Assert.Equal("_PayBillDocument", view.ViewName);
-        return Assert.IsType<PayrollController.PayBillPrintModel>(view.Model);
+        return Assert.IsType<PayBillPrintModel>(view.Model);
     }
 
     [Fact]
@@ -631,7 +632,7 @@ public class PayrollControllerTests
     {
         using var context = await ContextWithBill();
 
-        var print = Assert.IsType<PayrollController.PayBillPrintModel>(
+        var print = Assert.IsType<PayBillPrintModel>(
             Assert.IsType<ViewResult>(await Controller(context).Print(2026, 10, null, "EMP-1")).Model);
 
         Assert.Equal((await PdfModel(context, 2026, 10, "EMP-1")).Rows, print.Rows);

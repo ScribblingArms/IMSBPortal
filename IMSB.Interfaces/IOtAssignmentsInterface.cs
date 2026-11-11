@@ -15,11 +15,11 @@ namespace IMSB.Interfaces
         /// Refused while the staff member already has an assignment for today or later (past ones are history), and when the
         /// window falls inside their regular shift ("ValOtBeforeShiftEnd" / "ValOtIntoNextShift"); the same shift rule applies to updates.
         /// </summary>
-        Task<BackendResult> AddAsync(Guid staffId, DateTime from, DateTime to, string? user);
+        Task<BackendResult> AddAsync(int staffId, DateTime from, DateTime to, string? user);
 
         /// <summary>Refused ("ValOtPastLocked") once the assignment's OT date is before today.</summary>
-        Task<BackendResult> UpdateAsync(Guid id, DateTime from, DateTime to, string? user);
+        Task<BackendResult> UpdateAsync(int id, DateTime from, DateTime to, string? user);
 
-        Task<BackendResult> DeleteAsync(Guid id);
+        Task<BackendResult> DeleteAsync(int id);
     }
 }

@@ -40,7 +40,6 @@ C:\Users\Kasyap\AppData\Local\Temp\IMSBValidation\Debug\net8.0\IMSB.Common.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Common\bin\Debug\net8.0\IMSB.Common.deps.json
 K:\ScribblingArms\IMSBPortal\IMSB.Common\bin\Debug\net8.0\IMSB.Common.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Common\bin\Debug\net8.0\IMSB.Common.pdb
-K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\IMSB.Common.csproj.AssemblyReference.cache
 K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\IMSB.Common.GeneratedMSBuildEditorConfig.editorconfig
 K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\IMSB.Common.AssemblyInfoInputs.cache
 K:\ScribblingArms\IMSBPortal\IMSB.Common\obj\Debug\net8.0\IMSB.Common.AssemblyInfo.cs

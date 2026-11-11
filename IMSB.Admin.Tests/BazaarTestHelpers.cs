@@ -9,8 +9,8 @@ namespace IMSB.Admin.Tests;
 /// <summary>Fixtures for the stall and artisan tests.</summary>
 internal static class BazaarTestHelpers
 {
-    public static readonly Guid Textiles = InventoryTestHelpers.Textiles;
-    public static readonly Guid Pottery = InventoryTestHelpers.Pottery;
+    public static readonly int Textiles = InventoryTestHelpers.Textiles;
+    public static readonly int Pottery = InventoryTestHelpers.Pottery;
 
     private static ControllerContext Context(string userName) => new()
     {
@@ -30,7 +30,7 @@ internal static class BazaarTestHelpers
     public static string ValidAadhaar(int seed) => (400000000000L + seed * 7919L).ToString();
 
     public static Artisan AddArtisan(IMSBContext ctx, string code, string name, string mobile, string status = ArtisanStatuses.Active,
-        Guid? category = null, string district = "Hyderabad", int seed = 0)
+        int? category = null, string district = "Hyderabad", int seed = 0)
     {
         var aadhaar = ValidAadhaar(seed == 0 ? int.Parse(code[^4..]) : seed);
         var a = new Artisan

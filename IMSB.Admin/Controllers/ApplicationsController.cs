@@ -156,7 +156,8 @@ namespace IMSB.Admin.Controllers
 
             if (stall != null)
             {
-                stall.ArtisanId = artisan.Id;
+                // the new artisan has no id until it is saved: link by navigation, EF fills in ArtisanId
+                stall.Artisan = artisan;
                 stall.Status = StallStatuses.Occupied;
                 stall.AllottedDate = DateTime.Today;
                 stall.CategoryId = artisan.CategoryId;
@@ -166,7 +167,7 @@ namespace IMSB.Admin.Controllers
 
             app.Status = ApplicationStatuses.Approved;
             app.Reviewer ??= user;
-            app.ArtisanId = artisan.Id;
+            app.Artisan = artisan;
             app.ArtisanCode = artisan.ArtisanCode;
             app.StallCode = stall?.StallCode;
             Decide(app, dto.Remarks);
@@ -208,7 +209,7 @@ namespace IMSB.Admin.Controllers
 
         // ── Validation ────────────────────────────────────────────────
 
-        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, DateTime SubmittedDate, string District, string Gender,
+        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, int CategoryId, DateTime SubmittedDate, string District, string Gender,
             DateTime? FromDate, DateTime? ToDate);
 
         /// <summary>
@@ -218,7 +219,7 @@ namespace IMSB.Admin.Controllers
         private async Task<(Dictionary<string, string> Errors, Validated V)> ValidateAsync(ApplicationDto dto, ArtisanApplication? existing)
         {
             var errors = ModelStateErrors(ModelState);
-            var selfId = existing?.Id ?? Guid.Empty;
+            var selfId = existing?.Id ?? 0;
 
             DateTime dob = default;
             if (!errors.ContainsKey("date_of_birth"))
@@ -258,8 +259,8 @@ namespace IMSB.Admin.Controllers
             var district = TelanganaDistricts.All.FirstOrDefault(d => d.Equals(dto.District?.Trim(), StringComparison.OrdinalIgnoreCase));
             if (district == null) errors.TryAdd("district", _L["ValDistrict"]);
 
-            Guid categoryId = default;
-            if (!errors.ContainsKey("category_id") && (!Guid.TryParse(dto.CategoryId, out categoryId) || !await _applications.CategoryExistsAsync(categoryId)))
+            int categoryId = default;
+            if (!errors.ContainsKey("category_id") && (!int.TryParse(dto.CategoryId, out categoryId) || !await _applications.CategoryExistsAsync(categoryId)))
                 errors["category_id"] = _L["ValCraftCategory"];
 
             var submitted = existing?.SubmittedDate ?? DateTime.Today;

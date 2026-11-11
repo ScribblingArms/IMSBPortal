@@ -55,7 +55,7 @@
   }
 
   function viewStaff(empId){
-    const s = staff.find(x => x.id === empId);
+    const s = staff.find(x => String(x.id) === String(empId));
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
     const fields = [
       ['EmployeeID', s.id],
@@ -280,7 +280,7 @@
 
   function openEdit(empId){
     formDirty = false;
-    const s = staff.find(x => x.id === empId);
+    const s = staff.find(x => String(x.id) === String(empId));
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
     const modal = document.querySelector('#addStaffModal .modal');
     document.getElementById('staffModalTitle').textContent = modal.dataset.editTitle;
@@ -325,7 +325,7 @@
     const today = new Date(); today.setHours(0,0,0,0);
     if (vals.full_name.length < 2 || vals.full_name.length > 100) errors.full_name = t('ValFullName');
     // an unchanged number is accepted so records saved under the older 9-12 digit rule can still be edited
-    const saved = vals.id ? staff.find(x => x.id === vals.id) : null;
+    const saved = vals.id ? staff.find(x => String(x.id) === String(vals.id)) : null;
     if (vals.mobile !== saved?.mobile && !IMSBValidate.mobile(vals.mobile)) errors.mobile = t('ValMobile');
     if (vals.email && !IMSBValidate.email(vals.email)) errors.email = t('ValEmail');
     // the server has the final say (duplicates)
@@ -438,7 +438,7 @@
   }
 
   async function deleteStaff(empId){
-    const s = staff.find(x => x.id === empId);
+    const s = staff.find(x => String(x.id) === String(empId));
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
     if (!confirm(t('ConfirmDeleteStaff', s.full_name, s.id))) return;
     try {

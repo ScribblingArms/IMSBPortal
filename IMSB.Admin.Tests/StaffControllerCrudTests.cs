@@ -965,7 +965,7 @@ public class StaffControllerUpdateTests
 
         var staff = await ctx.Staff.SingleAsync();
         Assert.Equal(saved, staff.EmployeeType);
-        Assert.Equal(Guid.Parse(dto.DepartmentId), staff.DepartmentId);
+        Assert.Equal(int.Parse(dto.DepartmentId), staff.DepartmentId);
     }
 
     [Fact]

@@ -66,7 +66,7 @@ namespace IMSB.Api.Controllers
         public async Task<IActionResult> ProductReport([FromQuery] string? q, [FromQuery] string? categoryId, [FromQuery] string? stall,
             [FromQuery] string? from, [FromQuery] string? to)
         {
-            var errors = ValidateRange(from, to, out var fromDay, out var toDay);
+            var errors = ValidateRange(from, to, L, out var fromDay, out var toDay);
             if (errors.Count > 0) return Invalid(errors);
 
             var rows = await _sales.ProductReportRowsAsync(q, categoryId, stall, fromDay, toDay);
@@ -102,7 +102,7 @@ namespace IMSB.Api.Controllers
             {
                 EntryNo = await _sales.NextEntryNoAsync(),
                 SoldAt = soldAt,
-                Remarks = CleanRemarks(dto.Remarks),
+                Remarks = TrimOrNull(dto.Remarks),
                 CreatedBy = UserName
             };
             SetItems(entry, lines);
@@ -139,7 +139,7 @@ namespace IMSB.Api.Controllers
             entry.Items.Clear();
             SetItems(entry, lines);
             entry.SoldAt = soldAt;
-            entry.Remarks = CleanRemarks(dto.Remarks);
+            entry.Remarks = TrimOrNull(dto.Remarks);
             entry.UpdatedAt = DateTime.UtcNow;
             entry.UpdatedBy = UserName;
             await _sales.UpdateAsync(entry, oldItems, movements);
@@ -187,7 +187,7 @@ namespace IMSB.Api.Controllers
             if (items.Count > MaxItemsPerEntry) { errors["items"] = L["ValSalesItemsMax", MaxItemsPerEntry]; return (errors, soldAt, lines); }
 
             var products = await _sales.ProductsByCodeAsync(items.Select(i => i.ProductCode?.Trim() ?? "").Where(c => c != "").Distinct().ToList());
-            var alreadySold = existing == null ? new Dictionary<Guid, int>() : SoldPerProduct(existing);
+            var alreadySold = existing == null ? new Dictionary<int, int>() : SoldPerProduct(existing);
             var seen = new HashSet<string>();
             for (int i = 0; i < items.Count; i++)
             {
@@ -205,7 +205,7 @@ namespace IMSB.Api.Controllers
         }
 
         /// <summary>Quantity per product on an entry's lines (lines of deleted products are skipped).</summary>
-        private static Dictionary<Guid, int> SoldPerProduct(SalesEntry entry) =>
+        private static Dictionary<int, int> SoldPerProduct(SalesEntry entry) =>
             entry.Items.Where(i => i.ProductId != null).GroupBy(i => i.ProductId!.Value).ToDictionary(g => g.Key, g => g.Sum(i => i.Quantity));
 
         private static void SetItems(SalesEntry entry, List<Line> lines)
@@ -224,33 +224,6 @@ namespace IMSB.Api.Controllers
             product.UpdatedAt = DateTime.UtcNow;
             product.UpdatedBy = UserName;
             return movement;
-        }
-
-        private static string? CleanRemarks(string? remarks) => string.IsNullOrWhiteSpace(remarks) ? null : remarks.Trim();
-
-        /// <summary>yyyy-MM-dd; an empty value means today.</summary>
-        private static bool TryParseDay(string? value, out DateTime day)
-        {
-            if (string.IsNullOrWhiteSpace(value)) { day = DateTime.Today; return true; }
-            return TryParseDate(value, out day);
-        }
-
-        private Dictionary<string, string> ValidateRange(string? from, string? to, out DateTime? fromDay, out DateTime? toDay)
-        {
-            var errors = new Dictionary<string, string>();
-            fromDay = toDay = null;
-            if (!string.IsNullOrWhiteSpace(from))
-            {
-                if (TryParseDate(from, out var f)) fromDay = f;
-                else errors["from"] = L["ValDateInvalid"];
-            }
-            if (!string.IsNullOrWhiteSpace(to))
-            {
-                if (TryParseDate(to, out var t)) toDay = t;
-                else errors["to"] = L["ValDateInvalid"];
-            }
-            if (fromDay != null && toDay != null && fromDay > toDay) errors["to"] = L["ValDateRange"];
-            return errors;
         }
     }
 }

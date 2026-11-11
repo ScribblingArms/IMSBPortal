@@ -30,22 +30,22 @@ namespace IMSB.Interfaces
         Task<List<LeaveBalanceRow>> BalancesAsync(int year, string? employeeId = null, string? leaveType = null);
 
         /// <summary>Adds or changes an employee's quota for a leave type; the first type configured becomes the attendance policy.</summary>
-        Task<BackendResult> SaveEntitlementAsync(Guid staffId, string leaveType, decimal annualQuota);
+        Task<BackendResult> SaveEntitlementAsync(int staffId, string leaveType, decimal annualQuota);
 
         /// <summary>Removes an entitlement that no leave has been taken against.</summary>
-        Task<BackendResult> DeleteEntitlementAsync(Guid id);
+        Task<BackendResult> DeleteEntitlementAsync(int id);
 
         /// <summary>The first quota change that cannot be made for this employee, or null when all can.</summary>
-        Task<LeaveQuotaProblem?> LeaveQuotaProblemAsync(Guid staffId, IReadOnlyCollection<LeaveQuotaDto>? changes);
+        Task<LeaveQuotaProblem?> LeaveQuotaProblemAsync(int staffId, IReadOnlyCollection<LeaveQuotaDto>? changes);
 
         /// <summary>Adds, changes or (null days) removes the listed quotas, keeping an attendance policy on a type with days.</summary>
-        Task<BackendResult> SaveQuotasAsync(Guid staffId, IReadOnlyCollection<LeaveQuotaDto> changes);
+        Task<BackendResult> SaveQuotasAsync(int staffId, IReadOnlyCollection<LeaveQuotaDto> changes);
 
         /// <summary>Records leave on any date this year from the join date on (from/to null = not a valid date).</summary>
-        Task<BackendResult> RecordEntryAsync(Guid staffId, string leaveType, DateTime? from, DateTime? to, string? remarks, string? user);
+        Task<BackendResult> RecordEntryAsync(int staffId, string leaveType, DateTime? from, DateTime? to, string? remarks, string? user);
 
-        Task<BackendResult> UpdateEntryAsync(Guid id, DateTime? from, DateTime? to, string? remarks, string? user);
+        Task<BackendResult> UpdateEntryAsync(int id, DateTime? from, DateTime? to, string? remarks, string? user);
 
-        Task<BackendResult> DeleteEntryAsync(Guid id);
+        Task<BackendResult> DeleteEntryAsync(int id);
     }
 }

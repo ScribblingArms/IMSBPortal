@@ -41,7 +41,7 @@ namespace IMSB.Backend.Mappers
             product == null ? null : StockStatuses.For(m.QuantityAfter, product.MinStock), product == null);
 
         /// <summary>The sale line snapshot: code, name, category and stall are copied so history survives product edits.</summary>
-        public static SaleItem ToSaleItem(this Product product, Guid salesEntryId, int quantity, decimal unitPrice) => new()
+        public static SaleItem ToSaleItem(this Product product, int salesEntryId, int quantity, decimal unitPrice) => new()
         {
             SalesEntryId = salesEntryId,
             ProductId = product.Id,

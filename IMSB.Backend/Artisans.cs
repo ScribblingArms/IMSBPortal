@@ -21,7 +21,7 @@ namespace IMSB.Backend
                 WithStall: await _context.Stalls.CountAsync(s => s.ArtisanId != null));
         }
 
-        public Task<Dictionary<Guid, string>> StallsByArtisanAsync() =>
+        public Task<Dictionary<int, string>> StallsByArtisanAsync() =>
             _context.Stalls.AsNoTracking().Where(s => s.ArtisanId != null).ToDictionaryAsync(s => s.ArtisanId!.Value, s => s.StallCode);
 
         public Task<List<Artisan>> FilterAsync(string? q, string? status, string? categoryId, string? district, string? stall) =>
@@ -40,7 +40,7 @@ namespace IMSB.Backend
             }
             var st = status?.Trim().ToUpperInvariant();
             if (!string.IsNullOrEmpty(st) && ArtisanStatuses.All.Contains(st)) query = query.Where(a => a.Status == st);
-            if (!string.IsNullOrWhiteSpace(categoryId) && Guid.TryParse(categoryId, out var catId)) query = query.Where(a => a.CategoryId == catId);
+            if (!string.IsNullOrWhiteSpace(categoryId) && int.TryParse(categoryId, out var catId)) query = query.Where(a => a.CategoryId == catId);
             if (!string.IsNullOrWhiteSpace(district))
             {
                 var d = district.Trim().ToLower();
@@ -59,7 +59,7 @@ namespace IMSB.Backend
 
         public Task<Artisan?> FindAsync(string artisanCode) => _context.Artisans.FirstOrDefaultAsync(a => a.ArtisanCode == artisanCode);
 
-        public Task<Stall?> StallOfAsync(Guid artisanId) => _context.Stalls.AsNoTracking().FirstOrDefaultAsync(s => s.ArtisanId == artisanId);
+        public Task<Stall?> StallOfAsync(int artisanId) => _context.Stalls.AsNoTracking().FirstOrDefaultAsync(s => s.ArtisanId == artisanId);
 
         public async Task<(decimal MonthSales, int Products)> StallFiguresAsync(string stallCode)
         {
@@ -73,13 +73,13 @@ namespace IMSB.Backend
 
         public Task<List<string>> ArtisanCodesAsync() => _context.Artisans.Select(a => a.ArtisanCode).ToListAsync();
 
-        public Task<bool> MobileExistsAsync(string mobile, Guid exceptId) =>
+        public Task<bool> MobileExistsAsync(string mobile, int exceptId) =>
             _context.Artisans.AnyAsync(a => a.Mobile == mobile && a.Id != exceptId);
 
-        public Task<bool> AadhaarExistsAsync(string aadhaarHash, Guid exceptId) =>
+        public Task<bool> AadhaarExistsAsync(string aadhaarHash, int exceptId) =>
             _context.Artisans.AnyAsync(a => a.AadhaarHash == aadhaarHash && a.Id != exceptId);
 
-        public Task<bool> HasStallAsync(Guid artisanId) => _context.Stalls.AnyAsync(s => s.ArtisanId == artisanId);
+        public Task<bool> HasStallAsync(int artisanId) => _context.Stalls.AnyAsync(s => s.ArtisanId == artisanId);
 
         public async Task AddAsync(Artisan artisan)
         {

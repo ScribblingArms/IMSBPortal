@@ -32,7 +32,7 @@ namespace IMSB.Api.Controllers
         public async Task<IActionResult> Create([FromBody] OtAssignmentDto dto)
         {
             if (dto.ValidateTimes(DateTime.Today) is { } invalid) return Invalid(invalid.Field, invalid.Key);
-            if (dto.StaffId is null || dto.StaffId == Guid.Empty) return Invalid("staff_id", "ValOtSelectStaff");
+            if (dto.StaffId is null || dto.StaffId == 0) return Invalid("staff_id", "ValOtSelectStaff");
 
             var (from, to) = dto.Times();
             var added = await _assignments.AddAsync(dto.StaffId.Value, from, to, UserName);
@@ -40,8 +40,8 @@ namespace IMSB.Api.Controllers
                 () => Ok(new { message = L["OTAssignmentSaved"].Value }));
         }
 
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] OtAssignmentDto dto)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] OtAssignmentDto dto)
         {
             if (dto.ValidateTimes(DateTime.Today) is { } invalid) return Invalid(invalid.Field, invalid.Key);
 
@@ -51,8 +51,8 @@ namespace IMSB.Api.Controllers
                 () => Ok(new { message = L["OTAssignmentSaved"].Value }));
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id) =>
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id) =>
             FromResult(await _assignments.DeleteAsync(id), "request", () => Ok(new { message = L["OTAssignmentDeleted"].Value }));
     }
 }

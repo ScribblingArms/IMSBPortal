@@ -47,7 +47,7 @@ namespace IMSB.Backend
             }
             var st = status?.Trim().ToUpperInvariant();
             if (!string.IsNullOrEmpty(st) && ApplicationStatuses.All.Contains(st)) query = query.Where(a => a.Status == st);
-            if (!string.IsNullOrWhiteSpace(categoryId) && Guid.TryParse(categoryId, out var catId)) query = query.Where(a => a.CategoryId == catId);
+            if (!string.IsNullOrWhiteSpace(categoryId) && int.TryParse(categoryId, out var catId)) query = query.Where(a => a.CategoryId == catId);
             if (!string.IsNullOrWhiteSpace(district))
             {
                 var d = district.Trim().ToLower();
@@ -78,13 +78,13 @@ namespace IMSB.Backend
         public Task<bool> ArtisanExistsAsync(string mobile, string aadhaarHash) =>
             _context.Artisans.AnyAsync(a => a.Mobile == mobile || a.AadhaarHash == aadhaarHash);
 
-        public Task<bool> OpenApplicationMobileExistsAsync(string mobile, Guid exceptId) =>
+        public Task<bool> OpenApplicationMobileExistsAsync(string mobile, int exceptId) =>
             OpenApplications(exceptId).AnyAsync(a => a.Mobile == mobile);
 
-        public Task<bool> OpenApplicationAadhaarExistsAsync(string aadhaarHash, Guid exceptId) =>
+        public Task<bool> OpenApplicationAadhaarExistsAsync(string aadhaarHash, int exceptId) =>
             OpenApplications(exceptId).AnyAsync(a => a.AadhaarHash == aadhaarHash);
 
-        private IQueryable<ArtisanApplication> OpenApplications(Guid exceptId) =>
+        private IQueryable<ArtisanApplication> OpenApplications(int exceptId) =>
             _context.ArtisanApplications.Where(a => a.Id != exceptId
                 && (a.Status == ApplicationStatuses.Pending || a.Status == ApplicationStatuses.UnderReview));
 

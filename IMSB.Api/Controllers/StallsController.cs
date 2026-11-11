@@ -235,7 +235,7 @@ namespace IMSB.Api.Controllers
             return Ok(new { id = request.RequestNo });
         }
 
-        private static void ApplyDetails(Stall stall, StallDto dto, Guid? categoryId)
+        private static void ApplyDetails(Stall stall, StallDto dto, int? categoryId)
         {
             stall.Name = Clean(dto.Name)!;
             stall.Block = dto.Block.Trim().ToUpperInvariant();
@@ -246,15 +246,15 @@ namespace IMSB.Api.Controllers
             stall.Remarks = Clean(dto.Remarks);
         }
 
-        private async Task<Guid?> ValidateCategoryAsync(string? categoryId, Dictionary<string, string> errors)
+        private async Task<int?> ValidateCategoryAsync(string? categoryId, Dictionary<string, string> errors)
         {
             if (string.IsNullOrWhiteSpace(categoryId)) return null;
-            if (Guid.TryParse(categoryId, out var id) && await _stalls.CategoryExistsAsync(id)) return id;
+            if (int.TryParse(categoryId, out var id) && await _stalls.CategoryExistsAsync(id)) return id;
             errors.TryAdd("category_id", L["ValCategory"]);
             return null;
         }
 
-        private void AssignArtisan(Stall stall, Artisan artisan, DateTime allotted, DateTime? agreementEnd, Guid? categoryId)
+        private void AssignArtisan(Stall stall, Artisan artisan, DateTime allotted, DateTime? agreementEnd, int? categoryId)
         {
             stall.ArtisanId = artisan.Id;
             stall.Status = StallStatuses.Occupied;

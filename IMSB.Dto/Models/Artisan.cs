@@ -12,7 +12,7 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
         [Column("ArtisanCode")]
@@ -62,7 +62,7 @@ namespace IMSB.Dto.Models
         public string District { get; set; } = string.Empty;
 
         [Column("CategoryId")]
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
         public ProductCategory? Category { get; set; }
 

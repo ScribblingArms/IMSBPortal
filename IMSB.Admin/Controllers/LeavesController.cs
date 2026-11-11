@@ -1,3 +1,5 @@
+using static IMSB.Common.CommonHelpers;
+using IMSB.Models;
 using System.Globalization;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
@@ -49,7 +51,7 @@ public class LeavesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveEntitlement(LeaveEntitlementForm form)
     {
-        if (!ModelState.IsValid || form.StaffId == Guid.Empty || string.IsNullOrWhiteSpace(form.LeaveType)
+        if (!ModelState.IsValid || form.StaffId == 0 || string.IsNullOrWhiteSpace(form.LeaveType)
             || form.AnnualQuota % 0.5m != 0m)
             return LeaveIndexError(_L["ValLeaveEntitlement"].Value);
 
@@ -61,7 +63,7 @@ public class LeavesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteEntitlement(Guid id)
+    public async Task<IActionResult> DeleteEntitlement(int id)
     {
         var result = await _leaves.DeleteEntitlementAsync(id);
         if (!result.Found) return NotFound();
@@ -103,7 +105,7 @@ public class LeavesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UpdateEntry(Guid id, string fromDate, string toDate, string? remarks)
+    public async Task<IActionResult> UpdateEntry(int id, string fromDate, string toDate, string? remarks)
     {
         var result = await _leaves.UpdateEntryAsync(id, ParseDate(fromDate), ParseDate(toDate), remarks, User.Identity?.Name);
         if (!result.Found) return NotFound();
@@ -114,7 +116,7 @@ public class LeavesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteEntry(Guid id)
+    public async Task<IActionResult> DeleteEntry(int id)
     {
         if (!(await _leaves.DeleteEntryAsync(id)).Found) return NotFound();
         TempData["LeaveMessage"] = _L["LeaveEntryDeleted"].Value;
@@ -132,8 +134,4 @@ public class LeavesController : Controller
         TempData["LeaveError"] = message;
         return RedirectToAction(nameof(Add));
     }
-
-    /// <summary>yyyy-MM-dd, or null when the value is not a date.</summary>
-    private static DateTime? ParseDate(string? value) =>
-        DateTime.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date : null;
 }

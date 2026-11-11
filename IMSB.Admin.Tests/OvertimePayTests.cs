@@ -10,8 +10,8 @@ namespace IMSB.Admin.Tests;
 public class OvertimePayTests
 {
     private static readonly DateTime October = new(2026, 10, 1);
-    private static readonly Guid SecurityDept = Guid.Parse("33333333-3333-3333-3333-333333333333");
-    private static readonly Guid HousekeepingDept = Guid.Parse("44444444-4444-4444-4444-444444444444");
+    private static readonly int SecurityDept = 9003;
+    private static readonly int HousekeepingDept = 9004;
 
     // ── The rates ─────────────────────────────────────────────────
     [Theory]

@@ -40,7 +40,7 @@ namespace IMSB.Admin.Controllers
             var categories = await _inventory.CategoriesAsync();
             var all = await _inventory.ProductsAsync();
             var catNames = categories.ToDictionary(c => c.Id, c => c.Name);
-            string CatName(Guid id) => catNames.GetValueOrDefault(id) ?? string.Empty;
+            string CatName(int id) => catNames.GetValueOrDefault(id) ?? string.Empty;
 
             var filtered = await _inventory.FilterAsync(q, categoryId, status);
             var byCategory = all.ToLookup(p => p.CategoryId);
@@ -113,7 +113,7 @@ namespace IMSB.Admin.Controllers
             {
                 ProductCode = NextCode(await _inventory.ProductCodesAsync(), "PRD", 3),
                 Name = dto.Name.Trim(),
-                CategoryId = Guid.Parse(dto.CategoryId),
+                CategoryId = int.Parse(dto.CategoryId),
                 StallCode = dto.StallCode.Trim().ToUpperInvariant(),
                 Quantity = 0,
                 MinStock = dto.MinStock,
@@ -139,7 +139,7 @@ namespace IMSB.Admin.Controllers
             if (errors.Count > 0) return BadRequest(new { errors });
 
             product.Name = dto.Name.Trim();
-            product.CategoryId = Guid.Parse(dto.CategoryId);
+            product.CategoryId = int.Parse(dto.CategoryId);
             product.StallCode = dto.StallCode.Trim().ToUpperInvariant();
             product.MinStock = dto.MinStock;
             product.UnitPrice = dto.UnitPrice;
@@ -224,12 +224,12 @@ namespace IMSB.Admin.Controllers
         }
 
         // Errors are keyed by the snake_case field names the forms use for their err_* elements
-        private async Task<Dictionary<string, string>> ValidateProductAsync(string name, string categoryId, string stallCode, Guid? existingId)
+        private async Task<Dictionary<string, string>> ValidateProductAsync(string name, string categoryId, string stallCode, int? existingId)
         {
             var errors = ModelStateErrors(ModelState);
             if (errors.Count > 0) return errors;
 
-            if (!Guid.TryParse(categoryId, out var catId) || !await _inventory.CategoryExistsAsync(catId))
+            if (!int.TryParse(categoryId, out var catId) || !await _inventory.CategoryExistsAsync(catId))
                 errors["category_id"] = _L["ValCategory"];
 
             // the same product name may exist in different stalls, but not twice in one stall

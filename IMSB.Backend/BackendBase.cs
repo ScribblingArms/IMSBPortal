@@ -17,7 +17,7 @@ namespace IMSB.Backend
         public Task<List<ProductCategory>> CategoriesAsync() =>
             _context.ProductCategories.AsNoTracking().OrderBy(c => c.SortOrder).ThenBy(c => c.Name).ToListAsync();
 
-        public Task<bool> CategoryExistsAsync(Guid categoryId) =>
+        public Task<bool> CategoryExistsAsync(int categoryId) =>
             _context.ProductCategories.AnyAsync(c => c.Id == categoryId);
 
         /// <summary>Rows per value, counted by the database (one GROUP BY instead of loading every row).</summary>

@@ -14,10 +14,10 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Column("StaffId")]
-        public Guid StaffId { get; set; }
+        public int StaffId { get; set; }
 
         public Staff? Staff { get; set; }
 

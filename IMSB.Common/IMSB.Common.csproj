@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.13" />
+    <!-- MVC results, model state, claims and localization of the .NET 8 shared framework (as IMSB.Backend) -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

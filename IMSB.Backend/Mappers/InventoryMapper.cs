@@ -30,6 +30,8 @@ namespace IMSB.Backend.Mappers
         public static StockMovement ToMovement(this Product product, string type, int quantity, int after, DateTime date, string? remarks, string? user) => new()
         {
             ProductId = product.Id,
+            // a product created in the same save has no id yet (0): link it by navigation so EF fills in ProductId
+            Product = product.Id == 0 ? product : null,
             ProductCode = product.ProductCode,
             ProductName = product.Name,
             MovementType = type,

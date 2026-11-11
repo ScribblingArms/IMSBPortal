@@ -21,7 +21,7 @@ namespace IMSB.Backend
                 var term = q.Trim().ToLower();
                 query = query.Where(p => p.Name.ToLower().Contains(term) || p.ProductCode.ToLower().Contains(term) || p.StallCode.ToLower().Contains(term));
             }
-            if (!string.IsNullOrWhiteSpace(categoryId) && Guid.TryParse(categoryId, out var catId))
+            if (!string.IsNullOrWhiteSpace(categoryId) && int.TryParse(categoryId, out var catId))
             {
                 query = query.Where(p => p.CategoryId == catId);
             }
@@ -36,7 +36,7 @@ namespace IMSB.Backend
 
         public Task<int> CategoryCountAsync() => _context.ProductCategories.CountAsync();
 
-        public Task<Dictionary<Guid, string>> CategoryNamesAsync() =>
+        public Task<Dictionary<int, string>> CategoryNamesAsync() =>
             _context.ProductCategories.AsNoTracking().ToDictionaryAsync(c => c.Id, c => c.Name);
 
         public Task<List<StockMovement>> RecentMovementsAsync(int take) =>
@@ -44,7 +44,7 @@ namespace IMSB.Backend
 
         public Task<List<string>> ProductCodesAsync() => _context.Products.AsNoTracking().Select(p => p.ProductCode).ToListAsync();
 
-        public Task<bool> ProductExistsAsync(string name, string stallCode, Guid? exceptId)
+        public Task<bool> ProductExistsAsync(string name, string stallCode, int? exceptId)
         {
             var n = name.Trim().ToLower();
             var stall = stallCode.Trim().ToUpper();

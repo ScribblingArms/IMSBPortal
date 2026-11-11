@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IMSB.Models;
 using System.Text.Json;
 using IMSB.Admin.Controllers;
 using IMSB.Dto.Models;
@@ -285,11 +286,11 @@ public class AttendanceControllerTests
         Assert.Equal(0.5m, (await Balance(ctx, "EMP002")).Taken);
         TestHelpers.OkJson(await attendance.Update(secondId,
             new AttendanceUpdateDto { Status = "LEAVE" }));
-        Assert.True(ctx.AttendanceRecords.Single(record => record.Id == Guid.Parse(secondId)).LeaveWithoutPay);
+        Assert.True(ctx.AttendanceRecords.Single(record => record.Id == int.Parse(secondId)).LeaveWithoutPay);
         Assert.Equal(0m, (await Balance(ctx, "EMP002")).Taken);
         TestHelpers.OkJson(await attendance.Update(secondId,
             new AttendanceUpdateDto { Status = "ABSENT" }));
-        Assert.False(ctx.AttendanceRecords.Single(record => record.Id == Guid.Parse(secondId)).LeaveWithoutPay);
+        Assert.False(ctx.AttendanceRecords.Single(record => record.Id == int.Parse(secondId)).LeaveWithoutPay);
         Assert.Equal(0m, (await Balance(ctx, "EMP002")).Taken);
     }
 
@@ -636,7 +637,7 @@ public class AttendanceControllerTests
         Assert.Equal(11.5m, json.GetProperty("workedHours").GetDecimal());
         Assert.Equal(3.5m, json.GetProperty("overtimeHours").GetDecimal());
         Assert.Equal("editor@imsb", json.GetProperty("by").GetString());
-        var r = ctx.AttendanceRecords.Single(x => x.Id == Guid.Parse(id));
+        var r = ctx.AttendanceRecords.Single(x => x.Id == int.Parse(id));
         Assert.Equal("stock count", r.Remarks);
         Assert.Equal(new TimeSpan(7, 30, 0), r.InTime);
     }
@@ -651,7 +652,7 @@ public class AttendanceControllerTests
 
         TestHelpers.OkJson(await c.Update(id, new AttendanceUpdateDto { Status = "leave", InTime = "08:00", OutTime = "18:00" }));
 
-        var r = ctx.AttendanceRecords.Single(x => x.Id == Guid.Parse(id));
+        var r = ctx.AttendanceRecords.Single(x => x.Id == int.Parse(id));
         Assert.Equal(AttendanceStatuses.Leave, r.Status);
         Assert.Null(r.InTime);
         Assert.Null(r.OutTime);
@@ -673,7 +674,7 @@ public class AttendanceControllerTests
             TestHelpers.Errors(await c.Update(id, new AttendanceUpdateDto { Status = "HALF_DAY", InTime = "13:00", OutTime = "13:00" }))["out_time"]);
 
         // unchanged
-        Assert.Equal(10m, ctx.AttendanceRecords.Single(x => x.Id == Guid.Parse(id)).WorkedHours);
+        Assert.Equal(10m, ctx.AttendanceRecords.Single(x => x.Id == int.Parse(id)).WorkedHours);
     }
 
     [Fact]

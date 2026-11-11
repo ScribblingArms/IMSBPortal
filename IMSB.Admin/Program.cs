@@ -2,6 +2,7 @@
 using IMSB.Dto.Models;
 using IMSB.Admin.Services;
 using IMSB.Backend;
+using IMSB.LoggerLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -10,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Warnings and errors (incl. unhandled exceptions) also go to FW.TblLog (IMSB.LoggerLibrary; DatabaseLogging in appsettings)
+builder.AddImsbLogging("IMSB.Admin");
 
 // Localization
 builder.Services.AddLocalization(options =>

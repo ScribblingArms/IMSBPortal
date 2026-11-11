@@ -9,7 +9,7 @@ public class LeaveType
 {
     [Key]
     [Column("Id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public int Id { get; set; }
 
     [Required]
     [MaxLength(100)]
@@ -22,10 +22,10 @@ public class LeaveEntitlement
 {
     [Key]
     [Column("Id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public int Id { get; set; }
 
     [Column("StaffId")]
-    public Guid? StaffId { get; set; }
+    public int? StaffId { get; set; }
 
     public Staff? Staff { get; set; }
 
@@ -90,7 +90,7 @@ public static class LeaveBalanceRules
         entries.Any(entry => entry.StaffId == record.StaffId && entry.Year == record.AttendanceDate.Year
             && entry.FromDate.Date <= record.AttendanceDate.Date && entry.ToDate.Date >= record.AttendanceDate.Date);
 
-    public static decimal Taken(Guid staffId, int year, string leaveType, bool isAttendanceLeaveType,
+    public static decimal Taken(int staffId, int year, string leaveType, bool isAttendanceLeaveType,
         IEnumerable<StaffLeaveEntry> leaveEntries, IEnumerable<AttendanceRecord> attendanceRecords)
     {
         var entries = leaveEntries.Where(entry => entry.StaffId == staffId && entry.Year == year
@@ -110,10 +110,10 @@ public class StaffLeaveEntry
 {
     [Key]
     [Column("Id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public int Id { get; set; }
 
     [Column("StaffId")]
-    public Guid StaffId { get; set; }
+    public int StaffId { get; set; }
 
     public Staff? Staff { get; set; }
 
@@ -156,7 +156,7 @@ public class StaffLeaveEntry
 public class LeaveEntitlementForm
 {
     [Required]
-    public Guid StaffId { get; set; }
+    public int StaffId { get; set; }
 
     [Required, StringLength(100)]
     public string LeaveType { get; set; } = string.Empty;
@@ -168,10 +168,10 @@ public class LeaveEntitlementForm
 
 public class LeaveEntryForm
 {
-    public Guid? Id { get; set; }
+    public int? Id { get; set; }
 
     [Required]
-    public Guid StaffId { get; set; }
+    public int StaffId { get; set; }
 
     [Required, StringLength(100)]
     public string LeaveType { get; set; } = string.Empty;
@@ -191,28 +191,8 @@ public class LeaveEntryForm
 public record LeaveBalanceRow(string EmployeeId, string StaffName, string StaffCategory, string LeaveType,
     decimal Entitlement, decimal Taken, decimal Balance);
 
-public class LeaveManagementViewModel
-{
-    public int Year { get; set; }
-    public List<string> Categories { get; set; } = new();
-    public List<LeaveStaffOption> Staff { get; set; } = new();
-    public List<LeaveEntitlement> Entitlements { get; set; } = new();
-    public List<LeaveBalanceRow> Balances { get; set; } = new();
-}
-
 /// <summary>Why a quota change is refused: the leave type and a shared resource key.</summary>
 public record LeaveQuotaProblem(string LeaveType, string ErrorKey);
 
-public record LeaveStaffOption(Guid Id, string EmployeeId, string FullName, string StaffCategory);
-
-public class LeaveEntryViewModel
-{
-    public int Year { get; set; }
-    public LeaveEntryForm Form { get; set; } = new();
-    public List<LeaveStaffOption> Staff { get; set; } = new();
-    public List<string> LeaveTypes { get; set; } = new();
-    public List<LeaveEntitlement> Entitlements { get; set; } = new();
-    public List<StaffLeaveEntry> Entries { get; set; } = new();
-    /// <summary>The year's balances, shown when a staff member and leave type are picked.</summary>
-    public List<LeaveBalanceRow> Balances { get; set; } = new();
-}
+public record LeaveStaffOption(int Id, string EmployeeId, string FullName, string StaffCategory);
+// the Leaves pages' view models (LeaveManagementViewModel, LeaveEntryViewModel) are in IMSB.Models

@@ -434,17 +434,18 @@ ul { list-style: none; }
 }
 .btn i { font-size: .85rem; }
 
+/* filled buttons keep white text on hover, also when the button is a link (a:hover would turn it accent red) */
 .btn-primary   { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-light); box-shadow: 0 4px 12px rgba(26,60,110,.3); }
+.btn-primary:hover { background: var(--primary-light); color: #fff; box-shadow: 0 4px 12px rgba(26,60,110,.3); }
 
 .btn-accent    { background: var(--accent); color: #fff; }
-.btn-accent:hover { background: #c94c00; box-shadow: 0 4px 12px rgba(232,93,4,.3); }
+.btn-accent:hover { background: #c94c00; color: #fff; box-shadow: 0 4px 12px rgba(232,93,4,.3); }
 
 .btn-success   { background: var(--success); color: #fff; }
-.btn-success:hover { background: #155e32; }
+.btn-success:hover { background: #155e32; color: #fff; }
 
 .btn-danger    { background: var(--danger); color: #fff; }
-.btn-danger:hover { background: #9f1239; }
+.btn-danger:hover { background: #9f1239; color: #fff; }
 
 .btn-outline   {
   background: transparent;

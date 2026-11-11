@@ -1,4 +1,5 @@
 using System.Globalization;
+using IMSB.Models;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -52,9 +53,9 @@ public class PayrollController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> EmployeeHistory([FromQuery] Guid? staffId, [FromQuery] int? year, [FromQuery] int? month)
+    public async Task<IActionResult> EmployeeHistory([FromQuery] int? staffId, [FromQuery] int? year, [FromQuery] int? month)
     {
-        if (staffId == null || staffId == Guid.Empty || !TryMonthStart(year, month, out var start))
+        if (staffId == null || staffId == 0 || !TryMonthStart(year, month, out var start))
             return ErrorResult("period", _L["ValDateInvalid"].Value);
 
         return Ok(new { rows = await _payroll.HistoryAsync(staffId.Value, start, HistoryMonths) });
@@ -120,6 +121,4 @@ public class PayrollController : Controller
             rows,
             rows.Sum(row => row.NetPay));
     }
-
-    internal sealed record PayBillPrintModel(string Title, string Period, List<PayBillRow> Rows, decimal TotalNetPay);
 }

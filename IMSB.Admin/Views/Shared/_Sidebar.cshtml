@@ -1,7 +1,7 @@
 <aside class="sidebar" id="sidebar">
 @using IMSB.Admin.Resources
 @inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
-@inject IMSB.Dto.Models.IMSBContext Db
+@inject IMSB.Interfaces.INotificationsInterface Notifications
 
 @{
     var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
@@ -12,11 +12,8 @@
     var userName = User.Identity?.Name ?? L["AdminUser"].Value;
     var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
     var initials = userName.Length >= 2 ? userName.Substring(0, 2).ToUpperInvariant() : userName.ToUpperInvariant();
-    // products below their minimum (low + out of stock), same rule as StockStatuses.For
-    var belowMinimum = (isAdmin || isInventory) ? Db.Products.Count(p => p.Quantity <= 0 || p.Quantity < p.MinStock) : 0;
-    // applications waiting for a decision (new + under review)
-    var openApplications = isAdmin ? Db.ArtisanApplications.Count(a => a.Status == IMSB.Dto.Models.ApplicationStatuses.Pending
-        || a.Status == IMSB.Dto.Models.ApplicationStatuses.UnderReview) : 0;
+    // products below their minimum and applications awaiting a decision (IMSB.Backend/Notifications)
+    var (belowMinimum, openApplications) = await Notifications.NavBadgesAsync(isAdmin, isInventory);
 }
 
     <div class="sidebar-brand">

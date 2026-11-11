@@ -315,7 +315,7 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         await Token(client);   // gets the cookie, but the header is missing below
         var res = await client.PostAsJsonAsync("/Attendance/Save", AttendanceTestHelpers.Sheet(AttendanceTestHelpers.Day, AttendanceTestHelpers.E("EMP101", "ABSENT")));
         Assert.Equal(HttpStatusCode.BadRequest, res.StatusCode);
-        Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync($"/Attendance/Delete/{Guid.NewGuid()}", null)).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync($"/Attendance/Delete/999999", null)).StatusCode);
     }
 
     [Fact]

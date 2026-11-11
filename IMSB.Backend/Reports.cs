@@ -8,7 +8,7 @@ namespace IMSB.Backend
     {
         public Reports(IMSBContext context) : base(context) { }
 
-        public Task<ProductCategory?> CategoryAsync(Guid categoryId) =>
+        public Task<ProductCategory?> CategoryAsync(int categoryId) =>
             _context.ProductCategories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId);
 
         public Task<List<string>> BlocksAsync() => _context.Stalls.AsNoTracking().Select(s => s.Block).Distinct().OrderBy(b => b).ToListAsync();
@@ -69,7 +69,7 @@ namespace IMSB.Backend
 
         private record StallHistory(DateTime CreatedOn, DateTime? AllottedDate, bool Occupied);
 
-        private async Task<List<StallHistory>> StallHistoryAsync(Guid? categoryId)
+        private async Task<List<StallHistory>> StallHistoryAsync(int? categoryId)
         {
             var stalls = _context.Stalls.AsNoTracking();
             if (categoryId != null) stalls = stalls.Where(s => s.CategoryId == categoryId);
@@ -88,7 +88,7 @@ namespace IMSB.Backend
             return (stalls.Count(OccupiedOn), stalls.Count(s => s.CreatedOn <= day || OccupiedOn(s)));
         }
 
-        public async Task<List<(DateTime Month, int Occupied, int Total)>> OccupancyTrendAsync(ReportPeriod period, Guid? categoryId, int months)
+        public async Task<List<(DateTime Month, int Occupied, int Total)>> OccupancyTrendAsync(ReportPeriod period, int? categoryId, int months)
         {
             var stalls = await StallHistoryAsync(categoryId);
             var first = period.MonthStart.AddMonths(-(months - 1));
@@ -136,7 +136,7 @@ namespace IMSB.Backend
             }
             var st = status?.Trim().ToUpperInvariant();
             if (!string.IsNullOrEmpty(st) && ArtisanStatuses.All.Contains(st)) artisans = artisans.Where(a => a.Status == st);
-            if (Guid.TryParse(categoryId, out var catId)) artisans = artisans.Where(a => a.CategoryId == catId);
+            if (int.TryParse(categoryId, out var catId)) artisans = artisans.Where(a => a.CategoryId == catId);
             var list = await artisans.OrderBy(a => a.FullName).ToListAsync();
 
             var stallOf = await _context.Stalls.AsNoTracking().Where(s => s.ArtisanId != null).ToDictionaryAsync(s => s.ArtisanId!.Value, s => s.StallCode);
@@ -165,7 +165,7 @@ namespace IMSB.Backend
         public static int Rating(decimal sales, decimal best) =>
             sales <= 0 || best <= 0 ? 0 : Math.Clamp((int)Math.Ceiling(sales * 5 / best), 1, 5);
 
-        public async Task<ApplicationReportData> ApplicationsAsync(ReportPeriod period, Guid? categoryId)
+        public async Task<ApplicationReportData> ApplicationsAsync(ReportPeriod period, int? categoryId)
         {
             var query = _context.ArtisanApplications.AsNoTracking().Include(a => a.Category).AsQueryable();
             if (categoryId != null) query = query.Where(a => a.CategoryId == categoryId);
@@ -177,7 +177,7 @@ namespace IMSB.Backend
             return new ApplicationReportData(submitted, decided, open);
         }
 
-        public Task<List<Product>> InventoryAsync(Guid? categoryId)
+        public Task<List<Product>> InventoryAsync(int? categoryId)
         {
             var query = _context.Products.AsNoTracking().Include(p => p.Category).AsQueryable();
             if (categoryId != null) query = query.Where(p => p.CategoryId == categoryId);

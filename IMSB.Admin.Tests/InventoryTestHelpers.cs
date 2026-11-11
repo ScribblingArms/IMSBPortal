@@ -9,9 +9,9 @@ namespace IMSB.Admin.Tests;
 /// <summary>Fixtures for the inventory tests: categories from the real seed list, sample products and a wired controller.</summary>
 internal static class InventoryTestHelpers
 {
-    public static readonly Guid Textiles = IMSBContext.SeedCategories[0].Id;
-    public static readonly Guid Pottery = IMSBContext.SeedCategories[3].Id;
-    public static readonly Guid Herbal = IMSBContext.SeedCategories[5].Id;
+    public static readonly int Textiles = IMSBContext.SeedCategories[0].Id;
+    public static readonly int Pottery = IMSBContext.SeedCategories[3].Id;
+    public static readonly int Herbal = IMSBContext.SeedCategories[5].Id;
 
     public static IMSBContext CreateContext()
     {
@@ -31,7 +31,7 @@ internal static class InventoryTestHelpers
         };
     }
 
-    public static Product AddProduct(IMSBContext ctx, string code, string name, Guid category, string stall, int qty, int min, decimal price = 100)
+    public static Product AddProduct(IMSBContext ctx, string code, string name, int category, string stall, int qty, int min, decimal price = 100)
     {
         var p = new Product { ProductCode = code, Name = name, CategoryId = category, StallCode = stall, Quantity = qty, MinStock = min, UnitPrice = price };
         ctx.Products.Add(p);

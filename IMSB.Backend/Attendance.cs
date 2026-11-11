@@ -10,7 +10,7 @@ namespace IMSB.Backend
 
         public Task<List<Department>> DepartmentsAsync() => _context.Departments.AsNoTracking().OrderBy(d => d.Name).ToListAsync();
 
-        public Task<Dictionary<Guid, string>> DepartmentNamesAsync() =>
+        public Task<Dictionary<int, string>> DepartmentNamesAsync() =>
             _context.Departments.AsNoTracking().ToDictionaryAsync(d => d.Id, d => d.Name);
 
         public async Task<Dictionary<string, string>> ShiftNamesAsync() =>
@@ -57,10 +57,10 @@ namespace IMSB.Backend
         public Task<List<Staff>> StaffByEmployeeIdsAsync(List<string> employeeIds) =>
             _context.Staff.Where(s => employeeIds.Contains(s.EmployeeId)).ToListAsync();
 
-        public Task<Dictionary<Guid, AttendanceRecord>> RecordsOnAsync(DateTime day, List<Guid> staffIds) =>
+        public Task<Dictionary<int, AttendanceRecord>> RecordsOnAsync(DateTime day, List<int> staffIds) =>
             _context.AttendanceRecords.Where(r => r.AttendanceDate == day && staffIds.Contains(r.StaffId)).ToDictionaryAsync(r => r.StaffId);
 
-        public Task<AttendanceRecord?> FindAsync(Guid id, bool tracking)
+        public Task<AttendanceRecord?> FindAsync(int id, bool tracking)
         {
             var query = _context.AttendanceRecords.Include(r => r.Staff).AsQueryable();
             if (!tracking) query = query.AsNoTracking();
@@ -71,7 +71,7 @@ namespace IMSB.Backend
         {
             var query = _context.AttendanceRecords.AsNoTracking().Include(r => r.Staff)
                 .Where(r => r.AttendanceDate >= from && r.AttendanceDate <= to);
-            if (Guid.TryParse(departmentId, out var deptId)) query = query.Where(r => r.Staff!.DepartmentId == deptId);
+            if (int.TryParse(departmentId, out var deptId)) query = query.Where(r => r.Staff!.DepartmentId == deptId);
             var st = AttendanceStatuses.Normalize(status);
             if (st != null) query = query.Where(r => r.Status == st);
             if (!string.IsNullOrWhiteSpace(q))
@@ -148,7 +148,7 @@ namespace IMSB.Backend
         // ── Monthly calendar and reports ──────────────────────────────
 
         /// <summary>The month's records reduced to what the reports read (no staff join, no full rows).</summary>
-        private record MonthRecord(Guid StaffId, DateTime AttendanceDate, string Status, decimal OvertimeHours);
+        private record MonthRecord(int StaffId, DateTime AttendanceDate, string Status, decimal OvertimeHours);
 
         private Task<List<MonthRecord>> MonthRecordsAsync(DateTime from, DateTime to) =>
             _context.AttendanceRecords.AsNoTracking()

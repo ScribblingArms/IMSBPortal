@@ -56,7 +56,7 @@ namespace IMSB.Admin.Controllers
             });
         }
 
-        private static object ListDto(Artisan a, Dictionary<Guid, string> stalls) => new
+        private static object ListDto(Artisan a, Dictionary<int, string> stalls) => new
         {
             code = a.ArtisanCode,
             fullName = a.FullName,
@@ -160,7 +160,7 @@ namespace IMSB.Admin.Controllers
             return Ok(new { code = id });
         }
 
-        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, Guid CategoryId, string Status, DateTime JoinedDate, string District, string Gender,
+        internal record Validated(DateTime DateOfBirth, string Mobile, string? Aadhaar, int CategoryId, string Status, DateTime JoinedDate, string District, string Gender,
             DateTime? FromDate, DateTime? ToDate);
 
         private async Task<(Dictionary<string, string> Errors, Validated V)> ValidateAsync(ArtisanDto dto, Artisan? existing)
@@ -183,7 +183,7 @@ namespace IMSB.Admin.Controllers
             if (!errors.ContainsKey("mobile"))
             {
                 if (!MobileNumbers.IsValid(mobile)) errors["mobile"] = _L["ValArtisanMobile"];
-                else if (await _artisans.MobileExistsAsync(mobile, existing?.Id ?? Guid.Empty))
+                else if (await _artisans.MobileExistsAsync(mobile, existing?.Id ?? 0))
                     errors["mobile"] = _L["ValMobileExists"];
             }
 
@@ -196,7 +196,7 @@ namespace IMSB.Admin.Controllers
                 else
                 {
                     var hash = Aadhaar.Hash(dto.Aadhaar!);
-                    if (await _artisans.AadhaarExistsAsync(hash, existing?.Id ?? Guid.Empty))
+                    if (await _artisans.AadhaarExistsAsync(hash, existing?.Id ?? 0))
                         errors["aadhaar"] = _L["ValAadhaarExists"];
                     else aadhaar = dto.Aadhaar;
                 }
@@ -205,8 +205,8 @@ namespace IMSB.Admin.Controllers
             var district = TelanganaDistricts.All.FirstOrDefault(d => d.Equals(dto.District?.Trim(), StringComparison.OrdinalIgnoreCase));
             if (district == null) errors.TryAdd("district", _L["ValDistrict"]);
 
-            Guid categoryId = default;
-            if (!errors.ContainsKey("category_id") && (!Guid.TryParse(dto.CategoryId, out categoryId) || !await _artisans.CategoryExistsAsync(categoryId)))
+            int categoryId = default;
+            if (!errors.ContainsKey("category_id") && (!int.TryParse(dto.CategoryId, out categoryId) || !await _artisans.CategoryExistsAsync(categoryId)))
                 errors["category_id"] = _L["ValCraftCategory"];
 
             var status = string.IsNullOrWhiteSpace(dto.Status) ? existing?.Status ?? ArtisanStatuses.Active : dto.Status.Trim().ToUpperInvariant();

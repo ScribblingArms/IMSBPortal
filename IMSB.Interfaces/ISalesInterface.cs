@@ -25,7 +25,7 @@ namespace IMSB.Interfaces
         Task<Dictionary<string, Product>> ProductsByCodeAsync(List<string> codes);
 
         /// <summary>Tracked products by id.</summary>
-        Task<Dictionary<Guid, Product>> ProductsByIdAsync(IEnumerable<Guid> ids);
+        Task<Dictionary<int, Product>> ProductsByIdAsync(IEnumerable<int> ids);
 
         Task<List<ProductCategory>> CategoriesAsync();
 
@@ -35,7 +35,7 @@ namespace IMSB.Interfaces
         Task<List<ProductReportRow>> ProductReportRowsAsync(string? q, string? categoryId, string? stall, DateTime? fromDay, DateTime? toDay);
 
         /// <summary>Stock movements written by sales (deductions and reversals), newest first, with the products they still belong to.</summary>
-        Task<(List<StockMovement> Movements, Dictionary<Guid, Product> Products)> DeductionLogAsync(DateTime? day, int take);
+        Task<(List<StockMovement> Movements, Dictionary<int, Product> Products)> DeductionLogAsync(DateTime? day, int take);
 
         /// <summary>Sale lines sold in [from, to), optionally for one stall.</summary>
         Task<List<SaleExportRow>> ExportRowsAsync(DateTime from, DateTime to, string? stall);

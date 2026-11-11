@@ -365,7 +365,7 @@ public class ApplicationsControllerTests
         await Applications(ctx).Approve("APP-0001", null);
         Assert.IsType<OkObjectResult>(await Artisans(ctx).Delete("ART-0005"));
         var a = Get(ctx, "APP-0001");
-        Assert.Equal(((Guid?)null, "ART-0005", ApplicationStatuses.Approved), (a.ArtisanId, a.ArtisanCode, a.Status));
+        Assert.Equal(((int?)null, "ART-0005", ApplicationStatuses.Approved), (a.ArtisanId, a.ArtisanCode, a.Status));
     }
 
     // ── Data ──────────────────────────────────────────────────────

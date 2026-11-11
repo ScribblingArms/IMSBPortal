@@ -13,7 +13,7 @@ namespace IMSB.Dto.Models
     {
         [Key]
         [Column("Id")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
         [Column("ApplicationNo")]
@@ -63,7 +63,7 @@ namespace IMSB.Dto.Models
         public string District { get; set; } = string.Empty;
 
         [Column("CategoryId")]
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
         public ProductCategory? Category { get; set; }
 
@@ -115,7 +115,7 @@ namespace IMSB.Dto.Models
 
         /// <summary>The artisan registered on approval (null once that artisan is deleted; ArtisanCode keeps the reference).</summary>
         [Column("ArtisanId")]
-        public Guid? ArtisanId { get; set; }
+        public int? ArtisanId { get; set; }
 
         public Artisan? Artisan { get; set; }
 

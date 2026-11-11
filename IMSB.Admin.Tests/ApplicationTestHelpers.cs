@@ -30,7 +30,7 @@ internal static class ApplicationTestHelpers
         new(new IMSB.Backend.Notifications(ctx)) { ControllerContext = Context("someone", role) };
 
     /// <summary>A stored application; the Aadhaar comes from seed (default: the number in the code + 5000, clear of the artisans' numbers).</summary>
-    public static ArtisanApplication AddApplication(IMSBContext ctx, string no, string status = ApplicationStatuses.Pending, Guid? category = null,
+    public static ArtisanApplication AddApplication(IMSBContext ctx, string no, string status = ApplicationStatuses.Pending, int? category = null,
         string? mobile = null, DateTime? submitted = null, DateTime? decidedAt = null, string name = "Applicant", string district = "Hyderabad", int seed = 0)
     {
         var n = int.Parse(no[^4..]);

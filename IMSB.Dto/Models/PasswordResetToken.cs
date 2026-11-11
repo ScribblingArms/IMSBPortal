@@ -13,7 +13,7 @@ namespace IMSB.Dto.Models
 
         [Required]
         [Column("LoginId")]
-        public Guid LoginId { get; set; }
+        public int LoginId { get; set; }
 
         [Required]
         [Column("Token")]

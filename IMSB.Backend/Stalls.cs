@@ -24,7 +24,7 @@ namespace IMSB.Backend
             _context.Stalls.AsNoTracking().Include(s => s.Category).Include(s => s.Artisan)
                 .OrderBy(s => s.Block).ThenBy(s => s.StallCode).ToListAsync();
 
-        public async Task<HashSet<Guid>> FilteredIdsAsync(string? q, string? status, string? categoryId, string? block) =>
+        public async Task<HashSet<int>> FilteredIdsAsync(string? q, string? status, string? categoryId, string? block) =>
             (await ApplyFilters(_context.Stalls.AsNoTracking(), q, status, categoryId, block).Select(s => s.Id).ToListAsync()).ToHashSet();
 
         public Task<List<Stall>> FilterAsync(string? q, string? status, string? categoryId, string? block) =>
@@ -43,7 +43,7 @@ namespace IMSB.Backend
             }
             var st = status?.Trim().ToUpperInvariant();
             if (!string.IsNullOrEmpty(st) && StallStatuses.All.Contains(st)) query = query.Where(s => s.Status == st);
-            if (!string.IsNullOrWhiteSpace(categoryId) && Guid.TryParse(categoryId, out var catId)) query = query.Where(s => s.CategoryId == catId);
+            if (!string.IsNullOrWhiteSpace(categoryId) && int.TryParse(categoryId, out var catId)) query = query.Where(s => s.CategoryId == catId);
             if (!string.IsNullOrWhiteSpace(block))
             {
                 var b = block.Trim().ToUpper();
@@ -52,7 +52,7 @@ namespace IMSB.Backend
             return query;
         }
 
-        public async Task<HashSet<Guid>> PendingReallocationStallIdsAsync() =>
+        public async Task<HashSet<int>> PendingReallocationStallIdsAsync() =>
             (await _context.StallReallocations.AsNoTracking().Where(r => r.Status == ReallocationStatuses.Pending)
                 .Select(r => r.StallId).ToListAsync()).ToHashSet();
 
@@ -83,18 +83,18 @@ namespace IMSB.Backend
             return query.FirstOrDefaultAsync(s => s.StallCode == stallCode);
         }
 
-        public Task<Stall?> FindByIdAsync(Guid id) => _context.Stalls.FirstOrDefaultAsync(s => s.Id == id);
+        public Task<Stall?> FindByIdAsync(int id) => _context.Stalls.FirstOrDefaultAsync(s => s.Id == id);
 
         public Task<Artisan?> FindArtisanAsync(string artisanCode) => _context.Artisans.FirstOrDefaultAsync(a => a.ArtisanCode == artisanCode);
 
-        public Task<Artisan?> FindArtisanByIdAsync(Guid id) => _context.Artisans.FirstOrDefaultAsync(a => a.Id == id);
+        public Task<Artisan?> FindArtisanByIdAsync(int id) => _context.Artisans.FirstOrDefaultAsync(a => a.Id == id);
 
-        public Task<bool> ArtisanHasStallAsync(Guid artisanId) => _context.Stalls.AnyAsync(s => s.ArtisanId == artisanId);
+        public Task<bool> ArtisanHasStallAsync(int artisanId) => _context.Stalls.AnyAsync(s => s.ArtisanId == artisanId);
 
-        public Task<bool> HasPendingReallocationAsync(Guid stallId) =>
+        public Task<bool> HasPendingReallocationAsync(int stallId) =>
             _context.StallReallocations.AnyAsync(r => r.StallId == stallId && r.Status == ReallocationStatuses.Pending);
 
-        public Task<List<StallReallocation>> OpenReallocationsAsync(Guid stallId) =>
+        public Task<List<StallReallocation>> OpenReallocationsAsync(int stallId) =>
             _context.StallReallocations.Where(r => r.Status == ReallocationStatuses.Pending && r.StallId == stallId).ToListAsync();
 
         public Task<StallReallocation?> FindReallocationAsync(string requestNo) =>

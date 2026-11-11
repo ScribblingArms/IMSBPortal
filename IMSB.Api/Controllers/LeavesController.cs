@@ -51,14 +51,14 @@ namespace IMSB.Api.Controllers
         [HttpPost("entitlements")]
         public async Task<IActionResult> SaveEntitlement([FromBody] LeaveEntitlementForm form)
         {
-            if (form.StaffId == Guid.Empty || string.IsNullOrWhiteSpace(form.LeaveType) || form.AnnualQuota % 0.5m != 0m)
+            if (form.StaffId == 0 || string.IsNullOrWhiteSpace(form.LeaveType) || form.AnnualQuota % 0.5m != 0m)
                 return Invalid("entitlement", "ValLeaveEntitlement");
             var result = await _leaves.SaveEntitlementAsync(form.StaffId, form.LeaveType, form.AnnualQuota);
             return FromResult(result, "entitlement", () => Ok(new { message = L["LeaveEntitlementSaved"].Value }));
         }
 
-        [HttpDelete("entitlements/{id:guid}")]
-        public async Task<IActionResult> DeleteEntitlement(Guid id) =>
+        [HttpDelete("entitlements/{id:int}")]
+        public async Task<IActionResult> DeleteEntitlement(int id) =>
             FromResult(await _leaves.DeleteEntitlementAsync(id), "entitlement", () => Ok(new { message = L["LeaveEntitlementDeleted"].Value }));
 
         /// <summary>Active staff, entitlements and the year's leave entries, for the leave-taken form.</summary>
@@ -89,15 +89,15 @@ namespace IMSB.Api.Controllers
             [StringLength(500, ErrorMessage = "ValRemarks")] public string? Remarks { get; set; }
         }
 
-        [HttpPut("entries/{id:guid}")]
-        public async Task<IActionResult> UpdateEntry(Guid id, [FromBody] LeaveEntryUpdate form)
+        [HttpPut("entries/{id:int}")]
+        public async Task<IActionResult> UpdateEntry(int id, [FromBody] LeaveEntryUpdate form)
         {
             var result = await _leaves.UpdateEntryAsync(id, ParseDate(form.FromDate), ParseDate(form.ToDate), form.Remarks, UserName);
             return FromResult(result, "entry", () => Ok(new { message = L["LeaveEntrySaved"].Value }));
         }
 
-        [HttpDelete("entries/{id:guid}")]
-        public async Task<IActionResult> DeleteEntry(Guid id) =>
+        [HttpDelete("entries/{id:int}")]
+        public async Task<IActionResult> DeleteEntry(int id) =>
             FromResult(await _leaves.DeleteEntryAsync(id), "entry", () => Ok(new { message = L["LeaveEntryDeleted"].Value }));
 
         private static object ToItem(StaffLeaveEntry e) => new
@@ -113,7 +113,5 @@ namespace IMSB.Api.Controllers
             remarks = e.Remarks,
             by = e.UpdatedBy ?? e.CreatedBy
         };
-
-        private static DateTime? ParseDate(string? value) => TryParseDate(value, out var date) ? date : null;
     }
 }
