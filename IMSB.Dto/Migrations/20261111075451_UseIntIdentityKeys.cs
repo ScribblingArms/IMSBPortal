@@ -947,7 +947,8 @@ INSERT INTO [Shift] (Code, Name, DisplayOrder) VALUES
 INSERT INTO departments (Name) VALUES (N'Accounts'), (N'Admin'), (N'Housekeeping'), (N'Sales'), (N'Security');");
 
             // ── SERP.UpdateAttendanceManagement for int StaffId and an IDENTITY attendance_records.Id ──
-            MigrationScript.Run(migrationBuilder, "Triggers/UpdateAttendanceManagement.sql");
+            // the version of that time (staff matched by Aadhaar/mobile); AttendanceRecordsUseEmpId replaces it
+            MigrationScript.Run(migrationBuilder, "Triggers/UpdateAttendanceManagement.v2.sql");
         }
 
         /// <inheritdoc />

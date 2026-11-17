@@ -1,0 +1,195 @@
+@{
+    var fullWidth = ViewData["FullWidth"] as bool? == true;
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    // English, Telugu or Hindi (chosen with the buttons below, kept in the culture cookie)
+    var lang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName switch { "te" => "te", "hi" => "hi", _ => "en" };
+    var here = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
+    // the landing page's sections (#about, #products, ...), linked from every portal page
+    var home = Url.Action("Index", "Home", new { area = PortalArea.Name });
+}
+<!DOCTYPE html>
+<html lang="@lang">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | @L["Indira Mahila Shakti Bazaar (IMSB)"]</title>
+    <meta name="description" content="@L["Indira Mahila Shakti Bazaar (IMSB), a Government of Telangana initiative in Madhapur, Hyderabad, gives women-led SHGs and artisans direct market access."]" />
+    <meta name="theme-color" content="#0d1b4c" />
+    <link rel="icon" href="~/portal/images/favicon.png" type="image/png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" />
+
+    <!-- Bootstrap 5.3 + Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+
+    <link rel="stylesheet" href="~/portal/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="visually-hidden-focusable skip-link" href="#main">@L["Skip to main content"]</a>
+
+    <!-- Utility bar -->
+    <div class="utility-bar text-white small">
+        <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2 py-1">
+            <span>@L["Government of Telangana initiative"]</span>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <div class="btn-group btn-group-sm" role="group" aria-label="@L["Text size"]">
+                    <button type="button" class="btn btn-utility" data-text-size="down" aria-label="@L["Decrease text size"]">A&minus;</button>
+                    <button type="button" class="btn btn-utility" data-text-size="reset" aria-label="@L["Reset text size"]">A</button>
+                    <button type="button" class="btn btn-utility" data-text-size="up" aria-label="@L["Increase text size"]">A+</button>
+                </div>
+                <span class="vr opacity-50"></span>
+                <button type="button" class="btn btn-sm btn-utility" data-contrast aria-pressed="false">
+                    <i class="bi bi-circle-half me-1" aria-hidden="true"></i>@L["High contrast"]
+                </button>
+                <span class="vr opacity-50"></span>
+                @* each language's name is written in that language; the link saves the choice and returns to this page *@
+                <div class="btn-group btn-group-sm" role="group" aria-label="@L["Language"]">
+                    <a class="btn btn-utility @(lang == "en" ? "active" : "")" lang="en" hreflang="en" data-lang-btn="en"
+                       asp-controller="Home" asp-action="SetLanguage" asp-route-culture="en" asp-route-returnUrl="@here"
+                       aria-current="@(lang == "en" ? "true" : null)">English</a>
+                    <a class="btn btn-utility @(lang == "te" ? "active" : "")" lang="te" hreflang="te" data-lang-btn="te"
+                       asp-controller="Home" asp-action="SetLanguage" asp-route-culture="te" asp-route-returnUrl="@here"
+                       aria-current="@(lang == "te" ? "true" : null)">తెలుగు</a>
+                    <a class="btn btn-utility @(lang == "hi" ? "active" : "")" lang="hi" hreflang="hi" data-lang-btn="hi"
+                       asp-controller="Home" asp-action="SetLanguage" asp-route-culture="hi" asp-route-returnUrl="@here"
+                       aria-current="@(lang == "hi" ? "true" : null)">हिन्दी</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="site-header bg-white">
+        <!-- Masthead -->
+        <div class="container d-flex align-items-center justify-content-between py-3 gap-3">
+            <a class="brand d-flex align-items-center gap-3 text-decoration-none" asp-controller="Home" asp-action="Index">
+                <img src="~/portal/images/imsb-logo.jpg" width="62" height="64" alt="@L["IMSB logo"]" />
+                <span class="d-flex flex-column lh-sm">
+                    <span class="brand-name">@L["Indira Mahila Shakti Bazaar"]</span>
+                    <span class="brand-org d-none d-md-block">@L["Society for Elimination of Rural Poverty"]</span>
+                    <span class="brand-org d-none d-md-block">@L["Department of Rural Development, Government of Telangana"]</span>
+                    <span class="visually-hidden">@L[", home page"]</span>
+                </span>
+            </a>
+            <div class="d-none d-sm-flex align-items-center gap-3">
+                <img src="~/portal/images/telangana-emblem.png" width="57" height="56" alt="@L["Emblem of the Government of Telangana"]" />
+                <span class="vr"></span>
+                <img src="~/portal/images/serp-logo.jpg" width="73" height="56" alt="@L["SERP logo"]" />
+            </div>
+        </div>
+
+        <!-- Main navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark main-nav sticky-top" aria-label="@L["Main"]">
+            <div class="container">
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#site-nav"
+                        aria-controls="site-nav" aria-expanded="false" aria-label="@L["Toggle navigation"]">
+                    <span class="navbar-toggler-icon"></span><span class="ms-2">@L["Menu"]</span>
+                </button>
+                <a class="btn btn-imsb d-lg-none" asp-controller="Home" asp-action="StallApply">@L["Apply for a Stall"]</a>
+                <div class="collapse navbar-collapse" id="site-nav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link @(currentAction == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index" aria-current="@(currentAction == "Index" ? "page" : null)">@L["Home"]</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@home#about">@L["About"]</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@home#products">@L["Explore"]</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@home#testimonials">@L["Artisans"]</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@home#experience">@L["Bazaar Experience"]</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@home#visit">@L["Visit"]</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">@L["Contact"]</a></li>
+                    </ul>
+                    <a class="btn btn-imsb d-none d-lg-inline-block" asp-controller="Home" asp-action="StallApply" aria-current="@(currentAction == "StallApply" ? "page" : null)">@L["Apply for a Stall"]</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <p id="a11y-status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+    <main id="main" tabindex="-1">
+        @if (fullWidth)
+        {
+            @RenderBody()
+        }
+        else
+        {
+            <div class="container py-5">@RenderBody()</div>
+        }
+    </main>
+
+    <div class="ikat-strip" aria-hidden="true"></div>
+    <footer class="site-footer text-white" id="contact">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <img src="~/portal/images/imsb-logo.jpg" width="70" height="73" alt="@L["IMSB logo"]" class="rounded" />
+                        <span class="fs-5 fw-semibold lh-sm">@L["Indira Mahila Shakti Bazaar"]</span>
+                    </div>
+                    <p class="small text-white-75 mb-2">@L["Society for Elimination of Rural Poverty"]<br />@L["Department of Rural Development, Government of Telangana"]</p>
+                    <p class="small text-white-75">@L["A marketplace for women’s enterprise, giving Telangana’s women-led SHGs and artisans direct market access."]</p>
+                </div>
+                <nav class="col-6 col-md-3 col-lg-2" aria-labelledby="f-about">
+                    <h2 id="f-about" class="footer-heading">@L["About"]</h2>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="@home#about">@L["About IMSB"]</a></li>
+                        <li><a href="@home#testimonials">@L["Artisans and SHGs"]</a></li>
+                        <li><a href="@home#experience">@L["Bazaar Experience"]</a></li>
+                    </ul>
+                </nav>
+                <nav class="col-6 col-md-3 col-lg-2" aria-labelledby="f-explore">
+                    <h2 id="f-explore" class="footer-heading">@L["Explore"]</h2>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="@home#products">@L["Products"]</a></li>
+                        <li><a href="@home#visit">@L["Visit IMSB"]</a></li>
+                        <li><a href="#">@L["Sitemap"]</a></li>
+                    </ul>
+                </nav>
+                <nav class="col-6 col-md-3 col-lg-2" aria-labelledby="f-services">
+                    <h2 id="f-services" class="footer-heading">@L["Online services"]</h2>
+                    <ul class="list-unstyled footer-links">
+                        <li><a asp-controller="Home" asp-action="StallApply">@L["Stall application"]</a></li>
+                        <li><a href="#">@L["Application status"]</a></li>
+                    </ul>
+                </nav>
+                <nav class="col-6 col-md-3 col-lg-2" aria-labelledby="f-help">
+                    <h2 id="f-help" class="footer-heading">@L["Help"]</h2>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#contact">@L["Contact us"]</a></li>
+                        <li><a href="#">@L["Help and FAQs"]</a></li>
+                        <li><a href="#">@L["Feedback"]</a></li>
+                        <li><a href="https://www.india.gov.in/" rel="external">@L["National Portal of India"] <i class="bi bi-box-arrow-up-right small" aria-hidden="true"></i><span class="visually-hidden">@L["(external website)"]</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="footer-info small text-white-75 border-top border-white border-opacity-25 mt-4 pt-4">
+                <p class="mb-1"><strong class="text-white">@L["Website owned by:"]</strong> @L["Society for Elimination of Rural Poverty (SERP), Department of Rural Development, Government of Telangana"]</p>
+                <p class="mb-1"><strong class="text-white">@L["Contact:"]</strong> contact@imsb.example &middot; +91 40 0000 0000</p>
+                <p class="mb-0"><strong class="text-white">@L["Last reviewed:"]</strong> @L["22 October 2026"]</p>
+            </div>
+
+            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 small border-top border-white border-opacity-25 mt-4 pt-4">
+                <p class="mb-0 text-white-75">
+                    &copy; @DateTime.Now.Year @L["Society for Elimination of Rural Poverty, Government of Telangana"]<br />
+                    <span class="fst-italic opacity-75">@L["Prototype for review: names, prices, contact details, dates and testimonials are sample content."]</span>
+                </p>
+                <ul class="list-inline mb-0 footer-links">
+                    <li class="list-inline-item"><a asp-controller="Home" asp-action="Privacy">@L["Privacy policy"]</a></li>
+                    <li class="list-inline-item"><a href="#">@L["Terms and policies"]</a></li>
+                    <li class="list-inline-item"><a href="#">@L["Disclaimer"]</a></li>
+                    <li class="list-inline-item"><a href="#">@L["Accessibility"]</a></li>
+                    <li class="list-inline-item"><a href="#">@L["Sitemap"]</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    @* strings for the scripts below, in the page's language *@
+    <script>window.IMSB_I18N = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ScriptStrings.For(L)));</script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/portal/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

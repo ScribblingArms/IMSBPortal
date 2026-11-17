@@ -1,0 +1,1393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Indira Mahila Shakti Bazaar (IMSB)" xml:space="preserve">
+    <value>ఇందిరా మహిళా శక్తి బజార్ (IMSB)</value>
+  </data>
+  <data name="Indira Mahila Shakti Bazaar (IMSB), a Government of Telangana initiative in Madhapur, Hyderabad, gives women-led SHGs and artisans direct market access." xml:space="preserve">
+    <value>హైదరాబాద్‌లోని మాదాపూర్‌లో తెలంగాణ ప్రభుత్వ కార్యక్రమమైన ఇందిరా మహిళా శక్తి బజార్ (IMSB), మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలకు మరియు కళాకారులకు నేరుగా మార్కెట్ అవకాశం కల్పిస్తుంది.</value>
+  </data>
+  <data name="Skip to main content" xml:space="preserve">
+    <value>ప్రధాన విషయానికి వెళ్లండి</value>
+  </data>
+  <data name="Government of Telangana initiative" xml:space="preserve">
+    <value>తెలంగాణ ప్రభుత్వ కార్యక్రమం</value>
+  </data>
+  <data name="Text size" xml:space="preserve">
+    <value>అక్షరాల పరిమాణం</value>
+  </data>
+  <data name="Decrease text size" xml:space="preserve">
+    <value>అక్షరాల పరిమాణం తగ్గించండి</value>
+  </data>
+  <data name="Reset text size" xml:space="preserve">
+    <value>అక్షరాల పరిమాణం మొదటి స్థితికి</value>
+  </data>
+  <data name="Increase text size" xml:space="preserve">
+    <value>అక్షరాల పరిమాణం పెంచండి</value>
+  </data>
+  <data name="High contrast" xml:space="preserve">
+    <value>అధిక కాంట్రాస్ట్</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>భాష</value>
+  </data>
+  <data name="IMSB logo" xml:space="preserve">
+    <value>IMSB లోగో</value>
+  </data>
+  <data name="Indira Mahila Shakti Bazaar" xml:space="preserve">
+    <value>ఇందిరా మహిళా శక్తి బజార్</value>
+  </data>
+  <data name="Society for Elimination of Rural Poverty" xml:space="preserve">
+    <value>గ్రామీణ పేదరిక నిర్మూలన సంస్థ</value>
+  </data>
+  <data name="Department of Rural Development, Government of Telangana" xml:space="preserve">
+    <value>గ్రామీణాభివృద్ధి శాఖ, తెలంగాణ ప్రభుత్వం</value>
+  </data>
+  <data name=", home page" xml:space="preserve">
+    <value>, హోమ్ పేజీ</value>
+  </data>
+  <data name="Emblem of the Government of Telangana" xml:space="preserve">
+    <value>తెలంగాణ ప్రభుత్వ చిహ్నం</value>
+  </data>
+  <data name="SERP logo" xml:space="preserve">
+    <value>సెర్ప్ లోగో</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>ప్రధాన మెను</value>
+  </data>
+  <data name="Toggle navigation" xml:space="preserve">
+    <value>మెను తెరవండి లేదా మూసివేయండి</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>మెను</value>
+  </data>
+  <data name="Apply for a Stall" xml:space="preserve">
+    <value>స్టాల్ కోసం దరఖాస్తు</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>హోమ్</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>మా గురించి</value>
+  </data>
+  <data name="Explore" xml:space="preserve">
+    <value>అన్వేషించండి</value>
+  </data>
+  <data name="Artisans" xml:space="preserve">
+    <value>కళాకారులు</value>
+  </data>
+  <data name="Bazaar Experience" xml:space="preserve">
+    <value>బజార్ అనుభవం</value>
+  </data>
+  <data name="Visit" xml:space="preserve">
+    <value>సందర్శించండి</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>సంప్రదించండి</value>
+  </data>
+  <data name="A marketplace for women’s enterprise, giving Telangana’s women-led SHGs and artisans direct market access." xml:space="preserve">
+    <value>మహిళా వ్యాపారానికి ఒక మార్కెట్; తెలంగాణ మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలకు మరియు కళాకారులకు నేరుగా మార్కెట్ అవకాశం.</value>
+  </data>
+  <data name="About IMSB" xml:space="preserve">
+    <value>IMSB గురించి</value>
+  </data>
+  <data name="Artisans and SHGs" xml:space="preserve">
+    <value>కళాకారులు మరియు స్వయం సహాయక సంఘాలు</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>ఉత్పత్తులు</value>
+  </data>
+  <data name="Visit IMSB" xml:space="preserve">
+    <value>IMSB సందర్శించండి</value>
+  </data>
+  <data name="Sitemap" xml:space="preserve">
+    <value>సైట్ మ్యాప్</value>
+  </data>
+  <data name="Online services" xml:space="preserve">
+    <value>ఆన్‌లైన్ సేవలు</value>
+  </data>
+  <data name="Stall application" xml:space="preserve">
+    <value>స్టాల్ దరఖాస్తు</value>
+  </data>
+  <data name="Application status" xml:space="preserve">
+    <value>దరఖాస్తు స్థితి</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>సహాయం</value>
+  </data>
+  <data name="Contact us" xml:space="preserve">
+    <value>మమ్మల్ని సంప్రదించండి</value>
+  </data>
+  <data name="Help and FAQs" xml:space="preserve">
+    <value>సహాయం మరియు తరచుగా అడిగే ప్రశ్నలు</value>
+  </data>
+  <data name="Feedback" xml:space="preserve">
+    <value>అభిప్రాయం</value>
+  </data>
+  <data name="National Portal of India" xml:space="preserve">
+    <value>భారత జాతీయ పోర్టల్</value>
+  </data>
+  <data name="(external website)" xml:space="preserve">
+    <value>(బయటి వెబ్‌సైట్)</value>
+  </data>
+  <data name="Website owned by:" xml:space="preserve">
+    <value>వెబ్‌సైట్ యజమాని:</value>
+  </data>
+  <data name="Society for Elimination of Rural Poverty (SERP), Department of Rural Development, Government of Telangana" xml:space="preserve">
+    <value>గ్రామీణ పేదరిక నిర్మూలన సంస్థ (సెర్ప్), గ్రామీణాభివృద్ధి శాఖ, తెలంగాణ ప్రభుత్వం</value>
+  </data>
+  <data name="Contact:" xml:space="preserve">
+    <value>సంప్రదింపు:</value>
+  </data>
+  <data name="Last reviewed:" xml:space="preserve">
+    <value>చివరిగా సమీక్షించినది:</value>
+  </data>
+  <data name="22 October 2026" xml:space="preserve">
+    <value>22 అక్టోబర్ 2026</value>
+  </data>
+  <data name="Society for Elimination of Rural Poverty, Government of Telangana" xml:space="preserve">
+    <value>గ్రామీణ పేదరిక నిర్మూలన సంస్థ, తెలంగాణ ప్రభుత్వం</value>
+  </data>
+  <data name="Prototype for review: names, prices, contact details, dates and testimonials are sample content." xml:space="preserve">
+    <value>సమీక్ష కోసం నమూనా: పేర్లు, ధరలు, సంప్రదింపు వివరాలు, తేదీలు మరియు అభిప్రాయాలు నమూనా సమాచారం మాత్రమే.</value>
+  </data>
+  <data name="Privacy policy" xml:space="preserve">
+    <value>గోప్యతా విధానం</value>
+  </data>
+  <data name="Terms and policies" xml:space="preserve">
+    <value>నిబంధనలు మరియు విధానాలు</value>
+  </data>
+  <data name="Disclaimer" xml:space="preserve">
+    <value>నిరాకరణ</value>
+  </data>
+  <data name="Accessibility" xml:space="preserve">
+    <value>అందుబాటు</value>
+  </data>
+  <data name="Text size changed" xml:space="preserve">
+    <value>అక్షరాల పరిమాణం మార్చబడింది</value>
+  </data>
+  <data name="High contrast on" xml:space="preserve">
+    <value>అధిక కాంట్రాస్ట్ ఆన్</value>
+  </data>
+  <data name="High contrast off" xml:space="preserve">
+    <value>అధిక కాంట్రాస్ట్ ఆఫ్</value>
+  </data>
+  <data name="Play slide rotation" xml:space="preserve">
+    <value>స్లైడ్‌లు తిరగడం ప్రారంభించండి</value>
+  </data>
+  <data name="Pause slide rotation" xml:space="preserve">
+    <value>స్లైడ్‌లు తిరగడం ఆపండి</value>
+  </data>
+  <data name="A marketplace for women’s enterprise" xml:space="preserve">
+    <value>మహిళా వ్యాపారానికి ఒక మార్కెట్</value>
+  </data>
+  <data name="Telangana’s women-led SHGs bring craft and culture to market." xml:space="preserve">
+    <value>తెలంగాణ మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలు హస్తకళలను, సంస్కృతిని మార్కెట్‌కు తీసుకువస్తున్నాయి.</value>
+  </data>
+  <data name="Explore the Bazaar" xml:space="preserve">
+    <value>బజార్‌ను అన్వేషించండి</value>
+  </data>
+  <data name="A woman weaving an ikat textile on a wooden handloom, with fabrics displayed behind her" xml:space="preserve">
+    <value>చెక్క మగ్గంపై ఇక్కత్ వస్త్రాన్ని నేస్తున్న మహిళ, ఆమె వెనుక వస్త్రాలు ప్రదర్శనలో ఉన్నాయి</value>
+  </data>
+  <data name="Handlooms and crafts" xml:space="preserve">
+    <value>చేనేత మరియు హస్తకళలు</value>
+  </data>
+  <data name="Made by hand in Telangana" xml:space="preserve">
+    <value>తెలంగాణలో చేతితో తయారైనవి</value>
+  </data>
+  <data name="Handlooms, crafts and handmade jewellery from women-led SHGs and artisans." xml:space="preserve">
+    <value>మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలు మరియు కళాకారుల చేనేత, హస్తకళలు మరియు చేతితో చేసిన ఆభరణాలు.</value>
+  </data>
+  <data name="Explore products" xml:space="preserve">
+    <value>ఉత్పత్తులను చూడండి</value>
+  </data>
+  <data name="A woman folding blue ikat handloom fabric, with terracotta pots, a clay bird and silver jewellery on the table" xml:space="preserve">
+    <value>నీలి ఇక్కత్ చేనేత వస్త్రాన్ని మడుస్తున్న మహిళ; బల్లపై టెర్రకోట కుండలు, మట్టి పక్షి మరియు వెండి ఆభరణాలు</value>
+  </data>
+  <data name="Live craft demonstrations and pottery workshops" xml:space="preserve">
+    <value>ప్రత్యక్ష హస్తకళ ప్రదర్శనలు మరియు కుండల తయారీ శిక్షణ</value>
+  </data>
+  <data name="Cultural activities take place alongside the stalls." xml:space="preserve">
+    <value>స్టాళ్లతో పాటు సాంస్కృతిక కార్యక్రమాలు జరుగుతాయి.</value>
+  </data>
+  <data name="See the bazaar experience" xml:space="preserve">
+    <value>బజార్ అనుభవాన్ని చూడండి</value>
+  </data>
+  <data name="A woman shaping a clay pot on a potter's wheel while two young women watch and learn" xml:space="preserve">
+    <value>కుమ్మరి చక్రంపై మట్టి కుండను తయారు చేస్తున్న మహిళ, ఇద్దరు యువతులు చూస్తూ నేర్చుకుంటున్నారు</value>
+  </data>
+  <data name="What you’ll find" xml:space="preserve">
+    <value>మీకు ఇక్కడ లభించేవి</value>
+  </data>
+  <data name="Organic products and regional food" xml:space="preserve">
+    <value>సేంద్రియ ఉత్పత్తులు మరియు ప్రాంతీయ ఆహారం</value>
+  </data>
+  <data name="Organic and natural products, and food from across Telangana." xml:space="preserve">
+    <value>సేంద్రియ మరియు సహజ ఉత్పత్తులు, తెలంగాణ నలుమూలల ఆహారం.</value>
+  </data>
+  <data name="Organic produce or regional food at the bazaar" xml:space="preserve">
+    <value>బజార్‌లో సేంద్రియ ఉత్పత్తులు లేదా ప్రాంతీయ ఆహారం</value>
+  </data>
+  <data name="Visit the bazaar" xml:space="preserve">
+    <value>బజార్‌ను సందర్శించండి</value>
+  </data>
+  <data name="Madhapur, Hyderabad" xml:space="preserve">
+    <value>మాదాపూర్, హైదరాబాద్</value>
+  </data>
+  <data name="Adjacent to Shilparamam." xml:space="preserve">
+    <value>శిల్పారామం పక్కనే.</value>
+  </data>
+  <data name="Plan your visit" xml:space="preserve">
+    <value>మీ సందర్శనను ప్లాన్ చేసుకోండి</value>
+  </data>
+  <data name="Indira Mahila Shakti Bazaar, Madhapur" xml:space="preserve">
+    <value>ఇందిరా మహిళా శక్తి బజార్, మాదాపూర్</value>
+  </data>
+  <data name="Crafts" xml:space="preserve">
+    <value>హస్తకళలు</value>
+  </data>
+  <data name="Painted wooden toy set" xml:space="preserve">
+    <value>రంగులు వేసిన చెక్క బొమ్మల సెట్</value>
+  </data>
+  <data name="Vanitha Mahila SHG, Nirmal" xml:space="preserve">
+    <value>వనిత మహిళా సంఘం, నిర్మల్</value>
+  </data>
+  <data name="Brightly painted wooden containers and toys" xml:space="preserve">
+    <value>ముదురు రంగులు వేసిన చెక్క పాత్రలు మరియు బొమ్మలు</value>
+  </data>
+  <data name="Water hyacinth basket" xml:space="preserve">
+    <value>గుర్రపుడెక్క బుట్ట</value>
+  </data>
+  <data name="Prakruthi Mahila SHG, Khammam" xml:space="preserve">
+    <value>ప్రకృతి మహిళా సంఘం, ఖమ్మం</value>
+  </data>
+  <data name="Woven baskets made from natural fibre" xml:space="preserve">
+    <value>సహజ నారతో అల్లిన బుట్టలు</value>
+  </data>
+  <data name="Bamboo basket set of three" xml:space="preserve">
+    <value>మూడు వెదురు బుట్టల సెట్</value>
+  </data>
+  <data name="Gowthami Mahila SHG, Adilabad" xml:space="preserve">
+    <value>గౌతమి మహిళా సంఘం, ఆదిలాబాద్</value>
+  </data>
+  <data name="Woven baskets with pink and green strips" xml:space="preserve">
+    <value>గులాబీ, ఆకుపచ్చ పట్టీలతో అల్లిన బుట్టలు</value>
+  </data>
+  <data name="Terracotta figurine" xml:space="preserve">
+    <value>టెర్రకోట బొమ్మ</value>
+  </data>
+  <data name="Sri Durga Mahila SHG, Medak" xml:space="preserve">
+    <value>శ్రీ దుర్గ మహిళా సంఘం, మెదక్</value>
+  </data>
+  <data name="Terracotta figurine of a seated woman" xml:space="preserve">
+    <value>కూర్చున్న మహిళ టెర్రకోట బొమ్మ</value>
+  </data>
+  <data name="Handlooms" xml:space="preserve">
+    <value>చేనేత</value>
+  </data>
+  <data name="Pochampally ikat saree" xml:space="preserve">
+    <value>పోచంపల్లి ఇక్కత్ చీర</value>
+  </data>
+  <data name="Sri Sai Mahila SHG, Yadadri Bhuvanagiri" xml:space="preserve">
+    <value>శ్రీ సాయి మహిళా సంఘం, యాదాద్రి భువనగిరి</value>
+  </data>
+  <data name="Gadwal silk saree" xml:space="preserve">
+    <value>గద్వాల పట్టు చీర</value>
+  </data>
+  <data name="Jogulamba Weavers SHG, Jogulamba Gadwal" xml:space="preserve">
+    <value>జోగులాంబ నేతకారుల సంఘం, జోగులాంబ గద్వాల</value>
+  </data>
+  <data name="Narayanpet cotton saree" xml:space="preserve">
+    <value>నారాయణపేట నూలు చీర</value>
+  </data>
+  <data name="Lakshmi Ganapathi SHG, Narayanpet" xml:space="preserve">
+    <value>లక్ష్మీ గణపతి సంఘం, నారాయణపేట</value>
+  </data>
+  <data name="Gollabhama cotton saree" xml:space="preserve">
+    <value>గొల్లభామ నూలు చీర</value>
+  </data>
+  <data name="Siddi Vinayaka SHG, Siddipet" xml:space="preserve">
+    <value>సిద్ధి వినాయక సంఘం, సిద్దిపేట</value>
+  </data>
+  <data name="Organic products" xml:space="preserve">
+    <value>సేంద్రియ ఉత్పత్తులు</value>
+  </data>
+  <data name="Organic turmeric powder, 500 g" xml:space="preserve">
+    <value>సేంద్రియ పసుపు పొడి, 500 గ్రా</value>
+  </data>
+  <data name="Annapurna Mahila SHG, Nizamabad" xml:space="preserve">
+    <value>అన్నపూర్ణ మహిళా సంఘం, నిజామాబాద్</value>
+  </data>
+  <data name="Millet flour mix, 1 kg" xml:space="preserve">
+    <value>చిరుధాన్యాల పిండి మిశ్రమం, 1 కిలో</value>
+  </data>
+  <data name="Bhoomi Mahila SHG, Sangareddy" xml:space="preserve">
+    <value>భూమి మహిళా సంఘం, సంగారెడ్డి</value>
+  </data>
+  <data name="Cold-pressed groundnut oil, 1 litre" xml:space="preserve">
+    <value>గానుగ వేరుశనగ నూనె, 1 లీటరు</value>
+  </data>
+  <data name="Swarna Mahila SHG, Mahabubnagar" xml:space="preserve">
+    <value>స్వర్ణ మహిళా సంఘం, మహబూబ్‌నగర్</value>
+  </data>
+  <data name="Forest honey, 500 g" xml:space="preserve">
+    <value>అటవీ తేనె, 500 గ్రా</value>
+  </data>
+  <data name="Girijana Mahila SHG, Adilabad" xml:space="preserve">
+    <value>గిరిజన మహిళా సంఘం, ఆదిలాబాద్</value>
+  </data>
+  <data name="Handmade jewellery" xml:space="preserve">
+    <value>చేతితో చేసిన ఆభరణాలు</value>
+  </data>
+  <data name="Silver filigree earrings" xml:space="preserve">
+    <value>వెండి ఫిలిగ్రీ చెవిపోగులు</value>
+  </data>
+  <data name="Kalanjali Mahila SHG, Karimnagar" xml:space="preserve">
+    <value>కళాంజలి మహిళా సంఘం, కరీంనగర్</value>
+  </data>
+  <data name="Lac bangles, set of six" xml:space="preserve">
+    <value>లక్క గాజులు, ఆరు గాజుల సెట్</value>
+  </data>
+  <data name="Noor Mahila SHG, Hyderabad" xml:space="preserve">
+    <value>నూర్ మహిళా సంఘం, హైదరాబాద్</value>
+  </data>
+  <data name="Terracotta jewellery set" xml:space="preserve">
+    <value>టెర్రకోట ఆభరణాల సెట్</value>
+  </data>
+  <data name="Mrittika Mahila SHG, Warangal" xml:space="preserve">
+    <value>మృత్తిక మహిళా సంఘం, వరంగల్</value>
+  </data>
+  <data name="Beaded tribal necklace" xml:space="preserve">
+    <value>పూసల గిరిజన హారం</value>
+  </data>
+  <data name="Koya Mahila SHG, Bhadradri Kothagudem" xml:space="preserve">
+    <value>కోయ మహిళా సంఘం, భద్రాద్రి కొత్తగూడెం</value>
+  </data>
+  <data name="Natural products" xml:space="preserve">
+    <value>సహజ ఉత్పత్తులు</value>
+  </data>
+  <data name="Handmade neem soap, pack of four" xml:space="preserve">
+    <value>చేతితో చేసిన వేప సబ్బు, నాలుగు సబ్బుల ప్యాక్</value>
+  </data>
+  <data name="Haritha Mahila SHG, Rangareddy" xml:space="preserve">
+    <value>హరిత మహిళా సంఘం, రంగారెడ్డి</value>
+  </data>
+  <data name="Jute shopping bag" xml:space="preserve">
+    <value>జనపనార షాపింగ్ సంచి</value>
+  </data>
+  <data name="Sri Rama Mahila SHG, Karimnagar" xml:space="preserve">
+    <value>శ్రీ రామ మహిళా సంఘం, కరీంనగర్</value>
+  </data>
+  <data name="Herbal hair oil, 200 ml" xml:space="preserve">
+    <value>మూలికల జుట్టు నూనె, 200 మి.లీ</value>
+  </data>
+  <data name="Vanamali Mahila SHG, Nalgonda" xml:space="preserve">
+    <value>వనమాలి మహిళా సంఘం, నల్గొండ</value>
+  </data>
+  <data name="Palm-leaf storage box" xml:space="preserve">
+    <value>తాటాకు పెట్టె</value>
+  </data>
+  <data name="Tala Mahila SHG, Nagarkurnool" xml:space="preserve">
+    <value>తాళ మహిళా సంఘం, నాగర్‌కర్నూల్</value>
+  </data>
+  <data name="Regional food" xml:space="preserve">
+    <value>ప్రాంతీయ ఆహారం</value>
+  </data>
+  <data name="Sakinalu, 500 g" xml:space="preserve">
+    <value>సకినాలు, 500 గ్రా</value>
+  </data>
+  <data name="Telangana Ruchulu SHG, Warangal" xml:space="preserve">
+    <value>తెలంగాణ రుచులు సంఘం, వరంగల్</value>
+  </data>
+  <data name="Sarva pindi mix, 500 g" xml:space="preserve">
+    <value>సర్వ పిండి మిశ్రమం, 500 గ్రా</value>
+  </data>
+  <data name="Amma Chethi Vanta SHG, Karimnagar" xml:space="preserve">
+    <value>అమ్మ చేతి వంట సంఘం, కరీంనగర్</value>
+  </data>
+  <data name="Mango avakaya pickle, 500 g" xml:space="preserve">
+    <value>మామిడి ఆవకాయ, 500 గ్రా</value>
+  </data>
+  <data name="Sri Gayatri Mahila SHG, Khammam" xml:space="preserve">
+    <value>శ్రీ గాయత్రి మహిళా సంఘం, ఖమ్మం</value>
+  </data>
+  <data name="Sesame laddu box" xml:space="preserve">
+    <value>నువ్వుల లడ్డూ పెట్టె</value>
+  </data>
+  <data name="Madhura Mahila SHG, Suryapet" xml:space="preserve">
+    <value>మధుర మహిళా సంఘం, సూర్యాపేట</value>
+  </data>
+  <data name="A woman painting clay pots at a craft fair, surrounded by painted pots and textiles" xml:space="preserve">
+    <value>హస్తకళల మేళాలో మట్టి కుండలకు రంగులు వేస్తున్న మహిళ, చుట్టూ రంగుల కుండలు మరియు వస్త్రాలు</value>
+  </data>
+  <data name="Women of a self-help group making handicrafts from coloured fibre" xml:space="preserve">
+    <value>రంగుల నారతో హస్తకళలు తయారు చేస్తున్న స్వయం సహాయక సంఘం మహిళలు</value>
+  </data>
+  <data name="Women at sewing machines holding the national flags they have stitched" xml:space="preserve">
+    <value>తాము కుట్టిన జాతీయ జెండాలను పట్టుకున్న కుట్టు మిషన్ల వద్ద మహిళలు</value>
+  </data>
+  <data name="Close-up of an artisan's hand painting a clay lamp" xml:space="preserve">
+    <value>మట్టి దీపానికి రంగు వేస్తున్న కళాకారిణి చేయి, దగ్గరగా</value>
+  </data>
+  <data name="Women decorating round boards with colour and floral designs" xml:space="preserve">
+    <value>గుండ్రని పలకలను రంగులు, పూల నమూనాలతో అలంకరిస్తున్న మహిళలు</value>
+  </data>
+  <data name="Live craft demonstrations" xml:space="preserve">
+    <value>ప్రత్యక్ష హస్తకళ ప్రదర్శనలు</value>
+  </data>
+  <data name="Watch artisans at work at the bazaar." xml:space="preserve">
+    <value>బజార్‌లో పని చేస్తున్న కళాకారులను చూడండి.</value>
+  </data>
+  <data name="Pottery workshops" xml:space="preserve">
+    <value>కుండల తయారీ శిక్షణ</value>
+  </data>
+  <data name="Workshops held at the bazaar." xml:space="preserve">
+    <value>బజార్‌లో జరిగే శిక్షణ కార్యక్రమాలు.</value>
+  </data>
+  <data name="Food from across Telangana." xml:space="preserve">
+    <value>తెలంగాణ నలుమూలల ఆహారం.</value>
+  </data>
+  <data name="Cultural activities" xml:space="preserve">
+    <value>సాంస్కృతిక కార్యక్రమాలు</value>
+  </data>
+  <data name="Cultural programmes alongside the stalls." xml:space="preserve">
+    <value>స్టాళ్లతో పాటు సాంస్కృతిక కార్యక్రమాలు.</value>
+  </data>
+  <data name="The bazaar gave our group its first stall in Hyderabad. Customers now come back asking for our painted designs by name." xml:space="preserve">
+    <value>బజార్ మా సంఘానికి హైదరాబాద్‌లో మొదటి స్టాల్ ఇచ్చింది. ఇప్పుడు కొనుగోలుదారులు మా రంగుల డిజైన్ల కోసం పేరు చెప్పి మళ్లీ వస్తున్నారు.</value>
+  </data>
+  <data name="Renuka" xml:space="preserve">
+    <value>రేణుక</value>
+  </data>
+  <data name="Artisan, Warangal" xml:space="preserve">
+    <value>కళాకారిణి, వరంగల్</value>
+  </data>
+  <data name="Selling directly at IMSB means we earn more from every saree we weave, and we can take custom orders from buyers." xml:space="preserve">
+    <value>IMSBలో నేరుగా అమ్మడం వల్ల మేము నేసే ప్రతి చీరపై ఎక్కువ సంపాదిస్తున్నాం, కొనుగోలుదారుల నుండి ప్రత్యేక ఆర్డర్లు కూడా తీసుకోగలుగుతున్నాం.</value>
+  </data>
+  <data name="Lakshmi" xml:space="preserve">
+    <value>లక్ష్మి</value>
+  </data>
+  <data name="I joined a painting workshop with my daughter. It is my favourite place to buy gifts made in Telangana." xml:space="preserve">
+    <value>నా కూతురితో కలిసి చిత్రలేఖన శిక్షణలో చేరాను. తెలంగాణలో తయారైన బహుమతులు కొనడానికి ఇది నాకు ఇష్టమైన చోటు.</value>
+  </data>
+  <data name="Anitha" xml:space="preserve">
+    <value>అనిత</value>
+  </data>
+  <data name="Visitor, Hyderabad" xml:space="preserve">
+    <value>సందర్శకురాలు, హైదరాబాద్</value>
+  </data>
+  <data name="Indira Mahila Shakti Bazaar: a marketplace for women’s enterprise" xml:space="preserve">
+    <value>ఇందిరా మహిళా శక్తి బజార్: మహిళా వ్యాపారానికి ఒక మార్కెట్</value>
+  </data>
+  <data name="IMSB highlights" xml:space="preserve">
+    <value>IMSB విశేషాలు</value>
+  </data>
+  <data name="Slide {0}: {1}" xml:space="preserve">
+    <value>స్లైడ్ {0}: {1}</value>
+  </data>
+  <data name="Previous slide" xml:space="preserve">
+    <value>మునుపటి స్లైడ్</value>
+  </data>
+  <data name="Next slide" xml:space="preserve">
+    <value>తదుపరి స్లైడ్</value>
+  </data>
+  <data name="Our leadership" xml:space="preserve">
+    <value>మా నాయకత్వం</value>
+  </data>
+  <data name="Photograph of Sri. Anumula Revanth Reddy" xml:space="preserve">
+    <value>శ్రీ. అనుముల రేవంత్ రెడ్డి గారి ఫోటో</value>
+  </data>
+  <data name="Sri. Anumula Revanth Reddy" xml:space="preserve">
+    <value>శ్రీ. అనుముల రేవంత్ రెడ్డి</value>
+  </data>
+  <data name="Hon’ble Chief Minister of Telangana" xml:space="preserve">
+    <value>గౌరవ తెలంగాణ ముఖ్యమంత్రి</value>
+  </data>
+  <data name="Photograph of Smt. D. Anasuya Seethakka" xml:space="preserve">
+    <value>శ్రీమతి డి. అనసూయ సీతక్క గారి ఫోటో</value>
+  </data>
+  <data name="Smt. D. Anasuya Seethakka" xml:space="preserve">
+    <value>శ్రీమతి డి. అనసూయ సీతక్క</value>
+  </data>
+  <data name="Hon’ble Minister of Panchayat Raj, Rural Development, RWS, Women &amp; Child Welfare" xml:space="preserve">
+    <value>గౌరవ పంచాయతీ రాజ్, గ్రామీణాభివృద్ధి, గ్రామీణ నీటి సరఫరా, మహిళా &amp; శిశు సంక్షేమ శాఖ మంత్రి</value>
+  </data>
+  <data name="Project overview" xml:space="preserve">
+    <value>ప్రాజెక్ట్ సమగ్ర వివరాలు</value>
+  </data>
+  <data name="From the IMSB project brief, not live data" xml:space="preserve">
+    <value>IMSB ప్రాజెక్ట్ వివరణ నుండి, ప్రత్యక్ష సమాచారం కాదు</value>
+  </data>
+  <data name="bazaar stalls" xml:space="preserve">
+    <value>బజార్ స్టాళ్లు</value>
+  </data>
+  <data name="initiative launched" xml:space="preserve">
+    <value>కార్యక్రమం ప్రారంభం</value>
+  </data>
+  <data name="bazaar experiences" xml:space="preserve">
+    <value>బజార్ అనుభవాలు</value>
+  </data>
+  <data name="Craft demonstrations, pottery workshops and regional food" xml:space="preserve">
+    <value>హస్తకళ ప్రదర్శనలు, కుండల తయారీ శిక్షణ మరియు ప్రాంతీయ ఆహారం</value>
+  </data>
+  <data name="Direct market access for women’s enterprise" xml:space="preserve">
+    <value>మహిళా వ్యాపారానికి నేరుగా మార్కెట్ అవకాశం</value>
+  </data>
+  <data name="Indira Mahila Shakti Bazaar is a Government of Telangana initiative, launched in December 2024, to promote women’s entrepreneurship and financial independence. It gives women-led Self-Help Groups (SHGs) and artisans direct access to buyers and a place to showcase Telangana’s products and traditions." xml:space="preserve">
+    <value>ఇందిరా మహిళా శక్తి బజార్ మహిళల వ్యాపార నైపుణ్యాన్ని మరియు ఆర్థిక స్వావలంబనను ప్రోత్సహించడానికి డిసెంబర్ 2024లో ప్రారంభించిన తెలంగాణ ప్రభుత్వ కార్యక్రమం. ఇది మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలకు మరియు కళాకారులకు కొనుగోలుదారులను నేరుగా చేరే అవకాశాన్ని, తెలంగాణ ఉత్పత్తులు మరియు సంప్రదాయాలను ప్రదర్శించే వేదికను అందిస్తుంది.</value>
+  </data>
+  <data name="More about IMSB" xml:space="preserve">
+    <value>IMSB గురించి మరింత</value>
+  </data>
+  <data name="Women’s enterprise" xml:space="preserve">
+    <value>మహిళా వ్యాపారం</value>
+  </data>
+  <data name="Supporting women-led SHGs and artisans." xml:space="preserve">
+    <value>మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలకు మరియు కళాకారులకు మద్దతు.</value>
+  </data>
+  <data name="Telangana craft" xml:space="preserve">
+    <value>తెలంగాణ హస్తకళ</value>
+  </data>
+  <data name="Showcasing the state’s products and traditions." xml:space="preserve">
+    <value>రాష్ట్ర ఉత్పత్తులు మరియు సంప్రదాయాల ప్రదర్శన.</value>
+  </data>
+  <data name="Direct market access" xml:space="preserve">
+    <value>నేరుగా మార్కెట్ అవకాశం</value>
+  </data>
+  <data name="Connecting makers directly with buyers." xml:space="preserve">
+    <value>తయారీదారులను కొనుగోలుదారులతో నేరుగా కలపడం.</value>
+  </data>
+  <data name="A rich variety from Telangana" xml:space="preserve">
+    <value>తెలంగాణ నుండి వైవిధ్యభరిత ఉత్పత్తులు</value>
+  </data>
+  <data name="Products made by women-led SHGs and artisans, by category." xml:space="preserve">
+    <value>మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలు మరియు కళాకారులు తయారు చేసిన ఉత్పత్తులు, వర్గాల వారీగా.</value>
+  </data>
+  <data name="Product categories" xml:space="preserve">
+    <value>ఉత్పత్తి వర్గాలు</value>
+  </data>
+  <data name="Explore all products" xml:space="preserve">
+    <value>అన్ని ఉత్పత్తులను చూడండి</value>
+  </data>
+  <data name="Gallery" xml:space="preserve">
+    <value>చిత్రమాల</value>
+  </data>
+  <data name="Moments from the bazaar" xml:space="preserve">
+    <value>బజార్ క్షణాలు</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>మూసివేయండి</value>
+  </data>
+  <data name="Previous photo" xml:space="preserve">
+    <value>మునుపటి ఫోటో</value>
+  </data>
+  <data name="Next photo" xml:space="preserve">
+    <value>తదుపరి ఫోటో</value>
+  </data>
+  <data name="More than shopping" xml:space="preserve">
+    <value>షాపింగ్ కంటే ఎక్కువ</value>
+  </data>
+  <data name="Alongside the stalls, the bazaar hosts cultural activities." xml:space="preserve">
+    <value>స్టాళ్లతో పాటు బజార్‌లో సాంస్కృతిక కార్యక్రమాలు జరుగుతాయి.</value>
+  </data>
+  <data name="Testimonials" xml:space="preserve">
+    <value>అభిప్రాయాలు</value>
+  </data>
+  <data name="What people say" xml:space="preserve">
+    <value>ప్రజలు ఏమంటున్నారు</value>
+  </data>
+  <data name="Open daily, 10:30 am – 8:30 pm · Free entry" xml:space="preserve">
+    <value>ప్రతిరోజూ ఉదయం 10:30 – రాత్రి 8:30 · ప్రవేశం ఉచితం</value>
+  </data>
+  <data name="Bring your craft to the marketplace" xml:space="preserve">
+    <value>మీ హస్తకళను మార్కెట్‌కు తీసుకురండి</value>
+  </data>
+  <data name="The online stall application will be available here. Final application details will be provided by IMSB." xml:space="preserve">
+    <value>ఆన్‌లైన్ స్టాల్ దరఖాస్తు ఇక్కడ అందుబాటులో ఉంటుంది. తుది దరఖాస్తు వివరాలను IMSB అందిస్తుంది.</value>
+  </data>
+  <data name="Who can apply" xml:space="preserve">
+    <value>ఎవరు దరఖాస్తు చేయవచ్చు</value>
+  </data>
+  <data name="Women-led Self-Help Groups (SHGs), SHG federations and individual women artisans from Telangana." xml:space="preserve">
+    <value>తెలంగాణకు చెందిన మహిళల నేతృత్వంలోని స్వయం సహాయక సంఘాలు, సంఘాల సమాఖ్యలు మరియు వ్యక్తిగత మహిళా కళాకారులు.</value>
+  </data>
+  <data name="What you need" xml:space="preserve">
+    <value>మీకు కావలసినవి</value>
+  </data>
+  <data name="SHG ID, Village Organisation and Mandal Samakhya names, representative's contact details, and 1 to 5 photos of your products. SHG passbook or certificate and identity proof are optional." xml:space="preserve">
+    <value>సంఘం ఐడీ, గ్రామ సంఘం మరియు మండల సమాఖ్య పేర్లు, ప్రతినిధి సంప్రదింపు వివరాలు, మీ ఉత్పత్తుల 1 నుండి 5 ఫోటోలు. సంఘం పాస్‌బుక్ లేదా ధ్రువపత్రం మరియు గుర్తింపు రుజువు ఐచ్ఛికం.</value>
+  </data>
+  <data name="Fees" xml:space="preserve">
+    <value>రుసుము</value>
+  </data>
+  <data name="Any stall fee will be stated in the notification for each allotment cycle." xml:space="preserve">
+    <value>ఏదైనా స్టాల్ రుసుము ఉంటే, ప్రతి కేటాయింపు విడత ప్రకటనలో తెలియజేయబడుతుంది.</value>
+  </data>
+  <data name="Application dates" xml:space="preserve">
+    <value>దరఖాస్తు తేదీలు</value>
+  </data>
+  <data name="Announced on this website for each allotment cycle." xml:space="preserve">
+    <value>ప్రతి కేటాయింపు విడతకు ఈ వెబ్‌సైట్‌లో ప్రకటించబడతాయి.</value>
+  </data>
+  <data name="How stalls are allotted" xml:space="preserve">
+    <value>స్టాళ్లు ఎలా కేటాయించబడతాయి</value>
+  </data>
+  <data name="Applications are reviewed by the IMSB allotment committee. Stalls are allotted on rotation so that SHGs from all districts get a chance to take part." xml:space="preserve">
+    <value>దరఖాస్తులను IMSB కేటాయింపు కమిటీ పరిశీలిస్తుంది. అన్ని జిల్లాల సంఘాలకు అవకాశం దక్కేలా స్టాళ్లు వంతుల వారీగా కేటాయించబడతాయి.</value>
+  </data>
+  <data name="SHG details" xml:space="preserve">
+    <value>సంఘం వివరాలు</value>
+  </data>
+  <data name="Name, SHG ID, Village Organisation, Mandal Samakhya, district, mandal and village." xml:space="preserve">
+    <value>పేరు, సంఘం ఐడీ, గ్రామ సంఘం, మండల సమాఖ్య, జిల్లా, మండలం మరియు గ్రామం.</value>
+  </data>
+  <data name="Representative" xml:space="preserve">
+    <value>ప్రతినిధి</value>
+  </data>
+  <data name="The member who will manage the stall, with contact details." xml:space="preserve">
+    <value>స్టాల్‌ను నిర్వహించే సభ్యురాలు, సంప్రదింపు వివరాలతో.</value>
+  </data>
+  <data name="Category, description, price range and photos." xml:space="preserve">
+    <value>వర్గం, వివరణ, ధరల శ్రేణి మరియు ఫోటోలు.</value>
+  </data>
+  <data name="Stall needs" xml:space="preserve">
+    <value>స్టాల్ అవసరాలు</value>
+  </data>
+  <data name="How long, from when, and facilities." xml:space="preserve">
+    <value>ఎంత కాలం, ఎప్పటి నుండి, మరియు సౌకర్యాలు.</value>
+  </data>
+  <data name="Documents and declaration" xml:space="preserve">
+    <value>పత్రాలు మరియు ప్రకటన</value>
+  </data>
+  <data name="Upload supporting documents and confirm the declaration." xml:space="preserve">
+    <value>సహాయక పత్రాలను అప్‌లోడ్ చేసి ప్రకటనను ధృవీకరించండి.</value>
+  </data>
+  <data name="Breadcrumb" xml:space="preserve">
+    <value>పేజీ మార్గం</value>
+  </data>
+  <data name="SHGs and women artisans from Telangana can apply for a stall at Indira Mahila Shakti Bazaar." xml:space="preserve">
+    <value>తెలంగాణకు చెందిన స్వయం సహాయక సంఘాలు మరియు మహిళా కళాకారులు ఇందిరా మహిళా శక్తి బజార్‌లో స్టాల్ కోసం దరఖాస్తు చేయవచ్చు.</value>
+  </data>
+  <data name="Applications are open for the current allotment cycle." xml:space="preserve">
+    <value>ప్రస్తుత కేటాయింపు విడతకు దరఖాస్తులు స్వీకరిస్తున్నాం.</value>
+  </data>
+  <data name="Apply by &lt;strong&gt;{0}&lt;/strong&gt;." xml:space="preserve">
+    <value>&lt;strong&gt;{0}&lt;/strong&gt; లోపు దరఖాస్తు చేయండి.</value>
+  </data>
+  <data name="30 November 2026" xml:space="preserve">
+    <value>30 నవంబర్ 2026</value>
+  </data>
+  <data name="Start your application" xml:space="preserve">
+    <value>దరఖాస్తు ప్రారంభించండి</value>
+  </data>
+  <data name="Before you apply" xml:space="preserve">
+    <value>దరఖాస్తు చేసే ముందు</value>
+  </data>
+  <data name="The application form" xml:space="preserve">
+    <value>దరఖాస్తు ఫారం</value>
+  </data>
+  <data name="The online form has five short steps, then a chance to check everything before you submit:" xml:space="preserve">
+    <value>ఆన్‌లైన్ ఫారంలో ఐదు చిన్న దశలు ఉన్నాయి, సమర్పించే ముందు అన్నింటినీ సరిచూసుకునే అవకాశం ఉంది:</value>
+  </data>
+  <data name="Step {0}:" xml:space="preserve">
+    <value>దశ {0}:</value>
+  </data>
+  <data name="Review and submit" xml:space="preserve">
+    <value>సరిచూసి సమర్పించండి</value>
+  </data>
+  <data name="Check your answers before you send the application." xml:space="preserve">
+    <value>దరఖాస్తు పంపే ముందు మీ సమాధానాలను సరిచూసుకోండి.</value>
+  </data>
+  <data name="After you apply" xml:space="preserve">
+    <value>దరఖాస్తు చేసిన తర్వాత</value>
+  </data>
+  <data name="Use your application reference number on the &lt;a href=&quot;#&quot;&gt;application status&lt;/a&gt; page. You will also receive updates by SMS at each stage." xml:space="preserve">
+    <value>&lt;a href="#"&gt;దరఖాస్తు స్థితి&lt;/a&gt; పేజీలో మీ దరఖాస్తు రిఫరెన్స్ సంఖ్యను ఉపయోగించండి. ప్రతి దశలో మీకు SMS ద్వారా సమాచారం కూడా అందుతుంది.</value>
+  </data>
+  <data name="Need help?" xml:space="preserve">
+    <value>సహాయం కావాలా?</value>
+  </data>
+  <data name="Contact IMSB" xml:space="preserve">
+    <value>IMSBని సంప్రదించండి</value>
+  </data>
+  <data name="How your information is used" xml:space="preserve">
+    <value>మీ సమాచారం ఎలా ఉపయోగించబడుతుంది</value>
+  </data>
+  <data name="Use this page to detail your site's privacy policy." xml:space="preserve">
+    <value>ఈ వెబ్‌సైట్ గోప్యతా విధానం వివరాలు ఇక్కడ ఇవ్వబడతాయి.</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>లోపం</value>
+  </data>
+  <data name="Error." xml:space="preserve">
+    <value>లోపం.</value>
+  </data>
+  <data name="An error occurred while processing your request." xml:space="preserve">
+    <value>మీ అభ్యర్థనను ప్రాసెస్ చేయడంలో లోపం జరిగింది.</value>
+  </data>
+  <data name="Stall application form" xml:space="preserve">
+    <value>స్టాల్ దరఖాస్తు ఫారం</value>
+  </data>
+  <data name="Declaration" xml:space="preserve">
+    <value>ప్రకటన</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>సమీక్ష</value>
+  </data>
+  <data name="(optional)" xml:space="preserve">
+    <value>(ఐచ్ఛికం)</value>
+  </data>
+  <data name="Save and continue" xml:space="preserve">
+    <value>సేవ్ చేసి కొనసాగండి</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>వెనుకకు</value>
+  </data>
+  <data name="There is a problem" xml:space="preserve">
+    <value>ఒక సమస్య ఉంది</value>
+  </data>
+  <data name="Apply for a stall at Indira Mahila Shakti Bazaar. It takes about 10 minutes." xml:space="preserve">
+    <value>ఇందిరా మహిళా శక్తి బజార్‌లో స్టాల్ కోసం దరఖాస్తు చేయండి. దీనికి సుమారు 10 నిమిషాలు పడుతుంది.</value>
+  </data>
+  <data name="Application progress" xml:space="preserve">
+    <value>దరఖాస్తు పురోగతి</value>
+  </data>
+  <data name="&lt;strong&gt;Before you start:&lt;/strong&gt; keep your SHG ID, VO and Mandal Samakhya names, and 1–5 product photos ready. All fields are required unless marked optional." xml:space="preserve">
+    <value>&lt;strong&gt;ప్రారంభించే ముందు:&lt;/strong&gt; మీ సంఘం ఐడీ, గ్రామ సంఘం మరియు మండల సమాఖ్య పేర్లు, 1–5 ఉత్పత్తి ఫోటోలు సిద్ధంగా ఉంచుకోండి. ఐచ్ఛికం అని గుర్తించినవి తప్ప అన్ని వివరాలు తప్పనిసరి.</value>
+  </data>
+  <data name="This form needs JavaScript to check your answers step by step." xml:space="preserve">
+    <value>మీ సమాధానాలను దశలవారీగా సరిచూడటానికి ఈ ఫారంకు JavaScript అవసరం.</value>
+  </data>
+  <data name="Step {0} of {1}" xml:space="preserve">
+    <value>దశ {0} / {1}</value>
+  </data>
+  <data name="Details of your Self-Help Group as in SERP records." xml:space="preserve">
+    <value>సెర్ప్ రికార్డుల ప్రకారం మీ స్వయం సహాయక సంఘం వివరాలు.</value>
+  </data>
+  <data name="SHG name" xml:space="preserve">
+    <value>సంఘం పేరు</value>
+  </data>
+  <data name="Enter the name of your SHG" xml:space="preserve">
+    <value>మీ సంఘం పేరు నమోదు చేయండి</value>
+  </data>
+  <data name="SHG ID" xml:space="preserve">
+    <value>సంఘం ఐడీ</value>
+  </data>
+  <data name="Enter your SHG ID" xml:space="preserve">
+    <value>మీ సంఘం ఐడీ నమోదు చేయండి</value>
+  </data>
+  <data name="Enter a valid SHG ID (6 to 24 letters, numbers, / or –)" xml:space="preserve">
+    <value>సరైన సంఘం ఐడీ నమోదు చేయండి (6 నుండి 24 అక్షరాలు, అంకెలు, / లేదా –)</value>
+  </data>
+  <data name="As shown on your SHG passbook or in SERP records. Letters, numbers, / or – only." xml:space="preserve">
+    <value>మీ సంఘం పాస్‌బుక్‌లో లేదా సెర్ప్ రికార్డుల్లో ఉన్నట్లు. అక్షరాలు, అంకెలు, / లేదా – మాత్రమే.</value>
+  </data>
+  <data name="Village Organisation (VO)" xml:space="preserve">
+    <value>గ్రామ సంఘం (VO)</value>
+  </data>
+  <data name="Enter the name of your Village Organisation" xml:space="preserve">
+    <value>మీ గ్రామ సంఘం పేరు నమోదు చేయండి</value>
+  </data>
+  <data name="Mandal Samakhya (MS)" xml:space="preserve">
+    <value>మండల సమాఖ్య (MS)</value>
+  </data>
+  <data name="Enter the name of your Mandal Samakhya" xml:space="preserve">
+    <value>మీ మండల సమాఖ్య పేరు నమోదు చేయండి</value>
+  </data>
+  <data name="District" xml:space="preserve">
+    <value>జిల్లా</value>
+  </data>
+  <data name="Select your district" xml:space="preserve">
+    <value>మీ జిల్లాను ఎంచుకోండి</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>ఎంచుకోండి</value>
+  </data>
+  <data name="Mandal" xml:space="preserve">
+    <value>మండలం</value>
+  </data>
+  <data name="Enter your mandal" xml:space="preserve">
+    <value>మీ మండలం నమోదు చేయండి</value>
+  </data>
+  <data name="Enter a valid mandal name" xml:space="preserve">
+    <value>సరైన మండలం పేరు నమోదు చేయండి</value>
+  </data>
+  <data name="For example: Pochampally." xml:space="preserve">
+    <value>ఉదాహరణకు: పోచంపల్లి.</value>
+  </data>
+  <data name="Village or habitation" xml:space="preserve">
+    <value>గ్రామం లేదా ఆవాసం</value>
+  </data>
+  <data name="Enter your village or habitation" xml:space="preserve">
+    <value>మీ గ్రామం లేదా ఆవాసం నమోదు చేయండి</value>
+  </data>
+  <data name="Year SHG was formed" xml:space="preserve">
+    <value>సంఘం ఏర్పడిన సంవత్సరం</value>
+  </data>
+  <data name="Enter a year between {0} and {1}" xml:space="preserve">
+    <value>{0} మరియు {1} మధ్య సంవత్సరం నమోదు చేయండి</value>
+  </data>
+  <data name="Number of members" xml:space="preserve">
+    <value>సభ్యుల సంఖ్య</value>
+  </data>
+  <data name="Enter the number of members" xml:space="preserve">
+    <value>సభ్యుల సంఖ్య నమోదు చేయండి</value>
+  </data>
+  <data name="Enter a number between 5 and 25" xml:space="preserve">
+    <value>5 మరియు 25 మధ్య సంఖ్య నమోదు చేయండి</value>
+  </data>
+  <data name="Usually 10 to 20 members." xml:space="preserve">
+    <value>సాధారణంగా 10 నుండి 20 మంది సభ్యులు.</value>
+  </data>
+  <data name="Representative and contact details" xml:space="preserve">
+    <value>ప్రతినిధి మరియు సంప్రదింపు వివరాలు</value>
+  </data>
+  <data name="The SHG member who will manage the stall and whom we can contact." xml:space="preserve">
+    <value>స్టాల్‌ను నిర్వహించే, మేము సంప్రదించగల సంఘం సభ్యురాలు.</value>
+  </data>
+  <data name="Full name" xml:space="preserve">
+    <value>పూర్తి పేరు</value>
+  </data>
+  <data name="Enter the representative's full name" xml:space="preserve">
+    <value>ప్రతినిధి పూర్తి పేరు నమోదు చేయండి</value>
+  </data>
+  <data name="Role in the SHG" xml:space="preserve">
+    <value>సంఘంలో బాధ్యత</value>
+  </data>
+  <data name="Select the representative's role" xml:space="preserve">
+    <value>ప్రతినిధి బాధ్యతను ఎంచుకోండి</value>
+  </data>
+  <data name="Age" xml:space="preserve">
+    <value>వయస్సు</value>
+  </data>
+  <data name="Enter the representative's age" xml:space="preserve">
+    <value>ప్రతినిధి వయస్సు నమోదు చేయండి</value>
+  </data>
+  <data name="Age must be between 18 and 75" xml:space="preserve">
+    <value>వయస్సు 18 మరియు 75 మధ్య ఉండాలి</value>
+  </data>
+  <data name="Father's or husband's name" xml:space="preserve">
+    <value>తండ్రి లేదా భర్త పేరు</value>
+  </data>
+  <data name="Mobile number" xml:space="preserve">
+    <value>మొబైల్ నంబర్</value>
+  </data>
+  <data name="Enter a mobile number" xml:space="preserve">
+    <value>మొబైల్ నంబర్ నమోదు చేయండి</value>
+  </data>
+  <data name="Enter a 10-digit mobile number starting with 6, 7, 8 or 9" xml:space="preserve">
+    <value>6, 7, 8 లేదా 9తో మొదలయ్యే 10 అంకెల మొబైల్ నంబర్ నమోదు చేయండి</value>
+  </data>
+  <data name="We will send application updates to this number." xml:space="preserve">
+    <value>దరఖాస్తు సమాచారాన్ని ఈ నంబర్‌కు పంపుతాం.</value>
+  </data>
+  <data name="Alternate mobile number" xml:space="preserve">
+    <value>ప్రత్యామ్నాయ మొబైల్ నంబర్</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>ఇమెయిల్</value>
+  </data>
+  <data name="Enter an email address like name@example.com" xml:space="preserve">
+    <value>name@example.com వంటి ఇమెయిల్ చిరునామా నమోదు చేయండి</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>చిరునామా</value>
+  </data>
+  <data name="Enter the address" xml:space="preserve">
+    <value>చిరునామా నమోదు చేయండి</value>
+  </data>
+  <data name="House number, street, village and mandal." xml:space="preserve">
+    <value>ఇంటి నంబర్, వీధి, గ్రామం మరియు మండలం.</value>
+  </data>
+  <data name="PIN code" xml:space="preserve">
+    <value>పిన్ కోడ్</value>
+  </data>
+  <data name="Enter the PIN code" xml:space="preserve">
+    <value>పిన్ కోడ్ నమోదు చేయండి</value>
+  </data>
+  <data name="Enter a 6-digit PIN code" xml:space="preserve">
+    <value>6 అంకెల పిన్ కోడ్ నమోదు చేయండి</value>
+  </data>
+  <data name="Product details" xml:space="preserve">
+    <value>ఉత్పత్తి వివరాలు</value>
+  </data>
+  <data name="Tell us what your SHG makes. Good photos help the committee review your application." xml:space="preserve">
+    <value>మీ సంఘం ఏమి తయారు చేస్తుందో తెలియజేయండి. మంచి ఫోటోలు కమిటీ మీ దరఖాస్తును పరిశీలించడానికి సహాయపడతాయి.</value>
+  </data>
+  <data name="Product category" xml:space="preserve">
+    <value>ఉత్పత్తి వర్గం</value>
+  </data>
+  <data name="Select a product category" xml:space="preserve">
+    <value>ఉత్పత్తి వర్గాన్ని ఎంచుకోండి</value>
+  </data>
+  <data name="Product type" xml:space="preserve">
+    <value>ఉత్పత్తి రకం</value>
+  </data>
+  <data name="Enter the type of product" xml:space="preserve">
+    <value>ఉత్పత్తి రకం నమోదు చేయండి</value>
+  </data>
+  <data name="For example: Pochampally ikat sarees, bamboo baskets, millet snacks." xml:space="preserve">
+    <value>ఉదాహరణకు: పోచంపల్లి ఇక్కత్ చీరలు, వెదురు బుట్టలు, చిరుధాన్యాల చిరుతిళ్లు.</value>
+  </data>
+  <data name="Product description" xml:space="preserve">
+    <value>ఉత్పత్తి వివరణ</value>
+  </data>
+  <data name="Describe your products" xml:space="preserve">
+    <value>మీ ఉత్పత్తులను వివరించండి</value>
+  </data>
+  <data name="Write at least 20 characters about your products" xml:space="preserve">
+    <value>మీ ఉత్పత్తుల గురించి కనీసం 20 అక్షరాలు రాయండి</value>
+  </data>
+  <data name="Materials, how it is made, sizes or varieties. At least 20 characters." xml:space="preserve">
+    <value>ముడి పదార్థాలు, తయారీ విధానం, పరిమాణాలు లేదా రకాలు. కనీసం 20 అక్షరాలు.</value>
+  </data>
+  <data name="Lowest price" xml:space="preserve">
+    <value>కనిష్ఠ ధర</value>
+  </data>
+  <data name="Enter the lowest price" xml:space="preserve">
+    <value>కనిష్ఠ ధర నమోదు చేయండి</value>
+  </data>
+  <data name="Enter a price between ₹1 and ₹1,00,00,000" xml:space="preserve">
+    <value>₹1 మరియు ₹1,00,00,000 మధ్య ధర నమోదు చేయండి</value>
+  </data>
+  <data name="Enter the price in rupees and paise, like 250 or 250.50" xml:space="preserve">
+    <value>ధరను రూపాయలు, పైసలలో నమోదు చేయండి, ఉదా. 250 లేదా 250.50</value>
+  </data>
+  <data name="Highest price" xml:space="preserve">
+    <value>గరిష్ఠ ధర</value>
+  </data>
+  <data name="Enter the highest price" xml:space="preserve">
+    <value>గరిష్ఠ ధర నమోదు చేయండి</value>
+  </data>
+  <data name="Highest price must be the same as or more than the lowest price" xml:space="preserve">
+    <value>గరిష్ఠ ధర కనిష్ఠ ధరకు సమానంగా లేదా ఎక్కువగా ఉండాలి</value>
+  </data>
+  <data name="Monthly production capacity" xml:space="preserve">
+    <value>నెలవారీ ఉత్పత్తి సామర్థ్యం</value>
+  </data>
+  <data name="For example: 40 sarees or 200 baskets a month." xml:space="preserve">
+    <value>ఉదాహరణకు: నెలకు 40 చీరలు లేదా 200 బుట్టలు.</value>
+  </data>
+  <data name="Product photos" xml:space="preserve">
+    <value>ఉత్పత్తి ఫోటోలు</value>
+  </data>
+  <data name="Upload at least one product photo" xml:space="preserve">
+    <value>కనీసం ఒక ఉత్పత్తి ఫోటో అప్‌లోడ్ చేయండి</value>
+  </data>
+  <data name="Upload 1 to 5 clear photos of your products. JPG or PNG, up to 2 MB each." xml:space="preserve">
+    <value>మీ ఉత్పత్తుల 1 నుండి 5 స్పష్టమైన ఫోటోలు అప్‌లోడ్ చేయండి. JPG లేదా PNG, ఒక్కొక్కటి 2 MB వరకు.</value>
+  </data>
+  <data name="Stall requirements" xml:space="preserve">
+    <value>స్టాల్ అవసరాలు</value>
+  </data>
+  <data name="Your preferred stall period and the facilities you need." xml:space="preserve">
+    <value>మీకు కావలసిన స్టాల్ వ్యవధి మరియు సౌకర్యాలు.</value>
+  </data>
+  <data name="How long do you want the stall?" xml:space="preserve">
+    <value>స్టాల్ ఎంత కాలం కావాలి?</value>
+  </data>
+  <data name="Select how long you want the stall" xml:space="preserve">
+    <value>స్టాల్ ఎంత కాలం కావాలో ఎంచుకోండి</value>
+  </data>
+  <data name="Preferred start month" xml:space="preserve">
+    <value>ప్రారంభించాలనుకునే నెల</value>
+  </data>
+  <data name="Select a preferred start month" xml:space="preserve">
+    <value>ప్రారంభించాలనుకునే నెలను ఎంచుకోండి</value>
+  </data>
+  <data name="Choose a month between {0} and {1}" xml:space="preserve">
+    <value>{0} మరియు {1} మధ్య నెలను ఎంచుకోండి</value>
+  </data>
+  <data name="From {0} to {1}. Allotment depends on availability." xml:space="preserve">
+    <value>{0} నుండి {1} వరకు. కేటాయింపు లభ్యతపై ఆధారపడి ఉంటుంది.</value>
+  </data>
+  <data name="Facilities needed" xml:space="preserve">
+    <value>అవసరమైన సౌకర్యాలు</value>
+  </data>
+  <data name="Has your SHG sold at an exhibition or bazaar before?" xml:space="preserve">
+    <value>మీ సంఘం ఇంతకు ముందు ఏదైనా ప్రదర్శనలో లేదా బజార్‌లో అమ్మిందా?</value>
+  </data>
+  <data name="Select yes or no" xml:space="preserve">
+    <value>అవును లేదా కాదు ఎంచుకోండి</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>అవును</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>కాదు</value>
+  </data>
+  <data name="Which exhibitions, and when?" xml:space="preserve">
+    <value>ఏ ప్రదర్శనలు, ఎప్పుడు?</value>
+  </data>
+  <data name="Tell us which exhibitions you took part in" xml:space="preserve">
+    <value>మీరు పాల్గొన్న ప్రదర్శనల గురించి తెలియజేయండి</value>
+  </data>
+  <data name="Upload supporting documents if you have them, and confirm the declaration." xml:space="preserve">
+    <value>మీ వద్ద ఉంటే సహాయక పత్రాలను అప్‌లోడ్ చేసి, ప్రకటనను ధృవీకరించండి.</value>
+  </data>
+  <data name="SHG passbook first page or SHG certificate" xml:space="preserve">
+    <value>సంఘం పాస్‌బుక్ మొదటి పేజీ లేదా సంఘం ధ్రువపత్రం</value>
+  </data>
+  <data name="JPG, PNG or PDF, up to 2 MB." xml:space="preserve">
+    <value>JPG, PNG లేదా PDF, 2 MB వరకు.</value>
+  </data>
+  <data name="Representative's identity proof" xml:space="preserve">
+    <value>ప్రతినిధి గుర్తింపు రుజువు</value>
+  </data>
+  <data name="Voter ID, ration card or any government photo ID. Please cover any Aadhaar number before uploading. JPG, PNG or PDF, up to 2 MB." xml:space="preserve">
+    <value>ఓటరు ఐడీ, రేషన్ కార్డు లేదా ఏదైనా ప్రభుత్వ ఫోటో గుర్తింపు కార్డు. అప్‌లోడ్ చేసే ముందు ఆధార్ నంబర్‌ను కప్పి ఉంచండి. JPG, PNG లేదా PDF, 2 MB వరకు.</value>
+  </data>
+  <data name="Confirm that the details are true" xml:space="preserve">
+    <value>వివరాలు నిజమని ధృవీకరించండి</value>
+  </data>
+  <data name="I confirm that the details given are true and that the products are made by members of our SHG." xml:space="preserve">
+    <value>ఇచ్చిన వివరాలు నిజమని, ఉత్పత్తులు మా సంఘ సభ్యులే తయారు చేసినవని నేను ధృవీకరిస్తున్నాను.</value>
+  </data>
+  <data name="Agree to the use of these details for your application" xml:space="preserve">
+    <value>మీ దరఖాస్తు కోసం ఈ వివరాల వినియోగానికి అంగీకరించండి</value>
+  </data>
+  <data name="I agree that SERP and IMSB may use these details to review this application and contact us about it. See the &lt;a href=&quot;{0}&quot; target=&quot;_blank&quot;&gt;privacy policy&lt;/a&gt;." xml:space="preserve">
+    <value>ఈ దరఖాస్తును పరిశీలించడానికి మరియు దీని గురించి మమ్మల్ని సంప్రదించడానికి సెర్ప్ మరియు IMSB ఈ వివరాలను ఉపయోగించవచ్చని నేను అంగీకరిస్తున్నాను. &lt;a href="{0}" target="_blank"&gt;గోప్యతా విధానం&lt;/a&gt; చూడండి.</value>
+  </data>
+  <data name="Save and review" xml:space="preserve">
+    <value>సేవ్ చేసి సమీక్షించండి</value>
+  </data>
+  <data name="Check your application" xml:space="preserve">
+    <value>మీ దరఖాస్తును సరిచూసుకోండి</value>
+  </data>
+  <data name="Check the details below. Use &lt;strong&gt;Change&lt;/strong&gt; to correct anything, then select &lt;strong&gt;Save and continue&lt;/strong&gt; on each step to come back here." xml:space="preserve">
+    <value>కింది వివరాలను సరిచూసుకోండి. ఏదైనా సరిదిద్దడానికి &lt;strong&gt;మార్చండి&lt;/strong&gt; ఉపయోగించి, ఇక్కడికి తిరిగి రావడానికి ప్రతి దశలో &lt;strong&gt;సేవ్ చేసి కొనసాగండి&lt;/strong&gt; ఎంచుకోండి.</value>
+  </data>
+  <data name="Submit application" xml:space="preserve">
+    <value>దరఖాస్తు సమర్పించండి</value>
+  </data>
+  <data name="After you submit, the application can no longer be changed." xml:space="preserve">
+    <value>సమర్పించిన తర్వాత దరఖాస్తును మార్చలేరు.</value>
+  </data>
+  <data name="Application submitted" xml:space="preserve">
+    <value>దరఖాస్తు సమర్పించబడింది</value>
+  </data>
+  <data name="Your reference number:" xml:space="preserve">
+    <value>మీ రిఫరెన్స్ సంఖ్య:</value>
+  </data>
+  <data name="Your application has been sent to the IMSB allotment committee for review. Keep this reference number. We will contact you on &lt;strong id=&quot;done-mobile&quot;&gt;&lt;/strong&gt; about your application." xml:space="preserve">
+    <value>మీ దరఖాస్తు పరిశీలన కోసం IMSB కేటాయింపు కమిటీకి పంపబడింది. ఈ రిఫరెన్స్ సంఖ్యను భద్రపరచుకోండి. మీ దరఖాస్తు గురించి &lt;strong id="done-mobile"&gt;&lt;/strong&gt; నంబర్‌లో మిమ్మల్ని సంప్రదిస్తాం.</value>
+  </data>
+  <data name="Print a copy" xml:space="preserve">
+    <value>ప్రతిని ముద్రించండి</value>
+  </data>
+  <data name="Back to home" xml:space="preserve">
+    <value>హోమ్‌కు తిరిగి వెళ్లండి</value>
+  </data>
+  <data name="Error:" xml:space="preserve">
+    <value>లోపం:</value>
+  </data>
+  <data name="Select an option" xml:space="preserve">
+    <value>ఒక ఎంపికను ఎంచుకోండి</value>
+  </data>
+  <data name="Tick this box to continue" xml:space="preserve">
+    <value>కొనసాగడానికి ఈ పెట్టెను టిక్ చేయండి</value>
+  </data>
+  <data name="Upload {0}" xml:space="preserve">
+    <value>{0} అప్‌లోడ్ చేయండి</value>
+  </data>
+  <data name="Upload no more than {0} files" xml:space="preserve">
+    <value>{0} కంటే ఎక్కువ ఫైళ్లు అప్‌లోడ్ చేయవద్దు</value>
+  </data>
+  <data name="{0} must be a JPG, PNG or PDF" xml:space="preserve">
+    <value>{0} JPG, PNG లేదా PDF అయి ఉండాలి</value>
+  </data>
+  <data name="{0} must be a JPG or PNG" xml:space="preserve">
+    <value>{0} JPG లేదా PNG అయి ఉండాలి</value>
+  </data>
+  <data name="{0} must be smaller than {1} MB" xml:space="preserve">
+    <value>{0} {1} MB కంటే చిన్నదిగా ఉండాలి</value>
+  </data>
+  <data name="Check {0}" xml:space="preserve">
+    <value>{0} సరిచూడండి</value>
+  </data>
+  <data name="Enter {0}" xml:space="preserve">
+    <value>{0} నమోదు చేయండి</value>
+  </data>
+  <data name="Enter a valid {0}" xml:space="preserve">
+    <value>సరైన {0} నమోదు చేయండి</value>
+  </data>
+  <data name="Check the format of {0}" xml:space="preserve">
+    <value>{0} ఆకృతిని సరిచూడండి</value>
+  </data>
+  <data name="Enter a whole number for {0}" xml:space="preserve">
+    <value>{0} కోసం పూర్ణ సంఖ్య నమోదు చేయండి</value>
+  </data>
+  <data name="Enter at least {0} characters" xml:space="preserve">
+    <value>కనీసం {0} అక్షరాలు నమోదు చేయండి</value>
+  </data>
+  <data name="Check this value" xml:space="preserve">
+    <value>ఈ విలువను సరిచూడండి</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>మార్చండి</value>
+  </data>
+  <data name="Not given" xml:space="preserve">
+    <value>ఇవ్వలేదు</value>
+  </data>
+  <data name="We could not reach the server. Check your connection and try again." xml:space="preserve">
+    <value>సర్వర్‌ను చేరలేకపోయాం. మీ ఇంటర్నెట్ కనెక్షన్ సరిచూసి మళ్లీ ప్రయత్నించండి.</value>
+  </data>
+  <data name="The documents are too large to upload. Use files of 2 MB or less." xml:space="preserve">
+    <value>పత్రాలు అప్‌లోడ్ చేయడానికి చాలా పెద్దవి. 2 MB లేదా అంతకంటే చిన్న ఫైళ్లు ఉపయోగించండి.</value>
+  </data>
+  <data name="The photos are too large to upload. Use up to 5 photos of 2 MB or less." xml:space="preserve">
+    <value>ఫోటోలు అప్‌లోడ్ చేయడానికి చాలా పెద్దవి. 2 MB లేదా అంతకంటే చిన్న 5 ఫోటోల వరకు ఉపయోగించండి.</value>
+  </data>
+  <data name="We could not save your details. Please try again." xml:space="preserve">
+    <value>మీ వివరాలను సేవ్ చేయలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి.</value>
+  </data>
+  <data name="{0} saved" xml:space="preserve">
+    <value>{0} సేవ్ అయింది</value>
+  </data>
+  <data name="We could not submit your application. Please try again in a few minutes." xml:space="preserve">
+    <value>మీ దరఖాస్తును సమర్పించలేకపోయాం. దయచేసి కొన్ని నిమిషాల తర్వాత మళ్లీ ప్రయత్నించండి.</value>
+  </data>
+  <data name="Your session for this application has expired. Go back to step 1 and select Save and continue." xml:space="preserve">
+    <value>ఈ దరఖాస్తు సెషన్ గడువు ముగిసింది. దశ 1కి వెళ్లి సేవ్ చేసి కొనసాగండి ఎంచుకోండి.</value>
+  </data>
+  <data name="We could not save your details. Please try again in a few minutes." xml:space="preserve">
+    <value>మీ వివరాలను సేవ్ చేయలేకపోయాం. దయచేసి కొన్ని నిమిషాల తర్వాత మళ్లీ ప్రయత్నించండి.</value>
+  </data>
+  <data name="This application has already been submitted and can no longer be changed." xml:space="preserve">
+    <value>ఈ దరఖాస్తు ఇప్పటికే సమర్పించబడింది, ఇక మార్చలేరు.</value>
+  </data>
+  <data name="This application has been rejected by IMSB and can no longer be changed or submitted." xml:space="preserve">
+    <value>IMSB ఈ దరఖాస్తును తిరస్కరించింది, కాబట్టి దీన్ని ఇక మార్చలేరు లేదా సమర్పించలేరు.</value>
+  </data>
+  <data name="Alternate mobile number must be different from the mobile number" xml:space="preserve">
+    <value>ప్రత్యామ్నాయ మొబైల్ నంబర్ మొబైల్ నంబర్‌కు భిన్నంగా ఉండాలి</value>
+  </data>
+  <data name="Upload no more than 5 files" xml:space="preserve">
+    <value>5 కంటే ఎక్కువ ఫైళ్లు అప్‌లోడ్ చేయవద్దు</value>
+  </data>
+  <data name="Step {0} has not been saved yet. Go to step {0} and select Save and continue." xml:space="preserve">
+    <value>దశ {0} ఇంకా సేవ్ కాలేదు. దశ {0}కి వెళ్లి సేవ్ చేసి కొనసాగండి ఎంచుకోండి.</value>
+  </data>
+  <data name="Enter a whole number" xml:space="preserve">
+    <value>పూర్ణ సంఖ్య నమోదు చేయండి</value>
+  </data>
+  <data name="{0} is empty" xml:space="preserve">
+    <value>{0} ఖాళీగా ఉంది</value>
+  </data>
+  <data name="{0} must be smaller than 2 MB" xml:space="preserve">
+    <value>{0} 2 MB కంటే చిన్నదిగా ఉండాలి</value>
+  </data>
+  <data name="Choose facilities from the list" xml:space="preserve">
+    <value>జాబితా నుండి సౌకర్యాలను ఎంచుకోండి</value>
+  </data>
+  <data name="SHG name must be 150 characters or fewer" xml:space="preserve">
+    <value>సంఘం పేరు 150 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Village Organisation must be 150 characters or fewer" xml:space="preserve">
+    <value>గ్రామ సంఘం పేరు 150 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Mandal Samakhya must be 150 characters or fewer" xml:space="preserve">
+    <value>మండల సమాఖ్య పేరు 150 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Mandal must be 100 characters or fewer" xml:space="preserve">
+    <value>మండలం పేరు 100 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Village must be 150 characters or fewer" xml:space="preserve">
+    <value>గ్రామం పేరు 150 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Full name must be 100 characters or fewer" xml:space="preserve">
+    <value>పూర్తి పేరు 100 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Father's or husband's name must be 100 characters or fewer" xml:space="preserve">
+    <value>తండ్రి లేదా భర్త పేరు 100 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Email must be 200 characters or fewer" xml:space="preserve">
+    <value>ఇమెయిల్ 200 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Address must be 500 characters or fewer" xml:space="preserve">
+    <value>చిరునామా 500 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Product type must be 150 characters or fewer" xml:space="preserve">
+    <value>ఉత్పత్తి రకం 150 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Description must be 2,000 characters or fewer" xml:space="preserve">
+    <value>వివరణ 2,000 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Production capacity must be 150 characters or fewer" xml:space="preserve">
+    <value>ఉత్పత్తి సామర్థ్యం 150 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="Exhibition details must be 1,000 characters or fewer" xml:space="preserve">
+    <value>ప్రదర్శనల వివరాలు 1,000 అక్షరాలు లేదా అంతకంటే తక్కువ ఉండాలి</value>
+  </data>
+  <data name="President" xml:space="preserve">
+    <value>అధ్యక్షురాలు</value>
+  </data>
+  <data name="Secretary" xml:space="preserve">
+    <value>కార్యదర్శి</value>
+  </data>
+  <data name="Treasurer" xml:space="preserve">
+    <value>కోశాధికారి</value>
+  </data>
+  <data name="Book keeper" xml:space="preserve">
+    <value>బుక్ కీపర్</value>
+  </data>
+  <data name="Member" xml:space="preserve">
+    <value>సభ్యురాలు</value>
+  </data>
+  <data name="15 days" xml:space="preserve">
+    <value>15 రోజులు</value>
+  </data>
+  <data name="1 month" xml:space="preserve">
+    <value>1 నెల</value>
+  </data>
+  <data name="3 months" xml:space="preserve">
+    <value>3 నెలలు</value>
+  </data>
+  <data name="Electricity" xml:space="preserve">
+    <value>విద్యుత్</value>
+  </data>
+  <data name="Display table or rack" xml:space="preserve">
+    <value>ప్రదర్శన బల్ల లేదా ర్యాక్</value>
+  </data>
+  <data name="Storage space" xml:space="preserve">
+    <value>నిల్వ స్థలం</value>
+  </data>
+  <data name="Water connection (food stalls)" xml:space="preserve">
+    <value>నీటి కనెక్షన్ (ఆహార స్టాళ్లకు)</value>
+  </data>
+  <data name="FISHERIES" xml:space="preserve">
+    <value>మత్స్య శాఖ</value>
+  </data>
+  <data name="PRISON" xml:space="preserve">
+    <value>జైళ్ల శాఖ</value>
+  </data>
+  <data name="Singareni" xml:space="preserve">
+    <value>సింగరేణి</value>
+  </data>
+  <data name="TRANSGENDER" xml:space="preserve">
+    <value>ట్రాన్స్‌జెండర్</value>
+  </data>
+  <data name="VIJAYA DAIRY" xml:space="preserve">
+    <value>విజయ డెయిరీ</value>
+  </data>
+  <data name="TG TOURISM" xml:space="preserve">
+    <value>తెలంగాణ పర్యాటకం</value>
+  </data>
+  <data name="Millet Café" xml:space="preserve">
+    <value>మిల్లెట్ కేఫ్</value>
+  </data>
+  <data name="Adilabad" xml:space="preserve">
+    <value>ఆదిలాబాద్</value>
+  </data>
+  <data name="Bhadradri Kothagudem" xml:space="preserve">
+    <value>భద్రాద్రి కొత్తగూడెం</value>
+  </data>
+  <data name="Hanumakonda" xml:space="preserve">
+    <value>హనుమకొండ</value>
+  </data>
+  <data name="Hyderabad" xml:space="preserve">
+    <value>హైదరాబాద్</value>
+  </data>
+  <data name="Jagtial" xml:space="preserve">
+    <value>జగిత్యాల</value>
+  </data>
+  <data name="Jangaon" xml:space="preserve">
+    <value>జనగాం</value>
+  </data>
+  <data name="Jayashankar Bhupalpally" xml:space="preserve">
+    <value>జయశంకర్ భూపాలపల్లి</value>
+  </data>
+  <data name="Jogulamba Gadwal" xml:space="preserve">
+    <value>జోగులాంబ గద్వాల</value>
+  </data>
+  <data name="Kamareddy" xml:space="preserve">
+    <value>కామారెడ్డి</value>
+  </data>
+  <data name="Karimnagar" xml:space="preserve">
+    <value>కరీంనగర్</value>
+  </data>
+  <data name="Khammam" xml:space="preserve">
+    <value>ఖమ్మం</value>
+  </data>
+  <data name="Kumuram Bheem Asifabad" xml:space="preserve">
+    <value>కుమురం భీం ఆసిఫాబాద్</value>
+  </data>
+  <data name="Mahabubabad" xml:space="preserve">
+    <value>మహబూబాబాద్</value>
+  </data>
+  <data name="Mahabubnagar" xml:space="preserve">
+    <value>మహబూబ్‌నగర్</value>
+  </data>
+  <data name="Mancherial" xml:space="preserve">
+    <value>మంచిర్యాల</value>
+  </data>
+  <data name="Medak" xml:space="preserve">
+    <value>మెదక్</value>
+  </data>
+  <data name="Medchal–Malkajgiri" xml:space="preserve">
+    <value>మేడ్చల్–మల్కాజ్‌గిరి</value>
+  </data>
+  <data name="Mulugu" xml:space="preserve">
+    <value>ములుగు</value>
+  </data>
+  <data name="Nagarkurnool" xml:space="preserve">
+    <value>నాగర్‌కర్నూల్</value>
+  </data>
+  <data name="Nalgonda" xml:space="preserve">
+    <value>నల్గొండ</value>
+  </data>
+  <data name="Narayanpet" xml:space="preserve">
+    <value>నారాయణపేట</value>
+  </data>
+  <data name="Nirmal" xml:space="preserve">
+    <value>నిర్మల్</value>
+  </data>
+  <data name="Nizamabad" xml:space="preserve">
+    <value>నిజామాబాద్</value>
+  </data>
+  <data name="Peddapalli" xml:space="preserve">
+    <value>పెద్దపల్లి</value>
+  </data>
+  <data name="Rajanna Sircilla" xml:space="preserve">
+    <value>రాజన్న సిరిసిల్ల</value>
+  </data>
+  <data name="Ranga Reddy" xml:space="preserve">
+    <value>రంగారెడ్డి</value>
+  </data>
+  <data name="Sangareddy" xml:space="preserve">
+    <value>సంగారెడ్డి</value>
+  </data>
+  <data name="Siddipet" xml:space="preserve">
+    <value>సిద్దిపేట</value>
+  </data>
+  <data name="Suryapet" xml:space="preserve">
+    <value>సూర్యాపేట</value>
+  </data>
+  <data name="Vikarabad" xml:space="preserve">
+    <value>వికారాబాద్</value>
+  </data>
+  <data name="Wanaparthy" xml:space="preserve">
+    <value>వనపర్తి</value>
+  </data>
+  <data name="Warangal" xml:space="preserve">
+    <value>వరంగల్</value>
+  </data>
+  <data name="Yadadri Bhuvanagiri" xml:space="preserve">
+    <value>యాదాద్రి భువనగిరి</value>
+  </data>
+  <data name="Request ID:" xml:space="preserve"><value>అభ్యర్థన ID:</value></data>
+</root>

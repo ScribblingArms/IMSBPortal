@@ -1,0 +1,9 @@
+﻿@using IMSB.Admin
+@using IMSB.Admin.Areas.Portal
+@using IMSB.Admin.Areas.Portal.Models
+@using IMSB.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@* L: plain text in the visitor's language; H: text that carries markup (<strong>, links). The English text is the key. *@
+@inject Microsoft.Extensions.Localization.IStringLocalizer<PortalResource> L
+@inject IHtmlLocalizer<PortalResource> H

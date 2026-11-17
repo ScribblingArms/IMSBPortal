@@ -1,0 +1,118 @@
+@{
+    ViewData["Title"] = L["Apply for a Stall"].Value;
+    ViewData["FullWidth"] = true;
+
+    var facts = new[]
+    {
+        ("bi-people", L["Who can apply"].Value, L["Women-led Self-Help Groups (SHGs), SHG federations and individual women artisans from Telangana."].Value),
+        ("bi-folder2-open", L["What you need"].Value, L["SHG ID, Village Organisation and Mandal Samakhya names, representative's contact details, and 1 to 5 photos of your products. SHG passbook or certificate and identity proof are optional."].Value),
+        ("bi-cash-coin", L["Fees"].Value, L["Any stall fee will be stated in the notification for each allotment cycle."].Value),
+        ("bi-calendar-event", L["Application dates"].Value, L["Announced on this website for each allotment cycle."].Value),
+        ("bi-arrow-repeat", L["How stalls are allotted"].Value, L["Applications are reviewed by the IMSB allotment committee. Stalls are allotted on rotation so that SHGs from all districts get a chance to take part."].Value),
+    };
+
+    var steps = new[]
+    {
+        (L["SHG details"].Value, L["Name, SHG ID, Village Organisation, Mandal Samakhya, district, mandal and village."].Value),
+        (L["Representative"].Value, L["The member who will manage the stall, with contact details."].Value),
+        (L["Products"].Value, L["Category, description, price range and photos."].Value),
+        (L["Stall needs"].Value, L["How long, from when, and facilities."].Value),
+        (L["Documents and declaration"].Value, L["Upload supporting documents and confirm the declaration."].Value),
+    };
+
+    var formUrl = Url.Action("StallApplyForm", "Home");
+}
+
+<!-- Page head -->
+<div class="page-head">
+    <div class="container py-4 py-lg-5">
+        <nav aria-label="@L["Breadcrumb"]">
+            <ol class="breadcrumb mb-3">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">@L["Home"]</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@L["Apply for a Stall"]</li>
+            </ol>
+        </nav>
+        <h1 class="display-5 fw-semibold section-title mb-2">@L["Apply for a Stall"]</h1>
+        <p class="lead text-body-secondary mb-2" style="max-width: 42rem;">@L["SHGs and women artisans from Telangana can apply for a stall at Indira Mahila Shakti Bazaar."]</p>
+        <p class="page-meta mb-0"><i class="bi bi-clock-history me-1" aria-hidden="true"></i>@L["Last reviewed:"] @L["22 October 2026"]</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Main content -->
+        <div class="col-lg-8">
+            <div class="alert alert-imsb d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 p-4 mb-5" role="status" id="start">
+                <div class="d-flex gap-3">
+                    <i class="bi bi-megaphone-fill fs-3 text-imsb-orange" aria-hidden="true"></i>
+                    <div>
+                        <p class="fw-semibold mb-1">@L["Applications are open for the current allotment cycle."]</p>
+                        <p class="mb-0">@H["Apply by <strong>{0}</strong>.", L["30 November 2026"].Value]</p>
+                    </div>
+                </div>
+                <a class="btn btn-imsb btn-lg text-nowrap" href="@formUrl">@L["Start your application"]</a>
+            </div>
+
+            <section class="mb-5" aria-labelledby="before-title">
+                <h2 id="before-title" class="h3 section-title mb-4">@L["Before you apply"]</h2>
+                <div class="list-group fact-list shadow-sm">
+                    @foreach (var f in facts)
+                    {
+                        <div class="list-group-item d-flex gap-3 p-3 p-md-4">
+                            <span class="fact-icon"><i class="bi @f.Item1" aria-hidden="true"></i></span>
+                            <dl class="mb-0">
+                                <dt class="mb-1">@f.Item2</dt>
+                                <dd class="mb-0 text-body-secondary">@f.Item3</dd>
+                            </dl>
+                        </div>
+                    }
+                </div>
+            </section>
+
+            <section class="mb-5" aria-labelledby="form-title">
+                <h2 id="form-title" class="h3 section-title mb-2">@L["The application form"]</h2>
+                <p class="text-body-secondary mb-4">@L["The online form has five short steps, then a chance to check everything before you submit:"]</p>
+                <ol class="list-unstyled step-list mb-4">
+                    @for (var i = 0; i < steps.Length; i++)
+                    {
+                        <li class="d-flex gap-3">
+                            <span class="step-num" aria-hidden="true">@(i + 1)</span>
+                            <div class="pb-4">
+                                <span class="visually-hidden">@L["Step {0}:", i + 1] </span>
+                                <h3 class="step-heading mb-1">@steps[i].Item1</h3>
+                                <p class="mb-0 text-body-secondary">@steps[i].Item2</p>
+                            </div>
+                        </li>
+                    }
+                    <li class="d-flex gap-3">
+                        <span class="step-num step-num-done" aria-hidden="true"><i class="bi bi-check-lg"></i></span>
+                        <div>
+                            <h3 class="step-heading mb-1">@L["Review and submit"]</h3>
+                            <p class="mb-0 text-body-secondary">@L["Check your answers before you send the application."]</p>
+                        </div>
+                    </li>
+                </ol>
+                <a class="btn btn-imsb btn-lg" href="@formUrl">@L["Start your application"]</a>
+            </section>
+
+            <section aria-labelledby="after-title">
+                <h2 id="after-title" class="h3 section-title mb-3">@L["After you apply"]</h2>
+                <p>@H["Use your application reference number on the <a href=\"#\">application status</a> page. You will also receive updates by SMS at each stage."]</p>
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="col-lg-4" aria-labelledby="apply-aside">
+            <div class="card border-0 shadow-sm help-card sticky-lg-top">
+                <div class="card-body p-4">
+                    <h2 id="apply-aside" class="h5 section-title mb-3"><i class="bi bi-question-circle me-2" aria-hidden="true"></i>@L["Need help?"]</h2>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">@L["Help and FAQs"] <i class="bi bi-chevron-right small" aria-hidden="true"></i></a>
+                        <a href="#contact" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">@L["Contact IMSB"] <i class="bi bi-chevron-right small" aria-hidden="true"></i></a>
+                        <a asp-controller="Home" asp-action="Privacy" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">@L["How your information is used"] <i class="bi bi-chevron-right small" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>

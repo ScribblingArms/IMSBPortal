@@ -660,4 +660,10 @@ C:\Users\Kasyap\AppData\Local\Temp\claude\820c3712f0da6643\43179f57-1e3b-4f6d-99
 C:\Users\Kasyap\AppData\Local\Temp\claude\820c3712f0da6643\43179f57-1e3b-4f6d-9961-209a3a435ecc\scratchpad\testout5\hi-IN\IMSB.Admin.resources.dll
 C:\Users\Kasyap\AppData\Local\Temp\claude\820c3712f0da6643\43179f57-1e3b-4f6d-9961-209a3a435ecc\scratchpad\testout5\ta-IN\IMSB.Admin.resources.dll
 C:\Users\Kasyap\AppData\Local\Temp\claude\820c3712f0da6643\43179f57-1e3b-4f6d-9961-209a3a435ecc\scratchpad\testout5\te-IN\IMSB.Admin.resources.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\bin\Debug\net8.0\hi\IMSB.Admin.resources.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\bin\Debug\net8.0\te\IMSB.Admin.resources.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\IMSB.Admin.Resources.PortalResource.hi.resources
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\IMSB.Admin.Resources.PortalResource.te.resources
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\hi\IMSB.Admin.resources.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\te\IMSB.Admin.resources.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Admin\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
