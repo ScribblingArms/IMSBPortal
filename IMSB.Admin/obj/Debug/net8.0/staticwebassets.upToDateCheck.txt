@@ -23,9 +23,11 @@ wwwroot\js\ot-assignments.js
 wwwroot\js\payroll.js
 wwwroot\js\reports.js
 wwwroot\js\sales.js
+wwwroot\js\shg-applications.js
 wwwroot\js\site.js
 wwwroot\js\staff.js
 wwwroot\js\stalls.js
+wwwroot\js\user-management.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
 wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
 wwwroot\lib\bootstrap\dist\css\bootstrap.min.css

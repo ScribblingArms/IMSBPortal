@@ -9,7 +9,8 @@ using static IMSB.Common.CommonHelpers;
 namespace IMSB.Api.Controllers
 {
     /// <summary>Stalls: the list and map, allocation to artisans, vacating, and reallocation requests.</summary>
-    [Authorize(Roles = "Admin")]
+    // Admin, District Officers and State Admin Officers, as in the admin portal
+    [Authorize(Roles = UserRoles.StallsAccess)]
     public class StallsController : ApiControllerBase
     {
         private const int RecentReallocations = 50;
@@ -68,7 +69,7 @@ namespace IMSB.Api.Controllers
 
             var errors = new Dictionary<string, string>();
             var status = dto.Status?.Trim().ToUpperInvariant();
-            if (stall.ArtisanId != null)
+            if (stall.IsHeld)
             {
                 if (!string.IsNullOrEmpty(status) && status != StallStatuses.Occupied) errors["status"] = L["ValStallOccupiedStatus"];
                 status = StallStatuses.Occupied;
@@ -94,7 +95,7 @@ namespace IMSB.Api.Controllers
         {
             var stall = await _stalls.FindAsync(code);
             if (stall == null) return NotFound();
-            if (stall.ArtisanId != null) return Invalid("stall", "ValStallOccupiedDelete");
+            if (stall.IsHeld) return Invalid("stall", "ValStallOccupiedDelete");
             var products = await _stalls.ProductCountAsync(stall.StallCode);
             if (products > 0) return Invalid("stall", "ValStallHasProducts", products);
 
@@ -142,7 +143,7 @@ namespace IMSB.Api.Controllers
         {
             var stall = await _stalls.FindAsync(code);
             if (stall == null) return NotFound();
-            if (stall.ArtisanId == null) return Invalid("stall", "ValStallNotOccupied");
+            if (!stall.IsHeld) return Invalid("stall", "ValStallNotOccupied");
 
             ClearArtisan(stall);
             foreach (var r in await _stalls.OpenReallocationsAsync(stall.Id))
@@ -158,6 +159,8 @@ namespace IMSB.Api.Controllers
             var errors = new Dictionary<string, string>();
             var stall = string.IsNullOrWhiteSpace(dto.StallCode) ? null : await _stalls.FindAsync(dto.StallCode.Trim().ToUpper(), includeArtisan: true);
             if (stall == null) errors["stall_code"] = L["ValSelectStall"];
+            // a stall held by an SHG is freed with vacate; reallocation moves stalls between artisans
+            else if (stall.ShgDetailId != null) errors["stall_code"] = L["ValStallHeldByShg"];
             else if (stall.ArtisanId == null) errors["stall_code"] = L["ValStallNotOccupied"];
             else if (await _stalls.HasPendingReallocationAsync(stall.Id)) errors["stall_code"] = L["ValReallocationPending"];
 
@@ -206,7 +209,8 @@ namespace IMSB.Api.Controllers
 
             var stall = await _stalls.FindByIdAsync(request.StallId);
             // the stall changed hands since the request was made
-            if (stall == null || stall.ArtisanId != request.CurrentArtisanId) return Invalid("request", "ValReallocationStale");
+            if (stall == null || stall.ArtisanId != request.CurrentArtisanId || stall.ShgDetailId != null)
+                return Invalid("request", "ValReallocationStale");
 
             if (request.NewArtisanId != null)
             {
@@ -256,20 +260,14 @@ namespace IMSB.Api.Controllers
 
         private void AssignArtisan(Stall stall, Artisan artisan, DateTime allotted, DateTime? agreementEnd, int? categoryId)
         {
-            stall.ArtisanId = artisan.Id;
-            stall.Status = StallStatuses.Occupied;
-            stall.AllottedDate = allotted;
-            stall.AgreementEndDate = agreementEnd;
-            stall.CategoryId = categoryId;
+            stall.AssignTo(artisan, allotted, agreementEnd, categoryId);
             Touch(stall);
         }
 
+        /// <summary>Frees the stall from its artisan or SHG.</summary>
         private void ClearArtisan(Stall stall)
         {
-            stall.ArtisanId = null;
-            stall.Status = StallStatuses.Vacant;
-            stall.AllottedDate = null;
-            stall.AgreementEndDate = null;
+            stall.ClearHolder();
             Touch(stall);
         }
 

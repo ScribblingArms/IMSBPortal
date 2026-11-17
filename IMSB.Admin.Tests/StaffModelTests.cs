@@ -23,10 +23,10 @@ public class StaffModelTests
     public void Each_saved_staff_gets_a_distinct_id()
     {
         using var context = TestHelpers.CreateContext();
-        var first = TestHelpers.ExistingStaff("EMP-9001", "First", "9000000001");
-        var second = TestHelpers.ExistingStaff("EMP-9002", "Second", "9000000002");
+        var first = TestHelpers.ExistingStaff("9001", "First", "9000000001");
+        var second = TestHelpers.ExistingStaff("9002", "Second", "9000000002");
         first.Id = second.Id = 0;   // let the store number them
-        context.Staff.AddRange(first, second);
+        context.AddEmployees(first, second);
         context.SaveChanges();
         Assert.True(first.Id > 0 && second.Id > 0);
         Assert.NotEqual(first.Id, second.Id);

@@ -158,6 +158,8 @@ namespace IMSB.Admin.Controllers
             {
                 // the new artisan has no id until it is saved: link by navigation, EF fills in ArtisanId
                 stall.Artisan = artisan;
+                stall.IsArtisan = true;   // held by an artisan (false = vacant or held by an SHG application)
+                stall.ShgDetailId = null;
                 stall.Status = StallStatuses.Occupied;
                 stall.AllottedDate = DateTime.Today;
                 stall.CategoryId = artisan.CategoryId;

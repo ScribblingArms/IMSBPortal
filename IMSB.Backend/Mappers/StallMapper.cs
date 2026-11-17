@@ -20,11 +20,12 @@ namespace IMSB.Backend.Mappers
 
         public static StallListItem ToListItem(this Stall s, bool pendingReallocation, IReadOnlyDictionary<string, int> productCounts) => new(
             s.StallCode, s.Name, s.Block, s.RowLabel, s.Location, s.Status, s.CategoryId?.ToString(),
-            s.Category?.Name, s.Artisan?.ArtisanCode, s.Artisan?.FullName, OptionalDate(s.AllottedDate), OptionalDate(s.AgreementEndDate), s.MonthlyRent,
+            // for a stall held by an SHG application: the SHG's name and the application's reference number
+            s.Category?.Name, s.HolderCode, s.HolderName, OptionalDate(s.AllottedDate), OptionalDate(s.AgreementEndDate), s.MonthlyRent,
             s.Remarks, productCounts.GetValueOrDefault(s.StallCode.ToUpperInvariant()), pendingReallocation);
 
         public static StallMapItem ToMapItem(this Stall s, bool pendingReallocation) =>
-            new(s.StallCode, s.Block, s.Status, s.Artisan?.FullName, s.Category?.Name, pendingReallocation);
+            new(s.StallCode, s.Block, s.Status, s.HolderName, s.Category?.Name, pendingReallocation);
 
         public static FreeArtisanOption ToFreeOption(this Artisan a) => new(a.ArtisanCode, a.FullName, a.CategoryId.ToString(), a.Category?.Name);
 

@@ -32,6 +32,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IMSB.Admin\IMSB.Admin.csproj" />
+    <!-- aliased: IMSB.Api has its own top-level Program, which must not clash with IMSB.Admin's (WebApplicationFactory<Program>) -->
+    <ProjectReference Include="..\IMSB.Api\IMSB.Api.csproj" Aliases="ImsbApi" />
   </ItemGroup>
 
 </Project>

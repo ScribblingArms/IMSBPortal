@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using IMSB.Models;
 using System.Text.Json;
 using IMSB.Admin.Controllers;
@@ -16,19 +16,19 @@ internal static class AttendanceTestHelpers
 
     /// <summary>
     /// Departments Sales / Admin and shifts MORNING (8AM-4PM, 8h) / EVENING (4PM-10PM, 6h) from TestHelpers, plus
-    /// EMP001 Meena Kumari (Sales, MORNING, "Active"), EMP002 Ravi Shankar (Admin, "evening"), EMP003 Old Timer (INACTIVE),
-    /// EMP004 Leela Devi (Admin, ON_LEAVE) and EMP005 New Joiner (Sales, joins today).
+    /// 1 Meena Kumari (Sales, MORNING, "Active"), 2 Ravi Shankar (Admin, "evening"), 3 Old Timer (INACTIVE),
+    /// 4 Leela Devi (Admin, ON_LEAVE) and 5 New Joiner (Sales, joins today).
     /// </summary>
     public static IMSBContext SeededContext()
     {
         var ctx = TestHelpers.CreateContext();
-        var joiner = TestHelpers.ExistingStaff("EMP005", "New Joiner", "900000005");
+        var joiner = TestHelpers.ExistingStaff("5", "New Joiner", "900000005");
         joiner.JoinDate = DateTime.Today;
-        ctx.Staff.AddRange(
-            TestHelpers.ExistingStaff("EMP001", "Meena Kumari", "900000001", status: "Active", dept: TestHelpers.SalesDept, shift: "MORNING"),
-            TestHelpers.ExistingStaff("EMP002", "Ravi Shankar", "900000002", dept: TestHelpers.AdminDept, shift: "evening"),
-            TestHelpers.ExistingStaff("EMP003", "Old Timer", "900000003", status: "INACTIVE"),
-            TestHelpers.ExistingStaff("EMP004", "Leela Devi", "900000004", status: "ON_LEAVE", dept: TestHelpers.AdminDept),
+        ctx.AddEmployees(
+            TestHelpers.ExistingStaff("1", "Meena Kumari", "900000001", status: "Active", dept: TestHelpers.SalesDept, shift: "MORNING"),
+            TestHelpers.ExistingStaff("2", "Ravi Shankar", "900000002", dept: TestHelpers.AdminDept, shift: "evening"),
+            TestHelpers.ExistingStaff("3", "Old Timer", "900000003", status: "INACTIVE"),
+            TestHelpers.ExistingStaff("4", "Leela Devi", "900000004", status: "ON_LEAVE", dept: TestHelpers.AdminDept),
             joiner);
         ctx.SaveChanges();
         return ctx;
@@ -52,10 +52,10 @@ internal static class AttendanceTestHelpers
     public static AttendanceSheetDto Sheet(DateTime day, params AttendanceEntryDto[] entries) =>
         new() { Date = day.ToString("yyyy-MM-dd"), Entries = entries.ToList() };
 
-    /// <summary>EMP001 present 08:00-18:00 (10h, 2h overtime) and EMP002 absent on <see cref="Day"/>.</summary>
+    /// <summary>1 present 08:00-18:00 (10h, 2h overtime) and 2 absent on <see cref="Day"/>.</summary>
     public static async Task SaveDefaultDay(AttendanceController c)
     {
-        var result = await c.Save(Sheet(Day, E("EMP001", "PRESENT", "08:00", "18:00"), E("EMP002", "ABSENT")));
+        var result = await c.Save(Sheet(Day, E("1", "PRESENT", "08:00", "18:00"), E("2", "ABSENT")));
         Assert.IsType<OkObjectResult>(result);
     }
 
@@ -151,7 +151,7 @@ public class AttendanceControllerTests
 {
     private static readonly DateTime Day = AttendanceTestHelpers.Day;
 
-    private static async Task<LeaveBalanceRow> Balance(IMSBContext context, string employeeId = "EMP001")
+    private static async Task<LeaveBalanceRow> Balance(IMSBContext context, string employeeId = "1")
     {
         var result = Assert.IsType<ViewResult>(await new LeavesController(new IMSB.Backend.Leaves(context), TestHelpers.LocalizerFactory()).Index());
         var model = Assert.IsType<LeaveManagementViewModel>(result.Model);
@@ -167,9 +167,9 @@ public class AttendanceControllerTests
         var c = AttendanceTestHelpers.Create(ctx, "clerk@imsb");
 
         var result = await c.Save(AttendanceTestHelpers.Sheet(Day,
-            AttendanceTestHelpers.E("EMP001", "PRESENT", "08:00", "18:30"),         // MORNING 8h: 10.5h, 2.5h OT
-            AttendanceTestHelpers.E("emp002", "present", "16:00", "23:30"),         // "evening" → EVENING 6h: 7.5h, 1.5h OT
-            AttendanceTestHelpers.E("EMP004", "LEAVE", "09:00", "17:00", " sick ")  // times are not kept for leave
+            AttendanceTestHelpers.E("1", "PRESENT", "08:00", "18:30"),         // MORNING 8h: 10.5h, 2.5h OT
+            AttendanceTestHelpers.E(" 2 ", "present", "16:00", "23:30"),         // "evening" → EVENING 6h: 7.5h, 1.5h OT
+            AttendanceTestHelpers.E("4", "LEAVE", "09:00", "17:00", " sick ")  // times are not kept for leave
         ));
 
         var json = TestHelpers.OkJson(result);
@@ -177,7 +177,7 @@ public class AttendanceControllerTests
         Assert.Equal(3, json.GetProperty("created").GetInt32());
         Assert.Equal(0, json.GetProperty("updated").GetInt32());
 
-        var meena = ctx.AttendanceRecords.Single(r => r.Staff!.EmployeeId == "EMP001");
+        var meena = ctx.AttendanceRecords.Single(r => r.Staff!.EmployeeId == "1");
         Assert.Equal(Day, meena.AttendanceDate);
         Assert.Equal(AttendanceStatuses.Present, meena.Status);
         Assert.Equal(new TimeSpan(8, 0, 0), meena.InTime);
@@ -185,11 +185,11 @@ public class AttendanceControllerTests
         Assert.Equal(2.5m, meena.OvertimeHours);
         Assert.Equal("clerk@imsb", meena.CreatedBy);
 
-        var ravi = ctx.AttendanceRecords.Single(r => r.Staff!.EmployeeId == "EMP002");
+        var ravi = ctx.AttendanceRecords.Single(r => r.Staff!.EmployeeId == "2");
         Assert.Equal(7.5m, ravi.WorkedHours);
         Assert.Equal(1.5m, ravi.OvertimeHours);
 
-        var leela = ctx.AttendanceRecords.Single(r => r.Staff!.EmployeeId == "EMP004");
+        var leela = ctx.AttendanceRecords.Single(r => r.Staff!.EmployeeId == "4");
         Assert.Equal(AttendanceStatuses.Leave, leela.Status);
         Assert.Null(leela.InTime);
         Assert.Null(leela.OutTime);
@@ -204,14 +204,14 @@ public class AttendanceControllerTests
         await AttendanceTestHelpers.SaveDefaultDay(AttendanceTestHelpers.Create(ctx, "first@imsb"));
 
         var result = await AttendanceTestHelpers.Create(ctx, "second@imsb").Save(AttendanceTestHelpers.Sheet(Day,
-            AttendanceTestHelpers.E("EMP001", "HALF_DAY", "08:00", "12:00"),
-            AttendanceTestHelpers.E("EMP004", "PRESENT", "08:00", "16:00")));
+            AttendanceTestHelpers.E("1", "HALF_DAY", "08:00", "12:00"),
+            AttendanceTestHelpers.E("4", "PRESENT", "08:00", "16:00")));
 
         var json = TestHelpers.OkJson(result);
         Assert.Equal(1, json.GetProperty("created").GetInt32());
         Assert.Equal(1, json.GetProperty("updated").GetInt32());
         Assert.Equal(3, ctx.AttendanceRecords.Count());
-        var meena = Assert.Single(ctx.AttendanceRecords.Where(r => r.Staff!.EmployeeId == "EMP001"));
+        var meena = Assert.Single(ctx.AttendanceRecords.Where(r => r.Staff!.EmployeeId == "1"));
         Assert.Equal(AttendanceStatuses.HalfDay, meena.Status);
         Assert.Equal(4m, meena.WorkedHours);
         Assert.Equal(0m, meena.OvertimeHours);
@@ -225,10 +225,13 @@ public class AttendanceControllerTests
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
         var attendanceDay = DateTime.Today;
-        var employee = ctx.Staff.Single(person => person.EmployeeId == "EMP001");
-        employee.StaffCategory = "Operators";
-        var secondEmployee = ctx.Staff.Single(person => person.EmployeeId == "EMP002");
-        secondEmployee.StaffCategory = "Clerks";
+        // the staff category is the name of the employee's dbo.departments row
+        ctx.Departments.AddRange(new Department { Id = 9101, Name = "Operators" }, new Department { Id = 9102, Name = "Clerks" });
+        ctx.Employees.Single(e => e.EmpId == 1).DepartmentId = 9101;
+        ctx.Employees.Single(e => e.EmpId == 2).DepartmentId = 9102;
+        ctx.SaveChanges();
+        var employee = ctx.Staff.Single(person => person.EmployeeId == "1");
+        var secondEmployee = ctx.Staff.Single(person => person.EmployeeId == "2");
         ctx.LeaveEntitlements.Add(new LeaveEntitlement
         {
             StaffId = employee.Id,
@@ -251,20 +254,20 @@ public class AttendanceControllerTests
         var attendance = AttendanceTestHelpers.Create(ctx);
 
         Assert.IsType<OkObjectResult>(await attendance.Save(AttendanceTestHelpers.Sheet(attendanceDay,
-            AttendanceTestHelpers.E("EMP001", "LEAVE"),
-            AttendanceTestHelpers.E("EMP002", "LEAVE"))));
+            AttendanceTestHelpers.E("1", "LEAVE"),
+            AttendanceTestHelpers.E("2", "LEAVE"))));
         Assert.Equal(1m, (await Balance(ctx)).Taken);
         Assert.Equal(0m, (await Balance(ctx)).Balance);
         Assert.True(ctx.AttendanceRecords.Single(record => record.StaffId == secondEmployee.Id).LeaveWithoutPay);
-        Assert.Equal(0m, (await Balance(ctx, "EMP002")).Taken);
+        Assert.Equal(0m, (await Balance(ctx, "2")).Taken);
 
         Assert.IsType<OkObjectResult>(await attendance.Save(AttendanceTestHelpers.Sheet(attendanceDay,
-            AttendanceTestHelpers.E("EMP001", "LEAVE"),
-            AttendanceTestHelpers.E("EMP002", "LEAVE"))));
+            AttendanceTestHelpers.E("1", "LEAVE"),
+            AttendanceTestHelpers.E("2", "LEAVE"))));
         Assert.Single(ctx.AttendanceRecords.Where(record => record.StaffId == employee.Id));
         Assert.Equal(1m, (await Balance(ctx)).Taken);
 
-        var leaveId = AttendanceTestHelpers.RecordId(ctx, "EMP001", attendanceDay);
+        var leaveId = AttendanceTestHelpers.RecordId(ctx, "1", attendanceDay);
         TestHelpers.OkJson(await attendance.Update(leaveId,
             new AttendanceUpdateDto { Status = "PRESENT", InTime = "08:00" }));
         Assert.Equal(0m, (await Balance(ctx)).Taken);
@@ -280,25 +283,25 @@ public class AttendanceControllerTests
         Assert.Equal(1m, (await Balance(ctx)).Taken);
         Assert.Equal(0m, (await Balance(ctx)).Balance);
 
-        var secondId = AttendanceTestHelpers.RecordId(ctx, "EMP002", attendanceDay);
+        var secondId = AttendanceTestHelpers.RecordId(ctx, "2", attendanceDay);
         TestHelpers.OkJson(await attendance.Update(secondId,
             new AttendanceUpdateDto { Status = "HALF_DAY", InTime = "08:00", OutTime = "12:00" }));
-        Assert.Equal(0.5m, (await Balance(ctx, "EMP002")).Taken);
+        Assert.Equal(0.5m, (await Balance(ctx, "2")).Taken);
         TestHelpers.OkJson(await attendance.Update(secondId,
             new AttendanceUpdateDto { Status = "LEAVE" }));
         Assert.True(ctx.AttendanceRecords.Single(record => record.Id == int.Parse(secondId)).LeaveWithoutPay);
-        Assert.Equal(0m, (await Balance(ctx, "EMP002")).Taken);
+        Assert.Equal(0m, (await Balance(ctx, "2")).Taken);
         TestHelpers.OkJson(await attendance.Update(secondId,
             new AttendanceUpdateDto { Status = "ABSENT" }));
         Assert.False(ctx.AttendanceRecords.Single(record => record.Id == int.Parse(secondId)).LeaveWithoutPay);
-        Assert.Equal(0m, (await Balance(ctx, "EMP002")).Taken);
+        Assert.Equal(0m, (await Balance(ctx, "2")).Taken);
     }
 
     [Fact]
     public async Task Present_without_an_out_time_is_saved_with_no_hours_yet()
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
-        var result = await AttendanceTestHelpers.Create(ctx).Save(AttendanceTestHelpers.Sheet(Day, AttendanceTestHelpers.E("EMP001", "PRESENT", "08:00")));
+        var result = await AttendanceTestHelpers.Create(ctx).Save(AttendanceTestHelpers.Sheet(Day, AttendanceTestHelpers.E("1", "PRESENT", "08:00")));
 
         Assert.IsType<OkObjectResult>(result);
         var r = ctx.AttendanceRecords.Single();
@@ -312,10 +315,10 @@ public class AttendanceControllerTests
         using var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
 
-        var future = TestHelpers.Errors(await c.Save(AttendanceTestHelpers.Sheet(DateTime.Today.AddDays(1), AttendanceTestHelpers.E("EMP001", "ABSENT"))));
+        var future = TestHelpers.Errors(await c.Save(AttendanceTestHelpers.Sheet(DateTime.Today.AddDays(1), AttendanceTestHelpers.E("1", "ABSENT"))));
         Assert.Equal("Date cannot be in the future", future["date"]);
 
-        var bad = TestHelpers.Errors(await c.Save(new AttendanceSheetDto { Date = "09/10/2026", Entries = { AttendanceTestHelpers.E("EMP001", "ABSENT") } }));
+        var bad = TestHelpers.Errors(await c.Save(new AttendanceSheetDto { Date = "09/10/2026", Entries = { AttendanceTestHelpers.E("1", "ABSENT") } }));
         Assert.Equal("Invalid date", bad["date"]);
         Assert.Empty(ctx.AttendanceRecords);
     }
@@ -332,7 +335,7 @@ public class AttendanceControllerTests
     public async Task Save_rejects_more_entries_than_the_limit()
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
-        var entries = Enumerable.Range(0, AttendanceController.MaxEntriesPerSave + 1).Select(_ => AttendanceTestHelpers.E("EMP001", "ABSENT")).ToArray();
+        var entries = Enumerable.Range(0, AttendanceController.MaxEntriesPerSave + 1).Select(_ => AttendanceTestHelpers.E("1", "ABSENT")).ToArray();
         var errors = TestHelpers.Errors(await AttendanceTestHelpers.Create(ctx).Save(AttendanceTestHelpers.Sheet(Day, entries)));
         Assert.Equal($"At most {AttendanceController.MaxEntriesPerSave} entries can be saved at once", errors["entries"]);
     }
@@ -342,13 +345,13 @@ public class AttendanceControllerTests
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
         var errors = TestHelpers.Errors(await AttendanceTestHelpers.Create(ctx).Save(AttendanceTestHelpers.Sheet(Day,
-            AttendanceTestHelpers.E("EMP999", "PRESENT", "09:00"),            // 0 unknown staff
-            AttendanceTestHelpers.E("EMP001", "PRESENT"),                     // 1 no in-time
-            AttendanceTestHelpers.E("EMP001", "ABSENT"),                      // 2 same staff twice
-            AttendanceTestHelpers.E("EMP002", "PRESENT", "18:00", "09:00"),   // 3 out before in
-            AttendanceTestHelpers.E("EMP004", "LATE"),                        // 4 unknown status
-            AttendanceTestHelpers.E("EMP005", "PRESENT", "09:00", "17:00"),   // 5 joins today, sheet is yesterday
-            AttendanceTestHelpers.E("EMP003", "HALF_DAY", "25:00")            // 6 not a time
+            AttendanceTestHelpers.E("999", "PRESENT", "09:00"),            // 0 unknown staff
+            AttendanceTestHelpers.E("1", "PRESENT"),                     // 1 no in-time
+            AttendanceTestHelpers.E("1", "ABSENT"),                      // 2 same staff twice
+            AttendanceTestHelpers.E("2", "PRESENT", "18:00", "09:00"),   // 3 out before in
+            AttendanceTestHelpers.E("4", "LATE"),                        // 4 unknown status
+            AttendanceTestHelpers.E("5", "PRESENT", "09:00", "17:00"),   // 5 joins today, sheet is yesterday
+            AttendanceTestHelpers.E("3", "HALF_DAY", "25:00")            // 6 not a time
         )));
 
         Assert.Equal("Staff member not found", errors["entries_0_employee_id"]);
@@ -370,7 +373,7 @@ public class AttendanceControllerTests
         using var scope = new TestHelpers.CultureScope(culture);
         using var ctx = AttendanceTestHelpers.SeededContext();
         var errors = TestHelpers.Errors(await AttendanceTestHelpers.Create(ctx).Save(AttendanceTestHelpers.Sheet(Day,
-            AttendanceTestHelpers.E("EMP001", "PRESENT", "18:00", "09:00"))));
+            AttendanceTestHelpers.E("1", "PRESENT", "18:00", "09:00"))));
         Assert.Equal(expected, errors["entries_0_out_time"]);
     }
 
@@ -382,11 +385,11 @@ public class AttendanceControllerTests
         using var ctx = AttendanceTestHelpers.SeededContext();
         var json = TestHelpers.OkJson(await AttendanceTestHelpers.Create(ctx).Data(Day.ToString("yyyy-MM-dd"), null));
 
-        // ordered by department, then name; EMP003 is inactive and EMP005 had not joined yet
+        // ordered by department, then name; 3 is inactive and 5 had not joined yet
         var ids = json.GetProperty("rows").EnumerateArray().Select(r => r.GetProperty("employeeId").GetString()).ToList();
-        Assert.Equal(new[] { "EMP004", "EMP002", "EMP001" }, ids);
+        Assert.Equal(new[] { "4", "2", "1" }, ids);
 
-        var meena = json.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "EMP001");
+        var meena = json.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "1");
         Assert.Equal("Sales", meena.GetProperty("departmentName").GetString());
         Assert.Equal("Morning (8AM-4PM)", meena.GetProperty("shift").GetString());
         Assert.Equal("08:00", meena.GetProperty("shiftStart").GetString());
@@ -400,13 +403,13 @@ public class AttendanceControllerTests
     public async Task Sheet_includes_anyone_already_marked_that_day()
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
-        var oldTimer = ctx.Staff.Single(s => s.EmployeeId == "EMP003");
+        var oldTimer = ctx.Staff.Single(s => s.EmployeeId == "3");
         ctx.AttendanceRecords.Add(new AttendanceRecord { StaffId = oldTimer.Id, AttendanceDate = Day, Status = AttendanceStatuses.Absent });
         ctx.SaveChanges();
 
         var json = TestHelpers.OkJson(await AttendanceTestHelpers.Create(ctx).Data(Day.ToString("yyyy-MM-dd"), null));
 
-        Assert.Contains(json.GetProperty("rows").EnumerateArray(), r => r.GetProperty("employeeId").GetString() == "EMP003");
+        Assert.Contains(json.GetProperty("rows").EnumerateArray(), r => r.GetProperty("employeeId").GetString() == "3");
     }
 
     [Fact]
@@ -429,7 +432,7 @@ public class AttendanceControllerTests
         Assert.Equal(1, stats.GetProperty("withOvertime").GetInt32());
         Assert.Equal(50.0m, stats.GetProperty("percent").GetDecimal());
 
-        var record = json.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "EMP001").GetProperty("record");
+        var record = json.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "1").GetProperty("record");
         Assert.Equal("PRESENT", record.GetProperty("status").GetString());
         Assert.Equal("08:00", record.GetProperty("inTime").GetString());
         Assert.Equal("18:00", record.GetProperty("outTime").GetString());
@@ -444,9 +447,9 @@ public class AttendanceControllerTests
         using var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
         await AttendanceTestHelpers.SaveDefaultDay(c);
-        ctx.Staff.Single(s => s.EmployeeId == "EMP002").Designation = "Security";
+        ctx.EmployeeDesignations.Single(d => d.EmpId == 2).Name = "Security";   // the designation lives in tbl_Designation
         ctx.SaveChanges();
-        var inactive = ctx.Staff.Single(s => s.EmployeeId == "EMP003");
+        var inactive = ctx.Staff.Single(s => s.EmployeeId == "3");
         ctx.AttendanceRecords.Add(new AttendanceRecord
         {
             StaffId = inactive.Id,
@@ -461,11 +464,11 @@ public class AttendanceControllerTests
 
         Assert.Equal(DateTime.DaysInMonth(Day.Year, Day.Month), days.Count);
         Assert.Equal(5, rows.Count); // active staff plus inactive staff with a record in this month
-        var meena = rows.Single(r => r.GetProperty("employeeId").GetString() == "EMP001");
+        var meena = rows.Single(r => r.GetProperty("employeeId").GetString() == "1");
         Assert.Equal(AttendanceStatuses.Present, meena.GetProperty("days")[Day.Day - 1].GetString());
-        var ravi = rows.Single(r => r.GetProperty("employeeId").GetString() == "EMP002");
+        var ravi = rows.Single(r => r.GetProperty("employeeId").GetString() == "2");
         Assert.Equal(AttendanceStatuses.Absent, ravi.GetProperty("days")[Day.Day - 1].GetString());
-        var oldTimer = rows.Single(r => r.GetProperty("employeeId").GetString() == "EMP003");
+        var oldTimer = rows.Single(r => r.GetProperty("employeeId").GetString() == "3");
         Assert.Equal(AttendanceStatuses.Absent, oldTimer.GetProperty("days")[Day.Day - 1].GetString());
         // the day before, when it is in the same month
         if (Day.Day > 1) Assert.Equal(JsonValueKind.Null, oldTimer.GetProperty("days")[Day.Day - 2].ValueKind);
@@ -479,7 +482,7 @@ public class AttendanceControllerTests
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
-        ctx.Staff.Single(s => s.EmployeeId == "EMP002").Designation = "Security";
+        ctx.EmployeeDesignations.Single(d => d.EmpId == 2).Name = "Security";   // the designation lives in tbl_Designation
         ctx.SaveChanges();
 
         Assert.Equal("Invalid date", TestHelpers.Errors(await c.Monthly("2026-13", null))["month"]);
@@ -502,13 +505,13 @@ public class AttendanceControllerTests
         var report = TestHelpers.OkJson(await c.Monthly(Day.ToString("yyyy-MM"), null, "meena", "present"));
         var rows = report.GetProperty("rows").EnumerateArray().ToList();
         Assert.Single(rows);
-        Assert.Equal("EMP001", rows[0].GetProperty("employeeId").GetString());
+        Assert.Equal("1", rows[0].GetProperty("employeeId").GetString());
 
         var export = await c.MonthlyExport(Day.ToString("yyyy-MM"), null, "meena", "PRESENT");
         var lines = SalesTestHelpers.CsvText(export).TrimEnd().Split(Environment.NewLine);
         Assert.Equal(2, lines.Length);
-        Assert.Contains("EMP001", lines[1]);
-        Assert.DoesNotContain("EMP002", string.Join(Environment.NewLine, lines));
+        Assert.StartsWith("1,Meena Kumari,", lines[1]);
+        Assert.DoesNotContain("Ravi Shankar", string.Join(Environment.NewLine, lines));
     }
 
     [Fact]
@@ -532,7 +535,7 @@ public class AttendanceControllerTests
         using var ctx = AttendanceTestHelpers.SeededContext();
         var json = TestHelpers.OkJson(await AttendanceTestHelpers.Create(ctx).Data(Day.ToString("yyyy-MM-dd"), TestHelpers.AdminDept.ToString()));
 
-        Assert.Equal(new[] { "EMP004", "EMP002" }, json.GetProperty("rows").EnumerateArray().Select(r => r.GetProperty("employeeId").GetString()));
+        Assert.Equal(new[] { "4", "2" }, json.GetProperty("rows").EnumerateArray().Select(r => r.GetProperty("employeeId").GetString()));
         Assert.Equal(3, json.GetProperty("stats").GetProperty("total").GetInt32());
         Assert.Equal(2, json.GetProperty("departments").GetArrayLength());
     }
@@ -602,9 +605,9 @@ public class AttendanceControllerTests
         var c = AttendanceTestHelpers.Create(ctx);
         await AttendanceTestHelpers.SaveDefaultDay(c);
 
-        var json = TestHelpers.OkJson(await c.Get(AttendanceTestHelpers.RecordId(ctx, "EMP001", Day)));
+        var json = TestHelpers.OkJson(await c.Get(AttendanceTestHelpers.RecordId(ctx, "1", Day)));
 
-        Assert.Equal("EMP001", json.GetProperty("employeeId").GetString());
+        Assert.Equal("1", json.GetProperty("employeeId").GetString());
         Assert.Equal("Meena Kumari", json.GetProperty("name").GetString());
         Assert.Equal("Sales", json.GetProperty("departmentName").GetString());
         Assert.Equal(Day.ToString("yyyy-MM-dd"), json.GetProperty("date").GetString());
@@ -629,7 +632,7 @@ public class AttendanceControllerTests
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
         await AttendanceTestHelpers.SaveDefaultDay(AttendanceTestHelpers.Create(ctx, "first@imsb"));
-        var id = AttendanceTestHelpers.RecordId(ctx, "EMP001", Day);
+        var id = AttendanceTestHelpers.RecordId(ctx, "1", Day);
 
         var json = TestHelpers.OkJson(await AttendanceTestHelpers.Create(ctx, "editor@imsb").Update(id,
             new AttendanceUpdateDto { Status = "PRESENT", InTime = "07:30", OutTime = "19:00", Remarks = "stock count" }));
@@ -648,7 +651,7 @@ public class AttendanceControllerTests
         using var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
         await AttendanceTestHelpers.SaveDefaultDay(c);
-        var id = AttendanceTestHelpers.RecordId(ctx, "EMP001", Day);
+        var id = AttendanceTestHelpers.RecordId(ctx, "1", Day);
 
         TestHelpers.OkJson(await c.Update(id, new AttendanceUpdateDto { Status = "leave", InTime = "08:00", OutTime = "18:00" }));
 
@@ -666,7 +669,7 @@ public class AttendanceControllerTests
         using var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
         await AttendanceTestHelpers.SaveDefaultDay(c);
-        var id = AttendanceTestHelpers.RecordId(ctx, "EMP001", Day);
+        var id = AttendanceTestHelpers.RecordId(ctx, "1", Day);
 
         Assert.Equal("Select Present, Absent, Leave or Half Day", TestHelpers.Errors(await c.Update(id, new AttendanceUpdateDto { Status = "late" }))["status"]);
         Assert.Equal("Enter the in-time", TestHelpers.Errors(await c.Update(id, new AttendanceUpdateDto { Status = "PRESENT" }))["in_time"]);
@@ -683,25 +686,25 @@ public class AttendanceControllerTests
         using var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
         await AttendanceTestHelpers.SaveDefaultDay(c);
-        var id = AttendanceTestHelpers.RecordId(ctx, "EMP001", Day);
+        var id = AttendanceTestHelpers.RecordId(ctx, "1", Day);
 
         var json = TestHelpers.OkJson(await c.Delete(id));
 
-        Assert.Equal("EMP001", json.GetProperty("employeeId").GetString());
+        Assert.Equal("1", json.GetProperty("employeeId").GetString());
         Assert.Single(ctx.AttendanceRecords);
-        Assert.Equal("EMP002", ctx.AttendanceRecords.Single().Staff!.EmployeeId);
+        Assert.Equal("2", ctx.AttendanceRecords.Single().Staff!.EmployeeId);
         Assert.IsType<NotFoundResult>(await c.Delete(id));
     }
 
     // ── History / Export ──────────────────────────────────────────
 
-    /// <summary>Day: EMP001 present, EMP002 absent; 40 days earlier (an earlier month): EMP004 on leave.</summary>
+    /// <summary>Day: 1 present, 2 absent; 40 days earlier (an earlier month): 4 on leave.</summary>
     private static async Task<(IMSBContext Ctx, AttendanceController C)> HistoryFixture()
     {
         var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
         await AttendanceTestHelpers.SaveDefaultDay(c);
-        Assert.IsType<OkObjectResult>(await c.Save(AttendanceTestHelpers.Sheet(Day.AddDays(-40), AttendanceTestHelpers.E("EMP004", "LEAVE"))));
+        Assert.IsType<OkObjectResult>(await c.Save(AttendanceTestHelpers.Sheet(Day.AddDays(-40), AttendanceTestHelpers.E("4", "LEAVE"))));
         return (ctx, c);
     }
 
@@ -718,7 +721,7 @@ public class AttendanceControllerTests
 
         Assert.Equal(new DateTime(Day.Year, Day.Month, 1).ToString("yyyy-MM-dd"), json.GetProperty("from").GetString());
         var rows = json.GetProperty("rows").EnumerateArray().ToList();
-        Assert.Equal(new[] { "EMP001", "EMP002" }, rows.Select(r => r.GetProperty("employeeId").GetString()));   // same date: by name
+        Assert.Equal(new[] { "1", "2" }, rows.Select(r => r.GetProperty("employeeId").GetString()));   // same date: by name
         var totals = json.GetProperty("totals");
         Assert.Equal(2, totals.GetProperty("records").GetInt32());
         Assert.Equal(1, totals.GetProperty("present").GetInt32());
@@ -735,15 +738,15 @@ public class AttendanceControllerTests
         using var _ = ctx;
         string from = Day.AddDays(-40).ToString("yyyy-MM-dd"), to = Day.ToString("yyyy-MM-dd");
 
-        Assert.Equal(new[] { "EMP001", "EMP002", "EMP004" }, HistoryIds(await c.History(null, null, null, null, from, to)));   // newest date first
-        Assert.Equal(new[] { "EMP002" }, HistoryIds(await c.History("RAVI", null, null, null, from, to)));
-        Assert.Equal(new[] { "EMP001" }, HistoryIds(await c.History("emp001", null, null, null, from, to)));
-        Assert.Equal(new[] { "EMP002", "EMP004" }, HistoryIds(await c.History(null, TestHelpers.AdminDept.ToString(), null, null, from, to)));
-        Assert.Equal(new[] { "EMP004" }, HistoryIds(await c.History(null, null, "leave", null, from, to)));
-        Assert.Equal(new[] { "EMP002" }, HistoryIds(await c.History(null, TestHelpers.AdminDept.ToString(), "ABSENT", null, from, to)));
+        Assert.Equal(new[] { "1", "2", "4" }, HistoryIds(await c.History(null, null, null, null, from, to)));   // newest date first
+        Assert.Equal(new[] { "2" }, HistoryIds(await c.History("RAVI", null, null, null, from, to)));
+        Assert.Equal(new[] { "1" }, HistoryIds(await c.History(" 1 ", null, null, null, from, to)));
+        Assert.Equal(new[] { "2", "4" }, HistoryIds(await c.History(null, TestHelpers.AdminDept.ToString(), null, null, from, to)));
+        Assert.Equal(new[] { "4" }, HistoryIds(await c.History(null, null, "leave", null, from, to)));
+        Assert.Equal(new[] { "2" }, HistoryIds(await c.History(null, TestHelpers.AdminDept.ToString(), "ABSENT", null, from, to)));
         Assert.Empty(HistoryIds(await c.History("nobody", null, null, null, from, to)));
         // one end of the range alone means that single day
-        Assert.Equal(new[] { "EMP004" }, HistoryIds(await c.History(null, null, null, null, from, null)));
+        Assert.Equal(new[] { "4" }, HistoryIds(await c.History(null, null, null, null, from, null)));
         // an unknown status or department id is ignored rather than matching nothing
         Assert.Equal(3, HistoryIds(await c.History(null, "x", "LATE", null, from, to)).Count);
     }
@@ -773,8 +776,8 @@ public class AttendanceControllerTests
         Assert.Equal($"attendance_{Day:yyyyMMdd}_{Day:yyyyMMdd}.xls", file.FileDownloadName);
         var lines = SalesTestHelpers.CsvText(result).TrimEnd().Split(Environment.NewLine);
         Assert.Equal("Date,Employee ID,Staff Name,Staff Category,Designation,In-Time,Out-Time,Hours,OT Hrs,Status,Remarks,By", lines[0]);
-        Assert.Equal($"{day},EMP002,Ravi Shankar,Admin,Executive,,,0,0,Absent,,admin@imsb", lines[1]);     // by department, then name
-        Assert.Equal($"{day},EMP001,Meena Kumari,Sales,Executive,08:00,18:00,10,2,Present,,admin@imsb", lines[2]);
+        Assert.Equal($"{day},2,Ravi Shankar,Admin,Executive,,,0,0,Absent,,admin@imsb", lines[1]);     // by department, then name
+        Assert.Equal($"{day},1,Meena Kumari,Sales,Executive,08:00,18:00,10,2,Present,,admin@imsb", lines[2]);
         Assert.Equal("Total,,,,,,,10,2,,,", lines[3]);
         Assert.Equal(4, lines.Length);
     }
@@ -784,7 +787,7 @@ public class AttendanceControllerTests
     {
         using var ctx = AttendanceTestHelpers.SeededContext();
         var c = AttendanceTestHelpers.Create(ctx);
-        Assert.IsType<OkObjectResult>(await c.Save(AttendanceTestHelpers.Sheet(Day, AttendanceTestHelpers.E("EMP004", "HALF_DAY", "09:00", "13:00", "=HYPERLINK(\"x\")"))));
+        Assert.IsType<OkObjectResult>(await c.Save(AttendanceTestHelpers.Sheet(Day, AttendanceTestHelpers.E("4", "HALF_DAY", "09:00", "13:00", "=HYPERLINK(\"x\")"))));
 
         using var scope = new TestHelpers.CultureScope("hi-IN");
         var csv = SalesTestHelpers.CsvText(await c.Export(null, null, null, Day.ToString("yyyy-MM"), null, null));

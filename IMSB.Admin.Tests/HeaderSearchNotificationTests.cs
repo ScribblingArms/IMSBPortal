@@ -14,7 +14,7 @@ public class HeaderSearchTests
     private static IMSBContext Context()
     {
         var ctx = Seeded();
-        ctx.Staff.Add(TestHelpers.ExistingStaff("EMP-0001", "Kamakshi Rao", "9000000001"));
+        ctx.AddEmployees(TestHelpers.ExistingStaff("1", "Kamakshi Rao", "9000000001"));
         ctx.SaveChanges();
         InventoryTestHelpers.AddProduct(ctx, "PRD001", "Kamal Lamp", Textiles, "A-01", 5, 1);
         AddApplication(ctx, "APP-0001", ApplicationStatuses.UnderReview, name: "Kamaladevi");
@@ -30,7 +30,7 @@ public class HeaderSearchTests
         Assert.Equal(("Kamala Rajendran", "/Artisans/Index?q=ART-0001"), g["ARTISANS"].Single());
         Assert.Equal("/Applications/Index?tab=review&q=APP-0001", g["APPLICATIONS"].Single().Url);
         Assert.Equal("/Stalls/Index?q=A-01", g["STALLS"].Single().Url);
-        Assert.Equal("/Staff/Index?q=EMP-0001", g["STAFF"].Single().Url);
+        Assert.Equal("/Staff/Index?q=1", g["STAFF"].Single().Url);
         Assert.Equal("/Inventory/Index?q=PRD001", g["PRODUCTS"].Single().Url);
     }
 
@@ -90,9 +90,7 @@ public class HeaderNotificationTests
         await Stalls(ctx).RequestReallocation(Reallocation(newArtisan: "ART-0002"));
         ctx.Stalls.Single(s => s.StallCode == "A-01").AgreementEndDate = DateTime.Today.AddDays(10);
         ctx.Artisans.Single(a => a.ArtisanCode == "ART-0003").Status = ArtisanStatuses.RenewalDue;
-        var staff = TestHelpers.ExistingStaff("EMP-0001", "Meena", "9000000001");
-        staff.ContractEndDate = DateTime.Today.AddDays(5);
-        ctx.Staff.Add(staff);
+        ctx.AddEmployees(TestHelpers.ExistingStaff("1", "Meena", "9000000001"));
         ctx.SaveChanges();
         InventoryTestHelpers.AddProduct(ctx, "PRD001", "Out", Textiles, "A-01", 0, 5);
         InventoryTestHelpers.AddProduct(ctx, "PRD002", "Low", Textiles, "A-01", 2, 5);
@@ -105,8 +103,10 @@ public class HeaderNotificationTests
     {
         using var ctx = await Context();
         var items = Items(await Notifications(ctx).Data());
-        Assert.Equal(new[] { "OUT_OF_STOCK", "APPS_PENDING", "REALLOCATIONS_PENDING", "AGREEMENTS_EXPIRING", "LOW_STOCK", "CONTRACTS_EXPIRING", "APPS_REVIEW", "ARTISAN_RENEWALS" },
+        Assert.Equal(new[] { "OUT_OF_STOCK", "APPS_PENDING", "REALLOCATIONS_PENDING", "AGREEMENTS_EXPIRING", "LOW_STOCK", "APPS_REVIEW", "ARTISAN_RENEWALS" },
             items.Select(i => i.Type));
+        // tbl_Employee has no contract end date, so there is no staff contract alert
+        Assert.DoesNotContain(items, i => i.Type == "CONTRACTS_EXPIRING");
         Assert.Equal((2, "warning"), items.Where(i => i.Type == "APPS_PENDING").Select(i => (i.Count, i.Severity)).Single());
         // nothing has expired, so that alert is left out
         Assert.DoesNotContain(items, i => i.Type == "AGREEMENTS_EXPIRED");
@@ -131,7 +131,7 @@ public class HeaderNotificationTests
 
     [Theory]
     [InlineData("Inventory", "OUT_OF_STOCK,LOW_STOCK")]
-    [InlineData("Staff", "CONTRACTS_EXPIRING")]
+    [InlineData("Staff", "")]   // the staff contract alert went with dbo.staff
     public async Task Other_roles_only_get_their_modules(string role, string expected)
     {
         using var ctx = await Context();

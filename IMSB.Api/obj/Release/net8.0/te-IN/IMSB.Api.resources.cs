@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.Api")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute(" ")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bc13b6d14ca92346664cddb893e42ac9fe99207")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5391e28bd0f867e05a0b47227bf55bf48eac3847")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,121 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+
+    // Strings used by user-management.js (table, view modal, toasts, client-side validation)
+    var jsKeys = new[] {
+        "Success", "Error", "CouldNotReachServer", "CheckForm", "View", "Edit", "Delete", "SelectPlaceholder", "SelectDistrict",
+        "AddUser", "EditUser", "SaveUser", "UpdateUser", "UserSaved", "UserUpdated", "UserDeleted", "ConfirmDeleteUser", "NoUsersFound",
+        "UserNameLabel", "Mobile", "UserType", "District", "CreatedOn", "LastLoginLabel", "Status", "Active", "Inactive", "Never",
+        "ValUserName", "ValPasswordRequired", "ValPasswordLength", "ValPasswordsDoNotMatch", "ValMobile", "ValUserType", "ValDistrict",
+        "Email", "ValEmail", "ValEmailRequired", "ValPasswordStrength", "ValConfirmPasswordRequired"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<main class="page-body">
+  <div class="page-header">
+    <div><div class="page-title">@L["UserManagement"]</div><div class="page-subtitle">@L["UserManagementSubtitle"]</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa-solid fa-users-gear"></i> @L["Officers"] <span class="tab-count" id="umCount">0</span></div>
+      <button type="button" class="btn btn-primary" id="umAddBtn"><i class="fa-solid fa-user-plus"></i> @L["AddUser"]</button>
+    </div>
+    <div class="card-body">
+      <div class="toolbar">
+        <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="umSearch" placeholder="@L["SearchUsers"]" aria-label="@L["SearchUsers"]"></div>
+        <select class="form-control" style="width:auto;min-width:180px" id="umFilterDistrict" aria-label="@L["District"]"><option value="">@L["AllDistricts"]</option></select>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="umTable">
+          <thead><tr><th>@L["UserNameLabel"]</th><th>@L["Email"]</th><th>@L["Mobile"]</th><th>@L["UserType"]</th><th>@L["District"]</th><th>@L["CreatedOn"]</th><th>@L["Actions"]</th></tr></thead>
+          <tbody id="umBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="umFormModal" aria-hidden="true">
+  <div class="modal" style="max-width:560px" role="dialog" aria-modal="true" aria-labelledby="umFormTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="umFormTitle">@L["AddUser"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Cancel"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="umForm" novalidate autocomplete="off">
+        @Html.AntiForgeryToken()
+        <div class="form-error" id="err_request"></div>
+        <div class="form-grid col-2">
+          <div class="form-group">
+            <label class="form-label" for="umUserName">@L["UserNameLabel"] <span class="req">*</span></label>
+            <input id="umUserName" type="text" class="form-control" maxlength="100" autocomplete="off" required />
+            <div class="form-error" id="err_user_name"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="umEmail">@L["Email"] <span class="req">*</span></label>
+            <input id="umEmail" type="email" class="form-control" maxlength="200" autocomplete="off" required />
+            <div class="form-error" id="err_email"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="umPassword">@L["Password"] <span class="req" id="umPasswordReq">*</span></label>
+            <input id="umPassword" type="password" class="form-control" maxlength="100" autocomplete="new-password" aria-describedby="umPasswordRules" />
+            <div class="form-hint" id="umPasswordRules">@L["PasswordRulesHint"]</div>
+            <div class="form-hint" id="umPasswordHint" hidden>@L["PasswordKeepHint"]</div>
+            <div class="form-error" id="err_password"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="umConfirmPassword">@L["ConfirmPassword"] <span class="req" id="umConfirmReq">*</span></label>
+            <input id="umConfirmPassword" type="password" class="form-control" maxlength="100" autocomplete="new-password" />
+            <div class="form-error" id="err_confirm_password"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="umMobile">@L["Mobile"] <span class="req">*</span></label>
+            <input id="umMobile" type="tel" inputmode="numeric" data-format="mobile" maxlength="10" class="form-control" required />
+            <div class="form-error" id="err_mobile"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="umUserType">@L["UserType"] <span class="req">*</span></label>
+            <select id="umUserType" class="form-control" required></select>
+            <div class="form-error" id="err_user_type"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="umDistrict">@L["District"] <span class="req">*</span></label>
+            <select id="umDistrict" class="form-control" required></select>
+            <div class="form-error" id="err_district"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Cancel"]</button>
+      <button type="button" class="btn btn-primary" id="umSaveBtn"><i class="fa-solid fa-check"></i> <span id="umSaveLabel">@L["SaveUser"]</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="umViewModal" aria-hidden="true">
+  <div class="modal" style="max-width:520px" role="dialog" aria-modal="true" aria-labelledby="umViewTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="umViewTitle">@L["UserDetails"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="umViewBody"></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Close"]</button>
+    </div>
+  </div>
+</div>
+
+@section Styles {
+  <style>
+    .form-hint { font-size:12px; color:var(--text-muted); margin-top:4px; }  </style>
+}
+
+@section Scripts {
+  <script>window.UserManagementI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+  <script src="~/js/user-management.js" asp-append-version="true"></script>
+}

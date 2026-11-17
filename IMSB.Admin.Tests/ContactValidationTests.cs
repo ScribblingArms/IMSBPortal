@@ -47,13 +47,8 @@ public class ContactValidationTests
     [InlineData("@example.com", false)]
     [InlineData("name@", false)]
     [InlineData("not-an-email", false)]
-    public void Email_follows_the_standard_format(string email, bool valid)
-    {
-        var dto = TestHelpers.ValidCreateDto(email: email);
-        var results = new List<ValidationResult>();
-        Validator.TryValidateObject(dto, new ValidationContext(dto), results, validateAllProperties: true);
-        Assert.Equal(valid, !results.Any(r => r.MemberNames.Contains(nameof(CreateStaffDto.Email))));
-    }
+    public void Email_follows_the_standard_format(string email, bool valid) =>
+        Assert.Equal(valid, System.Text.RegularExpressions.Regex.IsMatch(email, EmailAddresses.Pattern));
 
     [Theory]
     [InlineData("2341-2341-2346", true)]
@@ -87,11 +82,12 @@ public class ContactValidationTests
     public void Browser_aadhaar_rule_only_checks_the_length() =>
         Assert.Contains(@"aadhaar: v => /^[0-9]{12}$/.test((v || '').replace(/[-\s]/g, ''))", AdminFile("wwwroot", "js", "main.js"));
 
+    // the Staff form has no email: SERP.tbl_Employee has no column for one
     [Theory]
-    [InlineData("Staff", "staff.js", "staffMobile", "staffAadhaar")]
-    [InlineData("Artisans", "artisans.js", "arMobile", "arAadhaar")]
-    [InlineData("Applications", "applications.js", "apMobile", "apAadhaar")]
-    public void Every_form_uses_the_shared_rules(string page, string script, string mobileId, string aadhaarId)
+    [InlineData("Staff", "staff.js", "staffMobile", "staffAadhaar", false)]
+    [InlineData("Artisans", "artisans.js", "arMobile", "arAadhaar", true)]
+    [InlineData("Applications", "applications.js", "apMobile", "apAadhaar", true)]
+    public void Every_form_uses_the_shared_rules(string page, string script, string mobileId, string aadhaarId, bool hasEmail)
     {
         var view = AdminFile("Views", page, "Index.cshtml");
         Assert.Matches($"<input[^>]*id=\"{mobileId}\"[^>]*data-format=\"mobile\"|<input[^>]*data-format=\"mobile\"[^>]*id=\"{mobileId}\"", view);
@@ -99,7 +95,7 @@ public class ContactValidationTests
 
         var js = AdminFile("wwwroot", "js", script);
         Assert.Contains("IMSBValidate.mobile(", js);
-        Assert.Contains("IMSBValidate.email(", js);
+        Assert.Equal(hasEmail, js.Contains("IMSBValidate.email("));
         Assert.Contains("IMSBValidate.aadhaar(", js);
     }
 
@@ -114,43 +110,36 @@ public class ContactValidationTests
         Assert.Contains("e.target.classList.remove('date-empty')", AdminFile("wwwroot", "js", "main.js"));   // typing shows from the first key
     }
 
-    [Theory]
-    [InlineData("staffDOB")]
-    [InlineData("staffJoinDate")]
-    public void Staff_popup_date_fields_have_no_placeholder_text(string id) =>
-        Assert.Matches($"<input id=\"{id}\"(?![^>]*placeholder)[^>]*type=\"date\"", AdminFile("Views", "Staff", "Index.cshtml"));
-
-    // ── Staff mobile, which has records from the older 9-12 digit rule ──
+    // ── Staff mobile: SERP records may hold numbers from older rules ──
     [Theory]
     [InlineData("987654321")]
     [InlineData("987654321012")]
     [InlineData("+919876543210")]
     public async Task New_staff_need_a_10_digit_mobile(string mobile)
     {
-        using var ctx = TestHelpers.CreateContext();
+        using var ctx = TestHelpers.CreateStaffContext();
         var dto = TestHelpers.ValidCreateDto();
         dto.Mobile = mobile;
 
         var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(dto));
 
         Assert.Equal("Enter a valid 10-digit mobile number", errors["mobile"]);
-        Assert.Empty(ctx.Staff);
+        Assert.Empty(ctx.Employees);
     }
 
     [Fact]
     public async Task Older_staff_record_can_be_edited_with_its_unchanged_mobile_but_not_changed_to_another_invalid_one()
     {
-        using var ctx = TestHelpers.CreateContext();
-        ctx.Staff.Add(TestHelpers.ExistingStaff("EMP001", "Older Record", "900000001"));
+        using var ctx = TestHelpers.CreateStaffContext();
+        ctx.Employees.Add(TestHelpers.ExistingEmployee(501, "Older Record", "900000001"));
         await ctx.SaveChangesAsync();
-        var dto = TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(mobile: "900000001", email: null), "ON_LEAVE");
-        dto.Aadhaar = null;
+        var dto = TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(mobile: "900000001"), EmployeeStatuses.Inactive);
 
-        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update("EMP001", dto));
-        Assert.Equal("ON_LEAVE", (await ctx.Staff.SingleAsync()).Status);
+        Assert.IsType<OkObjectResult>(await TestHelpers.CreateController(ctx).Update(501, dto));
+        Assert.Equal(0, (await ctx.Employees.AsNoTracking().SingleAsync()).IsActive);
 
         dto.Mobile = "900000002";
-        Assert.Equal("Enter a valid 10-digit mobile number", TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update("EMP001", dto))["mobile"]);
-        Assert.Equal("900000001", (await ctx.Staff.AsNoTracking().SingleAsync()).Mobile);
+        Assert.Equal("Enter a valid 10-digit mobile number", TestHelpers.Errors(await TestHelpers.CreateController(ctx).Update(501, dto))["mobile"]);
+        Assert.Equal("900000001", (await ctx.Employees.AsNoTracking().SingleAsync()).Mobile);
     }
 }

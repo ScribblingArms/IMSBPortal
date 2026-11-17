@@ -58,6 +58,35 @@ namespace IMSB.Dto.Models
         public string? Remarks { get; set; }
     }
 
+    /// <summary>
+    /// Allocate Stall from SHG Applications: the stall goes to the SHG application itself (stalls.ShgDetailId set, stalls.IsArtisan = false), so
+    /// there is no artisan to pick, and the product category is the one on the application.
+    /// </summary>
+    public class ShgAllocateStallDto
+    {
+        [Required(ErrorMessage = "ValSelectStall")]
+        public string StallCode { get; set; } = "";
+
+        [Required(ErrorMessage = "ValDate")]
+        public string AllottedDate { get; set; } = "";   // yyyy-MM-dd
+
+        public string? AgreementEndDate { get; set; }    // yyyy-MM-dd
+
+        [Range(typeof(decimal), "0", "10000000", ErrorMessage = "ValRent")]
+        public decimal? MonthlyRent { get; set; }
+
+        [StringLength(500, ErrorMessage = "ValRemarks")]
+        public string? Remarks { get; set; }
+    }
+
+    /// <summary>Reject from SHG Applications: the reason is required and is shown on the application's details.</summary>
+    public class ShgRejectDto
+    {
+        [Required(ErrorMessage = "ShgValRejectReason")]
+        [StringLength(ShgDetail.RejectionReasonMaxLength, ErrorMessage = "ShgValRejectReason")]
+        public string Reason { get; set; } = "";
+    }
+
     public class ReallocationDto
     {
         [Required(ErrorMessage = "ValSelectStall")]

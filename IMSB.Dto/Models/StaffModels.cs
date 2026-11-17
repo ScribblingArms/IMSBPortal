@@ -40,6 +40,7 @@ namespace IMSB.Dto.Models
         public decimal? AnnualQuota { get; set; }
     }
 
+    /// <summary>The Staff form, saved to SERP.tbl_Employee.</summary>
     public class CreateStaffDto
     {
         // ErrorMessage values are SharedResource keys, translated by the DataAnnotations localizer (Program.cs)
@@ -48,33 +49,49 @@ namespace IMSB.Dto.Models
         /// <summary>The format is checked by the controllers, which let an older record keep its unchanged number.</summary>
         [Required(ErrorMessage = "ValMobile")]
         public string Mobile { get; set; } = "";
-        [RegularExpression(EmailAddresses.Pattern, ErrorMessage = "ValEmail"), StringLength(200, ErrorMessage = "ValEmail")]
-        public string? Email { get; set; }
         /// <summary>Required when registering; on edit an empty value keeps the number on record. Checked by the controllers.</summary>
         public string? Aadhaar { get; set; }
-        [Required(ErrorMessage = "ValDobRequired")]
-        public string DateOfBirth { get; set; } = "";
-        [Required, RegularExpression("^(Female|Male|Other)$")]
+        /// <summary>Female, Male or Other; checked by the controllers, which let an older record keep its unchanged value.</summary>
         public string Gender { get; set; } = "Female";
-        [Required(ErrorMessage = "ValDepartment")]
-        public string DepartmentId { get; set; } = "";
-        [RegularExpression(EmployeeTypes.Pattern, ErrorMessage = "ValEmployeeType")]
-        public string? EmployeeType { get; set; }
-        [Required(ErrorMessage = "ValDesignation"), StringLength(100, ErrorMessage = "ValDesignation")]
-        public string Designation { get; set; } = "";
-        [Range(typeof(decimal), "0", "999999999.99", ErrorMessage = "ValMonthlySalary")]
-        public decimal MonthlySalary { get; set; }
-        [Required(ErrorMessage = "ValJoinRequired")]
-        public string JoinDate { get; set; } = "";
-        public string Shift { get; set; } = "";
-        /// <summary>This year's leave quotas. On edit only the listed types change; the controllers check them.</summary>
+        /// <summary>SERP.tbl_EMP_Types.EmpTypeID, saved as tbl_Employee.EmpTypeID. The department and shift must be of this type.</summary>
+        [Required(ErrorMessage = "ValEmployeeType")]
+        public string EmployeeTypeId { get; set; } = "";
+        /// <summary>dbo.departments.Id (the Staff Category), saved as tbl_Employee.DepartmentID. Checked by the controllers.</summary>
+        public string? DepartmentId { get; set; }
+        /// <summary>
+        /// The designation's name: the SERP.tbl_Designation row of that name is used (or added), and its DesigID saved as
+        /// tbl_Employee.Desig. Required when registering; checked by the controllers.
+        /// </summary>
+        [StringLength(EmployeeDesignation.NameMaxLength, ErrorMessage = "ValDesignation")]
+        public string? Designation { get; set; }
+        /// <summary>Optional SERP.tbl_ArtisansTypeAgency.AgencyID.</summary>
+        public string? AgencyId { get; set; }
+        /// <summary>Optional SERP.tbl_Shifts.ShiftID, saved as tbl_Employee.ShiftID; one of the shifts of the employee type.</summary>
+        public string? ShiftId { get; set; }
+        [Range(1, 99999, ErrorMessage = "ValStallNumber")]
+        public int? StallNumber { get; set; }
+        /// <summary>yyyy-MM-dd, tbl_Employee.JoinDate. Required when registering; checked by the controllers.</summary>
+        public string? JoinDate { get; set; }
+        /// <summary>
+        /// The designation's monthly salary, saved in tbl_Designation.BaseSalary (so it is the same for everyone with that designation).
+        /// Only an admin's value is saved; null leaves the designation's salary as it is.
+        /// </summary>
+        [Range(typeof(decimal), "0", "99999999.99", ErrorMessage = "ValDesignationSalary")]
+        public decimal? MonthlySalary { get; set; }
+        /// <summary>This year's quotas (employee_leave_quotas). On edit only the listed types change; null days removes one.</summary>
         public List<LeaveQuotaDto>? LeaveQuotas { get; set; }
+        /// <summary>A new photo for tbl_Employee.ImageBase64: a JPEG/PNG data URL or plain base64. Null keeps the photo on record.</summary>
+        public string? Photo { get; set; }
+        /// <summary>True clears the photo on record (ignored when a new one is sent).</summary>
+        public bool RemovePhoto { get; set; }
     }
 
     public class UpdateStaffDto : CreateStaffDto
     {
-        // client must not set Id or EmployeeId
-        [RegularExpression("^(ACTIVE|ON_LEAVE|INACTIVE)$", ErrorMessage = "ValStatus")]
+        // client must not set the employee id
+        [RegularExpression(EmployeeStatuses.Pattern, ErrorMessage = "ValStatus")]
         public string? Status { get; set; }
+        [StringLength(200, ErrorMessage = "ValEmployeeRemarks")]
+        public string? Remarks { get; set; }
     }
 }

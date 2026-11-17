@@ -21,17 +21,17 @@ namespace IMSB.Backend
         }
 
         public Task<List<Stall>> AllAsync() =>
-            _context.Stalls.AsNoTracking().Include(s => s.Category).Include(s => s.Artisan)
+            _context.Stalls.AsNoTracking().Include(s => s.Category).Include(s => s.Artisan).Include(s => s.ShgDetail)
                 .OrderBy(s => s.Block).ThenBy(s => s.StallCode).ToListAsync();
 
         public async Task<HashSet<int>> FilteredIdsAsync(string? q, string? status, string? categoryId, string? block) =>
             (await ApplyFilters(_context.Stalls.AsNoTracking(), q, status, categoryId, block).Select(s => s.Id).ToListAsync()).ToHashSet();
 
         public Task<List<Stall>> FilterAsync(string? q, string? status, string? categoryId, string? block) =>
-            ApplyFilters(_context.Stalls.AsNoTracking().Include(s => s.Category).Include(s => s.Artisan), q, status, categoryId, block)
+            ApplyFilters(_context.Stalls.AsNoTracking().Include(s => s.Category).Include(s => s.Artisan).Include(s => s.ShgDetail), q, status, categoryId, block)
                 .OrderBy(s => s.Block).ThenBy(s => s.StallCode).ToListAsync();
 
-        /// <summary>Shared with the Reports backend. q matches code, name, location and the artisan's name or code.</summary>
+        /// <summary>Shared with the Reports backend. q matches code, name, location and the holder's (artisan's or SHG's) name or code.</summary>
         internal static IQueryable<Stall> ApplyFilters(IQueryable<Stall> query, string? q, string? status, string? categoryId, string? block)
         {
             if (!string.IsNullOrWhiteSpace(q))
@@ -39,7 +39,9 @@ namespace IMSB.Backend
                 var term = q.Trim().ToLower();
                 query = query.Where(s => s.StallCode.ToLower().Contains(term) || s.Name.ToLower().Contains(term)
                     || (s.Location != null && s.Location.ToLower().Contains(term))
-                    || (s.Artisan != null && (s.Artisan.FullName.ToLower().Contains(term) || s.Artisan.ArtisanCode.ToLower().Contains(term))));
+                    || (s.Artisan != null && (s.Artisan.FullName.ToLower().Contains(term) || s.Artisan.ArtisanCode.ToLower().Contains(term)))
+                    || (s.ShgDetail != null && (s.ShgDetail.ShgName.ToLower().Contains(term)
+                        || (s.ShgDetail.ApplicationRef != null && s.ShgDetail.ApplicationRef.ToLower().Contains(term)))));
             }
             var st = status?.Trim().ToUpperInvariant();
             if (!string.IsNullOrEmpty(st) && StallStatuses.All.Contains(st)) query = query.Where(s => s.Status == st);

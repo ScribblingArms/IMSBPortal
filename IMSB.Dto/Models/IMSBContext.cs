@@ -6,6 +6,10 @@ public class IMSBContext : DbContext
 {
     public IMSBContext(DbContextOptions<IMSBContext> options) : base(options) { }
 
+    /// <summary>
+    /// Employees as the attendance, leave, OT, payroll, dashboard and search pages read them: the view
+    /// dbo.vw_StaffEmployees over SERP.tbl_Employee (Id = EMP_ID). Read-only; employees are saved through <see cref="Employees"/>.
+    /// </summary>
     public DbSet<Staff> Staff { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<Shift> Shifts { get; set; }
@@ -27,6 +31,19 @@ public class IMSBContext : DbContext
     public DbSet<LeaveEntitlement> LeaveEntitlements { get; set; }
     public DbSet<StaffLeaveEntry> StaffLeaveEntries { get; set; }
     public DbSet<PayBillEntry> PayBillEntries { get; set; }
+    public DbSet<ShgDetail> ShgDetails { get; set; }
+    public DbSet<District> Districts { get; set; }
+    public DbSet<Mandal> Mandals { get; set; }
+
+    // SERP tables (created by the AddGmcDbObjects migration's scripts, not by EF): the Staff page's data
+    public DbSet<Employee> Employees { get; set; }
+    public DbSet<EmployeeDesignation> EmployeeDesignations { get; set; }
+    public DbSet<ArtisansTypeAgency> ArtisansTypeAgencies { get; set; }
+    public DbSet<EmployeeTypeMaster> EmployeeTypeMasters { get; set; }
+    public DbSet<EmployeeShift> EmployeeShifts { get; set; }
+
+    /// <summary>The view the <see cref="Staff"/> set reads (created by the EmployeesReplaceStaff migration).</summary>
+    public const string StaffViewName = "vw_StaffEmployees";
 
     // Fixed ids so the seeded categories are stable across environments
     public static readonly (int Id, string Name)[] SeedCategories =
@@ -44,13 +61,23 @@ public class IMSBContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // The SERP tables already exist (Migrations/Scripts/GmcDb/Tables.sql); EF must never create or alter them.
+        // tbl_Designation, tbl_ArtisansTypeAgency and tbl_Shifts have no primary key in the database: their id
+        // columns are treated as keys here and only ever read without tracking.
+        // no OUTPUT clause, so saving still works if the SERP side puts a trigger on the table
+        modelBuilder.Entity<Employee>().ToTable("tbl_Employee", "SERP", t => { t.ExcludeFromMigrations(); t.UseSqlOutputClause(false); });
+        modelBuilder.Entity<EmployeeDesignation>().ToTable("tbl_Designation", "SERP", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<ArtisansTypeAgency>().ToTable("tbl_ArtisansTypeAgency", "SERP", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<EmployeeTypeMaster>().ToTable("tbl_EMP_Types", "SERP", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<EmployeeShift>().ToTable("tbl_Shifts", "SERP", t => t.ExcludeFromMigrations());
+
+        // Staff is a read model over SERP.tbl_Employee: the view below, never a table (dbo.staff is no longer read).
+        // EF creates no foreign keys to a view; the attendance, OT and leave tables are tied to tbl_Employee.EMP_ID by the
+        // EmployeesReplaceStaff migration instead.
         modelBuilder.Entity<Staff>(b =>
         {
-            b.HasIndex(e => e.EmployeeId).IsUnique();
-            b.HasIndex(e => e.Mobile).IsUnique();
-            b.HasIndex(e => e.AadhaarHash).IsUnique();
-            b.HasIndex(e => e.DepartmentId);
-
+            b.ToTable((string?)null);
+            b.ToView(StaffViewName, "dbo");
             b.Property(p => p.EmployeeId).HasMaxLength(20);
             b.Property(p => p.Mobile).HasMaxLength(32);
             b.Property(p => p.Email).HasMaxLength(200);
@@ -145,6 +172,9 @@ public class IMSBContext : DbContext
             b.HasOne(s => s.Category).WithMany().HasForeignKey(s => s.CategoryId).OnDelete(DeleteBehavior.Restrict);
             // an allocated artisan cannot be deleted (the controller asks to vacate first)
             b.HasOne(s => s.Artisan).WithMany().HasForeignKey(s => s.ArtisanId).OnDelete(DeleteBehavior.Restrict);
+            // an SHG application holds at most one stall, and cannot be deleted while it does
+            b.HasIndex(s => s.ShgDetailId).IsUnique().HasFilter("[ShgDetailId] IS NOT NULL");
+            b.HasOne(s => s.ShgDetail).WithMany().HasForeignKey(s => s.ShgDetailId).OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<StallReallocation>(b =>
@@ -229,6 +259,33 @@ public class IMSBContext : DbContext
         {
             b.HasIndex(e => new { e.StaffId, e.Year, e.Month }).IsUnique();
             b.HasIndex(e => new { e.Year, e.Month });
+        });
+
+        modelBuilder.Entity<District>(b =>
+        {
+            b.HasIndex(d => d.Name).IsUnique();
+            b.HasData(TelanganaLocations.Districts.Select(d => new District { Id = d.Id, Name = d.Name }));
+        });
+
+        modelBuilder.Entity<Mandal>(b =>
+        {
+            b.HasIndex(m => new { m.DistrictId, m.Name }).IsUnique();
+            b.HasOne(m => m.District).WithMany().HasForeignKey(m => m.DistrictId).OnDelete(DeleteBehavior.Restrict);
+            b.HasData(TelanganaLocations.Mandals.Select(m => new Mandal { Id = m.Id, DistrictId = m.DistrictId, Name = m.Name }));
+        });
+
+        modelBuilder.Entity<ShgDetail>(b =>
+        {
+            b.HasIndex(s => s.PublicId).IsUnique();
+            // not unique: the same SHG may apply again in a later allotment cycle
+            b.HasIndex(s => s.ShgId);
+            b.HasIndex(s => s.DistrictId);
+            b.HasIndex(s => s.RepMobile);
+            b.HasIndex(s => s.ApplicationRef).IsUnique().HasFilter("[ApplicationRef] IS NOT NULL");
+            b.Property(s => s.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+            // districts and categories in use cannot be deleted (the mandal is free text)
+            b.HasOne(s => s.District).WithMany().HasForeignKey(s => s.DistrictId).OnDelete(DeleteBehavior.Restrict);
+            b.HasOne(s => s.ProductCategory).WithMany().HasForeignKey(s => s.ProductCategoryId).OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

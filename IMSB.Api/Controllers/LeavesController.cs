@@ -7,7 +7,11 @@ using static IMSB.Common.CommonHelpers;
 
 namespace IMSB.Api.Controllers
 {
-    /// <summary>Leave management for the current year: entitlements per employee, leave taken, and balances.</summary>
+    /// <summary>
+    /// Leave management for the current year: entitlements per employee, leave taken, and balances.
+    /// Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId the same as text, and the staff category is
+    /// their dbo.departments name. The Staff page's Annual Quota writes the same entitlements.
+    /// </summary>
     [Authorize(Roles = "Admin,Staff")]
     public class LeavesController : ApiControllerBase
     {

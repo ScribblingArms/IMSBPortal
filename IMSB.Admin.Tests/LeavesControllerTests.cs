@@ -18,9 +18,9 @@ public class LeavesControllerTests
     private static (IMSBContext Context, LeavesController Controller, Staff Staff) Create()
     {
         var context = TestHelpers.CreateContext();
-        var staff = TestHelpers.ExistingStaff("EMP901", "Leave Tester", "900000901");
+        var staff = TestHelpers.ExistingStaff("901", "Leave Tester", "900000901");
         staff.StaffCategory = "Operators";
-        context.Staff.Add(staff);
+        context.AddEmployees(staff);
         context.SaveChanges();
 
         var http = new DefaultHttpContext
@@ -318,7 +318,7 @@ public class LeavesControllerTests
         var (context, controller, staff) = Create();
         using (context)
         {
-            staff.JoinDate = BackDay.AddDays(1);
+            context.Employees.Single(e => e.EmpId == staff.Id).JoinDate = BackDay.AddDays(1);   // tbl_Employee.JoinDate
             AddQuota(context, staff, 5m);
             await context.SaveChangesAsync();
             var form = Entry(staff.Id, BackDay);
@@ -423,7 +423,7 @@ public class LeavesControllerTests
 
             Assert.Contains(LeaveBalanceRules.LopLeaveType, model.LeaveTypes);
             var balance = Assert.Single(model.Balances);
-            Assert.Equal(("EMP901", "Casual", 0m), (balance.EmployeeId, balance.LeaveType, balance.Balance));
+            Assert.Equal(("901", "Casual", 0m), (balance.EmployeeId, balance.LeaveType, balance.Balance));
         }
     }
 

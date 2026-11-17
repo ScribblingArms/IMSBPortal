@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=Localhost;Database=IMSBDB;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}

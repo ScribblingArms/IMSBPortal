@@ -25,18 +25,20 @@ public class StaffLocalizationTests
             .ToDictionary(d => (string)d.Attribute("name")!, d => (string?)d.Element("value") ?? "");
     }
 
-    /// <summary>Every key the Staff view, staff.js, StaffController and the DTO annotations use.</summary>
+    /// <summary>Every key the Staff view, staff.js, StaffController, the shared StaffValidation and the DTO annotations use.</summary>
     private static IEnumerable<string> StaffKeys()
     {
         var root = AdminProjectDir();
         var view = File.ReadAllText(Path.Combine(root, "Views", "Staff", "Index.cshtml"));
         var controller = File.ReadAllText(Path.Combine(root, "Controllers", "StaffController.cs"));
+        var validation = File.ReadAllText(Path.Combine(root, "..", "IMSB.Backend", "StaffValidation.cs"));
         var dtos = File.ReadAllText(Path.Combine(root, "..", "IMSB.Dto", "Models", "StaffModels.cs"));
         var keys = new HashSet<string>();
         foreach (Match m in Regex.Matches(view, @"L\[""(\w+)""\]")) keys.Add(m.Groups[1].Value);
         foreach (Match m in Regex.Matches(view, @"var jsKeys = new\[\] \{(.*?)\};", RegexOptions.Singleline))
             foreach (Match k in Regex.Matches(m.Groups[1].Value, @"""(\w+)""")) keys.Add(k.Groups[1].Value);
         foreach (Match m in Regex.Matches(controller, @"_L\[""(\w+)""\]")) keys.Add(m.Groups[1].Value);
+        foreach (Match m in Regex.Matches(validation, @"\bl\[""(\w+)""\]")) keys.Add(m.Groups[1].Value);
         foreach (Match m in Regex.Matches(dtos, @"ErrorMessage = ""(\w+)""")) keys.Add(m.Groups[1].Value);
         return keys;
     }
@@ -97,20 +99,20 @@ public class StaffLocalizationTests
     }
 
     [Theory]
-    [InlineData("en-US", "Staff must be at least 18 years old")]
-    [InlineData("ta-IN", "பணியாளருக்கு குறைந்தது 18 வயது இருக்க வேண்டும்")]
-    [InlineData("te-IN", "సిబ్బందికి కనీసం 18 సంవత్సరాలు ఉండాలి")]
-    [InlineData("hi-IN", "स्टाफ की आयु कम से कम 18 वर्ष होनी चाहिए")]
+    [InlineData("en-US", "Select a gender")]
+    [InlineData("ta-IN", "பாலினத்தைத் தேர்ந்தெடுக்கவும்")]
+    [InlineData("te-IN", "లింగాన్ని ఎంచుకోండి")]
+    [InlineData("hi-IN", "लिंग चुनें")]
     public async Task Controller_validation_messages_follow_request_culture(string culture, string expected)
     {
         using var scope = new TestHelpers.CultureScope(culture);
-        using var ctx = TestHelpers.CreateContext();
+        using var ctx = TestHelpers.CreateStaffContext();
         var dto = TestHelpers.ValidCreateDto();
-        dto.DateOfBirth = DateTime.Today.AddYears(-10).ToString("yyyy-MM-dd");
+        dto.Gender = "Unknown";
 
         var errors = TestHelpers.Errors(await TestHelpers.CreateController(ctx).Create(dto));
 
-        Assert.Equal(expected, errors["date_of_birth"]);
+        Assert.Equal(expected, errors["gender"]);
     }
 
     [Fact]

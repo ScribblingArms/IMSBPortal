@@ -2778,4 +2778,201 @@
   <data name="No" xml:space="preserve"><value>இல்லை</value></data>
   <data name="PayableDays" xml:space="preserve"><value>செலுத்த வேண்டிய நாட்கள்</value></data>
   <data name="LOPDays" xml:space="preserve"><value>LOP நாட்கள்</value></data>
+  <data name="UserManagement" xml:space="preserve"><value>பயனர் மேலாண்மை</value></data>
+  <data name="UserManagementSubtitle" xml:space="preserve"><value>மாவட்ட அலுவலர்கள் மற்றும் மாநில நிர்வாக அலுவலர்களைச் சேர்க்கவும், பார்க்கவும், புதுப்பிக்கவும், நீக்கவும்.</value></data>
+  <data name="AddUser" xml:space="preserve"><value>பயனரைச் சேர்</value></data>
+  <data name="EditUser" xml:space="preserve"><value>பயனரைத் திருத்து</value></data>
+  <data name="SaveUser" xml:space="preserve"><value>சேமி</value></data>
+  <data name="UpdateUser" xml:space="preserve"><value>புதுப்பி</value></data>
+  <data name="UserDetails" xml:space="preserve"><value>பயனர் விவரங்கள்</value></data>
+  <data name="SearchUsers" xml:space="preserve"><value>பயனர்பெயர், கைபேசி அல்லது மாவட்டம் மூலம் தேடுக...</value></data>
+  <data name="UserNameLabel" xml:space="preserve"><value>பயனர்பெயர்</value></data>
+  <data name="UserType" xml:space="preserve"><value>பயனர் வகை</value></data>
+  <data name="CreatedOn" xml:space="preserve"><value>உருவாக்கிய தேதி</value></data>
+  <data name="LastLoginLabel" xml:space="preserve"><value>கடைசி உள்நுழைவு</value></data>
+  <data name="Never" xml:space="preserve"><value>இதுவரை இல்லை</value></data>
+  <data name="PasswordKeepHint" xml:space="preserve"><value>தற்போதைய கடவுச்சொல்லை வைத்திருக்க காலியாக விடவும்</value></data>
+  <data name="UserSaved" xml:space="preserve"><value>பயனர் சேமிக்கப்பட்டார்.</value></data>
+  <data name="UserUpdated" xml:space="preserve"><value>பயனர் புதுப்பிக்கப்பட்டார்.</value></data>
+  <data name="UserDeleted" xml:space="preserve"><value>பயனர் நீக்கப்பட்டார்.</value></data>
+  <data name="ConfirmDeleteUser" xml:space="preserve"><value>பயனர் {0} ஐ நீக்கவா? இதைத் திரும்பப் பெற முடியாது.</value></data>
+  <data name="NoUsersFound" xml:space="preserve"><value>பயனர்கள் எவரும் இல்லை</value></data>
+  <data name="ValUserName" xml:space="preserve"><value>பயனர்பெயர் 3-100 எழுத்துகளாக இருக்க வேண்டும்: எழுத்துகள், எண்கள், . _ @ -</value></data>
+  <data name="ValUserNameTaken" xml:space="preserve"><value>இந்தப் பயனர்பெயர் ஏற்கனவே பயன்பாட்டில் உள்ளது</value></data>
+  <data name="ValUserType" xml:space="preserve"><value>பயனர் வகையைத் தேர்ந்தெடுக்கவும்</value></data>
+  <data name="District_Adilabad" xml:space="preserve"><value>ஆதிலாபாத்</value></data>
+  <data name="District_BhadradriKothagudem" xml:space="preserve"><value>பத்ராத்ரி கொத்தகூடெம்</value></data>
+  <data name="District_Hanumakonda" xml:space="preserve"><value>ஹனுமகொண்டா</value></data>
+  <data name="District_Hyderabad" xml:space="preserve"><value>ஹைதராபாத்</value></data>
+  <data name="District_Jagtial" xml:space="preserve"><value>ஜக்தியால்</value></data>
+  <data name="District_Jangaon" xml:space="preserve"><value>ஜனகாம்</value></data>
+  <data name="District_JayashankarBhupalpally" xml:space="preserve"><value>ஜெயசங்கர் பூபாலபள்ளி</value></data>
+  <data name="District_JogulambaGadwal" xml:space="preserve"><value>ஜோகுலாம்பா கத்வால்</value></data>
+  <data name="District_Kamareddy" xml:space="preserve"><value>காமாரெட்டி</value></data>
+  <data name="District_Karimnagar" xml:space="preserve"><value>கரீம்நகர்</value></data>
+  <data name="District_Khammam" xml:space="preserve"><value>கம்மம்</value></data>
+  <data name="District_KumuramBheemAsifabad" xml:space="preserve"><value>குமுரம் பீம் ஆசிபாபாத்</value></data>
+  <data name="District_Mahabubabad" xml:space="preserve"><value>மகபூபாபாத்</value></data>
+  <data name="District_Mahabubnagar" xml:space="preserve"><value>மகபூப்நகர்</value></data>
+  <data name="District_Mancherial" xml:space="preserve"><value>மஞ்சேரியல்</value></data>
+  <data name="District_Medak" xml:space="preserve"><value>மேதக்</value></data>
+  <data name="District_MedchalMalkajgiri" xml:space="preserve"><value>மேட்சல்-மல்காஜ்கிரி</value></data>
+  <data name="District_Mulugu" xml:space="preserve"><value>முலுகு</value></data>
+  <data name="District_Nagarkurnool" xml:space="preserve"><value>நாகர்கர்னூல்</value></data>
+  <data name="District_Nalgonda" xml:space="preserve"><value>நல்கொண்டா</value></data>
+  <data name="District_Narayanpet" xml:space="preserve"><value>நாராயணபேட்</value></data>
+  <data name="District_Nirmal" xml:space="preserve"><value>நிர்மல்</value></data>
+  <data name="District_Nizamabad" xml:space="preserve"><value>நிஜாமாபாத்</value></data>
+  <data name="District_Peddapalli" xml:space="preserve"><value>பெத்தபள்ளி</value></data>
+  <data name="District_RajannaSircilla" xml:space="preserve"><value>ராஜண்ணா சிரிசில்லா</value></data>
+  <data name="District_Rangareddy" xml:space="preserve"><value>ரங்காரெட்டி</value></data>
+  <data name="District_Sangareddy" xml:space="preserve"><value>சங்காரெட்டி</value></data>
+  <data name="District_Siddipet" xml:space="preserve"><value>சித்திபேட்</value></data>
+  <data name="District_Suryapet" xml:space="preserve"><value>சூர்யாபேட்</value></data>
+  <data name="District_Vikarabad" xml:space="preserve"><value>விகாராபாத்</value></data>
+  <data name="District_Wanaparthy" xml:space="preserve"><value>வனபர்த்தி</value></data>
+  <data name="District_Warangal" xml:space="preserve"><value>வாரங்கல்</value></data>
+  <data name="District_YadadriBhuvanagiri" xml:space="preserve"><value>யாதாத்ரி புவனகிரி</value></data>
+  <data name="ValEmailRequired" xml:space="preserve"><value>மின்னஞ்சல் அவசியம்</value></data>
+  <data name="ValPasswordStrength" xml:space="preserve"><value>கடவுச்சொல்லில் ஒரு பெரிய எழுத்து, ஒரு சிறிய எழுத்து, ஒரு எண் மற்றும் ஒரு சிறப்பு எழுத்து இருக்க வேண்டும்; இடைவெளி கூடாது</value></data>
+  <data name="ValConfirmPasswordRequired" xml:space="preserve"><value>கடவுச்சொல்லை உறுதிப்படுத்தவும்</value></data>
+  <data name="PasswordRulesHint" xml:space="preserve"><value>8-100 எழுத்துகள்: ஒரு பெரிய எழுத்து, ஒரு சிறிய எழுத்து, ஒரு எண், ஒரு சிறப்பு எழுத்து</value></data>
+  <data name="DistrictOfficer" xml:space="preserve"><value>மாவட்ட அலுவலர்</value></data>
+  <data name="StateAdminOfficer" xml:space="preserve"><value>மாநில நிர்வாக அலுவலர்</value></data>
+  <data name="AdminRole" xml:space="preserve"><value>நிர்வாகி</value></data>
+  <data name="SignInAs" xml:space="preserve"><value>இவ்வாறு உள்நுழைக</value></data>
+  <data name="Officers" xml:space="preserve"><value>அலுவலர்கள்</value></data>
+  <data name="ShgApplications" xml:space="preserve"><value>சுயஉதவிக் குழு விண்ணப்பங்கள்</value></data>
+  <data name="ShgApplicationsSubtitle" xml:space="preserve"><value>IMSB இணையதளத்தில் சுயஉதவிக் குழுக்கள் செய்த கடை விண்ணப்பங்கள்.</value></data>
+  <data name="ShgScopeAll" xml:space="preserve"><value>அனைத்து மாவட்டங்களின் விண்ணப்பங்கள் காட்டப்படுகின்றன.</value></data>
+  <data name="ShgScopeDistrict" xml:space="preserve"><value>{0} மாவட்ட விண்ணப்பங்கள் மட்டும் காட்டப்படுகின்றன.</value></data>
+  <data name="ShgNoDistrictAssigned" xml:space="preserve"><value>உங்கள் உள்நுழைவுக்கு மாவட்டம் அமைக்கப்படவில்லை, எனவே விண்ணப்பங்களைக் காட்ட முடியாது. பயனர் மேலாண்மையில் அமைக்க நிர்வாகியிடம் கேளுங்கள்.</value></data>
+  <data name="ShgTotal" xml:space="preserve"><value>மொத்த விண்ணப்பங்கள்</value></data>
+  <data name="ShgSubmitted" xml:space="preserve"><value>சமர்ப்பிக்கப்பட்டது</value></data>
+  <data name="ShgInProgress" xml:space="preserve"><value>நடைபெறுகிறது</value></data>
+  <data name="ShgSearch" xml:space="preserve"><value>குழு பெயர், குழு அடையாள எண், குறிப்பு எண், மண்டலம் அல்லது கைபேசி மூலம் தேடுக...</value></data>
+  <data name="ShgNoApplications" xml:space="preserve"><value>விண்ணப்பங்கள் எதுவும் இல்லை</value></data>
+  <data name="ShgReference" xml:space="preserve"><value>குறிப்பு எண்</value></data>
+  <data name="ShgName" xml:space="preserve"><value>குழுவின் பெயர்</value></data>
+  <data name="ShgIdLabel" xml:space="preserve"><value>குழு அடையாள எண்</value></data>
+  <data name="ShgVillageOrganisation" xml:space="preserve"><value>கிராம அமைப்பு (VO)</value></data>
+  <data name="ShgMandalSamakhya" xml:space="preserve"><value>மண்டல சமாக்யா (MS)</value></data>
+  <data name="ShgMandal" xml:space="preserve"><value>மண்டலம்</value></data>
+  <data name="ShgVillage" xml:space="preserve"><value>கிராமம்</value></data>
+  <data name="ShgYearFormed" xml:space="preserve"><value>தொடங்கிய ஆண்டு</value></data>
+  <data name="ShgMembers" xml:space="preserve"><value>உறுப்பினர்கள்</value></data>
+  <data name="ShgRepresentative" xml:space="preserve"><value>பிரதிநிதி</value></data>
+  <data name="ShgRepRole" xml:space="preserve"><value>குழுவில் பொறுப்பு</value></data>
+  <data name="ShgRepAge" xml:space="preserve"><value>வயது</value></data>
+  <data name="ShgGuardian" xml:space="preserve"><value>தந்தை அல்லது கணவர் பெயர்</value></data>
+  <data name="ShgAltMobile" xml:space="preserve"><value>மாற்று கைபேசி</value></data>
+  <data name="ShgAddress" xml:space="preserve"><value>முகவரி</value></data>
+  <data name="ShgPinCode" xml:space="preserve"><value>அஞ்சல் குறியீடு</value></data>
+  <data name="ShgProductCategory" xml:space="preserve"><value>பொருள் வகை</value></data>
+  <data name="ShgProductType" xml:space="preserve"><value>பொருள் வகைமை</value></data>
+  <data name="ShgProductDescription" xml:space="preserve"><value>பொருள் விவரம்</value></data>
+  <data name="ShgPriceRange" xml:space="preserve"><value>விலை வரம்பு</value></data>
+  <data name="ShgPriceMin" xml:space="preserve"><value>குறைந்த விலை</value></data>
+  <data name="ShgPriceMax" xml:space="preserve"><value>அதிக விலை</value></data>
+  <data name="ShgCapacity" xml:space="preserve"><value>மாதாந்திர உற்பத்தித் திறன்</value></data>
+  <data name="ShgPhotos" xml:space="preserve"><value>பொருள் புகைப்படங்கள்</value></data>
+  <data name="ShgNoPhotos" xml:space="preserve"><value>புகைப்படங்கள் இல்லை</value></data>
+  <data name="ShgDuration" xml:space="preserve"><value>கடை காலம்</value></data>
+  <data name="ShgStartMonth" xml:space="preserve"><value>விரும்பும் தொடக்க மாதம்</value></data>
+  <data name="ShgFacilities" xml:space="preserve"><value>தேவையான வசதிகள்</value></data>
+  <data name="ShgPrevExhibition" xml:space="preserve"><value>முன்பு கண்காட்சியில் விற்றது</value></data>
+  <data name="ShgPrevExhibitionDetails" xml:space="preserve"><value>முந்தைய கண்காட்சிகள்</value></data>
+  <data name="ShgPassbookDoc" xml:space="preserve"><value>குழு கணக்குப் புத்தகம் அல்லது சான்றிதழ்</value></data>
+  <data name="ShgIdProofDoc" xml:space="preserve"><value>பிரதிநிதியின் அடையாளச் சான்று</value></data>
+  <data name="ShgDeclTrue" xml:space="preserve"><value>விவரங்கள் உண்மை என உறுதிசெய்யப்பட்டது</value></data>
+  <data name="ShgDeclConsent" xml:space="preserve"><value>விவரங்களைப் பயன்படுத்த ஒப்புதல்</value></data>
+  <data name="ShgCreatedOn" xml:space="preserve"><value>தொடங்கிய நாள்</value></data>
+  <data name="ShgSubmittedOn" xml:space="preserve"><value>சமர்ப்பித்த நாள்</value></data>
+  <data name="ShgDate" xml:space="preserve"><value>தேதி</value></data>
+  <data name="ShgNotGiven" xml:space="preserve"><value>வழங்கப்படவில்லை</value></data>
+  <data name="ShgStepNotSaved" xml:space="preserve"><value>இந்தப் படி இன்னும் சேமிக்கப்படவில்லை.</value></data>
+  <data name="ShgOpenFile" xml:space="preserve"><value>கோப்பைத் திற</value></data>
+  <data name="ShgNotSubmittedYet" xml:space="preserve"><value>இன்னும் சமர்ப்பிக்கப்படவில்லை</value></data>
+  <data name="ShgApplicationDetails" xml:space="preserve"><value>சுயஉதவிக் குழு விண்ணப்ப விவரங்கள்</value></data>
+  <data name="ShgSectionShg" xml:space="preserve"><value>குழு விவரங்கள்</value></data>
+  <data name="ShgSectionRep" xml:space="preserve"><value>பிரதிநிதி மற்றும் தொடர்பு விவரங்கள்</value></data>
+  <data name="ShgSectionProduct" xml:space="preserve"><value>பொருள் விவரங்கள்</value></data>
+  <data name="ShgSectionStall" xml:space="preserve"><value>கடைத் தேவைகள்</value></data>
+  <data name="ShgSectionDocs" xml:space="preserve"><value>ஆவணங்கள் மற்றும் உறுதிமொழி</value></data>
+  <data name="ShgAllocateTitle" xml:space="preserve"><value>சுயஉதவிக் குழுவுக்குக் கடை ஒதுக்கு</value></data>
+  <data name="ShgFromApplicationHint" xml:space="preserve"><value>கடை இந்தக் குழுவுக்கு ஒதுக்கப்படும்; பொருள் வகை அதன் விண்ணப்பத்திலிருந்து எடுக்கப்படும்.</value></data>
+  <data name="ShgSectionAllotment" xml:space="preserve"><value>ஒதுக்கப்பட்ட கடை</value></data>
+  <data name="ShgValNotSubmitted" xml:space="preserve"><value>சமர்ப்பிக்கப்பட்ட விண்ணப்பத்துக்கு மட்டுமே கடை ஒதுக்க முடியும்.</value></data>
+  <data name="ShgValHasStall" xml:space="preserve"><value>இந்தக் குழுவிடம் ஏற்கெனவே கடை {0} உள்ளது.</value></data>
+  <data name="ShgStallAllocated" xml:space="preserve"><value>கடை {0} {1}க்கு ஒதுக்கப்பட்டது.</value></data>
+  <data name="ValStallHeldByShg" xml:space="preserve"><value>இந்தக் கடை ஒரு சுயஉதவிக் குழுவுக்கு ஒதுக்கப்பட்டுள்ளது. கைவினைஞருக்கு வழங்க முதலில் காலி செய்யவும்.</value></data>
+  <data name="ShgStallAllottedBtn" xml:space="preserve"><value>கடை ஒதுக்கப்பட்டது ({0})</value></data>
+  <data name="ShgStatusInProcess" xml:space="preserve"><value>செயல்பாட்டில் உள்ளது</value></data>
+  <data name="ShgStatusIncomplete" xml:space="preserve"><value>முழுமையடையவில்லை</value></data>
+  <data name="ShgRejectTitle" xml:space="preserve"><value>சுயஉதவிக் குழு விண்ணப்பத்தை நிராகரி</value></data>
+  <data name="ShgRejectHint" xml:space="preserve"><value>விண்ணப்பம் நிராகரிக்கப்பட்டதாகக் குறிக்கப்படும்; இனி இதற்குக் கடை ஒதுக்க முடியாது. காரணம் விண்ணப்பத்துடன் சேமிக்கப்படும்.</value></data>
+  <data name="ShgRejectionReason" xml:space="preserve"><value>நிராகரிப்புக்கான காரணம்</value></data>
+  <data name="ShgValRejectReason" xml:space="preserve"><value>நிராகரிப்புக்கான காரணத்தை உள்ளிடவும் (500 எழுத்துகள் வரை)</value></data>
+  <data name="ShgValAlreadyRejected" xml:space="preserve"><value>இந்த விண்ணப்பம் ஏற்கனவே நிராகரிக்கப்பட்டது.</value></data>
+  <data name="ShgValCannotReject" xml:space="preserve"><value>இந்த விண்ணப்பத்தை இனி நிராகரிக்க முடியாது. பக்கத்தை மீண்டும் ஏற்றவும்.</value></data>
+  <data name="ShgValRejected" xml:space="preserve"><value>இந்த விண்ணப்பம் நிராகரிக்கப்பட்டதால் கடை ஒதுக்க முடியாது.</value></data>
+  <data name="ShgRejectedMsg" xml:space="preserve"><value>{1} இன் விண்ணப்பம் {0} நிராகரிக்கப்பட்டது.</value></data>
+  <data name="ShgConfirmDelete" xml:space="preserve"><value>{1} இன் விண்ணப்பம் {0} ஐ நீக்கவா? அதன் விவரங்களும் பதிவேற்றிய கோப்புகளும் மீட்க முடியாது.</value></data>
+  <data name="ShgDeletedMsg" xml:space="preserve"><value>{1} இன் விண்ணப்பம் {0} நீக்கப்பட்டது.</value></data>
+  <data name="ShgValDeleteHasStall" xml:space="preserve"><value>இந்தக் குழுவிடம் கடை {0} உள்ளது. விண்ணப்பத்தை நீக்கும் முன் கடை மேலாண்மையில் அதைக் காலி செய்யவும்.</value></data>
+  <data name="ShgValCannotDelete" xml:space="preserve"><value>இந்த விண்ணப்பத்தை இனி நீக்க முடியாது. பக்கத்தை மீண்டும் ஏற்றவும்.</value></data>
+  <data name="ShgSectionRejection" xml:space="preserve"><value>நிராகரிப்பு</value></data>
+  <data name="ShgRejectedOn" xml:space="preserve"><value>நிராகரித்த தேதி</value></data>
+  <data name="ShgRejectedBy" xml:space="preserve"><value>நிராகரித்தவர்</value></data>
+  <data name="NoShift" xml:space="preserve">
+    <value>ஷிஃப்ட் இல்லை</value>
+  </data>
+  <data name="AgencyStaff" xml:space="preserve">
+    <value>முகமை பணியாளர்கள்</value>
+  </data>
+  <data name="StallNumber" xml:space="preserve">
+    <value>ஸ்டால் எண்</value>
+  </data>
+  <data name="ValStallNumber" xml:space="preserve">
+    <value>ஸ்டால் எண் 1 முதல் 99999 வரையிலான முழு எண்ணாக இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValEmployeeRemarks" xml:space="preserve">
+    <value>குறிப்புகள் அதிகபட்சம் 200 எழுத்துகள் இருக்கலாம்</value>
+  </data>
+  <data name="ValAgency" xml:space="preserve">
+    <value>சரியான முகமையைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="StaffDeleteInUse" xml:space="preserve">
+    <value>இந்தப் பணியாளருக்கு வருகைப் பதிவுகள் உள்ளதால் நீக்க முடியாது. அதற்குப் பதிலாக நிலையைச் செயலற்றது என மாற்றவும்.</value>
+  </data>
+  <data name="AadhaarMaskedHint" xml:space="preserve">
+    <value>கடைசி 4 இலக்கங்கள் மட்டுமே காட்டப்படும்.</value>
+  </data>
+  <data name="SelectEmployeeTypeFirst" xml:space="preserve">
+    <value>முதலில் பணியாளர் வகையைத் தேர்ந்தெடுக்கவும்</value>
+  </data>
+  <data name="ValDepartmentType" xml:space="preserve">
+    <value>இந்தப் பணியாளர் வகைப்பாடு தேர்ந்தெடுத்த பணியாளர் வகையைச் சேர்ந்தது அல்ல</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>புகைப்படம்</value>
+  </data>
+  <data name="UploadPhoto" xml:space="preserve">
+    <value>புகைப்படத்தைப் பதிவேற்று</value>
+  </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>புகைப்படத்தை நீக்கு</value>
+  </data>
+  <data name="PhotoHint" xml:space="preserve">
+    <value>JPG அல்லது PNG. பெரிய படங்கள் சேமிக்கும் முன் சிறிதாக்கப்படும்.</value>
+  </data>
+  <data name="ValPhoto" xml:space="preserve">
+    <value>புகைப்படம் அதிகபட்சம் 500 KB அளவுள்ள JPG அல்லது PNG படமாக இருக்க வேண்டும்</value>
+  </data>
+  <data name="ValDesignationSalary" xml:space="preserve">
+    <value>0 முதல் 99,999,999.99 வரையிலான மாதச் சம்பளத்தை உள்ளிடவும்.</value>
+  </data>
+  <data name="DesignationSalaryHint" xml:space="preserve">
+    <value>பதவியுடன் சேமிக்கப்படுவதால், இந்தப் பதவியில் உள்ள அனைவருக்கும் பொருந்தும். மாற்ற வேண்டாமெனில் காலியாக விடவும்.</value>
+  </data>
 </root>

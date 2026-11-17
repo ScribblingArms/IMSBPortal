@@ -168,6 +168,7 @@ public class AppLocalizationTests
     [InlineData("Reports", "reports.js")]
     [InlineData("Attendance", "attendance.js")]
     [InlineData("OtAssignments", "ot-assignments.js")]
+    [InlineData("UserManagement", "user-management.js")]
     public void Page_scripts_only_use_strings_their_view_provides(string page, string script)
     {
         var provided = ArrayKeys(Read("Views", page, "Index.cshtml"), "jsKeys");
@@ -186,6 +187,7 @@ public class AppLocalizationTests
     [InlineData("Views/Reports/Index.cshtml", "jsKeys", "reports.js")]
     [InlineData("Views/Shared/_Header.cshtml", "headerKeys", "header.js")]
     [InlineData("Views/Attendance/Index.cshtml", "jsKeys", "attendance.js")]
+    [InlineData("Views/ShgApplications/Index.cshtml", "jsKeys", "shg-applications.js")]
     public void Keys_in_script_lookup_tables_are_provided(string view, string variable, string script)
     {
         var provided = ArrayKeys(Read(view.Split('/')), variable);
@@ -243,6 +245,43 @@ public class AppLocalizationTests
         Assert.True(foreign.Count == 0, $"{culture} wrong script: {string.Join(", ", foreign.Select(k => $"{k}='{other[k]}'"))}");
     }
 
+    [Theory]
+    [InlineData("ta-IN", @"\p{IsTamil}")]
+    [InlineData("te-IN", @"\p{IsTelugu}")]
+    [InlineData("hi-IN", @"\p{IsDevanagari}")]
+    public void User_management_strings_are_translated_in_the_right_script(string culture, string script)
+    {
+        var keys = KeysIn(Read("Views", "UserManagement", "Index.cshtml") + Read("Controllers", "UserManagementController.cs"));
+        keys.UnionWith(new[] { "DistrictOfficer", "StateAdminOfficer", "AdminRole", "SignInAs", "ValUserNameTaken" });
+        keys.UnionWith(IMSB.Dto.Models.TelanganaDistricts.All.Select(d => IMSB.Dto.Models.DistrictNames.ResourceKey(d)!));
+        Assert.True(keys.Count > 60, $"only {keys.Count} user management keys found");
+        var en = Resx("en-US");
+        var other = Resx(culture);
+        var missing = keys.Where(k => !other.ContainsKey(k)).ToList();
+        Assert.True(missing.Count == 0, $"{culture} missing: {string.Join(", ", missing)}");
+        var same = keys.Where(k => other[k] == en[k] && Regex.IsMatch(en[k], "[a-z]{3}")).OrderBy(k => k).ToList();
+        Assert.True(same.Count == 0, $"{culture} untranslated: {string.Join(", ", same)}");
+        var foreign = keys.Where(k => !Regex.IsMatch(other[k], script + "|^[\\W\\d{}A-Z-]*$")).OrderBy(k => k).ToList();
+        Assert.True(foreign.Count == 0, $"{culture} wrong script: {string.Join(", ", foreign.Select(k => $"{k}='{other[k]}'"))}");
+    }
+
+    [Theory]
+    [InlineData("ta-IN", @"\p{IsTamil}")]
+    [InlineData("te-IN", @"\p{IsTelugu}")]
+    [InlineData("hi-IN", @"\p{IsDevanagari}")]
+    public void Shg_applications_strings_are_translated_in_the_right_script(string culture, string script)
+    {
+        var keys = KeysIn(Read("Views", "ShgApplications", "Index.cshtml") + Read("Controllers", "ShgApplicationsController.cs"));
+        Assert.True(keys.Count > 50, $"only {keys.Count} SHG application keys found");
+        var en = Resx("en-US");
+        var other = Resx(culture);
+        // words that read the same in every language (VO, MS...) are allowed
+        var same = keys.Where(k => other[k] == en[k] && Regex.IsMatch(en[k], "[a-z]{3}")).OrderBy(k => k).ToList();
+        Assert.True(same.Count == 0, $"{culture} untranslated: {string.Join(", ", same)}");
+        var foreign = keys.Where(k => !Regex.IsMatch(other[k], script + "|^[\\W\\d{}A-Z-]*$")).OrderBy(k => k).ToList();
+        Assert.True(foreign.Count == 0, $"{culture} wrong script: {string.Join(", ", foreign.Select(k => $"{k}='{other[k]}'"))}");
+    }
+
     [Fact]
     public void Corrected_attendance_terms_stay_fixed()
     {
@@ -270,6 +309,8 @@ public class AppLocalizationTests
     [InlineData("Artisans", "Index.cshtml")]
     [InlineData("Applications", "Index.cshtml")]
     [InlineData("Attendance", "Index.cshtml")]
+    [InlineData("UserManagement", "Index.cshtml")]
+    [InlineData("ShgApplications", "Index.cshtml")]
     [InlineData("Account", "Login.cshtml")]
     [InlineData("Account", "Forgot.cshtml")]
     [InlineData("Account", "Reset.cshtml")]

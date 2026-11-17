@@ -3,7 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IMSB.Dto.Models
 {
-    /// <summary>A physical market stall. It is occupied exactly when an artisan is allocated to it.</summary>
+    /// <summary>
+    /// A physical market stall. It is occupied exactly when it has a holder: a registered artisan (<see cref="ArtisanId"/>),
+    /// (<see cref="IsArtisan"/> true) or an SHG application from the website (<see cref="IsArtisan"/> false,
+    /// <see cref="ShgDetailId"/> set), never both.
+    /// </summary>
     [Table("stalls")]
     public class Stall
     {
@@ -50,6 +54,20 @@ namespace IMSB.Dto.Models
 
         public Artisan? Artisan { get; set; }
 
+        /// <summary>
+        /// True when the stall is allotted to a registered artisan (Artisan / Stall management, or an approved artisan
+        /// application). False when it is vacant, or allotted to an SHG application from the website (SHG Applications
+        /// page): then <see cref="ArtisanId"/> is null and the holder and product category come from SHGDetails.
+        /// </summary>
+        [Column("IsArtisan")]
+        public bool IsArtisan { get; set; }
+
+        /// <summary>The SHG application holding the stall (then <see cref="IsArtisan"/> is false).</summary>
+        [Column("ShgDetailId")]
+        public int? ShgDetailId { get; set; }
+
+        public ShgDetail? ShgDetail { get; set; }
+
         [Column("AllottedDate", TypeName = "date")]
         public DateTime? AllottedDate { get; set; }
 
@@ -76,6 +94,55 @@ namespace IMSB.Dto.Models
         [Column("UpdatedBy")]
         [MaxLength(100)]
         public string? UpdatedBy { get; set; }
+
+        /// <summary>Held by an artisan or by an SHG application.</summary>
+        [NotMapped]
+        public bool IsHeld => ArtisanId != null || ShgDetailId != null;
+
+        /// <summary>Name shown for the holder: the artisan's, or the SHG's (needs Artisan / ShgDetail loaded).</summary>
+        [NotMapped]
+        public string? HolderName => Artisan?.FullName ?? ShgDetail?.ShgName;
+
+        /// <summary>Code shown for the holder: ART-0001, or the SHG application's reference number.</summary>
+        [NotMapped]
+        public string? HolderCode => Artisan?.ArtisanCode ?? ShgDetail?.ApplicationRef;
+
+        /// <summary>Gives the stall to an artisan (any SHG holder is removed).</summary>
+        public void AssignTo(Artisan artisan, DateTime allotted, DateTime? agreementEnd, int? categoryId)
+        {
+            ArtisanId = artisan.Id;
+            IsArtisan = true;
+            ShgDetailId = null;
+            Occupy(allotted, agreementEnd, categoryId);
+        }
+
+        /// <summary>Gives the stall to an SHG application; its product category comes from the application.</summary>
+        public void AssignTo(ShgDetail shg, DateTime allotted, DateTime? agreementEnd)
+        {
+            ArtisanId = null;
+            IsArtisan = false;
+            ShgDetailId = shg.Id;
+            Occupy(allotted, agreementEnd, shg.ProductCategoryId);
+        }
+
+        /// <summary>Frees the stall from whoever holds it.</summary>
+        public void ClearHolder()
+        {
+            ArtisanId = null;
+            IsArtisan = false;
+            ShgDetailId = null;
+            Status = StallStatuses.Vacant;
+            AllottedDate = null;
+            AgreementEndDate = null;
+        }
+
+        private void Occupy(DateTime allotted, DateTime? agreementEnd, int? categoryId)
+        {
+            Status = StallStatuses.Occupied;
+            AllottedDate = allotted;
+            AgreementEndDate = agreementEnd;
+            CategoryId = categoryId;
+        }
     }
 
     public static class StallStatuses

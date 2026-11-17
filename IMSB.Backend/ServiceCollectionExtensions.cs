@@ -10,6 +10,8 @@ namespace IMSB.Backend
         public static IServiceCollection AddImsbBackend(this IServiceCollection services)
         {
             services.TryAddSingleton(TimeProvider.System);
+            // uploads of the website's stall application form (Uploads:ShgPhotosPath, default App_Data/shg-photos)
+            services.TryAddSingleton<ShgFileStore>();
             return services
                 .AddScoped<SessionService>()
                 .AddScoped<IAccountInterface, Account>()
@@ -25,8 +27,11 @@ namespace IMSB.Backend
                 .AddScoped<IReportsInterface, Reports>()
                 .AddScoped<ISalesInterface, Sales>()
                 .AddScoped<ISearchInterface, Search>()
+                .AddScoped<IShgApplicationsInterface, ShgApplications>()
+                .AddScoped<IShgDetailsInterface, ShgDetails>()
                 .AddScoped<IStaffInterface, StaffDetails>()
-                .AddScoped<IStallsInterface, Stalls>();
+                .AddScoped<IStallsInterface, Stalls>()
+                .AddScoped<IUserManagementInterface, UserManagement>();
         }
     }
 }

@@ -186,6 +186,8 @@ public class StallsControllerTests
         var saroja = ctx.Artisans.Single(a => a.ArtisanCode == "ART-0002");
         Assert.Equal((StallStatuses.Occupied, saroja.Id, DateTime.Today, 3000m), (s.Status, s.ArtisanId!.Value, s.AllottedDate!.Value, s.MonthlyRent!.Value));
         Assert.Equal(Pottery, s.CategoryId);   // defaults to the artisan's craft
+        Assert.True(s.IsArtisan);              // held by an artisan (Artisan / Stall management)
+        Assert.Null(s.ShgDetailId);
     }
 
     [Fact]
@@ -224,6 +226,7 @@ public class StallsControllerTests
         Assert.IsType<OkObjectResult>(await c.Vacate("A-01"));
         var s = Get(ctx, "A-01");
         Assert.Equal((StallStatuses.Vacant, (int?)null, (DateTime?)null), (s.Status, s.ArtisanId, s.AllottedDate));
+        Assert.False(s.IsArtisan);
         var r = ctx.StallReallocations.AsNoTracking().Single();
         Assert.Equal((ReallocationStatuses.Rejected, "Closed: the stall was vacated"), (r.Status, r.DecisionRemarks));
 

@@ -31,7 +31,7 @@ namespace IMSB.Admin.Controllers
         internal static readonly (string Key, string Url, string Icon, string[] Roles)[] Pages =
         {
             ("Dashboard", "/Dashboard/Index", "fa-gauge-high", new[] { "Admin" }),
-            ("StallManagement", "/Stalls/Index", "fa-store", new[] { "Admin" }),
+            ("StallManagement", "/Stalls/Index", "fa-store", UserRoles.StallsAccess.Split(',')),
             ("Inventory", "/Inventory/Index", "fa-boxes-stacked", new[] { "Admin", "Inventory" }),
             ("Sales", "/Sales/Index", "fa-chart-line", new[] { "Admin" }),
             ("Artisans", "/Artisans/Index", "fa-palette", new[] { "Admin" }),
@@ -70,7 +70,10 @@ namespace IMSB.Admin.Controllers
                 Add(groups, "APPLICATIONS", "fa-file-circle-check", (await _search.ApplicationsAsync(lower, digits, PerGroup))
                     .Select(a => new Hit(a.FullName, a.ApplicationNo + " · " + StatusLabels.Application(_L, a.Status),
                         $"/Applications/Index?tab={ApplicationTab(a.Status)}&q={a.ApplicationNo}")).ToList());
+            }
 
+            if (Can(UserRoles.StallsAccess.Split(',')))
+            {
                 Add(groups, "STALLS", "fa-store", (await _search.StallsAsync(lower, PerGroup))
                     .Select(s => new Hit(s.StallCode + " – " + s.Name, s.Artisan?.FullName, "/Stalls/Index?q=" + s.StallCode)).ToList());
             }

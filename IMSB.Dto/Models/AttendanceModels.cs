@@ -15,6 +15,7 @@ namespace IMSB.Dto.Models
 
     public class AttendanceEntryDto
     {
+        /// <summary>The employee's SERP.tbl_Employee.EMP_ID, as text (e.g. "501").</summary>
         [Required(ErrorMessage = "ValStaffNotFound")]
         public string EmployeeId { get; set; } = "";
 

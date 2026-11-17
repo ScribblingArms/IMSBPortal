@@ -4,95 +4,144 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IMSB.Backend
 {
-    /// <summary>Backend of the Staff page (named so it does not clash with the <see cref="Staff"/> entity).</summary>
+    /// <summary>
+    /// Backend of the Staff page: employees in SERP.tbl_Employee, with EmpTypeID from SERP.tbl_EMP_Types, Desig from
+    /// dbo.departments (the staff category), ShiftID from dbo.Shift and AgencyID from SERP.tbl_ArtisansTypeAgency.
+    /// </summary>
     public class StaffDetails : BackendBase, IStaffInterface
     {
         public StaffDetails(IMSBContext context) : base(context) { }
 
-        public Task<List<Staff>> AllAsync() => _context.Staff.AsNoTracking().ToListAsync();
+        public Task<List<Employee>> AllAsync() => WithoutPhotos(_context.Employees.AsNoTracking()).ToListAsync();
 
-        public Task<List<Staff>> FilterAsync(string? q, string? departmentId, string? status) =>
-            ApplyFilters(_context.Staff.AsNoTracking(), q, departmentId, status).OrderByDescending(s => s.CreatedAt).ToListAsync();
+        public Task<List<Employee>> FilterAsync(string? q, string? departmentId, string? status, string? employeeTypeId = null) =>
+            WithoutPhotos(ApplyFilters(_context.Employees.AsNoTracking(), q, departmentId, status, employeeTypeId)
+                .OrderByDescending(e => e.CreateOn).ThenByDescending(e => e.EmpId)).ToListAsync();
 
-        // Comparisons are explicitly case-insensitive so they don't depend on the database collation
-        // (existing rows hold both "Active" and "ACTIVE").
-        private static IQueryable<Staff> ApplyFilters(IQueryable<Staff> query, string? q, string? departmentId, string? status)
+        /// <summary>
+        /// Lists never read the photo or fingerprint (each can be tens of KB per row); HasPhoto says whether there is a photo,
+        /// which /Staff/Photo/{id} then serves.
+        /// </summary>
+        private static IQueryable<Employee> WithoutPhotos(IQueryable<Employee> query) => query.Select(e => new Employee
+        {
+            EmpId = e.EmpId, EmpName = e.EmpName, Aadhar = e.Aadhar, Mobile = e.Mobile, EmpTypeId = e.EmpTypeId, DesigId = e.DesigId,
+            ShiftId = e.ShiftId, IsActive = e.IsActive, CreateOn = e.CreateOn, ModifiedOn = e.ModifiedOn, ImagePath = e.ImagePath,
+            Gender = e.Gender, StallNum = e.StallNum, AgencyId = e.AgencyId, Remarks = e.Remarks, JoinDate = e.JoinDate,
+            DepartmentId = e.DepartmentId, HasPhoto = e.ImageBase64 != null && e.ImageBase64 != ""
+        });
+
+        private static IQueryable<Employee> ApplyFilters(IQueryable<Employee> query, string? q, string? departmentId, string? status, string? employeeTypeId)
         {
             if (!string.IsNullOrWhiteSpace(q))
             {
                 var term = q.Trim().ToLower();
-                query = query.Where(s => s.FullName.ToLower().Contains(term) || s.Mobile.Contains(term) || s.EmployeeId.ToLower().Contains(term));
+                var idTerm = int.TryParse(term, out var id) ? id : (int?)null;
+                query = query.Where(e => (e.EmpName != null && e.EmpName.ToLower().Contains(term))
+                    || (e.Mobile != null && e.Mobile.Contains(term))
+                    || e.EmpId == idTerm);
             }
-            if (!string.IsNullOrWhiteSpace(departmentId) && int.TryParse(departmentId, out var deptGuid))
+            if (!string.IsNullOrWhiteSpace(employeeTypeId) && int.TryParse(employeeTypeId, out var typeId))
             {
-                query = query.Where(s => s.DepartmentId == deptGuid);
+                query = query.Where(e => e.EmpTypeId == typeId);
+            }
+            if (!string.IsNullOrWhiteSpace(departmentId) && int.TryParse(departmentId, out var deptId))
+            {
+                query = query.Where(e => e.DepartmentId == deptId);
             }
             if (!string.IsNullOrWhiteSpace(status))
             {
-                var wanted = status.Trim().ToUpper();
-                query = query.Where(s => s.Status.ToUpper() == wanted);
+                var wanted = status.Trim().ToUpperInvariant();
+                if (wanted == EmployeeStatuses.Active) query = query.Where(e => e.IsActive == 1);
+                else if (wanted == EmployeeStatuses.Inactive) query = query.Where(e => e.IsActive == null || e.IsActive != 1);
             }
             return query;
         }
 
-        public Task<List<Department>> DepartmentsAsync() => _context.Departments.AsNoTracking().ToListAsync();
+        public async Task<EmployeeLookups> LookupsAsync() => new(
+            await _context.EmployeeTypeMasters.AsNoTracking().OrderBy(t => t.Name).ThenBy(t => t.EmpTypeId).ToListAsync(),
+            await _context.Departments.AsNoTracking().OrderBy(d => d.Name).ThenBy(d => d.Id).ToListAsync(),
+            await _context.ArtisansTypeAgencies.AsNoTracking().OrderBy(a => a.AgencyId).ToListAsync(),
+            await _context.Shifts.AsNoTracking().OrderBy(s => s.DisplayOrder).ThenBy(s => s.Name).ToListAsync(),
+            await _context.EmployeeDesignations.AsNoTracking().OrderBy(d => d.Name).ThenBy(d => d.DesigId).ToListAsync());
 
-        public Task<Dictionary<int, string>> DepartmentNamesAsync() =>
-            _context.Departments.AsNoTracking().ToDictionaryAsync(d => d.Id, d => d.Name);
+        public Task<Employee?> FindAsync(int employeeId) => _context.Employees.FirstOrDefaultAsync(e => e.EmpId == employeeId);
 
-        public Task<List<Shift>> ShiftsAsync() =>
-            _context.Shifts.AsNoTracking().Where(s => s.DisplayOrder > 0).OrderBy(s => s.DisplayOrder).ThenBy(s => s.Name).ToListAsync();
-
-        public Task<List<string>> EmployeeIdsAsync() => _context.Staff.AsNoTracking().Select(s => s.EmployeeId).ToListAsync();
-
-        public Task<Staff?> FindAsync(string employeeId) => _context.Staff.FirstOrDefaultAsync(s => s.EmployeeId == employeeId);
+        public Task<bool> EmployeeTypeExistsAsync(int employeeTypeId) => _context.EmployeeTypeMasters.AnyAsync(t => t.EmpTypeId == employeeTypeId);
 
         public Task<bool> DepartmentExistsAsync(int departmentId) => _context.Departments.AnyAsync(d => d.Id == departmentId);
 
-        public Task<bool> AnyShiftsAsync() => _context.Shifts.AnyAsync();
+        public Task<bool> ShiftOfferedAsync(int shiftId) => _context.Shifts.AnyAsync(s => s.Id == shiftId && s.DisplayOrder > 0);
 
-        public Task<bool> ShiftExistsAsync(string code) => _context.Shifts.AnyAsync(s => s.Code == code && s.DisplayOrder > 0);
+        public Task<bool> AgencyExistsAsync(int agencyId) => _context.ArtisansTypeAgencies.AnyAsync(a => a.AgencyId == agencyId);
 
         public Task<bool> MobileExistsAsync(string mobile, int? exceptId) =>
-            _context.Staff.AnyAsync(s => s.Mobile == mobile && s.Id != exceptId);
+            _context.Employees.AnyAsync(e => e.Mobile == mobile && e.EmpId != exceptId);
 
-        public Task<bool> AadhaarExistsAsync(string aadhaarHash, int? exceptId) =>
-            _context.Staff.AnyAsync(s => s.AadhaarHash == aadhaarHash && s.Id != exceptId);
-
-        public Task<bool> EmailExistsAsync(string email, int? exceptId) =>
-            _context.Staff.AnyAsync(s => s.Email != null && s.Email.ToLower() == email && s.Id != exceptId);
+        public Task<bool> AadhaarExistsAsync(string aadhaar, int? exceptId) =>
+            _context.Employees.AnyAsync(e => e.Aadhar == aadhaar && e.EmpId != exceptId);
 
         public Task<List<string>> LeaveTypesAsync() =>
             _context.LeaveTypes.AsNoTracking().OrderBy(t => t.Name).Select(t => t.Name).ToListAsync();
 
-        public async Task<bool> LeaveQuotasValidAsync(IReadOnlyCollection<LeaveQuotaDto>? quotas, bool allowRemoval = false)
-        {
-            if (quotas == null || quotas.Count == 0) return true;
-            var known = new HashSet<string>(await LeaveTypesAsync(), StringComparer.OrdinalIgnoreCase);
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            return quotas.All(q => q != null
-                && (q.AnnualQuota == null ? allowRemoval : q.AnnualQuota is >= 0m and <= 366m && q.AnnualQuota % 0.5m == 0m)
-                && known.Contains(q.LeaveType?.Trim() ?? "") && seen.Add(q.LeaveType!.Trim()));
-        }
+        public Task<string?> PhotoAsync(int employeeId) =>
+            _context.Employees.AsNoTracking().Where(e => e.EmpId == employeeId).Select(e => e.ImageBase64).FirstOrDefaultAsync();
 
-        public async Task AddAsync(Staff staff, IReadOnlyCollection<LeaveQuotaDto>? quotas = null)
-        {
-            await CopyCategoryFromDepartmentAsync(staff);
-            _context.Staff.Add(staff);
-            AddLeaveQuotas(staff, quotas);
-            await _context.SaveChangesAsync();
-        }
-
-        private void AddLeaveQuotas(Staff staff, IReadOnlyCollection<LeaveQuotaDto>? quotas)
-        {
-            if (quotas == null || quotas.Count == 0) return;
-            var ordered = quotas.OrderBy(q => q.LeaveType.Trim(), StringComparer.OrdinalIgnoreCase).ToList();
-            // Leave marked on attendance draws on one type per staff member: the first that has days to draw on
-            var attendanceType = ordered.FirstOrDefault(q => q.AnnualQuota > 0m) ?? ordered[0];
-            _context.LeaveEntitlements.AddRange(ordered.Select(q => new LeaveEntitlement
+        public Task AddAsync(Employee employee, IReadOnlyCollection<LeaveQuotaDto>? quotas = null, DesignationInput? designation = null) =>
+            InTransactionAsync(async () =>
             {
-                Staff = staff,   // the new staff member has no id until saved; EF fills in StaffId
-                StaffCategory = staff.StaffCategory,
+                // saved first: the designation row and the quotas need the new EMP_ID
+                _context.Employees.Add(employee);
+                await _context.SaveChangesAsync();
+                await ApplyDesignationAsync(employee, designation);
+                await AddLeaveQuotasAsync(employee, quotas);
+                await _context.SaveChangesAsync();
+            });
+
+        public Task UpdateAsync(Employee employee, DesignationInput? designation = null) =>
+            InTransactionAsync(async () =>
+            {
+                await ApplyDesignationAsync(employee, designation);
+                await _context.SaveChangesAsync();
+            });
+
+        /// <summary>
+        /// Writes the designation to the employee's own tbl_Designation row (EmpId = EMP_ID), adding one when they have none:
+        /// a row from the SERP app, shared by other employees, is never changed. tbl_Designation has no identity column, so a
+        /// new row takes the next DesigID; the surrounding transaction keeps two saves from taking the same one.
+        /// </summary>
+        private async Task ApplyDesignationAsync(Employee employee, DesignationInput? input)
+        {
+            if (input == null || string.IsNullOrWhiteSpace(input.Name)) return;
+            var row = employee.DesigId == null ? null
+                : await _context.EmployeeDesignations.FirstOrDefaultAsync(d => d.DesigId == employee.DesigId && d.EmpId == employee.EmpId);
+            if (row == null)
+            {
+                var next = (await _context.EmployeeDesignations.MaxAsync(d => (int?)d.DesigId) ?? 0) + 1;
+                row = new EmployeeDesignation { DesigId = next, EmpId = employee.EmpId };
+                _context.EmployeeDesignations.Add(row);
+                employee.DesigId = row.DesigId;
+            }
+            row.Name = input.Name.Trim();
+            row.EmpTypeId = employee.EmpTypeId;
+            if (input.SetSalary) row.BaseSalary = input.Salary;
+        }
+
+        /// <summary>
+        /// This year's quotas of a new employee, in leave_entitlements (as the Leaves page keeps them). The Staff Category name is
+        /// the entitlement's category; leave marked on attendance draws on the first type (by name) that has days.
+        /// </summary>
+        private async Task AddLeaveQuotasAsync(Employee employee, IReadOnlyCollection<LeaveQuotaDto>? quotas)
+        {
+            var given = (quotas ?? Array.Empty<LeaveQuotaDto>()).Where(q => q.AnnualQuota != null)
+                .OrderBy(q => q.LeaveType.Trim(), StringComparer.OrdinalIgnoreCase).ToList();
+            if (given.Count == 0) return;
+            var category = await _context.Departments.AsNoTracking().Where(d => d.Id == employee.DepartmentId).Select(d => d.Name).FirstOrDefaultAsync() ?? "";
+            if (category.Length > 100) category = category[..100];
+            var attendanceType = given.FirstOrDefault(q => q.AnnualQuota > 0m) ?? given[0];
+            _context.LeaveEntitlements.AddRange(given.Select(q => new LeaveEntitlement
+            {
+                StaffId = employee.EmpId,
+                StaffCategory = category,
                 LeaveType = q.LeaveType.Trim(),
                 Year = DateTime.Today.Year,
                 AnnualQuota = q.AnnualQuota!.Value,
@@ -100,23 +149,43 @@ namespace IMSB.Backend
             }));
         }
 
-        public async Task UpdateAsync(Staff staff)
+        /// <summary>A transaction on SQL Server; the in-memory test database has none, and needs none.</summary>
+        private async Task InTransactionAsync(Func<Task> work)
         {
-            await CopyCategoryFromDepartmentAsync(staff);
-            await _context.SaveChangesAsync();
+            if (!_context.Database.IsRelational() || _context.Database.CurrentTransaction != null)
+            {
+                await work();
+                return;
+            }
+            await using var tx = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+            await work();
+            await tx.CommitAsync();
         }
 
-        /// <summary>The Staff Category column holds the name of the staff member's department.</summary>
-        private async Task CopyCategoryFromDepartmentAsync(Staff staff)
+        public async Task<bool> RemoveAsync(Employee employee)
         {
-            var name = await _context.Departments.AsNoTracking().Where(d => d.Id == staff.DepartmentId).Select(d => d.Name).FirstOrDefaultAsync();
-            if (!string.IsNullOrWhiteSpace(name)) staff.StaffCategory = name.Length > 100 ? name[..100] : name;
-        }
-
-        public async Task RemoveAsync(Staff staff)
-        {
-            _context.Staff.Remove(staff);
-            await _context.SaveChangesAsync();
+            // the database cascades from tbl_Employee to these (EmployeesReplaceStaff migration); removing them here does the
+            // same where EF sees no foreign key (the Staff read model is a view)
+            var id = employee.EmpId;
+            _context.AttendanceRecords.RemoveRange(await _context.AttendanceRecords.Where(r => r.StaffId == id).ToListAsync());
+            _context.OtAssignments.RemoveRange(await _context.OtAssignments.Where(a => a.StaffId == id).ToListAsync());
+            _context.LeaveEntitlements.RemoveRange(await _context.LeaveEntitlements.Where(e => e.StaffId == id).ToListAsync());
+            _context.StaffLeaveEntries.RemoveRange(await _context.StaffLeaveEntries.Where(e => e.StaffId == id).ToListAsync());
+            // the employee's own designation rows go with them; shared SERP rows stay
+            _context.EmployeeDesignations.RemoveRange(await _context.EmployeeDesignations.Where(d => d.EmpId == id).ToListAsync());
+            _context.Employees.Remove(employee);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                // e.g. FK_tbl_EMPDailyAttendance_EMP_ID_tbl_Employee: keep the employee (and everything above) and let the page suggest Inactive
+                foreach (var entry in _context.ChangeTracker.Entries().Where(e => e.State == EntityState.Deleted).ToList())
+                    entry.State = EntityState.Unchanged;
+                return false;
+            }
         }
     }
 }

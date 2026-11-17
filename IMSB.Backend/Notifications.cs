@@ -45,11 +45,7 @@ namespace IMSB.Backend
                 Add("LOW_STOCK", "warning", low, "/Inventory/Index");
             }
 
-            if (isAdmin || isStaff)
-            {
-                Add("CONTRACTS_EXPIRING", "warning",
-                    await _context.Staff.CountAsync(s => s.Status == "ACTIVE" && s.ContractEndDate >= today && s.ContractEndDate <= soon), "/Staff/Index");
-            }
+            // (no staff contract alert: employees are SERP.tbl_Employee rows, which have no contract end date)
 
             // most urgent first
             return list.OrderBy(n => Array.IndexOf(SeverityOrder, n.Severity)).ToList();

@@ -30,8 +30,8 @@ public class OtAssignmentsControllerTests
     private static (IMSBContext Context, Staff Staff) Seed(string status = "ACTIVE")
     {
         var context = TestHelpers.CreateContext();
-        var staff = TestHelpers.ExistingStaff("EMP701", "Ot Tester", "900000701", status: status);
-        context.Staff.Add(staff);
+        var staff = TestHelpers.ExistingStaff("701", "Ot Tester", "900000701", status: status);
+        context.AddEmployees(staff);
         context.SaveChanges();
         return (context, staff);
     }
@@ -338,7 +338,10 @@ public class OtAssignmentsControllerTests
         var (context, staff) = Seed();
         using (context)
         {
-            staff.Shift = "Night";
+            // a dbo.Shift whose name has no times in it
+            var night = new Shift { Code = "NIGHT", Name = "Night", DisplayOrder = 0 };
+            context.Shifts.Add(night);
+            context.Employees.Single(e => e.EmpId == staff.Id).ShiftId = night.Id;
             await context.SaveChangesAsync();
 
             Assert.IsType<OkObjectResult>(await Controller(context).Create(Form(staff.Id, At(0, "10:00"), At(0, "12:00"))));
@@ -351,8 +354,8 @@ public class OtAssignmentsControllerTests
         var (context, staff) = Seed();
         using (context)
         {
-            var other = TestHelpers.ExistingStaff("EMP702", "Evening Person", "900000702", shift: "EVENING");
-            context.Staff.Add(other);
+            var other = TestHelpers.ExistingStaff("702", "Evening Person", "900000702", shift: "EVENING");
+            context.AddEmployees(other);
             await context.SaveChangesAsync();
             await Controller(context).Create(Form(staff.Id));
 
@@ -401,7 +404,7 @@ public class OtAssignmentsControllerTests
 
             var row = Assert.Single(TestHelpers.OkJson(await Controller(context).Data()).GetProperty("rows").EnumerateArray());
 
-            Assert.Equal("EMP701", row.GetProperty("employeeId").GetString());
+            Assert.Equal("701", row.GetProperty("employeeId").GetString());
             Assert.Equal("Ot Tester", row.GetProperty("staffName").GetString());
             Assert.Equal("Sales", row.GetProperty("staffCategory").GetString());
             Assert.Equal("Executive", row.GetProperty("designation").GetString());
@@ -418,9 +421,9 @@ public class OtAssignmentsControllerTests
         var (context, staff) = Seed();
         using (context)
         {
-            var unassigned = TestHelpers.ExistingStaff("EMP702", "Waiting Person", "900000702");
-            var inactive = TestHelpers.ExistingStaff("EMP703", "Former Person", "900000703", status: "INACTIVE");
-            context.Staff.AddRange(unassigned, inactive);
+            var unassigned = TestHelpers.ExistingStaff("702", "Waiting Person", "900000702");
+            var inactive = TestHelpers.ExistingStaff("703", "Former Person", "900000703", status: "INACTIVE");
+            context.AddEmployees(unassigned, inactive);
             await context.SaveChangesAsync();
             await Controller(context).Create(Form(staff.Id));
 

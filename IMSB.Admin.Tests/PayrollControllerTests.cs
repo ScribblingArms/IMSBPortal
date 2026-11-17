@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using IMSB.Models;
 using IMSB.Admin.Controllers;
 using IMSB.Dto.Models;
@@ -86,10 +86,10 @@ public class PayrollControllerTests
     public async Task Statement_row_shows_payable_days_lop_days_and_ot_hours_from_lop_leave()
     {
         using var context = TestHelpers.CreateContext();
-        var staff = TestHelpers.ExistingStaff("EMP-LOP-01", "Lop Test", "9000000191");
+        var staff = TestHelpers.ExistingStaff("9101", "Lop Test", "9000000191");
         staff.MonthlySalary = 3000m;
         staff.JoinDate = new DateTime(2020, 1, 1);
-        context.Staff.Add(staff);
+        context.AddEmployees(staff);
         context.AttendanceRecords.Add(new AttendanceRecord { StaffId = staff.Id, AttendanceDate = Nov.AddDays(1), Status = AttendanceStatuses.Absent });
         context.StaffLeaveEntries.Add(new StaffLeaveEntry
         {
@@ -97,7 +97,7 @@ public class PayrollControllerTests
         });
         await context.SaveChangesAsync();
 
-        var row = (await new IMSB.Backend.Payroll(context).RowsAsync(Nov)).Single(r => r.EmployeeId == "EMP-LOP-01");
+        var row = (await new IMSB.Backend.Payroll(context).RowsAsync(Nov)).Single(r => r.EmployeeId == "9101");
 
         // 1 absent + 2 LOP leave = 3 LOP days of 30; ₹100 a day
         Assert.Equal((27m, 3m, 300m, 2700m), (row.PaidDays, row.LopDays, row.LopDeduction, row.NetPay));
@@ -132,9 +132,9 @@ public class PayrollControllerTests
     public async Task Generate_saves_prorated_pay_adjustments_and_employee_history()
     {
         using var context = TestHelpers.CreateContext();
-        var staff = TestHelpers.ExistingStaff("EMP-PAY-01", "Payroll Test", "9000000091");
+        var staff = TestHelpers.ExistingStaff("9201", "Payroll Test", "9000000091");
         staff.MonthlySalary = 3100m;
-        context.Staff.Add(staff);
+        context.AddEmployees(staff);
         var start = new DateTime(2026, 10, 1);
         context.AttendanceRecords.AddRange(
             new AttendanceRecord { StaffId = staff.Id, AttendanceDate = start, Status = AttendanceStatuses.Present, OvertimeHours = 1.5m },
@@ -254,17 +254,17 @@ public class PayrollControllerTests
         var payroll = new IMSB.Backend.Payroll(context);
 
         var all = await payroll.RowsAsync(new DateTime(2026, 10, 1));
-        var one = await payroll.RowsAsync(new DateTime(2026, 10, 1), employeeId: " emp-1 ");
+        var one = await payroll.RowsAsync(new DateTime(2026, 10, 1), employeeId: " 1 ");
 
         Assert.True(all.Count > 1);
-        Assert.Equal("EMP-1", Assert.Single(one).EmployeeId);
+        Assert.Equal("1", Assert.Single(one).EmployeeId);
         Assert.Empty(await payroll.RowsAsync(new DateTime(2026, 10, 1), employeeId: "EMP-"));   // exact, not contains
     }
 
     [Fact]
     public void Salary_statement_with_zero_paid_days_matches_the_screen()
     {
-        // EMP002 and EMP001: ₹10,000 salary, 0 / 30 paid days, OT ₹100.00 and ₹205.42
+        // 2 and 1: ₹10,000 salary, 0 / 30 paid days, OT ₹100.00 and ₹205.42
         var rows = new[] { (Salary: 10000m, Ot: 100m), (Salary: 10000m, Ot: 205.42m) }
             .Select(r =>
             {
@@ -284,9 +284,9 @@ public class PayrollControllerTests
     public async Task Every_statement_row_has_net_pay_equal_to_salary_plus_ot_minus_lop()
     {
         using var context = await ContextWithBill();
-        var anita = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        var anita = context.Staff.Single(employee => employee.EmployeeId == "1");
         context.Departments.Add(new Department { Id = 9006, Name = "Housekeeping" });
-        anita.DepartmentId = 9006;
+        context.Employees.Single(e => e.EmpId == anita.Id).DepartmentId = 9006;   // tbl_Employee.DepartmentID
         context.OtAssignments.Add(new OtAssignment { StaffId = anita.Id, FromDateTime = new DateTime(2026, 10, 1, 16, 0, 0), ToDateTime = new DateTime(2026, 10, 1, 20, 0, 0), OtHours = 4m });
         await context.SaveChangesAsync();
 
@@ -296,7 +296,7 @@ public class PayrollControllerTests
             row.GetProperty("monthlySalary").GetDecimal() + row.GetProperty("overtimeAmount").GetDecimal() - row.GetProperty("lopDeduction").GetDecimal(),
             row.GetProperty("netPay").GetDecimal()));
         // Anita: 3100 salary + 4 h × ₹50 − 3000 LOP (1 paid day of 31) = 300
-        var row = rows.Single(r => r.GetProperty("employeeId").GetString() == "EMP-1");
+        var row = rows.Single(r => r.GetProperty("employeeId").GetString() == "1");
         Assert.Equal((3100m, 200m, 3000m, 300m), (row.GetProperty("monthlySalary").GetDecimal(), row.GetProperty("overtimeAmount").GetDecimal(),
             row.GetProperty("lopDeduction").GetDecimal(), row.GetProperty("netPay").GetDecimal()));
     }
@@ -305,7 +305,7 @@ public class PayrollControllerTests
     public async Task Net_pay_leaves_out_allowances_and_other_deductions()
     {
         using var context = await ContextWithBill();
-        var anita = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        var anita = context.Staff.Single(employee => employee.EmployeeId == "1");
 
         await new IMSB.Backend.Payroll(context).GenerateAsync(new DateTime(2026, 10, 1),
             new[] { new PayBillAdjustmentDto { StaffId = anita.Id, Allowances = 500m, OvertimeAmount = 75m, Deductions = 40m } });
@@ -313,7 +313,7 @@ public class PayrollControllerTests
         var saved = context.PayBillEntries.Single(entry => entry.StaffId == anita.Id);
         Assert.Equal(3100m + 75m - (3100m - 100m), saved.NetPay);   // 175: the 500 allowance and 40 deduction are not counted
         var row = TestHelpers.OkJson(await Controller(context).Data(2026, 10)).GetProperty("rows").EnumerateArray()
-            .Single(r => r.GetProperty("employeeId").GetString() == "EMP-1");
+            .Single(r => r.GetProperty("employeeId").GetString() == "1");
         Assert.Equal(175m, row.GetProperty("netPay").GetDecimal());
     }
 
@@ -335,14 +335,14 @@ public class PayrollControllerTests
 
     // ── Export ────────────────────────────────────────────────────
 
-    /// <summary>EMP-1 and EMP-10 share a prefix on purpose: the staff filter must not mix them up.</summary>
+    /// <summary>1 and 10 share a prefix on purpose: the staff filter must not mix them up.</summary>
     private static async Task<IMSBContext> ContextWithBill()
     {
         var context = TestHelpers.CreateContext();
-        var (first, second) = (TestHelpers.ExistingStaff("EMP-1", "Anita Sharma", "9000000093"), TestHelpers.ExistingStaff("EMP-10", "Rajesh Singh", "9000000094"));
+        var (first, second) = (TestHelpers.ExistingStaff("1", "Anita Sharma", "9000000093"), TestHelpers.ExistingStaff("10", "Rajesh Singh", "9000000094"));
         first.MonthlySalary = 3100m;
         second.MonthlySalary = 6200m;
-        context.Staff.AddRange(first, second);
+        context.AddEmployees(first, second);
         var start = new DateTime(2026, 10, 1);
         // 1 day present and the other 30 absent: 1 payable day and 30 LOP days of 31
         foreach (var employee in new[] { first, second })
@@ -369,8 +369,8 @@ public class PayrollControllerTests
         Assert.Equal(rows[0].Length, rows[3].Length);
         Assert.Contains("Monthly Salary (₹)", rows[0]);
         Assert.Equal("Net Pay", rows[0][^1]);
-        Assert.Equal(new[] { "EMP-1", "EMP-10" }, rows.Skip(1).Take(2).Select(row => row[0]).OrderBy(id => id, StringComparer.Ordinal));
-        var anita = rows.Single(row => row[0] == "EMP-1");
+        Assert.Equal(new[] { "1", "10" }, rows.Skip(1).Take(2).Select(row => row[0]).OrderBy(id => id, StringComparer.Ordinal));
+        var anita = rows.Single(row => row[0] == "1");
         Assert.Equal("Anita Sharma", anita[1]);
         Assert.Equal("1", anita[4]);         // payable days
         Assert.Equal("3100.00", anita[5]);
@@ -390,7 +390,7 @@ public class PayrollControllerTests
         var rows = TestHelpers.OkJson(await Controller(context).Data(2026, 10)).GetProperty("rows").EnumerateArray().ToList();
 
         // 1 paid day of 31: 3100 → 100 earned, so 3000 is loss of pay; no OT amount is set before the bill is generated
-        var anita = rows.Single(row => row.GetProperty("employeeId").GetString() == "EMP-1");
+        var anita = rows.Single(row => row.GetProperty("employeeId").GetString() == "1");
         Assert.Equal(3100m, anita.GetProperty("monthlySalary").GetDecimal());
         Assert.Equal(0m, anita.GetProperty("overtimeAmount").GetDecimal());
         Assert.Equal(3000m, anita.GetProperty("lopDeduction").GetDecimal());
@@ -401,7 +401,7 @@ public class PayrollControllerTests
     public async Task Lop_deduction_uses_the_saved_figures_of_a_generated_month()
     {
         using var context = await ContextWithBill();
-        var staff = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        var staff = context.Staff.Single(employee => employee.EmployeeId == "1");
         context.PayBillEntries.Add(new PayBillEntry
         {
             StaffId = staff.Id, Year = 2026, Month = 10, EmployeeId = staff.EmployeeId, EmployeeName = staff.FullName,
@@ -410,12 +410,12 @@ public class PayrollControllerTests
         await context.SaveChangesAsync();
 
         var anita = TestHelpers.OkJson(await Controller(context).Data(2026, 10)).GetProperty("rows").EnumerateArray()
-            .Single(row => row.GetProperty("employeeId").GetString() == "EMP-1");
+            .Single(row => row.GetProperty("employeeId").GetString() == "1");
 
         Assert.Equal(250m, anita.GetProperty("overtimeAmount").GetDecimal());
         Assert.Equal(100m, anita.GetProperty("lopDeduction").GetDecimal());
 
-        var export = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "EMP-1")).FileContents);
+        var export = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "1")).FileContents);
         var lopColumn = Array.IndexOf(export[0], "LOP Deduction");
         Assert.True(lopColumn > 0);
         Assert.Equal("100.00", export[1][lopColumn]);
@@ -430,10 +430,10 @@ public class PayrollControllerTests
     {
         using var context = await ContextWithBill();
 
-        var file = Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "EMP-1"));
+        var file = Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "1"));
 
         var rows = ExcelExportTestHelpers.Rows(file.FileContents);
-        Assert.Equal(new[] { "EMP-1" }, rows.Skip(1).SkipLast(1).Select(row => row[0]));
+        Assert.Equal(new[] { "1" }, rows.Skip(1).SkipLast(1).Select(row => row[0]));
         Assert.Equal("100.00", rows[^1][^1]);
     }
 
@@ -441,7 +441,7 @@ public class PayrollControllerTests
     public async Task Export_uses_the_saved_figures_of_a_generated_month()
     {
         using var context = await ContextWithBill();
-        var staff = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        var staff = context.Staff.Single(employee => employee.EmployeeId == "1");
         context.PayBillEntries.Add(new PayBillEntry
         {
             StaffId = staff.Id, Year = 2026, Month = 10, EmployeeId = staff.EmployeeId, EmployeeName = staff.FullName,
@@ -449,7 +449,7 @@ public class PayrollControllerTests
         });
         await context.SaveChangesAsync();
 
-        var file = Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "EMP-1"));
+        var file = Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "1"));
 
         // saved figures: salary 3100, 2 paid days (200), no OT → Net Pay = 3100 + 0 − 2900 = 200, whatever Net Pay was saved
     }
@@ -496,8 +496,8 @@ public class PayrollControllerTests
     public async Task Pay_bill_data_includes_inactive_staff_with_attendance_in_the_selected_month()
     {
         using var context = TestHelpers.CreateContext();
-        var staff = TestHelpers.ExistingStaff("EMP-PAY-02", "Former Staff", "9000000092", status: "INACTIVE");
-        context.Staff.Add(staff);
+        var staff = TestHelpers.ExistingStaff("9202", "Former Staff", "9000000092", status: "INACTIVE");
+        context.AddEmployees(staff);
         var start = new DateTime(2026, 10, 1);
         context.AttendanceRecords.Add(new AttendanceRecord
         {
@@ -514,14 +514,14 @@ public class PayrollControllerTests
     }
 
     [Theory]
-    [InlineData("anita", "EMP-PAY-03")]
-    [InlineData("emp-pay-04", "EMP-PAY-04")]
+    [InlineData("anita", "9203")]
+    [InlineData(" 9204 ", "9204")]
     public async Task Print_filters_pay_bill_rows_by_staff_name_or_employee_id(string filter, string expectedEmployeeId)
     {
         using var context = TestHelpers.CreateContext();
-        var first = TestHelpers.ExistingStaff("EMP-PAY-03", "Anita Sharma", "9000000093");
-        var second = TestHelpers.ExistingStaff("EMP-PAY-04", "Rajesh Singh", "9000000094");
-        context.Staff.AddRange(first, second);
+        var first = TestHelpers.ExistingStaff("9203", "Anita Sharma", "9000000093");
+        var second = TestHelpers.ExistingStaff("9204", "Rajesh Singh", "9000000094");
+        context.AddEmployees(first, second);
         foreach (var employee in new[] { first, second })
             context.PayBillEntries.Add(new PayBillEntry
             {
@@ -558,7 +558,7 @@ public class PayrollControllerTests
 
         var model = await PdfModel(context, 2026, 10);
 
-        Assert.Equal(new[] { "EMP-1", "EMP-10" }, model.Rows.Select(row => row.EmployeeId).OrderBy(id => id, StringComparer.Ordinal));
+        Assert.Equal(new[] { "1", "10" }, model.Rows.Select(row => row.EmployeeId).OrderBy(id => id, StringComparer.Ordinal));
         Assert.Equal(300m, model.TotalNetPay);
         Assert.Contains("2026", model.Period);
     }
@@ -568,10 +568,10 @@ public class PayrollControllerTests
     {
         using var context = await ContextWithBill();
 
-        // EMP-1 must not also pick up EMP-10
-        var model = await PdfModel(context, 2026, 10, "emp-1");
+        // 1 must not also pick up 10
+        var model = await PdfModel(context, 2026, 10, "1");
 
-        Assert.Equal("EMP-1", Assert.Single(model.Rows).EmployeeId);
+        Assert.Equal("1", Assert.Single(model.Rows).EmployeeId);
         Assert.Equal(100m, model.TotalNetPay);
     }
 
@@ -580,8 +580,8 @@ public class PayrollControllerTests
     {
         using var context = await ContextWithBill();
 
-        var model = await PdfModel(context, 2026, 10, "EMP-10");
-        var excel = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "EMP-10")).FileContents);
+        var model = await PdfModel(context, 2026, 10, "10");
+        var excel = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Controller(context).Export(2026, 10, null, "10")).FileContents);
 
         Assert.Equal(model.Rows.Select(row => row.EmployeeId), excel.Skip(1).SkipLast(1).Select(row => row[0]));
         Assert.Equal(model.TotalNetPay.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), excel[^1][^1]);
@@ -591,7 +591,7 @@ public class PayrollControllerTests
     public async Task Pdf_export_uses_the_saved_figures_of_a_generated_month()
     {
         using var context = await ContextWithBill();
-        var staff = context.Staff.Single(employee => employee.EmployeeId == "EMP-1");
+        var staff = context.Staff.Single(employee => employee.EmployeeId == "1");
         context.PayBillEntries.Add(new PayBillEntry
         {
             StaffId = staff.Id, Year = 2026, Month = 10, EmployeeId = staff.EmployeeId, EmployeeName = staff.FullName,
@@ -599,7 +599,7 @@ public class PayrollControllerTests
         });
         await context.SaveChangesAsync();
 
-        var row = Assert.Single((await PdfModel(context, 2026, 10, "EMP-1")).Rows);
+        var row = Assert.Single((await PdfModel(context, 2026, 10, "1")).Rows);
 
         Assert.Equal((3250m, 250m, 100m), (row.NetPay, row.OvertimeAmount, row.LopDeduction));
     }
@@ -633,9 +633,9 @@ public class PayrollControllerTests
         using var context = await ContextWithBill();
 
         var print = Assert.IsType<PayBillPrintModel>(
-            Assert.IsType<ViewResult>(await Controller(context).Print(2026, 10, null, "EMP-1")).Model);
+            Assert.IsType<ViewResult>(await Controller(context).Print(2026, 10, null, "1")).Model);
 
-        Assert.Equal((await PdfModel(context, 2026, 10, "EMP-1")).Rows, print.Rows);
+        Assert.Equal((await PdfModel(context, 2026, 10, "1")).Rows, print.Rows);
     }
 
     private static PayrollController Controller(IMSBContext context) => new(new IMSB.Backend.Payroll(context), TestHelpers.LocalizerFactory())

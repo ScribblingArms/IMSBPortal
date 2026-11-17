@@ -10,6 +10,8 @@ namespace IMSB.Api.Controllers
     /// <summary>
     /// Staff attendance: a day's sheet (saved in bulk), department-wise figures, history with edit / delete of single
     /// records, and the monthly calendar. Dates are yyyy-MM-dd, months yyyy-MM, times HH:mm.
+    /// The employees are SERP.tbl_Employee rows: employeeId is the EMP_ID as text (e.g. "501"); the department is their
+    /// Staff Category (dbo.departments) and the designation comes from tbl_Designation.
     /// </summary>
     [Authorize(Roles = "Staff,Admin")]
     public class AttendanceController : ApiControllerBase

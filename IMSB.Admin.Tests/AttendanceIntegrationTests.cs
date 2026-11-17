@@ -26,10 +26,10 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
             {
                 ctx.Departments.AddRange(new Department { Id = TestHelpers.SalesDept, Name = "Sales" }, new Department { Id = TestHelpers.AdminDept, Name = "Admin" });
                 ctx.Shifts.Add(new Shift { Code = "MORNING", Name = "Morning (8AM-4PM)", DisplayOrder = 1 });
-                var meena = TestHelpers.ExistingStaff("EMP101", "Http Meena", "900000101", dept: TestHelpers.SalesDept);
+                var meena = TestHelpers.ExistingStaff("101", "Http Meena", "900000101", dept: TestHelpers.SalesDept);
                 meena.StaffCategory = "Operators";
-                ctx.Staff.Add(meena);
-                ctx.Staff.Add(TestHelpers.ExistingStaff("EMP102", "Http Ravi", "900000102", dept: TestHelpers.AdminDept));
+                ctx.AddEmployees(meena);
+                ctx.AddEmployees(TestHelpers.ExistingStaff("102", "Http Ravi", "900000102", dept: TestHelpers.AdminDept));
                 ctx.LeaveEntitlements.Add(new LeaveEntitlement
                 {
                     StaffId = meena.Id,
@@ -313,7 +313,7 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     {
         var client = _factory.ClientAs("Admin");
         await Token(client);   // gets the cookie, but the header is missing below
-        var res = await client.PostAsJsonAsync("/Attendance/Save", AttendanceTestHelpers.Sheet(AttendanceTestHelpers.Day, AttendanceTestHelpers.E("EMP101", "ABSENT")));
+        var res = await client.PostAsJsonAsync("/Attendance/Save", AttendanceTestHelpers.Sheet(AttendanceTestHelpers.Day, AttendanceTestHelpers.E("101", "ABSENT")));
         Assert.Equal(HttpStatusCode.BadRequest, res.StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync($"/Attendance/Delete/999999", null)).StatusCode);
     }
@@ -333,21 +333,21 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
 
         // save the sheet (Ravi has no out-time yet)
         var save = await client.SendAsync(Post("/Attendance/Save", token, AttendanceTestHelpers.Sheet(AttendanceTestHelpers.Day,
-            AttendanceTestHelpers.E("EMP101", "PRESENT", "08:00", "17:00"),
-            AttendanceTestHelpers.E("EMP102", "PRESENT", "09:15"))));
+            AttendanceTestHelpers.E("101", "PRESENT", "08:00", "17:00"),
+            AttendanceTestHelpers.E("102", "PRESENT", "09:15"))));
         Assert.Equal(HttpStatusCode.OK, save.StatusCode);
 
         // the day's sheet shows it
         var data = await client.GetFromJsonAsync<JsonElement>($"/Attendance/Data?date={Day}");
-        var meena = data.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "EMP101").GetProperty("record");
+        var meena = data.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "101").GetProperty("record");
         Assert.Equal(9m, meena.GetProperty("workedHours").GetDecimal());
         Assert.Equal(1m, meena.GetProperty("overtimeHours").GetDecimal());
-        var raviId = data.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "EMP102")
+        var raviId = data.GetProperty("rows").EnumerateArray().Single(r => r.GetProperty("employeeId").GetString() == "102")
             .GetProperty("record").GetProperty("id").GetString()!;
 
         // the department filter narrows the sheet
         var admin = await client.GetFromJsonAsync<JsonElement>($"/Attendance/Data?date={Day}&departmentId={TestHelpers.AdminDept}");
-        Assert.Equal("EMP102", Assert.Single(admin.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
+        Assert.Equal("102", Assert.Single(admin.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
 
         // validation errors come back keyed by row and field
         var bad = await client.SendAsync(Post($"/Attendance/Update/{raviId}", token, new AttendanceUpdateDto { Status = "PRESENT", InTime = "09:15", OutTime = "08:00" }));
@@ -363,12 +363,12 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
 
         // history with filters
         var hist = await client.GetFromJsonAsync<JsonElement>($"/Attendance/History?from={Day}&to={Day}&q=ravi&status=PRESENT");
-        Assert.Equal("EMP102", Assert.Single(hist.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
+        Assert.Equal("102", Assert.Single(hist.GetProperty("rows").EnumerateArray()).GetProperty("employeeId").GetString());
 
         // csv export
         var csv = ExcelExportTestHelpers.CsvText(await client.GetStringAsync($"/Attendance/Export?from={Day}&to={Day}&departmentId={TestHelpers.AdminDept}"));
-        Assert.Contains($"{Day},EMP102,Http Ravi,Admin,Executive,09:15,18:45,9.5,1.5,Present,audit,tester", csv);
-        Assert.DoesNotContain("EMP101", csv);
+        Assert.Contains($"{Day},102,Http Ravi,Admin,Executive,09:15,18:45,9.5,1.5,Present,audit,tester", csv);
+        Assert.DoesNotContain("Http Meena", csv);   // EMP_ID 101, in Sales
 
         // delete
         Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Attendance/Delete/{raviId}", token))).StatusCode);
@@ -382,12 +382,12 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         var client = _factory.ClientAs("Staff");
         var token = await Token(client);
         var save = await client.SendAsync(Post("/Attendance/Save", token,
-            AttendanceTestHelpers.Sheet(DateTime.Today, AttendanceTestHelpers.E("EMP101", "LEAVE"))));
+            AttendanceTestHelpers.Sheet(DateTime.Today, AttendanceTestHelpers.E("101", "LEAVE"))));
         Assert.Equal(HttpStatusCode.OK, save.StatusCode);
 
         var data = await client.GetFromJsonAsync<JsonElement>($"/Attendance/Data?date={DateTime.Today:yyyy-MM-dd}");
         var record = data.GetProperty("rows").EnumerateArray()
-            .Single(row => row.GetProperty("employeeId").GetString() == "EMP101").GetProperty("record");
+            .Single(row => row.GetProperty("employeeId").GetString() == "101").GetProperty("record");
         var id = record.GetProperty("id").GetString();
         await AssertBalance(client, 1m, 4m);
 
@@ -406,7 +406,7 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
     {
         var result = await client.GetFromJsonAsync<JsonElement>("/Leaves/CurrentBalances");
         var row = result.GetProperty("rows").EnumerateArray()
-            .Single(item => item.GetProperty("employeeId").GetString() == "EMP101");
+            .Single(item => item.GetProperty("employeeId").GetString() == "101");
         Assert.Equal(5m, row.GetProperty("entitlement").GetDecimal());
         Assert.Equal(taken, row.GetProperty("taken").GetDecimal());
         Assert.Equal(balance, row.GetProperty("balance").GetDecimal());
@@ -419,7 +419,7 @@ public class AttendanceIntegrationTests : IClassFixture<AttendanceAppFactory>
         var token = await Token(client);
 
         var res = await client.SendAsync(Post("/Attendance/Save", token, AttendanceTestHelpers.Sheet(AttendanceTestHelpers.Day,
-            AttendanceTestHelpers.E("EMP101", "PRESENT", "8:00"))));   // fails [RegularExpression] on the DTO
+            AttendanceTestHelpers.E("101", "PRESENT", "8:00"))));   // fails [RegularExpression] on the DTO
 
         Assert.Equal(HttpStatusCode.BadRequest, res.StatusCode);
         var errors = (await res.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("errors");

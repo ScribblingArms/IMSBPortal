@@ -23,9 +23,9 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
             {
                 context.Departments.Add(new Department { Id = TestHelpers.SalesDept, Name = "Sales" });
                 context.LeaveTypes.Add(new LeaveType { Name = "Study" });
-                var staff = TestHelpers.ExistingStaff("EMP951", "Leave Page Tester", "900000951");
+                var staff = TestHelpers.ExistingStaff("951", "Leave Page Tester", "900000951");
                 staff.StaffCategory = "Operators";   // retired column: the screens must show the department instead
-                context.Staff.Add(staff);
+                context.AddEmployees(staff);
                 context.LeaveEntitlements.Add(new LeaveEntitlement
                 {
                     StaffId = staff.Id,
@@ -91,11 +91,11 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
     public async Task Current_balances_can_be_filtered_by_selected_employee()
     {
         var result = await _factory.ClientAs("Admin")
-            .GetFromJsonAsync<System.Text.Json.JsonElement>("/Leaves/CurrentBalances?employeeId=EMP951");
+            .GetFromJsonAsync<System.Text.Json.JsonElement>("/Leaves/CurrentBalances?employeeId=951");
         var rows = result.GetProperty("rows").EnumerateArray().ToList();
 
         var row = Assert.Single(rows);
-        Assert.Equal("EMP951", row.GetProperty("employeeId").GetString());
+        Assert.Equal("951", row.GetProperty("employeeId").GetString());
     }
 
     [Fact]
@@ -137,7 +137,7 @@ public class LeavesIntegrationTests : IClassFixture<LeavesAppFactory>
 
     private static string ReadStaffId(string html)
     {
-        var match = Regex.Match(html, @"<option value=""([^""]+)"" data-category=""Sales""[^>]*>EMP951");
+        var match = Regex.Match(html, @"<option value=""([^""]+)"" data-category=""Sales""[^>]*>951");
         Assert.True(match.Success, "staff option was not rendered");
         return match.Groups[1].Value;
     }

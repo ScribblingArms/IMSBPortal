@@ -223,4 +223,81 @@ public class SessionIntegrationTests : IClassFixture<SessionAppFactory>
         var res = await client.SendAsync(Html(HttpMethod.Get, "/Dashboard/Index"));
         Assert.Contains("reason=disabled", res.Headers.Location!.OriginalString);
     }
+
+    [Fact]
+    public async Task The_login_page_offers_the_five_roles_in_a_dropdown()
+    {
+        var html = await (await _factory.Browser().SendAsync(Html(HttpMethod.Get, "/Account/Login"))).Content.ReadAsStringAsync();
+
+        var select = Regex.Match(html, @"<select id=""selectedRole"" name=""SelectedRole""[^>]*>(.*?)</select>", RegexOptions.Singleline);
+        Assert.True(select.Success, "role dropdown not found");
+        var options = Regex.Matches(select.Groups[1].Value, @"<option value=""(\w+)""[^>]*>([^<]+)</option>")
+            .Select(m => (m.Groups[1].Value, m.Groups[2].Value.Trim())).ToList();
+        Assert.Equal(new[]
+        {
+            ("admin", "Admin"), ("staff", "Staff"), ("inventory", "Inventory"),
+            ("districtofficer", "District Officer"), ("stateadminofficer", "State Admin Officer")
+        }, options);
+        Assert.DoesNotContain("role-tab", html);
+    }
+
+    [Theory]
+    [InlineData("district.officer@imsb", "DistrictOfficer", "districtofficer")]
+    [InlineData("state.officer@imsb", "StateAdminOfficer", "stateadminofficer")]
+    public async Task An_officer_signs_in_to_stall_management_and_can_open_only_it_and_shg_applications(string user, string role, string choice)
+    {
+        _factory.EnsureLogin(user, role);
+        var client = _factory.Browser();
+        var page = await client.SendAsync(Html(HttpMethod.Get, "/Account/Login"));
+        var req = Html(HttpMethod.Post, "/Account/Login");
+        req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["Username"] = user, ["Password"] = SessionAppFactory.Password, ["SelectedRole"] = choice,
+            ["__RequestVerificationToken"] = Token(await page.Content.ReadAsStringAsync())
+        });
+
+        var signIn = await client.SendAsync(req);
+
+        Assert.Equal(HttpStatusCode.Redirect, signIn.StatusCode);
+        Assert.Equal("/Stalls", signIn.Headers.Location?.OriginalString);
+
+        var stalls = await client.SendAsync(Html(HttpMethod.Get, "/Stalls/Index"));
+        Assert.Equal(HttpStatusCode.OK, stalls.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Html(HttpMethod.Get, "/Stalls/Data"))).StatusCode);
+
+        // the sidebar offers Stall Management and SHG Applications and nothing else
+        var html = await stalls.Content.ReadAsStringAsync();
+        var sidebar = Regex.Match(html, @"<nav class=""sidebar-nav"">(.*?)</nav>", RegexOptions.Singleline).Groups[1].Value;
+        Assert.Equal(new[] { "/Stalls/Index", "/ShgApplications/Index" }, Regex.Matches(sidebar, @"data-page=""([^""]+)""").Select(m => m.Groups[1].Value));
+
+        Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Html(HttpMethod.Get, "/ShgApplications/Index"))).StatusCode);
+        Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Html(HttpMethod.Get, "/ShgApplications/Data"))).StatusCode);
+
+        foreach (var url in new[] { "/Dashboard/Index", "/Inventory/Index", "/Sales/Index", "/Artisans/Index", "/Applications/Index",
+                     "/Staff/Index", "/Attendance/Index", "/Reports/Index", "/UserManagement/Index", "/OtAssignments/Index" })
+        {
+            var res = await client.SendAsync(Html(HttpMethod.Get, url));
+            Assert.True(res.StatusCode != HttpStatusCode.OK, $"{role} could open {url}");
+            Assert.Contains("AccessDenied", res.Headers.Location?.OriginalString ?? "");
+        }
+    }
+
+    [Fact]
+    public async Task An_officer_cannot_sign_in_as_admin()
+    {
+        _factory.EnsureLogin("district.only@imsb", "DistrictOfficer");
+        var client = _factory.Browser();
+        var page = await client.SendAsync(Html(HttpMethod.Get, "/Account/Login"));
+        var req = Html(HttpMethod.Post, "/Account/Login");
+        req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["Username"] = "district.only@imsb", ["Password"] = SessionAppFactory.Password, ["SelectedRole"] = "admin",
+            ["__RequestVerificationToken"] = Token(await page.Content.ReadAsStringAsync())
+        });
+
+        var res = await client.SendAsync(req);
+
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);   // the login page again, with the error
+        Assert.Equal(HttpStatusCode.Redirect, (await client.SendAsync(Html(HttpMethod.Get, "/Dashboard/Index"))).StatusCode);
+    }
 }

@@ -103,7 +103,7 @@
       <div class="header-user-avatar">@initials</div>
       <div>
         <div class="header-user-name">@userName</div>
-        <div class="header-user-role">@(userRole switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, _ => L["StateLevelAdmin"].Value })</div>
+        <div class="header-user-role">@(userRole switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, "DistrictOfficer" => L["DistrictOfficer"].Value, "StateAdminOfficer" => L["StateAdminOfficer"].Value, _ => L["StateLevelAdmin"].Value })</div>
       </div>
     </div>
     <a class="header-btn" href="/Account/Sessions" title="@L["ActiveSessions"]" aria-label="@L["ActiveSessions"]"><i class="fa-solid fa-shield-halved"></i></a>

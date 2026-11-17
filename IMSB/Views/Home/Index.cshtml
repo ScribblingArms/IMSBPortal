@@ -1,8 +1,400 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = L["Home"].Value;
+    ViewData["FullWidth"] = true;
+    var applyUrl = Url.Action("StallApply", "Home");
+
+    // every text below is shown in the visitor's language (L: the English text is the key)
+    var slides = new[]
+    {
+        new { Theme = "navy",     Img = "banner-1.jpg", Art = "mandala-gold.png",  Kicker = L["Government of Telangana initiative"].Value, Title = L["A marketplace for women’s enterprise"].Value, Text = L["Telangana’s women-led SHGs bring craft and culture to market."].Value, Primary = (L["Explore the Bazaar"].Value, "#products"), Ghost = (L["Apply for a Stall"].Value, applyUrl!), Alt = L["A woman weaving an ikat textile on a wooden handloom, with fabrics displayed behind her"].Value },
+        new { Theme = "green",    Img = "banner-2.jpg", Art = "weaver-sketch.png", Kicker = L["Handlooms and crafts"].Value, Title = L["Made by hand in Telangana"].Value, Text = L["Handlooms, crafts and handmade jewellery from women-led SHGs and artisans."].Value, Primary = (L["Explore products"].Value, "#products"), Ghost = ("", ""), Alt = L["A woman folding blue ikat handloom fabric, with terracotta pots, a clay bird and silver jewellery on the table"].Value },
+        new { Theme = "clay",     Img = "banner-3.jpg", Art = "potter.png",        Kicker = L["Bazaar Experience"].Value, Title = L["Live craft demonstrations and pottery workshops"].Value, Text = L["Cultural activities take place alongside the stalls."].Value, Primary = (L["See the bazaar experience"].Value, "#experience"), Ghost = ("", ""), Alt = L["A woman shaping a clay pot on a potter's wheel while two young women watch and learn"].Value },
+        new { Theme = "turmeric", Img = "banner-4.jpg", Art = "craft-frame.png",   Kicker = L["What you’ll find"].Value, Title = L["Organic products and regional food"].Value, Text = L["Organic and natural products, and food from across Telangana."].Value, Primary = (L["Explore products"].Value, "#products"), Ghost = ("", ""), Alt = L["Organic produce or regional food at the bazaar"].Value },
+        new { Theme = "dusk",     Img = "banner-5.jpg", Art = "mandala-gold.png",  Kicker = L["Visit the bazaar"].Value, Title = L["Madhapur, Hyderabad"].Value, Text = L["Adjacent to Shilparamam."].Value, Primary = (L["Plan your visit"].Value, "#visit"), Ghost = (L["Apply for a Stall"].Value, applyUrl!), Alt = L["Indira Mahila Shakti Bazaar, Madhapur"].Value },
+    };
+
+    var categories = new[]
+    {
+        new { Id = "crafts", Name = L["Crafts"].Value, Icon = "bi-cup-hot", Items = new[] {
+            (L["Painted wooden toy set"].Value, L["Vanitha Mahila SHG, Nirmal"].Value, "650", L["Brightly painted wooden containers and toys"].Value),
+            (L["Water hyacinth basket"].Value, L["Prakruthi Mahila SHG, Khammam"].Value, "450", L["Woven baskets made from natural fibre"].Value),
+            (L["Bamboo basket set of three"].Value, L["Gowthami Mahila SHG, Adilabad"].Value, "380", L["Woven baskets with pink and green strips"].Value),
+            (L["Terracotta figurine"].Value, L["Sri Durga Mahila SHG, Medak"].Value, "520", L["Terracotta figurine of a seated woman"].Value) } },
+        new { Id = "handlooms", Name = L["Handlooms"].Value, Icon = "bi-grid-3x3", Items = new[] {
+            (L["Pochampally ikat saree"].Value, L["Sri Sai Mahila SHG, Yadadri Bhuvanagiri"].Value, "4,800", ""),
+            (L["Gadwal silk saree"].Value, L["Jogulamba Weavers SHG, Jogulamba Gadwal"].Value, "7,500", ""),
+            (L["Narayanpet cotton saree"].Value, L["Lakshmi Ganapathi SHG, Narayanpet"].Value, "2,200", ""),
+            (L["Gollabhama cotton saree"].Value, L["Siddi Vinayaka SHG, Siddipet"].Value, "2,600", "") } },
+        new { Id = "organic", Name = L["Organic products"].Value, Icon = "bi-flower1", Items = new[] {
+            (L["Organic turmeric powder, 500 g"].Value, L["Annapurna Mahila SHG, Nizamabad"].Value, "220", ""),
+            (L["Millet flour mix, 1 kg"].Value, L["Bhoomi Mahila SHG, Sangareddy"].Value, "160", ""),
+            (L["Cold-pressed groundnut oil, 1 litre"].Value, L["Swarna Mahila SHG, Mahabubnagar"].Value, "320", ""),
+            (L["Forest honey, 500 g"].Value, L["Girijana Mahila SHG, Adilabad"].Value, "350", "") } },
+        new { Id = "jewellery", Name = L["Handmade jewellery"].Value, Icon = "bi-gem", Items = new[] {
+            (L["Silver filigree earrings"].Value, L["Kalanjali Mahila SHG, Karimnagar"].Value, "1,450", ""),
+            (L["Lac bangles, set of six"].Value, L["Noor Mahila SHG, Hyderabad"].Value, "300", ""),
+            (L["Terracotta jewellery set"].Value, L["Mrittika Mahila SHG, Warangal"].Value, "480", ""),
+            (L["Beaded tribal necklace"].Value, L["Koya Mahila SHG, Bhadradri Kothagudem"].Value, "420", "") } },
+        new { Id = "natural", Name = L["Natural products"].Value, Icon = "bi-droplet", Items = new[] {
+            (L["Handmade neem soap, pack of four"].Value, L["Haritha Mahila SHG, Rangareddy"].Value, "180", ""),
+            (L["Jute shopping bag"].Value, L["Sri Rama Mahila SHG, Karimnagar"].Value, "250", ""),
+            (L["Herbal hair oil, 200 ml"].Value, L["Vanamali Mahila SHG, Nalgonda"].Value, "210", ""),
+            (L["Palm-leaf storage box"].Value, L["Tala Mahila SHG, Nagarkurnool"].Value, "340", "") } },
+        new { Id = "food", Name = L["Regional food"].Value, Icon = "bi-egg-fried", Items = new[] {
+            (L["Sakinalu, 500 g"].Value, L["Telangana Ruchulu SHG, Warangal"].Value, "240", ""),
+            (L["Sarva pindi mix, 500 g"].Value, L["Amma Chethi Vanta SHG, Karimnagar"].Value, "150", ""),
+            (L["Mango avakaya pickle, 500 g"].Value, L["Sri Gayatri Mahila SHG, Khammam"].Value, "280", ""),
+            (L["Sesame laddu box"].Value, L["Madhura Mahila SHG, Suryapet"].Value, "200", "") } },
+    };
+
+    var gallery = new[]
+    {
+        L["A woman painting clay pots at a craft fair, surrounded by painted pots and textiles"].Value,
+        L["Women of a self-help group making handicrafts from coloured fibre"].Value,
+        L["Women at sewing machines holding the national flags they have stitched"].Value,
+        L["Close-up of an artisan's hand painting a clay lamp"].Value,
+        L["Women decorating round boards with colour and floral designs"].Value,
+    };
+
+    var experiences = new[]
+    {
+        ("bi-palette", L["Live craft demonstrations"].Value, L["Watch artisans at work at the bazaar."].Value),
+        ("bi-cup", L["Pottery workshops"].Value, L["Workshops held at the bazaar."].Value),
+        ("bi-egg-fried", L["Regional food"].Value, L["Food from across Telangana."].Value),
+        ("bi-music-note-beamed", L["Cultural activities"].Value, L["Cultural programmes alongside the stalls."].Value),
+    };
+
+    var testimonials = new[]
+    {
+        (L["The bazaar gave our group its first stall in Hyderabad. Customers now come back asking for our painted designs by name."].Value, L["Renuka"].Value, L["Artisan, Warangal"].Value),
+        (L["Selling directly at IMSB means we earn more from every saree we weave, and we can take custom orders from buyers."].Value, L["Lakshmi"].Value, L["Sri Sai Mahila SHG, Yadadri Bhuvanagiri"].Value),
+        (L["I joined a painting workshop with my daughter. It is my favourite place to buy gifts made in Telangana."].Value, L["Anitha"].Value, L["Visitor, Hyderabad"].Value),
+    };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1 class="visually-hidden">@L["Indira Mahila Shakti Bazaar: a marketplace for women’s enterprise"]</h1>
+
+<!-- ===================== HERO CAROUSEL ===================== -->
+<section id="heroCarousel" class="carousel slide carousel-fade hero" data-bs-ride="carousel" data-bs-interval="6500" aria-label="@L["IMSB highlights"]">
+    <div class="carousel-indicators">
+        @for (var i = 0; i < slides.Length; i++)
+        {
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"
+                    aria-current="@(i == 0 ? "true" : null)" aria-label="@L["Slide {0}: {1}", i + 1, slides[i].Title]"></button>
+        }
+    </div>
+    <div class="carousel-inner">
+        @for (var i = 0; i < slides.Length; i++)
+        {
+            var s = slides[i];
+            <div class="carousel-item hero-slide theme-@s.Theme @(i == 0 ? "active" : "")">
+                <img class="hero-art" src="~/images/decor/@s.Art" alt="" aria-hidden="true" loading="lazy" />
+                <img class="hero-photo" src="~/images/hero/@s.Img" alt="@s.Alt" width="1920" height="1080"
+                     loading="@(i == 0 ? "eager" : "lazy")" onerror="this.remove()" />
+                <div class="hero-scrim" aria-hidden="true"></div>
+                <div class="container hero-content">
+                    <p class="kicker kicker-light mb-2">@s.Kicker</p>
+                    <h2 class="display-5 fw-semibold text-white mb-3">@s.Title</h2>
+                    <p class="lead text-white mb-4">@s.Text</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-imsb btn-lg" href="@s.Primary.Item2">@s.Primary.Item1</a>
+                        @if (!string.IsNullOrEmpty(s.Ghost.Item1))
+                        {
+                            <a class="btn btn-outline-light btn-lg" href="@s.Ghost.Item2">@s.Ghost.Item1</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">@L["Previous slide"]</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">@L["Next slide"]</span>
+    </button>
+    <button type="button" class="btn btn-sm btn-dark hero-pause" data-carousel-pause aria-label="@L["Pause slide rotation"]">
+        <i class="bi bi-pause-fill" aria-hidden="true"></i>
+    </button>
+</section>
+
+<!-- ===================== LEADERSHIP & OVERVIEW ===================== -->
+<div class="welcome-band">
+    <div class="container">
+        <div class="row g-4">
+            <section class="col-lg-7" aria-labelledby="leaders-title">
+                <div class="card h-100 shadow-sm border-0 welcome-card">
+                    <div class="card-body p-4">
+                        <h2 id="leaders-title" class="h4 section-title mb-4">@L["Our leadership"]</h2>
+                        <div class="row g-4">
+                            <div class="col-sm-6 d-flex align-items-center gap-3">
+                                <img class="leader-photo" src="~/images/leaders/chief-minister.jpg" width="96" height="96" alt="@L["Photograph of Sri. Anumula Revanth Reddy"]" />
+                                <div>
+                                    <h3 class="h6 fw-semibold mb-1">@L["Sri. Anumula Revanth Reddy"]</h3>
+                                    <p class="small text-body-secondary mb-0">@L["Hon’ble Chief Minister of Telangana"]</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 d-flex align-items-center gap-3">
+                                <img class="leader-photo" src="~/images/leaders/minister-rd.jpg" width="96" height="96" alt="@L["Photograph of Smt. D. Anasuya Seethakka"]" />
+                                <div>
+                                    <h3 class="h6 fw-semibold mb-1">@L["Smt. D. Anasuya Seethakka"]</h3>
+                                    <p class="small text-body-secondary mb-0">@L["Hon’ble Minister of Panchayat Raj, Rural Development, RWS, Women & Child Welfare"]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="col-lg-5" aria-labelledby="overview-title">
+                <div class="card h-100 shadow-sm border-0 welcome-card">
+                    <div class="card-body p-4">
+                        <h2 id="overview-title" class="h4 section-title mb-1">@L["Project overview"]</h2>
+                        <p class="small text-body-secondary mb-3">@L["From the IMSB project brief, not live data"]</p>
+                        <ul class="list-unstyled mb-0 d-grid gap-3">
+                            <li class="d-flex align-items-center gap-3">
+                                <i class="bi bi-shop stat-icon" aria-hidden="true"></i>
+                                <div><span class="stat-num" data-count="100" data-suffix="+">100+</span> <span class="text-body-secondary">@L["bazaar stalls"]</span></div>
+                            </li>
+                            <li class="d-flex align-items-center gap-3">
+                                <i class="bi bi-calendar3 stat-icon" aria-hidden="true"></i>
+                                <div><span class="stat-num">2024</span> <span class="text-body-secondary">@L["initiative launched"]</span></div>
+                            </li>
+                            <li class="d-flex align-items-center gap-3">
+                                <i class="bi bi-people stat-icon" aria-hidden="true"></i>
+                                <div>
+                                    <span class="stat-num" data-count="3">3</span> <span class="text-body-secondary">@L["bazaar experiences"]</span>
+                                    <div class="small text-body-secondary">@L["Craft demonstrations, pottery workshops and regional food"]</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
 </div>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about" class="section bg-paper" aria-labelledby="about-title">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5 reveal">
+                <p class="kicker">@L["About IMSB"]</p>
+                <h2 id="about-title" class="section-title display-6 mb-3">@L["Direct market access for women’s enterprise"]</h2>
+                <p>@L["Indira Mahila Shakti Bazaar is a Government of Telangana initiative, launched in December 2024, to promote women’s entrepreneurship and financial independence. It gives women-led Self-Help Groups (SHGs) and artisans direct access to buyers and a place to showcase Telangana’s products and traditions."]</p>
+                <a href="#products" class="link-imsb fw-semibold">@L["More about IMSB"] <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+            </div>
+            <div class="col-lg-7">
+                <div class="row g-3">
+                    <div class="col-md-4 reveal">
+                        <div class="pillar card h-100 border-0 text-center p-4">
+                            <i class="bi bi-person-hearts pillar-icon" aria-hidden="true"></i>
+                            <h3 class="h5 mt-3">@L["Women’s enterprise"]</h3>
+                            <p class="small text-body-secondary mb-0">@L["Supporting women-led SHGs and artisans."]</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal">
+                        <div class="pillar card h-100 border-0 text-center p-4">
+                            <i class="bi bi-diamond pillar-icon" aria-hidden="true"></i>
+                            <h3 class="h5 mt-3">@L["Telangana craft"]</h3>
+                            <p class="small text-body-secondary mb-0">@L["Showcasing the state’s products and traditions."]</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 reveal">
+                        <div class="pillar card h-100 border-0 text-center p-4">
+                            <i class="bi bi-shop-window pillar-icon" aria-hidden="true"></i>
+                            <h3 class="h5 mt-3">@L["Direct market access"]</h3>
+                            <p class="small text-body-secondary mb-0">@L["Connecting makers directly with buyers."]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== PRODUCTS ===================== -->
+<section id="products" class="section" aria-labelledby="find-title">
+    <div class="container">
+        <div class="text-center mx-auto mb-4 reveal" style="max-width: 40rem;">
+            <p class="kicker">@L["What you’ll find"]</p>
+            <h2 id="find-title" class="section-title display-6">@L["A rich variety from Telangana"]</h2>
+            <p class="lead text-body-secondary">@L["Products made by women-led SHGs and artisans, by category."]</p>
+        </div>
+
+        <ul class="nav nav-pills product-tabs justify-content-center flex-wrap gap-2 mb-4" role="tablist" aria-label="@L["Product categories"]">
+            @for (var c = 0; c < categories.Length; c++)
+            {
+                var cat = categories[c];
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(c == 0 ? "active" : "")" id="tab-@cat.Id" data-bs-toggle="pill" data-bs-target="#panel-@cat.Id"
+                            type="button" role="tab" aria-controls="panel-@cat.Id" aria-selected="@(c == 0 ? "true" : "false")">
+                        <i class="bi @cat.Icon me-1" aria-hidden="true"></i>@cat.Name
+                    </button>
+                </li>
+            }
+        </ul>
+
+        <div class="tab-content">
+            @for (var c = 0; c < categories.Length; c++)
+            {
+                var cat = categories[c];
+                <div class="tab-pane fade @(c == 0 ? "show active" : "")" id="panel-@cat.Id" role="tabpanel" aria-labelledby="tab-@cat.Id" tabindex="0">
+                    <h3 class="visually-hidden" id="@cat.Id">@cat.Name</h3>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+                        @for (var p = 0; p < cat.Items.Length; p++)
+                        {
+                            var item = cat.Items[p];
+                            <div class="col">
+                                <div class="card product-card h-100">
+                                    <div class="ratio ratio-4x3 img-slot">
+                                        <div class="img-placeholder" aria-hidden="true"><i class="bi @cat.Icon"></i></div>
+                                        <img src="~/images/products/@(cat.Id)-@(p + 1).jpg" alt="@item.Item4" class="object-fit-cover" loading="lazy" onerror="this.remove()" />
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="h6 card-title mb-1">@item.Item1</h4>
+                                        <p class="small text-body-secondary mb-2">@item.Item2</p>
+                                        <p class="product-price mb-0">&#8377;@item.Item3</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a class="btn btn-outline-imsb btn-lg" href="#products">@L["Explore all products"]</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== GALLERY ===================== -->
+<section id="gallery" class="section bg-paper" aria-labelledby="gallery-title">
+    <div class="container">
+        <div class="text-center mb-4 reveal">
+            <p class="kicker kicker-green">@L["Gallery"]</p>
+            <h2 id="gallery-title" class="section-title display-6">@L["Moments from the bazaar"]</h2>
+        </div>
+        <div class="gallery-grid">
+            @for (var g = 0; g < gallery.Length; g++)
+            {
+                <a class="gallery-item gallery-item-@(g + 1)" href="~/images/gallery/gallery-@(g + 1).jpg"
+                   data-bs-toggle="modal" data-bs-target="#lightbox" data-index="@g" data-caption="@gallery[g]">
+                    <img src="~/images/gallery/gallery-@(g + 1).jpg" alt="@gallery[g]" loading="lazy" />
+                    <span class="gallery-zoom" aria-hidden="true"><i class="bi bi-arrows-fullscreen"></i></span>
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="modal fade" id="lightbox" tabindex="-1" aria-labelledby="lightbox-caption" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content bg-dark text-white border-0">
+                <div class="modal-header border-0 pb-0">
+                    <p class="modal-title small mb-0" id="lightbox-caption"></p>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="@L["Close"]"></button>
+                </div>
+                <div class="modal-body position-relative text-center">
+                    <img class="img-fluid rounded lightbox-img" src="" alt="" />
+                    <button type="button" class="btn btn-light rounded-circle lightbox-nav start-0 ms-2" data-lb-prev aria-label="@L["Previous photo"]"><i class="bi bi-chevron-left"></i></button>
+                    <button type="button" class="btn btn-light rounded-circle lightbox-nav end-0 me-2" data-lb-next aria-label="@L["Next photo"]"><i class="bi bi-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== EXPERIENCE ===================== -->
+<section id="experience" class="section bg-paper pt-0" aria-labelledby="exp-title">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5 d-none d-lg-block" aria-hidden="true">
+                <div class="story-stage">
+                    <img class="story-mandala" src="~/images/decor/mandala-gold.png" alt="" loading="lazy" />
+                    <img class="story-potter" src="~/images/decor/potter.png" alt="" loading="lazy" />
+                    <span class="story-chip badge rounded-pill"><i class="bi bi-palette me-1"></i><span data-story-chip>@L["Live craft demonstrations"]</span></span>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="reveal mb-4">
+                    <p class="kicker">@L["Bazaar Experience"]</p>
+                    <h2 id="exp-title" class="section-title display-6">@L["More than shopping"]</h2>
+                    <p class="lead text-body-secondary">@L["Alongside the stalls, the bazaar hosts cultural activities."]</p>
+                </div>
+                <div class="d-grid gap-3">
+                    @foreach (var e in experiences)
+                    {
+                        <article class="story-step card border-0 shadow-sm reveal" data-chip="@e.Item2">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <span class="story-icon"><i class="bi @e.Item1" aria-hidden="true"></i></span>
+                                <div>
+                                    <h3 class="h5 mb-1">@e.Item2</h3>
+                                    <p class="mb-0 text-body-secondary">@e.Item3</p>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+                <p class="mt-4"><a href="#experience" class="link-imsb fw-semibold">@L["See the bazaar experience"] <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section id="testimonials" class="section testimonials-section" aria-labelledby="testimonials-title">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <p class="kicker">@L["Testimonials"]</p>
+            <h2 id="testimonials-title" class="section-title display-6">@L["What people say"]</h2>
+        </div>
+        <div class="row g-4">
+            @for (var t = 0; t < testimonials.Length; t++)
+            {
+                var tm = testimonials[t];
+                <div class="col-md-4 reveal">
+                    <figure class="card testimonial-card h-100 border-0 shadow-sm text-center p-4 mb-0">
+                        <div class="testimonial-photo mx-auto mb-3">
+                            <img src="~/images/testimonials/person-@(t + 1).png" alt="" loading="lazy" />
+                        </div>
+                        <i class="bi bi-quote testimonial-mark" aria-hidden="true"></i>
+                        <blockquote class="blockquote fs-6 mb-3"><p>@tm.Item1</p></blockquote>
+                        <figcaption class="mt-auto">
+                            <span class="fw-semibold d-block">@tm.Item2</span>
+                            <span class="small text-body-secondary">@tm.Item3</span>
+                        </figcaption>
+                    </figure>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ===================== VISIT BAND ===================== -->
+<section id="visit" class="visit-band" aria-labelledby="visit-title">
+    <img class="visit-art" src="~/images/decor/craft-frame.png" alt="" aria-hidden="true" loading="lazy" />
+    <img class="visit-photo" src="~/images/hero/visit.jpg" alt="@L["Indira Mahila Shakti Bazaar, Madhapur"]" loading="lazy" onerror="this.remove()" />
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div class="container position-relative text-white reveal">
+        <p class="kicker kicker-light">@L["Visit the bazaar"]</p>
+        <h2 id="visit-title" class="display-4 fw-semibold">@L["Madhapur, Hyderabad"]</h2>
+        <p class="lead">@L["Adjacent to Shilparamam."]</p>
+        <p><i class="bi bi-clock me-2" aria-hidden="true"></i>@L["Open daily, 10:30 am – 8:30 pm · Free entry"]</p>
+        <a class="btn btn-imsb btn-lg" href="#visit">@L["Plan your visit"]</a>
+    </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section id="apply" class="cta-band text-white" aria-labelledby="cta-title">
+    <div class="container py-5 d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4 reveal">
+        <div>
+            <h2 id="cta-title" class="h2 fw-semibold">@L["Bring your craft to the marketplace"]</h2>
+            <p class="mb-0 opacity-75">@L["The online stall application will be available here. Final application details will be provided by IMSB."]</p>
+        </div>
+        <a class="btn btn-light btn-lg fw-semibold text-nowrap" asp-controller="Home" asp-action="StallApply">@L["Apply for a Stall"]</a>
+    </div>
+</section>

@@ -87,13 +87,13 @@ public class OvertimePayTests
     {
         var context = TestHelpers.CreateContext();
         context.Departments.AddRange(new Department { Id = SecurityDept, Name = "Security" }, new Department { Id = HousekeepingDept, Name = "Housekeeping" });
-        var housekeeper = TestHelpers.ExistingStaff("EMP-HK", "House Keeper", "9000000201", dept: HousekeepingDept);
+        var housekeeper = TestHelpers.ExistingStaff("9401", "House Keeper", "9000000201", dept: HousekeepingDept);
         housekeeper.MonthlySalary = 10000m;
-        var supervisor = TestHelpers.ExistingStaff("EMP-SS", "Security Supervisor", "9000000202", dept: SecurityDept);
+        var supervisor = TestHelpers.ExistingStaff("9402", "Security Supervisor", "9000000202", dept: SecurityDept);
         supervisor.MonthlySalary = 16500m;
-        var sales = TestHelpers.ExistingStaff("EMP-SL", "Sales Person", "9000000203", dept: TestHelpers.SalesDept);
+        var sales = TestHelpers.ExistingStaff("9403", "Sales Person", "9000000203", dept: TestHelpers.SalesDept);
         sales.MonthlySalary = 20000m;
-        context.Staff.AddRange(housekeeper, supervisor, sales);
+        context.AddEmployees(housekeeper, supervisor, sales);
 
         var day = October.AddDays(4);
         foreach (var employee in new[] { housekeeper, supervisor, sales })

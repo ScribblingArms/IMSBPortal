@@ -10,3 +10,10 @@ K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Release\net8.0\IMSB.Models.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Release\net8.0\refint\IMSB.Models.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Release\net8.0\IMSB.Models.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Release\net8.0\ref\IMSB.Models.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Release\net8.0\IMSB.Dto.appsettings.json
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Release\net8.0\IMSB.Dto.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Release\net8.0\IMSB.Interfaces.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Release\net8.0\IMSB.Dto.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Data\bin\Release\net8.0\IMSB.Interfaces.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Release\net8.0\IMSB.Models.csproj.AssemblyReference.cache
+K:\ScribblingArms\IMSBPortal\IMSB.Data\obj\Release\net8.0\IMSB.Mod.EADC3C5F.Up2Date

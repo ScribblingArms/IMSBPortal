@@ -74,6 +74,8 @@
             <summary>
             Staff attendance: a day's sheet (saved in bulk), department-wise figures, history with edit / delete of single
             records, and the monthly calendar. Dates are yyyy-MM-dd, months yyyy-MM, times HH:mm.
+            The employees are SERP.tbl_Employee rows: employeeId is the EMP_ID as text (e.g. "501"); the department is their
+            Staff Category (dbo.departments) and the designation comes from tbl_Designation.
             </summary>
         </member>
         <member name="M:IMSB.Api.Controllers.AttendanceController.Data(System.String,System.String)">
@@ -127,7 +129,7 @@
         <member name="M:IMSB.Api.Controllers.AuthController.Forgot(IMSB.Api.Controllers.AuthController.ForgotRequest)">
             <summary>Starts a password reset. The answer is the same whether or not the account exists.</summary>
         </member>
-        <member name="M:IMSB.Api.Controllers.AuthController.Reset(IMSB.Dto.Models.ResetPasswordViewModel)">
+        <member name="M:IMSB.Api.Controllers.AuthController.Reset(IMSB.Models.ResetPasswordViewModel)">
             <summary>Sets a new password with the emailed token; every session of the account is signed out.</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.DashboardController">
@@ -155,7 +157,11 @@
             <summary>ADD / REDUCE by a quantity, or CORRECTION to the counted quantity.</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.LeavesController">
-            <summary>Leave management for the current year: entitlements per employee, leave taken, and balances.</summary>
+            <summary>
+            Leave management for the current year: entitlements per employee, leave taken, and balances.
+            Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId the same as text, and the staff category is
+            their dbo.departments name. The Staff page's Annual Quota writes the same entitlements.
+            </summary>
         </member>
         <member name="M:IMSB.Api.Controllers.LeavesController.Balances(System.String,System.String)">
             <summary>Entitlement, taken and balance per employee and leave type.</summary>
@@ -179,7 +185,7 @@
             </summary>
         </member>
         <member name="T:IMSB.Api.Controllers.OtAssignmentsController">
-            <summary>The overtime window of each staff member.</summary>
+            <summary>The overtime window of each staff member (SERP.tbl_Employee; staffId is the EMP_ID).</summary>
         </member>
         <member name="M:IMSB.Api.Controllers.OtAssignmentsController.List">
             <summary>Every assignment, and the staff who can still be given one.</summary>
@@ -191,7 +197,11 @@
             </summary>
         </member>
         <member name="T:IMSB.Api.Controllers.PayrollController">
-            <summary>Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.</summary>
+            <summary>
+            Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.
+            Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId the same as text, and the monthly salary is the
+            BaseSalary of the employee's tbl_Designation row.
+            </summary>
         </member>
         <member name="M:IMSB.Api.Controllers.PayrollController.Data(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
             <summary>The month's pay bill; q matches employee name or id.</summary>
@@ -199,7 +209,7 @@
         <member name="M:IMSB.Api.Controllers.PayrollController.Generate(IMSB.Dto.Models.GeneratePayBillDto)">
             <summary>Saves the month's pay bill with the allowances, overtime amounts and deductions given per employee.</summary>
         </member>
-        <member name="M:IMSB.Api.Controllers.PayrollController.History(System.Guid,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:IMSB.Api.Controllers.PayrollController.History(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>The employee's saved pay bills before the month, newest first.</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.ReportsController">
@@ -247,9 +257,6 @@
         <member name="M:IMSB.Api.Controllers.SalesController.Move(IMSB.Dto.Models.Product,System.String,System.Int32,System.DateTime,System.String)">
             <summary>Changes the product's quantity and returns the matching stock history row (saved by the backend).</summary>
         </member>
-        <member name="M:IMSB.Api.Controllers.SalesController.TryParseDay(System.String,System.DateTime@)">
-            <summary>yyyy-MM-dd; an empty value means today.</summary>
-        </member>
         <member name="T:IMSB.Api.Controllers.SearchController">
             <summary>Global search, limited to the modules the signed-in role can open.</summary>
         </member>
@@ -263,10 +270,35 @@
             <summary>At least two characters; three or more digits also match mobile numbers.</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.StaffController">
-            <summary>Staff / HR: the directory with its figures, and register / edit / delete. Salaries are visible to admins only.</summary>
+            <summary>
+            Staff / HR: the directory with its figures, and register / edit / delete. Employees are kept in SERP.tbl_Employee;
+            EmpTypeID comes from SERP.tbl_EMP_Types, Desig from SERP.tbl_Designation (the designation and its salary), DepartmentID from dbo.departments (the staff category), ShiftID from dbo.Shift and
+            AgencyID from SERP.tbl_ArtisansTypeAgency.
+            </summary>
         </member>
-        <member name="M:IMSB.Api.Controllers.StaffController.List(System.String,System.String,System.String)">
-            <summary>Departments, shifts, the filtered staff list and the totals.</summary>
+        <member name="M:IMSB.Api.Controllers.StaffController.List(System.String,System.String,System.String,System.String)">
+            <summary>GET api/staff: employee types, departments, agencies, shifts, the filtered staff list and the totals.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.LeaveQuotas(System.Int32)">
+            <summary>GET api/staff/{id}/leave-quotas: this year's annual leave quotas (leave_entitlements) with the days taken and left.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.Photo(System.Int32)">
+            <summary>GET api/staff/{id}/photo: the photo (tbl_Employee.ImageBase64) as a JPEG or PNG; 404 when there is none.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.Export(System.String,System.String,System.String,System.String)">
+            <summary>GET api/staff/export: the filtered list as an Excel-readable file.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.Get(System.Int32)">
+            <summary>GET api/staff/{id}</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.Create(IMSB.Dto.Models.CreateStaffDto)">
+            <summary>POST api/staff</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.Update(System.Int32,IMSB.Dto.Models.UpdateStaffDto)">
+            <summary>PUT api/staff/{id}</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StaffController.Delete(System.Int32)">
+            <summary>DELETE api/staff/{id}: 409 when the database refuses (attendance on record).</summary>
         </member>
         <member name="T:IMSB.Api.Controllers.StallsController">
             <summary>Stalls: the list and map, allocation to artisans, vacating, and reallocation requests.</summary>
@@ -291,6 +323,9 @@
         </member>
         <member name="M:IMSB.Api.Controllers.StallsController.ApproveReallocation(System.String,IMSB.Dto.Models.DecisionDto)">
             <summary>Approving moves the stall to the requested artisan, or vacates it when none was named.</summary>
+        </member>
+        <member name="M:IMSB.Api.Controllers.StallsController.ClearArtisan(IMSB.Dto.Models.Stall)">
+            <summary>Frees the stall from its artisan or SHG.</summary>
         </member>
     </members>
 </doc>

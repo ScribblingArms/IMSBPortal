@@ -14,9 +14,9 @@ public class DashboardControllerTests
     public async Task Stats_come_from_inventory_sales_and_staff()
     {
         using var ctx = SeededContext();   // 4 products in 4 stalls; dupatta low, pot critical, oil out
-        ctx.Staff.AddRange(
-            TestHelpers.ExistingStaff("EMP-0001", "Meena", "9000000001"),
-            TestHelpers.ExistingStaff("EMP-0002", "Radha", "9000000002", status: "ON_LEAVE"));
+        ctx.AddEmployees(
+            TestHelpers.ExistingStaff("1", "Meena", "9000000001"),
+            TestHelpers.ExistingStaff("2", "Radha", "9000000002", status: "INACTIVE"));   // tbl_Employee.IsActive = 0
         ctx.SaveChanges();
         var sales = CreateSales(ctx);
         await Sell(sales, DateTime.Today.AddDays(-1), "10:00", Item("PRD001", 1, 1000));
@@ -92,14 +92,14 @@ public class DashboardControllerTests
         using var ctx = SeededContext();
         var staff = new[]
         {
-            TestHelpers.ExistingStaff("EMP-0001", "Meena", "9000000001"),
-            TestHelpers.ExistingStaff("EMP-0002", "Radha", "9000000002"),
-            TestHelpers.ExistingStaff("EMP-0003", "Lakshmi", "9000000003"),
-            TestHelpers.ExistingStaff("EMP-0004", "Kavya", "9000000004"),
-            TestHelpers.ExistingStaff("EMP-0005", "Divya", "9000000005"),
-            TestHelpers.ExistingStaff("EMP-0006", "Sita", "9000000006")
+            TestHelpers.ExistingStaff("1", "Meena", "9000000001"),
+            TestHelpers.ExistingStaff("2", "Radha", "9000000002"),
+            TestHelpers.ExistingStaff("3", "Lakshmi", "9000000003"),
+            TestHelpers.ExistingStaff("4", "Kavya", "9000000004"),
+            TestHelpers.ExistingStaff("5", "Divya", "9000000005"),
+            TestHelpers.ExistingStaff("6", "Sita", "9000000006")
         };
-        ctx.Staff.AddRange(staff);
+        ctx.AddEmployees(staff);
         var today = DateTime.Today;
         AttendanceRecord Mark(Staff s, string status, DateTime? day = null) => new() { StaffId = s.Id, AttendanceDate = day ?? today, Status = status };
         ctx.AttendanceRecords.AddRange(
@@ -255,7 +255,7 @@ public class DashboardControllerTests
     public async Task Activity_merges_sales_stock_and_staff_newest_first()
     {
         using var ctx = SeededContext();
-        ctx.Staff.Add(TestHelpers.ExistingStaff("EMP-0007", "Lakshmi", "9000000007", createdAt: DateTime.UtcNow.AddMinutes(-30)));
+        ctx.AddEmployees(TestHelpers.ExistingStaff("7", "Lakshmi", "9000000007", createdAt: DateTime.UtcNow.AddMinutes(-30)));
         ctx.StockMovements.Add(new StockMovement { ProductCode = "PRD001", ProductName = "Saree", MovementType = StockMovementTypes.Add, Quantity = 4, QuantityBefore = 1, QuantityAfter = 5, CreatedAt = DateTime.UtcNow.AddMinutes(-10), MovementDate = DateTime.Today });
         ctx.SaveChanges();
         await Sell(CreateSales(ctx, "cashier"), null, "00:00", Item("PRD002", 2, 600));
@@ -264,7 +264,7 @@ public class DashboardControllerTests
         Assert.Equal(new[] { "SALE", "STOCK_ADD", "STAFF_ADDED" }, activity.Select(a => a.GetProperty("type").GetString()));
         Assert.Equal(("SAL-000001", 1200m, 2, "cashier"), (activity[0].GetProperty("subject").GetString(), activity[0].GetProperty("amount").GetDecimal(),
             activity[0].GetProperty("quantity").GetInt32(), activity[0].GetProperty("by").GetString()));
-        Assert.Equal(("Lakshmi", "EMP-0007"), (activity[2].GetProperty("subject").GetString(), activity[2].GetProperty("reference").GetString()));
+        Assert.Equal(("Lakshmi", "7"), (activity[2].GetProperty("subject").GetString(), activity[2].GetProperty("reference").GetString()));
         // the sale's own stock deduction is not listed separately
         Assert.DoesNotContain(activity, a => a.GetProperty("type").GetString()!.Contains("SALE_"));
         // times are UTC so the browser can show "x min ago"

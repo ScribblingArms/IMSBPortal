@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "IMSB\\IMSB.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "IMSB.Admin\\IMSB.Admin.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

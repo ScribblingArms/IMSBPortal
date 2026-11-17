@@ -6,6 +6,9 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');*/
 /* Poppins is loaded by _Layout.cshtml. (An @import of "Aptos" was removed: it is not a Google font, so the request 400'd on every page.) */
 
+/* The hidden attribute always hides: classes such as .btn (display:inline-flex) would otherwise override it */
+[hidden] { display: none !important; }
+
 /* ── CSS Variables ─────────────────────────────────────────── */
 :root {
   /* Brand palette */

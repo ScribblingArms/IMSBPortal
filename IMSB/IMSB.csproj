@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IMSB.Service\IMSB.LoggerLibrary.csproj" />
+    <ProjectReference Include="..\IMSB.Backend\IMSB.Backend.csproj" />
+    <ProjectReference Include="..\IMSB.Interfaces\IMSB.Interfaces.csproj" />
+    <ProjectReference Include="..\IMSB.Dto\IMSB.Dto.csproj" />
   </ItemGroup>
 
 </Project>

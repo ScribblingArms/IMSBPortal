@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IMSB.Api.Controllers
 {
-    /// <summary>The overtime window of each staff member.</summary>
+    /// <summary>The overtime window of each staff member (SERP.tbl_Employee; staffId is the EMP_ID).</summary>
     [Authorize(Roles = "Admin")]
     public class OtAssignmentsController : ApiControllerBase
     {

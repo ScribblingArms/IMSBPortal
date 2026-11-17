@@ -1,0 +1,209 @@
+@using IMSB.Admin.Resources
+@inject Microsoft.Extensions.Localization.IStringLocalizerFactory LocalizerFactory
+@{
+    var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
+    var seesNothing = ViewBag.SeesNothing == true;
+
+    // Strings used by shg-applications.js (table, details modal, toasts)
+    var jsKeys = new[] {
+        "Error", "CouldNotReachServer", "View", "Yes", "No", "ShgNoApplications",
+        "ShgSectionShg", "ShgSectionRep", "ShgSectionProduct", "ShgSectionStall", "ShgSectionDocs",
+        "ShgName", "ShgIdLabel", "ShgVillageOrganisation", "ShgMandalSamakhya", "District", "ShgMandal", "ShgVillage", "ShgYearFormed", "ShgMembers",
+        "ShgRepresentative", "ShgRepRole", "ShgRepAge", "ShgGuardian", "Mobile", "ShgAltMobile", "Email", "ShgAddress", "ShgPinCode",
+        "ShgProductCategory", "ShgProductType", "ShgProductDescription", "ShgPriceRange", "ShgCapacity", "ShgPhotos", "ShgNoPhotos",
+        "ShgDuration", "ShgStartMonth", "ShgFacilities", "ShgPrevExhibition", "ShgPrevExhibitionDetails",
+        "ShgPassbookDoc", "ShgIdProofDoc", "ShgDeclTrue", "ShgDeclConsent", "ShgReference", "Status", "ShgCreatedOn", "ShgSubmittedOn",
+        "ShgNotGiven", "ShgStepNotSaved", "ShgOpenFile", "ShgNotSubmittedYet",
+        "Success", "CheckForm", "Stall", "SelectPlaceholder", "NoVacantStalls", "ShgSectionAllotment", "AllotmentDate", "AgreementEndDate",
+        "MonthlyRent", "Remarks", "ValSelectStall", "ValDate", "ValAgreementEnd", "ValRent", "AllocateStall",
+        "ShgSectionRejection", "ShgRejectionReason", "ShgRejectedOn", "ShgRejectedBy", "ShgValRejectReason", "ShgValHasStall",
+        "Delete", "ShgConfirmDelete", "ShgValDeleteHasStall"
+    };
+    var jsStrings = jsKeys.ToDictionary(k => k, k => L[k].Value);
+}
+
+<main class="page-body">
+  <div class="page-header">
+    <div>
+      <div class="page-title">@L["ShgApplications"]</div>
+      <div class="page-subtitle">@L["ShgApplicationsSubtitle"]</div>
+      <div class="shg-scope@(seesNothing ? " shg-scope-warn" : "")"><i class="fa-solid @(seesNothing ? "fa-triangle-exclamation" : "fa-location-dot")"></i> @ViewBag.ScopeText</div>
+    </div>
+    <div class="page-actions">
+      <a class="btn btn-outline btn-sm" href="/ShgApplications/Export"><i class="fa-solid fa-download"></i> @L["Export"]</a>
+    </div>
+  </div>
+
+  <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
+    <div class="stat-card blue"><div class="stat-icon"><i class="fa-solid fa-people-group"></i></div><div class="stat-value" id="shgStatTotal">0</div><div class="stat-label">@L["ShgTotal"]</div></div>
+    <div class="stat-card orange"><div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div><div class="stat-value" id="shgStatInProcess">0</div><div class="stat-label">@L["ShgStatusInProcess"]</div></div>
+    <div class="stat-card green"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div class="stat-value" id="shgStatSubmitted">0</div><div class="stat-label">@L["ShgSubmitted"]</div></div>
+    <div class="stat-card indigo"><div class="stat-icon"><i class="fa-solid fa-pen-to-square"></i></div><div class="stat-value" id="shgStatIncomplete">0</div><div class="stat-label">@L["ShgStatusIncomplete"]</div></div>
+    <div class="stat-card red"><div class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></div><div class="stat-value" id="shgStatRejected">0</div><div class="stat-label">@L["RejectedLabel"]</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa-solid fa-file-signature"></i> @L["ShgApplications"] <span class="tab-count" id="shgCount">0</span></div>
+    </div>
+    <div class="card-body">
+      <div class="toolbar" style="flex-wrap:wrap">
+        <div class="search-box"><i class="fa-solid fa-search"></i><input type="text" id="shgSearch" placeholder="@L["ShgSearch"]" aria-label="@L["ShgSearch"]"></div>
+        <select class="form-control" style="width:auto;min-width:160px" id="shgFilterStatus" aria-label="@L["Status"]">
+          <option value="">@L["AllStatuses"]</option>
+          <option value="inprocess">@L["ShgStatusInProcess"]</option>
+          <option value="submitted">@L["ShgSubmitted"]</option>
+          <option value="incomplete">@L["ShgStatusIncomplete"]</option>
+          <option value="rejected">@L["RejectedLabel"]</option>
+        </select>
+        <select class="form-control" style="width:auto;min-width:180px" id="shgFilterDistrict" aria-label="@L["District"]" hidden><option value="">@L["AllDistricts"]</option></select>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="shgTable">
+          <thead><tr>
+            <th>@L["ShgReference"]</th><th>@L["ShgName"]</th><th>@L["District"]</th><th>@L["ShgMandal"]</th>
+            <th>@L["ShgRepresentative"]</th><th>@L["ShgProductCategory"]</th><th>@L["Status"]</th><th>@L["Stall"]</th><th>@L["ShgDate"]</th><th>@L["Actions"]</th>
+          </tr></thead>
+          <tbody id="shgBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="shgViewModal" aria-hidden="true">
+  <div class="modal" style="max-width:820px" role="dialog" aria-modal="true" aria-labelledby="shgViewTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="shgViewTitle">@L["ShgApplicationDetails"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="shgViewBody"></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Close"]</button>
+      @* Allocate Stall: shown only while In process.
+         Reject: enabled while In process or Incomplete, disabled once a stall is allotted, hidden once rejected (shg-applications.js view()) *@
+      <button type="button" class="btn btn-danger" id="shgRejectOpenBtn" hidden><i class="fa-solid fa-circle-xmark"></i> @L["Reject"]</button>
+      <button type="button" class="btn btn-primary" id="shgAllocateOpenBtn" hidden><i class="fa-solid fa-store"></i> @L["AllocateStall"]</button>
+    </div>
+  </div>
+</div>
+
+@* Allocate Stall: as Stall Management's "Allocate Stall to Artisan", but the stall goes to the SHG itself (stalls.ShgDetailId, IsArtisan false),
+   so there is no artisan to pick and the product category comes from the application *@
+<div class="modal-overlay" id="shgAllocateModal" aria-hidden="true">
+  <div class="modal" style="max-width:760px" role="dialog" aria-modal="true" aria-labelledby="shgAllocateTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="shgAllocateTitle"><i class="fa-solid fa-store-slash"></i> @L["ShgAllocateTitle"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="shgAllocateForm" novalidate>
+        @Html.AntiForgeryToken()
+        <div class="form-error" id="sa_err_request"></div>
+        <div class="shg-holder">
+          <div><div class="form-label">@L["ShgName"]</div><div class="shg-value" id="saShgName"></div></div>
+          <div><div class="form-label">@L["ShgProductCategory"]</div><div class="shg-value" id="saCategory"></div></div>
+          <div class="shg-holder-hint">@L["ShgFromApplicationHint"]</div>
+        </div>
+        <div class="form-grid col-2">
+          <div class="form-group">
+            <label class="form-label" for="saStall">@L["SelectVacantStall"] <span class="req">*</span></label>
+            <select class="form-control" id="saStall" required><option value="">@L["SelectPlaceholder"]</option></select>
+            <div class="form-error" id="sa_err_stall_code"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="saRent">@L["MonthlyRent"]</label>
+            <input type="number" class="form-control" id="saRent" min="0" max="10000000" step="0.01" placeholder="0.00">
+            <div class="form-error" id="sa_err_monthly_rent"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="saDate">@L["AllotmentDate"] <span class="req">*</span></label>
+            <input type="date" class="form-control" id="saDate" required>
+            <div class="form-error" id="sa_err_allotted_date"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="saEnd">@L["AgreementEndDate"]</label>
+            <input type="date" class="form-control" id="saEnd">
+            <div class="form-error" id="sa_err_agreement_end_date"></div>
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label" for="saRemarks">@L["Remarks"]</label>
+            <textarea class="form-control" id="saRemarks" maxlength="500" placeholder="@L["AdditionalNotes"]" rows="3"></textarea>
+            <div class="form-error" id="sa_err_remarks"></div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-start">
+      <button type="submit" form="shgAllocateForm" class="btn btn-primary" id="saSaveBtn"><i class="fa-solid fa-check"></i> @L["AllocateStall"]</button>
+      <button type="button" class="btn btn-outline btn-sm btn-reset" id="saResetBtn">@L["Reset"]</button>
+    </div>
+  </div>
+</div>
+
+@* Reject: the reason is required and shown on the application's details *@
+<div class="modal-overlay" id="shgRejectModal" aria-hidden="true">
+  <div class="modal" style="max-width:560px" role="dialog" aria-modal="true" aria-labelledby="shgRejectTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="shgRejectTitle"><i class="fa-solid fa-circle-xmark"></i> @L["ShgRejectTitle"]</div>
+      <button type="button" class="modal-close" data-modal-close aria-label="@L["Close"]"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="shgRejectForm" novalidate>
+        @Html.AntiForgeryToken()
+        <div class="form-error" id="sr_err_request"></div>
+        <div class="shg-holder">
+          <div><div class="form-label">@L["ShgName"]</div><div class="shg-value" id="srShgName"></div></div>
+          <div><div class="form-label">@L["ShgReference"]</div><div class="shg-value" id="srReference"></div></div>
+          <div class="shg-holder-hint">@L["ShgRejectHint"]</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="srReason">@L["ShgRejectionReason"] <span class="req">*</span></label>
+          <textarea class="form-control" id="srReason" maxlength="500" rows="4" required></textarea>
+          <div class="form-error" id="sr_err_reason"></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" data-modal-close>@L["Cancel"]</button>
+      <button type="submit" form="shgRejectForm" class="btn btn-danger" id="srSaveBtn"><i class="fa-solid fa-circle-xmark"></i> @L["Reject"]</button>
+    </div>
+  </div>
+</div>
+
+@section Styles {
+  <style>
+    .shg-scope { margin-top:6px; font-size:13px; color:var(--primary); font-weight:600; }
+    .shg-scope-warn { color:var(--danger); }
+    .shg-section { margin-bottom:18px; }
+    .shg-section h3 { font-size:14px; font-weight:700; margin:0 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); color:var(--primary); }
+    .shg-value { font-weight:600; overflow-wrap:anywhere; white-space:pre-line; }
+    .shg-muted { color:var(--text-muted); font-style:italic; font-weight:400; }
+    .shg-photos { display:flex; flex-wrap:wrap; gap:10px; }
+    .shg-photos a { display:block; width:120px; height:120px; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--bg); }
+    .shg-photos img { width:100%; height:100%; object-fit:cover; }
+    /* a PDF document: same tile as a photo, with the PDF icon */
+    .shg-photos .shg-pdf { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--danger); text-decoration:none; }
+    .shg-photos .shg-pdf i { font-size:42px; }
+    .shg-photos .shg-pdf span { font-size:12px; font-weight:600; color:var(--text-muted); }
+    .shg-rejection { padding:12px 14px; border:1px solid var(--danger); border-radius:8px; background:var(--danger-light); }
+    .shg-rejection h3 { color:var(--danger); border-bottom-color:var(--danger); }
+    /* the reason under the Rejected badge in the list: two lines at most, the full text on hover and in the details */
+    .shg-reject-reason { margin-top:4px; max-width:220px; font-size:12px; color:var(--danger); overflow:hidden;
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow-wrap:anywhere; }
+    .shg-reject-reason span { font-weight:600; }
+    .shg-holder { display:grid; grid-template-columns:1fr 1fr; gap:6px 18px; padding:12px 14px; margin-bottom:16px; border-radius:8px; background:var(--primary-xlight); }
+    .shg-holder-hint { grid-column:1/-1; font-size:.7rem; color:var(--text-muted); }
+    .form-full { grid-column:1/-1; }
+    .shg-allotment { padding:12px 14px; border:1px solid var(--success); border-radius:8px; background:var(--success-light); }
+    .shg-allotment h3 { color:var(--success); border-bottom-color:var(--success); }
+    #sa_err_request:not(:empty), #sr_err_request:not(:empty) { display:block; margin-bottom:10px; }
+    #shgRejectOpenBtn:disabled, .shg-delete:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+    .shg-delete:not(:disabled) { color:var(--danger); }
+  </style>
+}
+
+@section Scripts {
+  <script>window.ShgApplicationsI18n = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(jsStrings));</script>
+  <script src="~/js/shg-applications.js" asp-append-version="true"></script>
+}

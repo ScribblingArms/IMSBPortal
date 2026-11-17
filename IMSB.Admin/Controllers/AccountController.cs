@@ -128,7 +128,7 @@ namespace IMSB.Admin.Controllers
                 _ => null
             };
             var currentRole = User.FindFirstValue(ClaimTypes.Role);
-            if (User.Identity?.IsAuthenticated == true && currentRole is "Admin" or "Staff" or "Inventory")
+            if (User.Identity?.IsAuthenticated == true && UserRoles.SignInChoices.Any(c => c.Role == currentRole))
             {
                 return RedirectToRoleHome(currentRole);
             }
@@ -321,12 +321,9 @@ namespace IMSB.Admin.Controllers
             return RedirectToAction(nameof(Sessions));
         }
 
-        private IActionResult RedirectToRoleHome(string? role) => role switch
-        {
-            "Admin" => RedirectToAction("Index", "Dashboard"),
-            "Staff" => RedirectToAction("Index", "Staff"),
-            "Inventory" => RedirectToAction("Index", "Inventory"),
-            _ => RedirectToAction("Login", "Account")
-        };
+        private IActionResult RedirectToRoleHome(string? role) =>
+            UserRoles.SignInChoices.Any(c => c.Role == role)
+                ? RedirectToAction("Index", UserRoles.HomeController(role))
+                : RedirectToAction("Login", "Account");
     }
 }

@@ -6,7 +6,11 @@ using static IMSB.Common.CommonHelpers;
 
 namespace IMSB.Api.Controllers
 {
-    /// <summary>Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.</summary>
+    /// <summary>
+    /// Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.
+    /// Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId the same as text, and the monthly salary is the
+    /// BaseSalary of the employee's tbl_Designation row.
+    /// </summary>
     [Authorize(Roles = "Admin,Staff")]
     public class PayrollController : ApiControllerBase
     {

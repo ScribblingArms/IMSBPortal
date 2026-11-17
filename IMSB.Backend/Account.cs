@@ -67,14 +67,9 @@ namespace IMSB.Backend
             if (verify == PasswordVerificationResult.Failed) return (null, "", "InvalidCredentials");
             if (!login.IsActive) return (null, "", "AccountDisabled");
 
-            var role = (selectedRole ?? string.Empty).Trim().ToLowerInvariant() switch
-            {
-                "admin" => "Admin",
-                "staff" => "Staff",
-                "inventory" => "Inventory",
-                _ => string.Empty
-            };
-            if (role.Length == 0) return (null, "", "InvalidRoleSelected");
+            // admin, staff, inventory, districtofficer or stateadminofficer (UserRoles.SignInChoices)
+            var role = UserRoles.FromSignInChoice(selectedRole);
+            if (role == null) return (null, "", "InvalidRoleSelected");
             if (!string.Equals(login.Role, role, StringComparison.OrdinalIgnoreCase)) return (null, "", "RoleNotAuthorized");
 
             if (verify == PasswordVerificationResult.SuccessRehashNeeded)

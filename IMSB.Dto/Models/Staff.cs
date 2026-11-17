@@ -3,7 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IMSB.Dto.Models
 {
-    [Table("staff")]
+    /// <summary>
+    /// An employee as the attendance, leave, OT, payroll, dashboard and search pages read them: a row of the view
+    /// dbo.vw_StaffEmployees over SERP.tbl_Employee (see IMSBContext). Read-only.
+    /// Id and EmployeeId are the EMP_ID; DepartmentId / StaffCategory the Staff Category (tbl_Employee.DepartmentID, dbo.departments);
+    /// Designation and MonthlySalary come from the employee's tbl_Designation row; Shift is the dbo.Shift code;
+    /// Status is ACTIVE or INACTIVE (tbl_Employee.IsActive). Columns tbl_Employee does not have read as empty (Email, DateOfBirth...).
+    /// </summary>
     public class Staff
     {
         [Key]
@@ -12,7 +18,7 @@ namespace IMSB.Dto.Models
 
         [Required]
         [Column("EmployeeId")]
-        public string EmployeeId { get; set; } = string.Empty; // EMP-0001
+        public string EmployeeId { get; set; } = string.Empty; // the EMP_ID as text, e.g. "501"
 
         [Required]
         [Column("FullName")]

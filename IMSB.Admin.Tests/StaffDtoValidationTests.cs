@@ -21,9 +21,13 @@ public class StaffDtoValidationTests
     }
 
     [Fact]
-    public void Email_is_optional()
+    public void Agency_shift_and_stall_are_optional()
     {
-        Assert.Empty(Validate(TestHelpers.ValidCreateDto(email: null)));
+        var dto = TestHelpers.ValidCreateDto();
+        dto.AgencyId = null;
+        dto.ShiftId = null;
+        dto.StallNumber = null;
+        Assert.Empty(Validate(dto));
     }
 
     [Theory]
@@ -44,57 +48,56 @@ public class StaffDtoValidationTests
         Assert.Contains(nameof(CreateStaffDto.FullName), FailedMembers(dto));
     }
 
+    // the staff category and designation are required by the server rules (StaffValidation), which let older records
+    // without them be edited; the form annotations only cap the designation at tbl_Designation's 50 characters
     [Fact]
-    public void Invalid_email_fails()
+    public void Category_and_designation_are_not_demanded_by_the_annotations()
     {
-        Assert.Contains(nameof(CreateStaffDto.Email), FailedMembers(TestHelpers.ValidCreateDto(email: "not-an-email")));
+        var dto = TestHelpers.ValidCreateDto();
+        dto.DepartmentId = "";
+        dto.Designation = null;
+        Assert.Empty(Validate(dto));
     }
 
     [Theory]
-    [InlineData(-0.01)]
-    [InlineData(1000000000)]
-    public void Monthly_salary_must_be_within_supported_range(decimal salary)
+    [InlineData(50, true)]
+    [InlineData(51, false)]
+    public void Designation_fits_the_column(int length, bool valid)
     {
         var dto = TestHelpers.ValidCreateDto();
-        dto.MonthlySalary = salary;
-        Assert.Contains(nameof(CreateStaffDto.MonthlySalary), FailedMembers(dto));
+        dto.Designation = new string('d', length);
+        Assert.Equal(valid, !FailedMembers(dto).Contains(nameof(CreateStaffDto.Designation)));
     }
 
     [Theory]
-    [InlineData(nameof(CreateStaffDto.DateOfBirth))]
-    [InlineData(nameof(CreateStaffDto.DepartmentId))]
-    [InlineData(nameof(CreateStaffDto.Designation))]
-    [InlineData(nameof(CreateStaffDto.JoinDate))]
-    public void Required_fields_fail_when_empty(string property)
+    [InlineData(0, false)]
+    [InlineData(1, true)]
+    [InlineData(99999, true)]
+    [InlineData(100000, false)]
+    public void Stall_number_is_within_range(int stall, bool valid)
     {
         var dto = TestHelpers.ValidCreateDto();
-        typeof(CreateStaffDto).GetProperty(property)!.SetValue(dto, "");
-        Assert.Contains(property, FailedMembers(dto));
-    }
-
-    [Theory]
-    [InlineData("Female", true)]
-    [InlineData("Male", true)]
-    [InlineData("Other", true)]
-    [InlineData("Unknown", false)]
-    public void Gender_is_restricted(string gender, bool valid)
-    {
-        var dto = TestHelpers.ValidCreateDto();
-        dto.Gender = gender;
-        Assert.Equal(valid, !FailedMembers(dto).Contains(nameof(CreateStaffDto.Gender)));
+        dto.StallNumber = stall;
+        Assert.Equal(valid, !FailedMembers(dto).Contains(nameof(CreateStaffDto.StallNumber)));
     }
 
     [Theory]
     [InlineData("ACTIVE", true)]
-    [InlineData("ON_LEAVE", true)]
     [InlineData("INACTIVE", true)]
     [InlineData(null, true)]          // omitted = keep current status
-    [InlineData("RETIRED", false)]
+    [InlineData("ON_LEAVE", false)]   // tbl_Employee only knows active or not
     [InlineData("active", false)]     // must be the canonical upper-case code
     public void Update_status_is_restricted(string? status, bool valid)
     {
         var dto = TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(), status);
         Assert.Equal(valid, !FailedMembers(dto).Contains(nameof(UpdateStaffDto.Status)));
+    }
+
+    [Fact]
+    public void Remarks_fit_the_column()
+    {
+        Assert.Empty(Validate(TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(), remarks: new string('r', 200))));
+        Assert.Contains(nameof(UpdateStaffDto.Remarks), FailedMembers(TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(), remarks: new string('r', 201))));
     }
 
     [Fact]

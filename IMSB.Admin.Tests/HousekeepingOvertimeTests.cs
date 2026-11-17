@@ -62,10 +62,10 @@ public class HousekeepingOvertimeTests
     {
         var context = TestHelpers.CreateContext();
         context.Departments.Add(new Department { Id = HousekeepingDept, Name = "Housekeeping" });
-        var housekeeper = TestHelpers.ExistingStaff("EMP-HK1", "Lakshmi Devi", "9000000301", dept: HousekeepingDept);
+        var housekeeper = TestHelpers.ExistingStaff("9301", "Lakshmi Devi", "9000000301", dept: HousekeepingDept);
         housekeeper.Designation = "Housekeeping Staff";
         housekeeper.MonthlySalary = 12000m;
-        context.Staff.Add(housekeeper);
+        context.AddEmployees(housekeeper);
 
         AttendanceRecord Day(int day, double outHour) => new()
         {
@@ -123,7 +123,7 @@ public class HousekeepingOvertimeTests
 
             Assert.Equal("OT Hrs", rows[0][^1]);
             Assert.DoesNotContain("Overtime Amount", rows[0]);
-            Assert.Equal("7", rows.Single(r => r[1] == "EMP-HK1")[^1]);
+            Assert.Equal("7", rows.Single(r => r[1] == "9301")[^1]);
         }
     }
 
@@ -195,7 +195,7 @@ public class HousekeepingOvertimeTests
             Assert.DoesNotContain("Overtime Amount", rows[0]);
             Assert.DoesNotContain("Earned Salary", rows[0]);
             var total = (Math.Round(12000m * 3 / 31, 2, MidpointRounding.AwayFromZero) + 350m).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-            var housekeeper = rows.Single(r => r[1] == "EMP-HK1");
+            var housekeeper = rows.Single(r => r[1] == "9301");
             Assert.Equal(("3", "7", total), (housekeeper[6], housekeeper[7], housekeeper[8]));
             Assert.Equal(("Grand Total", "7", total), (rows[^1][0], rows[^1][7], rows[^1][8]));
         }
@@ -222,12 +222,12 @@ public class HousekeepingOvertimeTests
         var (context, _) = Seed();
         using (context)
         {
-            var excel = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Payroll(context).Export(2026, 10, null, "EMP-HK1")).FileContents);
+            var excel = ExcelExportTestHelpers.Rows(Assert.IsType<FileContentResult>(await Payroll(context).Export(2026, 10, null, "9301")).FileContents);
             var otColumn = Array.IndexOf(excel[0], "Overtime Amount");
             Assert.Equal("350.00", excel[1][otColumn]);
 
             var pdf = Assert.IsType<PayBillPrintModel>(
-                Assert.IsType<PartialViewResult>(await Payroll(context).PdfDocument(2026, 10, null, "EMP-HK1")).Model);
+                Assert.IsType<PartialViewResult>(await Payroll(context).PdfDocument(2026, 10, null, "9301")).Model);
             Assert.Equal(350m, Assert.Single(pdf.Rows).OvertimeAmount);
         }
     }

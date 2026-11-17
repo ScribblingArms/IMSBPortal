@@ -17,15 +17,8 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Azure.Identity.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\LinqKit.Core.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\LinqKit.Microsoft.EntityFrameworkCore.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.AspNetCore.JsonPatch.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.AspNetCore.Razor.Language.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.CodeAnalysis.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.CodeAnalysis.Razor.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Data.SqlClient.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.EntityFrameworkCore.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
@@ -35,16 +28,9 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Co
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Configuration.Json.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.DependencyModel.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Localization.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Localization.Abstractions.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Logging.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.ObjectPool.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.Options.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Extensions.WebEncoders.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Identity.Client.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.IdentityModel.Abstractions.dll
@@ -56,8 +42,6 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.IdentityModel
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.OpenApi.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.SqlServer.Server.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Microsoft.Win32.SystemEvents.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Newtonsoft.Json.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Newtonsoft.Json.Bson.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -67,9 +51,7 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Drawing.Common.d
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.IdentityModel.Tokens.Jwt.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Memory.Data.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Runtime.Caching.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Security.Cryptography.Pkcs.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Security.Cryptography.ProtectedData.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Security.Cryptography.Xml.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Security.Permissions.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\System.Windows.Extensions.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
@@ -82,7 +64,6 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\win\lib\net6.0
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\IMSB.Backend.dll
@@ -130,3 +111,7 @@ K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\en-US\IMSB.Api.resource
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\hi-IN\IMSB.Api.resources.cs
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\ta-IN\IMSB.Api.resources.cs
 K:\ScribblingArms\IMSBPortal\IMSB.Api\obj\Release\net8.0\te-IN\IMSB.Api.resources.cs
+K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\IMSB.LoggerLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\IMSB.Models.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\IMSB.Models.pdb
+K:\ScribblingArms\IMSBPortal\IMSB.Api\bin\Release\net8.0\IMSB.LoggerLibrary.pdb

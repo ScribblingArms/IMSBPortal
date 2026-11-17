@@ -10,3 +10,4 @@ K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Release\net8.0\IMSB.LoggerLibrary.
 K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Release\net8.0\refint\IMSB.LoggerLibrary.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Release\net8.0\IMSB.LoggerLibrary.pdb
 K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Release\net8.0\ref\IMSB.LoggerLibrary.dll
+K:\ScribblingArms\IMSBPortal\IMSB.Service\obj\Release\net8.0\IMSB.LoggerLibrary.csproj.AssemblyReference.cache

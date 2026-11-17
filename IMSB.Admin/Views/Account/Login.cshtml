@@ -81,19 +81,6 @@
                     <p>@L["SignInToContinue"]</p>
                 </div>
 
-                <!-- Role Tabs -->
-                <div class="role-tabs" id="roleTabs">
-                    <button type="button" class="role-tab @(selectedRole == "admin" ? "active" : "")" data-role="admin" onclick="selectRole(this,'admin')">
-                        <i class="fa-solid fa-shield-halved"></i>@L["StateAdmin"]
-                    </button>
-                    <button type="button" class="role-tab @(selectedRole == "staff" ? "active" : "")" data-role="staff" onclick="selectRole(this,'staff')">
-                        <i class="fa-solid fa-user-tie"></i>@L["StaffHR"]
-                    </button>
-                    <button type="button" class="role-tab @(selectedRole == "inventory" ? "active" : "")" data-role="inventory" onclick="selectRole(this,'inventory')">
-                        <i class="fa-solid fa-boxes-stacked"></i>@L["Inventory"]
-                    </button>
-                </div>
-
                 <!-- Error banner -->
                 <div class="login-error" id="loginError">
                     <i class="fa-solid fa-circle-xmark"></i>
@@ -103,7 +90,6 @@
                 <!-- Form -->
                 <form id="loginForm" asp-controller="Account" asp-action="Login" method="post">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" id="selectedRole" name="SelectedRole" value="@selectedRole" />
                     <input type="hidden" asp-for="ReturnUrl" />
                     @if (ViewBag.Notice != null)
                     {
@@ -115,6 +101,19 @@
                     }
                     <div asp-validation-summary="ModelOnly" class="login-error visible"
                          style="@(ViewData.ModelState.IsValid ? "display:none;" : "display:flex;")"></div>
+                    <div class="form-group">
+                        <label class="form-label" for="selectedRole">@L["SignInAs"]</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-shield-halved input-icon"></i>
+                            @* posted as SelectedRole; the choices and the role each signs in as are UserRoles.SignInChoices *@
+                            <select id="selectedRole" name="SelectedRole" class="form-control">
+                                @foreach (var choice in IMSB.Dto.Models.UserRoles.SignInChoices)
+                                {
+                                    <option value="@choice.Value" selected="@(selectedRole == choice.Value)">@L[choice.LabelKey]</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="form-label" for="username">@L["UserIdOrEmail"]</label>
                         <div class="input-wrap">
@@ -156,7 +155,7 @@
                         @foreach (var demo in demoUsers)
                         {
                             <div class="demo-creds-row">
-                                <span>@(demo.Role switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, _ => L["StateAdmin"].Value }):</span>
+                                <span>@(demo.Role switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, _ => L["AdminRole"].Value }):</span>
                                 <code data-user="@demo.Username" data-pass="@demo.Password" data-role="@demo.Role.ToLowerInvariant()"
                                       onclick="fillCreds(this.dataset.user, this.dataset.pass, this.dataset.role)">@demo.Username</code>
                             </div>

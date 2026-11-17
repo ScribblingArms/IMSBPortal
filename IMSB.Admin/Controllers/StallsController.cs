@@ -11,7 +11,8 @@ using static IMSB.Common.CommonHelpers;
 
 namespace IMSB.Admin.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    // Admin, District Officers and State Admin Officers (for officers this is the only page)
+    [Authorize(Roles = UserRoles.StallsAccess)]
     public class StallsController : Controller
     {
         private const int RecentReallocations = 50;
@@ -99,7 +100,7 @@ namespace IMSB.Admin.Controllers
             var errors = ModelStateErrors(ModelState);
             errors.Remove("stall_code");   // the code is fixed after creation
             var status = dto.Status?.Trim().ToUpperInvariant();
-            if (stall.ArtisanId != null)
+            if (stall.IsHeld)
             {
                 // occupancy comes from allocation: vacate or reallocate instead
                 if (!string.IsNullOrEmpty(status) && status != StallStatuses.Occupied) errors.TryAdd("status", _L["ValStallOccupiedStatus"]);
@@ -145,7 +146,7 @@ namespace IMSB.Admin.Controllers
         {
             var stall = await _stalls.FindAsync(id);
             if (stall == null) return NotFound();
-            if (stall.ArtisanId != null) return ErrorResult("stall", _L["ValStallOccupiedDelete"]);
+            if (stall.IsHeld) return ErrorResult("stall", _L["ValStallOccupiedDelete"]);
             var products = await _stalls.ProductCountAsync(stall.StallCode);
             if (products > 0) return ErrorResult("stall", string.Format(_L["ValStallHasProducts"], products));
 
@@ -193,20 +194,14 @@ namespace IMSB.Admin.Controllers
 
         private void AssignArtisan(Stall stall, Artisan artisan, DateTime allotted, DateTime? agreementEnd, int? categoryId)
         {
-            stall.ArtisanId = artisan.Id;
-            stall.Status = StallStatuses.Occupied;
-            stall.AllottedDate = allotted;
-            stall.AgreementEndDate = agreementEnd;
-            stall.CategoryId = categoryId;
+            stall.AssignTo(artisan, allotted, agreementEnd, categoryId);
             Touch(stall);
         }
 
+        /// <summary>Frees the stall from its artisan or SHG.</summary>
         private void ClearArtisan(Stall stall)
         {
-            stall.ArtisanId = null;
-            stall.Status = StallStatuses.Vacant;
-            stall.AllottedDate = null;
-            stall.AgreementEndDate = null;
+            stall.ClearHolder();
             Touch(stall);
         }
 
@@ -226,7 +221,7 @@ namespace IMSB.Admin.Controllers
         {
             var stall = await _stalls.FindAsync(id);
             if (stall == null) return NotFound();
-            if (stall.ArtisanId == null) return ErrorResult("stall", _L["ValStallNotOccupied"]);
+            if (!stall.IsHeld) return ErrorResult("stall", _L["ValStallNotOccupied"]);
 
             ClearArtisan(stall);
             foreach (var r in await _stalls.OpenReallocationsAsync(stall.Id))
@@ -254,6 +249,8 @@ namespace IMSB.Admin.Controllers
 
             var stall = string.IsNullOrWhiteSpace(dto.StallCode) ? null : await _stalls.FindAsync(dto.StallCode.Trim().ToUpper(), includeArtisan: true);
             if (stall == null) errors.TryAdd("stall_code", _L["ValSelectStall"]);
+            // a stall held by an SHG is freed with Vacate; reallocation moves stalls between artisans
+            else if (stall.ShgDetailId != null) errors.TryAdd("stall_code", _L["ValStallHeldByShg"]);
             else if (stall.ArtisanId == null) errors.TryAdd("stall_code", _L["ValStallNotOccupied"]);
             else if (await _stalls.HasPendingReallocationAsync(stall.Id)) errors.TryAdd("stall_code", _L["ValReallocationPending"]);
 
@@ -307,7 +304,8 @@ namespace IMSB.Admin.Controllers
 
             var stall = await _stalls.FindByIdAsync(request.StallId);
             // the stall changed hands since the request was made
-            if (stall == null || stall.ArtisanId != request.CurrentArtisanId) return ErrorResult("request", _L["ValReallocationStale"]);
+            if (stall == null || stall.ArtisanId != request.CurrentArtisanId || stall.ShgDetailId != null)
+                return ErrorResult("request", _L["ValReallocationStale"]);
 
             if (request.NewArtisanId != null)
             {

@@ -7,6 +7,8 @@
     var L = LocalizerFactory.Create("SharedResource", typeof(SharedResource).Assembly.GetName().Name!);
     // Mirrors the [Authorize(Roles = ...)] attributes on the controllers, so users only see pages they can open
     var isAdmin = User.IsInRole("Admin");
+    // District Officers and State Admin Officers see Stall Management and SHG Applications only
+    var isOfficer = IMSB.Dto.Models.UserTypes.All.Any(User.IsInRole);
     var isStaff = User.IsInRole("Staff");
     var isInventory = User.IsInRole("Inventory");
     var userName = User.Identity?.Name ?? L["AdminUser"].Value;
@@ -33,15 +35,20 @@
       </div>
       }
 
-      @if (isAdmin || isInventory)
-      {
-      @if (isAdmin)
+      @if (isAdmin || isOfficer)
       {
       <div class="nav-item" data-page="/Stalls/Index" onclick="location.href='/Stalls/Index'">
         <i class="fa-solid fa-store"></i>
         <span class="nav-label">@L["StallManagement"]</span>
       </div>
+      <div class="nav-item" data-page="/ShgApplications/Index" onclick="location.href='/ShgApplications/Index'">
+        <i class="fa-solid fa-file-signature"></i>
+        <span class="nav-label">@L["ShgApplications"]</span>
+      </div>
       }
+
+      @if (isAdmin || isInventory)
+      {
       <div class="nav-item" data-page="/Inventory/Index" onclick="location.href='/Inventory/Index'">
         <i class="fa-solid fa-boxes-stacked"></i>
         <span class="nav-label">@L["Inventory"]</span>
@@ -150,6 +157,10 @@
           </div>
         </div>
       </div>
+      <div class="nav-item" data-page="/UserManagement/Index" onclick="location.href='/UserManagement/Index'">
+        <i class="fa-solid fa-users-gear"></i>
+        <span class="nav-label">@L["UserManagement"]</span>
+      </div>
       }
     </nav>
 
@@ -157,7 +168,7 @@
       <div class="sidebar-user-avatar">@initials</div>
       <div class="sidebar-user-info">
         <span>@userName</span>
-        <span>@(userRole switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, _ => L["StateLevelAdmin"].Value })</span>
+        <span>@(userRole switch { "Staff" => L["StaffHR"].Value, "Inventory" => L["Inventory"].Value, "DistrictOfficer" => L["DistrictOfficer"].Value, "StateAdminOfficer" => L["StateAdminOfficer"].Value, _ => L["StateLevelAdmin"].Value })</span>
       </div>
       <div class="sidebar-user-menu"><i class="fa-solid fa-ellipsis-vertical"></i></div>
     </div>

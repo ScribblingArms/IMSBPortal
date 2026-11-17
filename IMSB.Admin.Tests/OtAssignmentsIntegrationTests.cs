@@ -25,9 +25,9 @@ public class OtAssignmentsIntegrationTests : IClassFixture<OtAssignmentsAppFacto
             factory.Seed(ctx =>
             {
                 ctx.Departments.Add(new Department { Id = TestHelpers.SalesDept, Name = "Sales" });
-                var staff = TestHelpers.ExistingStaff("EMP801", "Http Ot Tester", "900000801");
+                var staff = TestHelpers.ExistingStaff("801", "Http Ot Tester", "900000801");
                 staff.Id = StaffId;
-                ctx.Staff.Add(staff);
+                ctx.AddEmployees(staff);
             });
             _seeded = true;
         }

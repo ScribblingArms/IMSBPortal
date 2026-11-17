@@ -1,14 +1,45 @@
 // Staff / HR page: list, filters, add / edit / delete through the /Staff endpoints.
+// Employees are SERP.tbl_Employee rows: EmpTypeID is a SERP.tbl_EMP_Types row, Desig a dbo.departments row (the staff
+// category), ShiftID a dbo.Shift row and AgencyID a SERP.tbl_ArtisansTypeAgency row.
 // Localized strings come from window.StaffI18n (rendered by Views/Staff/Index.cshtml from SharedResource.*.resx).
 (function StaffModule(){
+  let employeeTypes = [];
   let depts = [];
+  let agencies = [];
   let staff = [];
   let shifts = [];
   let leaveTypes = [];
+  let designations = [];   // tbl_Designation rows: { id, name, employee_type_id, salary (admins only) }
   let quotaLoadSeq = 0;   // ignores a quota response for a form that has since been reopened
+  // the photo change of the open form: a new JPEG data URL, or a request to remove the one on record
+  let photo = { data: null, remove: false };
   let formDirty = false;
   let submitting = false;
   let loadSeq = 0;   // ignores out-of-order responses when filters change quickly
+
+  const GENDERS = ['Female', 'Male', 'Other'];
+  const PHOTO_MAX_SIDE = 480;           // px; pictures are shrunk to this before upload
+  const PHOTO_MAX_BYTES = 500 * 1024;   // as EmployeePhotos.MaxBytes on the server
+
+  const photoUrl = id => '/Staff/Photo/' + encodeURIComponent(id) + '?v=' + Date.now();   // never a stale cached photo
+
+  function isoToday(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  // "2020-01-15" -> "15 Jan 2020" in the page language; parsed as a local date so it never shifts a day
+  function formatDateDisplay(iso){
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    if (!m) return iso || '';
+    const d = new Date(+m[1], +m[2] - 1, +m[3]);
+    return `${m[3]} ${d.toLocaleString(document.documentElement.lang || undefined, { month: 'short' })} ${m[1]}`;
+  }
+
+  function formatSalary(value){
+    if (value == null || value === '' || !Number.isFinite(Number(value))) return '';
+    return new Intl.NumberFormat(document.documentElement.lang || 'en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(value));
+  }
 
   // ── i18n ──────────────────────────────────────────────────────
   const I18N = window.StaffI18n || {};
@@ -27,55 +58,44 @@
   function statusLabel(status){
     const s = String(status || '').toUpperCase();
     if (s === 'ACTIVE') return t('Active');
-    if (s === 'ON_LEAVE') return t('OnLeave');
     if (s === 'INACTIVE') return t('Inactive');
     return status || '';
   }
 
   function statusBadge(status){
-    const s = String(status || '').toUpperCase();
-    return s === 'ACTIVE' ? 'badge-success' : s === 'INACTIVE' ? 'badge-danger' : 'badge-warning';
+    return String(status || '').toUpperCase() === 'ACTIVE' ? 'badge-success' : 'badge-danger';
   }
 
-  // "2020-01-15" -> "15 Jan 2020" in the page language; parsed as a local date so it never shifts a day
-  function formatDateDisplay(iso){
-    if (!iso) return '—';
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-    if (!m) return iso;
-    const d = new Date(+m[1], +m[2] - 1, +m[3]);
-    const lang = document.documentElement.lang || undefined;
-    return `${m[3]} ${d.toLocaleString(lang, { month: 'short' })} ${m[1]}`;
+  function genderLabel(g){
+    return GENDERS.includes(g) ? t(g) : (g || '');
   }
 
-  function formatSalary(value){
-    if (value == null || !Number.isFinite(Number(value))) return '—';
-    return new Intl.NumberFormat(document.documentElement.lang || 'en-IN', {
-      style: 'currency', currency: 'INR', maximumFractionDigits: 2
-    }).format(Number(value));
-  }
+  const findStaff = id => staff.find(x => String(x.id) === String(id));
 
   function viewStaff(empId){
-    const s = staff.find(x => String(x.id) === String(empId));
+    const s = findStaff(empId);
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
     const fields = [
       ['EmployeeID', s.id],
       ['FullName', s.full_name],
       ['Department', s.department_name],
-      ['EmployeeType', s.employee_type ? t('EmployeeType' + s.employee_type) : ''],
-      ['Designation', s.designation],
+      ['Designation', s.designation_name],
+      ['EmployeeType', s.employee_type_name],
       ['Mobile', s.mobile],
-      ['Email', s.email],
       ['AadhaarNumber', s.aadhaar_masked],
-      ['DateOfBirth', formatDateDisplay(s.date_of_birth)],
-      ['Gender', s.gender],
+      ['Gender', genderLabel(s.gender)],
+      ['Shift', s.shift_name],
       ['JoinDate', formatDateDisplay(s.join_date)],
-      ['Shift', s.shift],
-      ['Status', statusLabel(s.status)]
+      ['Status', statusLabel(s.status)],
+      ['Remarks', s.remarks]
     ];
-    if (window.StaffCanViewSalary) fields.push(['MonthlySalary', formatSalary(s.monthly_salary)]);
-    document.getElementById('staffProfileBody').innerHTML = `
+    if (window.StaffCanViewSalary) fields.splice(fields.length - 2, 0, ['MonthlySalary', formatSalary(s.monthly_salary)]);
+    const picture = s.has_photo
+      ? `<img class="staff-profile-photo" src="${esc(photoUrl(s.id))}" alt="${esc(t('Photo'))}" />`
+      : '';
+    document.getElementById('staffProfileBody').innerHTML = `${picture}
       <div class="form-grid col-2">
-        ${fields.map(([label, value]) => `<div class="form-group"><div class="form-label">${esc(t(label))}</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(value || '—')}</div></div>`).join('')}
+        ${fields.map(([label, value]) => `<div class="form-group"><div class="form-label">${esc(t(label))}</div><div style="font-weight:600;overflow-wrap:anywhere">${esc(value == null || value === '' ? '—' : value)}</div></div>`).join('')}
       </div>`;
     const overlay = document.getElementById('staffProfileModal');
     overlay.classList.add('open');
@@ -90,9 +110,11 @@
       <tr>
         <td><code style="font-size:.7rem">${esc(s.id)}</code></td>
         <td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary-xlight);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--primary)">${esc((s.full_name||'').split(' ').map(x=>x[0]||'').join('').slice(0,2))}</div><strong>${esc(s.full_name)}</strong></div></td>
-        <td>${esc(s.department_name)}</td>
-        <td>${esc(s.designation)}</td>
-        <td>${esc(s.shift || '—')}</td>
+        <td>${esc(s.employee_type_name || '—')}</td>
+        <td>${esc(s.department_name || '—')}</td>
+        <td>${esc(s.designation_name || '—')}</td>
+        <td>${esc(s.shift_name || '—')}</td>
+        <td><span class="badge ${statusBadge(s.status)}">${esc(statusLabel(s.status))}</span></td>
         <td style="white-space:nowrap">
           <button type="button" class="btn btn-ghost btn-sm btn-icon" data-view-staff="${esc(s.id)}" title="${esc(t('StaffProfile'))}" aria-label="${esc(t('StaffProfile'))}" style="color:var(--primary-light)"><i class="fa-solid fa-circle-info"></i></button>
           <button type="button" class="btn btn-ghost btn-sm btn-icon" data-edit-staff="${esc(s.id)}" title="${esc(t('Edit'))}"><i class="fa-solid fa-pen"></i></button>
@@ -100,28 +122,28 @@
         </td>
       </tr>
     `).join('');
-    const columnCount = 6;
+    const columnCount = 8;
     staffBody.innerHTML = rows || `<tr><td colspan="${columnCount}" style="text-align:center;color:var(--text-muted);padding:18px">${esc(t('NoStaffFound'))}</td></tr>`;
     staffBody.querySelectorAll('[data-edit-staff]').forEach(b => b.addEventListener('click', () => openEdit(b.dataset.editStaff)));
     staffBody.querySelectorAll('[data-delete-staff]').forEach(b => b.addEventListener('click', () => deleteStaff(b.dataset.deleteStaff)));
-    staffBody.querySelectorAll('[data-view-staff]').forEach(b => b.addEventListener('click', () => {
-      viewStaff(b.dataset.viewStaff);
-    }));
+    staffBody.querySelectorAll('[data-view-staff]').forEach(b => b.addEventListener('click', () => viewStaff(b.dataset.viewStaff)));
   }
 
   function renderDeptCards(){
     const deptCards = document.getElementById('deptCards');
     if (!deptCards) return;
-    if (!depts.length){ deptCards.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:.78rem;padding:12px">${esc(t('NoDepartmentsConfigured'))}</div>`; return; }
+    // only departments that have staff; tbl_Designation can hold many unused rows
+    const used = depts.filter(d => d.count > 0);
+    if (!used.length){ deptCards.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:.78rem;padding:12px">${esc(t(depts.length ? 'NoStaffFound' : 'NoDepartmentsConfigured'))}</div>`; return; }
     // one bar row per department: bar length relative to the largest department, % of all staff alongside
-    const total = depts.reduce((sum, d) => sum + (d.count || 0), 0);
-    const max = Math.max(...depts.map(d => d.count || 0), 1);
-    deptCards.innerHTML = depts.map(d => {
+    const total = used.reduce((sum, d) => sum + d.count, 0);
+    const max = Math.max(...used.map(d => d.count), 1);
+    deptCards.innerHTML = used.sort((a, b) => b.count - a.count).map(d => {
       const pct = total ? Math.round(d.count / total * 100) : 0;
       return `
       <div class="dept-bar-row" title="${esc(t('PercentOfTotal', pct))}">
         <div class="dept-bar-name">${esc(d.name)}</div>
-        <div class="dept-bar-track"><div class="dept-bar-fill" style="width:${Math.round((d.count || 0) / max * 100)}%;background:${esc(d.color)}"></div></div>
+        <div class="dept-bar-track"><div class="dept-bar-fill" style="width:${Math.round(d.count / max * 100)}%;background:${esc(d.color)}"></div></div>
         <div class="dept-bar-count">${d.count}</div>
         <div class="dept-bar-pct">${pct}%</div>
       </div>`;
@@ -133,39 +155,138 @@
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     set('statTotalStaff', stats.total);
     set('statActiveStaff', stats.active);
-    set('statOnLeave', stats.onLeave);
+    set('statInactiveStaff', stats.inactive);
     set('statDepartments', stats.departments);
-    set('statContractExpiring', stats.contractExpiring);
+    set('statAgencyStaff', stats.agencyStaff);
   }
 
-  function populateDeptAndShifts(){
+  const optionsHtml = list => list.map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');
+
+  // a select rebuilt from a list keeps its current value when that value is still offered
+  function fillSelect(id, firstText, html){
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = `<option value="">${esc(firstText)}</option>` + html;
+    sel.value = current;
+  }
+
+  // employee types: SERP.tbl_EMP_Types; staff categories: dbo.departments; shifts: dbo.Shift (the offered ones)
+  function populateSelects(){
+    fillSelect('staffEmployeeType', t('SelectPlaceholder'), optionsHtml(employeeTypes));
+    fillSelect('staffDepartment', t(depts.length ? 'SelectPlaceholder' : 'NoDepartmentsConfigured'), optionsHtml(depts));
+    fillSelect('staffShift', t(shifts.length ? 'SelectPlaceholder' : 'NoShift'), optionsHtml(shifts));
+    fillSelect('staffAgency', t('SelectPlaceholder'), optionsHtml(agencies));
+    fillSelect('staffFilterEmployeeType', t('AllEmployeeTypes'), optionsHtml(employeeTypes));
+    fillSelect('staffFilterDepartment', t('AllDepartments'), optionsHtml(depts));
+    // the Designation box suggests the names already in tbl_Designation; whatever is typed is saved in the employee's own row
+    const names = [...new Set(designations.map(d => d.name))].sort((a, b) => a.localeCompare(b));
+    document.getElementById('staffDesignationList').innerHTML = names.map(n => `<option value="${esc(n)}"></option>`).join('');
+  }
+
+  // keeps a value on record that is no longer offered (e.g. saved by the SERP app) so the record can be saved unchanged
+  function keepValue(sel, value, all){
+    if (!value) return;
+    if (![...sel.options].some(o => o.value === String(value))){
+      const known = all.find(x => String(x.id) === String(value));
+      sel.insertAdjacentHTML('beforeend', `<option value="${esc(value)}">${esc(known ? known.name : value)}</option>`);
+    }
+    sel.value = String(value);
+  }
+
+  // puts a record's staff category and shift into the form; a value not offered (a shift no longer in use, or an id
+  // saved by the SERP app) is kept as an extra option so the record can be saved unchanged
+  function setDepartmentAndShift(s){
     const dsel = document.getElementById('staffDepartment');
     const ssel = document.getElementById('staffShift');
-    const fsel = document.getElementById('staffFilterDepartment');
-    const deptOptions = depts.map(d => `<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('');
-    if (dsel){
-      dsel.innerHTML = depts.length
-        ? `<option value="">${esc(t('SelectPlaceholder'))}</option>` + deptOptions
-        : `<option value="">${esc(t('NoDepartmentsConfigured'))}</option>`;
-    }
-    if (fsel){
-      // keep the current filter selection when the list is rebuilt
-      const current = fsel.value;
-      fsel.innerHTML = `<option value="">${esc(t('AllDepartments'))}</option>` + deptOptions;
-      fsel.value = current;
-    }
-    if (ssel){
-      ssel.innerHTML = shifts.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+    dsel.value = '';
+    ssel.value = '';
+    keepValue(dsel, s.department_id, depts);
+    if (s.department_id && !depts.some(d => String(d.id) === String(s.department_id)) && s.department_name)
+      dsel.selectedOptions[0].textContent = s.department_name;
+    keepValue(ssel, s.shift_id, shifts);
+    if (s.shift_id && !shifts.some(x => String(x.id) === String(s.shift_id)) && s.shift_name)
+      ssel.selectedOptions[0].textContent = s.shift_name;
+  }
+
+  // ── Photo (tbl_Employee.ImageBase64) ──────────────────────────
+  function showPhoto(src){
+    const img = document.getElementById('staffPhotoPreview');
+    img.style.display = src ? '' : 'none';
+    if (src) img.src = src; else img.removeAttribute('src');
+    document.getElementById('staffPhotoPlaceholder').style.display = src ? 'none' : '';
+    document.getElementById('staffPhotoRemove').style.display = src ? '' : 'none';
+  }
+
+  function resetPhoto(s){
+    photo = { data: null, remove: false };
+    document.getElementById('staffPhoto').value = '';
+    showPhoto(s && s.has_photo ? photoUrl(s.id) : null);
+  }
+
+  // shrinks the picture to at most PHOTO_MAX_SIDE px and re-encodes it as JPEG, so uploads stay small
+  function shrinkPhoto(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('read failed'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('not an image'));
+        img.onload = () => {
+          const scale = Math.min(1, PHOTO_MAX_SIDE / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#fff';   // PNG transparency becomes white, not black
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // bytes of a base64 data URL
+  const dataUrlBytes = url => Math.floor((url.length - url.indexOf(',') - 1) * 3 / 4);
+
+  async function onPhotoChosen(e){
+    const file = e.target.files && e.target.files[0];
+    const err = document.getElementById('err_photo');
+    err.textContent = '';
+    err.closest('.form-group').classList.remove('has-error');
+    if (!file) return;
+    const fail = () => { err.textContent = t('ValPhoto'); err.closest('.form-group').classList.add('has-error'); e.target.value = ''; };
+    if (!/^image\/(jpeg|png)$/.test(file.type)) { fail(); return; }
+    try {
+      const data = await shrinkPhoto(file);
+      if (dataUrlBytes(data) > PHOTO_MAX_BYTES) { fail(); return; }
+      photo = { data, remove: false };
+      showPhoto(data);
+      formDirty = true;
+    } catch (ex){
+      console.warn('StaffModule.photo', ex);
+      fail();
     }
   }
 
-  // one days field per leave type, filled from the balances on record when editing
-  function renderLeaveQuotas(types, balances){
-    const onRecord = new Map((balances || []).map(b => [String(b.leaveType).toLowerCase(), b]));
+  function onPhotoRemove(){
+    photo = { data: null, remove: true };
+    document.getElementById('staffPhoto').value = '';
+    showPhoto(null);
+    formDirty = true;
+  }
+
+  // ── Annual leave quotas (employee_leave_quotas) ───────────────
+  // one days field per leave type, filled from the quotas on record when editing
+  function renderLeaveQuotas(types, rows){
+    const onRecord = new Map((rows || []).map(r => [String(r.leaveType).toLowerCase(), r]));
     document.getElementById('staffLeaveQuotaSection').style.display = types.length ? '' : 'none';
     document.getElementById('staffLeaveQuotaFields').innerHTML = types.map((type, i) => {
       const row = onRecord.get(String(type).toLowerCase());
-      const days = row ? String(Number(row.entitlement)) : '';
+      const days = row ? String(Number(row.annualQuota)) : '';
       return `
       <div class="form-group">
         <label class="form-label" for="staffLeaveQuota${i}">${esc(type)}</label>
@@ -237,26 +358,24 @@
   }
 
   function fieldToId(name){
-    const map = { full_name: 'FullName', mobile: 'Mobile', email: 'Email', aadhaar: 'Aadhaar', date_of_birth: 'DOB', department_id: 'Department', employee_type: 'EmployeeType', designation: 'Designation', join_date: 'JoinDate', monthly_salary: 'MonthlySalary', gender: 'Gender', shift: 'Shift', status: 'Status', leave_quotas: 'LeaveQuota0' };
+    const map = { full_name: 'FullName', mobile: 'Mobile', aadhaar: 'Aadhaar', employee_type_id: 'EmployeeType', department_id: 'Department', agency_id: 'Agency', gender: 'Gender', shift: 'Shift', stall_number: 'StallNumber', status: 'Status', remarks: 'Remarks',
+      join_date: 'JoinDate', monthly_salary: 'MonthlySalary', leave_quotas: 'LeaveQuota0', photo: 'PhotoPick' };
     return map[name] || name;
   }
 
-  function prepareForm(){
-    clearFormErrors();
-    populateDeptAndShifts();
-    const today = new Date();
-    const isoOf = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const iso = isoOf(today);
-    // staff must be 18+, so the picker stops at 18 years ago
-    document.getElementById('staffDOB').setAttribute('max', isoOf(new Date(today.getFullYear() - 18, today.getMonth(), today.getDate())));
-    document.getElementById('staffJoinDate').setAttribute('max', iso);
+  // a value on record outside the list (e.g. "M" saved by the SERP app) is kept as an extra option
+  function setGender(value){
+    const sel = document.getElementById('staffGender');
+    sel.querySelectorAll('option[data-legacy]').forEach(o => o.remove());
+    if (value && !GENDERS.includes(value)) sel.insertAdjacentHTML('beforeend', `<option value="${esc(value)}" data-legacy>${esc(value)}</option>`);
+    sel.value = value || 'Female';
   }
 
   // the number is never sent back: registering needs one, editing keeps the one on record unless a new one is typed
   function prepareAadhaar(s){
     document.getElementById('staffAadhaar').value = '';
     document.getElementById('staffAadhaarReq').style.display = s ? 'none' : '';
-    document.getElementById('staffAadhaarHint').textContent = s && s.aadhaar_masked ? t('AadhaarKeepHint', s.aadhaar_masked) : t('AadhaarStoredHint');
+    document.getElementById('staffAadhaarHint').textContent = s && s.aadhaar_masked ? t('AadhaarKeepHint', s.aadhaar_masked) : t('AadhaarMaskedHint');
   }
 
   function openCreate(){
@@ -265,120 +384,124 @@
     document.getElementById('staffModalTitle').textContent = modal.dataset.addTitle;
     document.getElementById('staffSubmitBtnText').textContent = modal.dataset.registerText;
     document.getElementById('staffForm').reset();
-    prepareForm();
+    clearFormErrors();
+    populateSelects();
     prepareAadhaar(null);
-    quotaLoadSeq++;
-    renderLeaveQuotas(leaveTypes);
     document.getElementById('staffEmployeeId').value = '';   // placeholder shows "Auto-generated"
     document.getElementById('staffInternalId').value = '';
-    document.getElementById('staffGender').value = 'Female';
-    // new staff always start ACTIVE; status is only editable on existing records
+    setGender('Female');
+    // a single employee type needs no choosing
+    if (employeeTypes.length === 1) document.getElementById('staffEmployeeType').value = employeeTypes[0].id;
+    // new staff always start ACTIVE; status and remarks are only editable on existing records
     document.getElementById('staffStatusGroup').style.display = 'none';
-    if (shifts.length) document.getElementById('staffShift').value = shifts[0].id;
+    document.getElementById('staffRemarksGroup').style.display = 'none';
+    prepareJoinDate(null);
+    resetPhoto(null);
+    quotaLoadSeq++;
+    renderLeaveQuotas(leaveTypes, []);
     openModal();
+  }
+
+  // required when registering; a SERP record without one may stay without one
+  function prepareJoinDate(s){
+    const input = document.getElementById('staffJoinDate');
+    input.setAttribute('max', isoToday());
+    input.value = s ? (s.join_date || '') : '';
+    document.getElementById('staffJoinDateReq').style.display = !s || s.join_date ? '' : 'none';
+    // designation (tbl_Designation) and its salary; a record without a designation or staff category may stay without
+    document.getElementById('staffDesignation').value = s ? (s.designation_name || '') : '';
+    document.getElementById('staffDesignationReq').style.display = !s || s.designation_id ? '' : 'none';
+    document.getElementById('staffDepartmentReq').style.display = !s || s.department_id ? '' : 'none';
+    const salary = document.getElementById('staffMonthlySalary');
+    if (salary) salary.value = s && s.monthly_salary != null ? String(s.monthly_salary) : '';
   }
 
   function openEdit(empId){
     formDirty = false;
-    const s = staff.find(x => String(x.id) === String(empId));
+    const s = findStaff(empId);
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
     const modal = document.querySelector('#addStaffModal .modal');
     document.getElementById('staffModalTitle').textContent = modal.dataset.editTitle;
     document.getElementById('staffSubmitBtnText').textContent = modal.dataset.updateText;
-    prepareForm();
+    clearFormErrors();
+    populateSelects();
     prepareAadhaar(s);
-    renderLeaveQuotas([]);
-    loadEditQuotas(s.id, ++quotaLoadSeq);
     document.getElementById('staffInternalId').value = s.id;
     document.getElementById('staffEmployeeId').value = s.id;
     document.getElementById('staffFullName').value = s.full_name || '';
     document.getElementById('staffMobile').value = s.mobile || '';
-    document.getElementById('staffEmail').value = s.email || '';
-    document.getElementById('staffDOB').value = s.date_of_birth || '';
-    document.getElementById('staffGender').value = s.gender || 'Female';
-    document.getElementById('staffDepartment').value = s.department_id || '';
-    document.getElementById('staffEmployeeType').value = s.employee_type || '';
-    document.getElementById('staffDesignation').value = s.designation || '';
-    document.getElementById('staffJoinDate').value = s.join_date || '';
-    const salaryInput = document.getElementById('staffMonthlySalary');
-    if (salaryInput) salaryInput.value = s.monthly_salary == null ? '0' : String(s.monthly_salary);
-    // shift codes are matched case-insensitively ("Morning" -> "MORNING"); a value not in the Shift table
-    // (older records, e.g. "Night") is kept as an extra option so the record can still be saved unchanged
-    const shiftSel = document.getElementById('staffShift');
-    const match = shifts.find(x => String(x.id).toLowerCase() === String(s.shift || '').toLowerCase());
-    if (match) shiftSel.value = match.id;
-    else if (s.shift){ shiftSel.insertAdjacentHTML('beforeend', `<option value="${esc(s.shift)}">${esc(s.shift)}</option>`); shiftSel.value = s.shift; }
-    else shiftSel.value = shifts.length ? shifts[0].id : '';
+    setGender(s.gender);
+    const typeSel = document.getElementById('staffEmployeeType');
+    typeSel.value = '';
+    keepValue(typeSel, s.employee_type_id, employeeTypes);
+    setDepartmentAndShift(s);
+    document.getElementById('staffAgency').value = s.agency_id || '';
+    document.getElementById('staffStallNumber').value = s.stall_number == null ? '' : String(s.stall_number);
     document.getElementById('staffStatusGroup').style.display = '';
+    document.getElementById('staffRemarksGroup').style.display = '';
     document.getElementById('staffStatus').value = String(s.status || 'ACTIVE').toUpperCase();
+    document.getElementById('staffRemarks').value = s.remarks || '';
+    prepareJoinDate(s);
+    resetPhoto(s);
+    renderLeaveQuotas([], []);
+    loadEditQuotas(s.id, ++quotaLoadSeq);
     openModal();
   }
 
-  // ── Validation (mirrors StaffController.ValidateStaffAsync) ──
-  function parseIsoDate(v){
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
-    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
-  }
-
+  // ── Validation (mirrors IMSB.Backend.StaffValidation) ──
   function validateClient(vals){
     const errors = {};
-    const today = new Date(); today.setHours(0,0,0,0);
     if (vals.full_name.length < 2 || vals.full_name.length > 100) errors.full_name = t('ValFullName');
-    // an unchanged number is accepted so records saved under the older 9-12 digit rule can still be edited
-    const saved = vals.id ? staff.find(x => String(x.id) === String(vals.id)) : null;
-    if (vals.mobile !== saved?.mobile && !IMSBValidate.mobile(vals.mobile)) errors.mobile = t('ValMobile');
-    if (vals.email && !IMSBValidate.email(vals.email)) errors.email = t('ValEmail');
+    // an unchanged number is accepted so records saved under older rules can still be edited
+    const saved = vals.id ? findStaff(vals.id) : null;
+    if (!(saved && vals.mobile && vals.mobile === saved.mobile) && !IMSBValidate.mobile(vals.mobile)) errors.mobile = t('ValMobile');
     // the server has the final say (duplicates)
     if ((!vals.id || vals.aadhaar) && !IMSBValidate.aadhaar(vals.aadhaar)) errors.aadhaar = t('ValAadhaar');
-    const dob = parseIsoDate(vals.date_of_birth);
-    if (!dob) errors.date_of_birth = t('ValDobRequired');
-    else if (dob > today) errors.date_of_birth = t('ValDobFuture');
-    else if (new Date(dob.getFullYear() + 18, dob.getMonth(), dob.getDate()) > today) errors.date_of_birth = t('ValMinAge');
-    if (!vals.department_id) errors.department_id = t('ValDepartment');
-    if (!vals.designation) errors.designation = t('ValDesignation');
-    const join = parseIsoDate(vals.join_date);
-    if (!join) errors.join_date = t('ValJoinRequired');
-    else if (join > today) errors.join_date = t('ValJoinFuture');
-    else if (dob && !errors.date_of_birth && join < new Date(dob.getFullYear() + 18, dob.getMonth(), dob.getDate())) errors.join_date = t('ValJoinAfterDob');
-    if (vals.monthly_salary !== null){
+    if (!vals.employee_type_id) errors.employee_type_id = t('ValEmployeeType');
+    if (!vals.department_id && (!saved || saved.department_id)) errors.department_id = t('ValDepartment');
+    if (!vals.designation ? (!saved || saved.designation_id) : vals.designation.length > 50) errors.designation = t('ValDesignation');
+    if (!(saved && vals.gender === saved.gender) && !GENDERS.includes(vals.gender)) errors.gender = t('ValGender');
+    if (vals.stall_number !== ''){
+      const n = Number(vals.stall_number);
+      if (!Number.isInteger(n) || n < 1 || n > 99999) errors.stall_number = t('ValStallNumber');
+    }
+    if (vals.remarks.length > 200) errors.remarks = t('ValEmployeeRemarks');
+    if (!vals.join_date){
+      if (!saved || saved.join_date) errors.join_date = t('ValJoinRequired');
+    }
+    else if (!/^\d{4}-\d{2}-\d{2}$/.test(vals.join_date)) errors.join_date = t('ValJoinRequired');
+    else if (vals.join_date > isoToday()) errors.join_date = t('ValJoinFuture');
+    if (vals.monthly_salary !== null && vals.monthly_salary !== ''){
       const salary = Number(vals.monthly_salary);
-      if (vals.monthly_salary === '' || !Number.isFinite(salary) || salary < 0 || salary > 999999999.99)
-        errors.monthly_salary = t('ValMonthlySalary');
+      if (!Number.isFinite(salary) || salary < 0 || salary > 99999999.99) errors.monthly_salary = t('ValDesignationSalary');
     }
     if (vals.leave_quotas.some(q => q.annualQuota !== null && (!Number.isInteger(q.annualQuota * 2) || q.annualQuota < 0 || q.annualQuota > 366)))
       errors.leave_quotas = t('ValLeaveQuotas');
     return errors;
   }
 
-  // re-checks the given fields as soon as one changes, without waiting for Save
-  function liveCheck(fields){
-    const errors = validateClient(getFormValues());
-    fields.forEach(f => {
-      const el = document.getElementById('err_' + f);
-      if (!el) return;
-      el.textContent = errors[f] || '';
-      el.closest('.form-group')?.classList.toggle('has-error', !!errors[f]);
-    });
-  }
-
   function getFormValues(){
     const v = id => (document.getElementById(id).value || '').trim();
+    const stall = document.getElementById('staffStallNumber');
     return {
       id: v('staffInternalId'),
       full_name: v('staffFullName'),
       mobile: v('staffMobile'),
-      email: v('staffEmail') || null,
       aadhaar: v('staffAadhaar') || null,
-      date_of_birth: v('staffDOB'),
       gender: v('staffGender'),
+      employee_type_id: v('staffEmployeeType'),
       department_id: v('staffDepartment'),
-      employee_type: v('staffEmployeeType') || null,
       designation: v('staffDesignation'),
-      join_date: v('staffJoinDate'),
-      monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
-      shift: v('staffShift'),
+      agency_id: v('staffAgency') || null,
+      shift_id: v('staffShift') || null,
+      // text the browser can't read as a number must fail validation, not vanish
+      stall_number: stall.validity.badInput ? 'x' : v('staffStallNumber'),
       status: v('staffStatus'),
-      // only changed fields: null clears a quota on record; text the browser can't read as a number must fail validation, not vanish
+      remarks: v('staffRemarks'),
+      join_date: v('staffJoinDate'),
+      // null when the field is not on the page (salaries are admin-only)
+      monthly_salary: document.getElementById('staffMonthlySalary') ? v('staffMonthlySalary') : null,
+      // only changed fields: blank clears a quota on record; text the browser can't read as a number must fail validation, not vanish
       leave_quotas: [...document.querySelectorAll('#staffLeaveQuotaFields input')]
         .filter(i => i.validity.badInput || i.value.trim() !== i.dataset.original)
         .map(i => ({ leaveType: i.dataset.leaveType, annualQuota: i.validity.badInput ? NaN : i.value.trim() === '' ? null : Number(i.value) })),
@@ -401,12 +524,18 @@
     const isCreate = !vals.id;
     const url = isCreate ? '/Staff/Create' : '/Staff/Update/' + encodeURIComponent(vals.id);
     const body = {
-      fullName: vals.full_name, mobile: vals.mobile, email: vals.email, aadhaar: vals.aadhaar,
-      dateOfBirth: vals.date_of_birth, gender: vals.gender, departmentId: vals.department_id, employeeType: vals.employee_type,
-      designation: vals.designation, monthlySalary: vals.monthly_salary === null ? 0 : Number(vals.monthly_salary), joinDate: vals.join_date, shift: vals.shift
+      fullName: vals.full_name, mobile: vals.mobile, aadhaar: vals.aadhaar, gender: vals.gender,
+      employeeTypeId: vals.employee_type_id, departmentId: vals.department_id || null, designation: vals.designation || null,
+      agencyId: vals.agency_id, shiftId: vals.shift_id,
+      stallNumber: vals.stall_number === '' ? null : Number(vals.stall_number),
+      joinDate: vals.join_date || null,
+      monthlySalary: vals.monthly_salary === null || vals.monthly_salary === '' ? null : Number(vals.monthly_salary),
+      // registering sends only the types given days; blank ones simply do not apply
+      leaveQuotas: isCreate ? vals.leave_quotas.filter(q => q.annualQuota !== null) : vals.leave_quotas,
+      photo: photo.data,
+      removePhoto: photo.remove
     };
-    body.leaveQuotas = vals.leave_quotas;
-    if (!isCreate) body.status = vals.status;
+    if (!isCreate){ body.status = vals.status; body.remarks = vals.remarks; }
     const submitBtn = document.getElementById('staffSubmitBtn');
     submitting = true;
     submitBtn.disabled = true;
@@ -438,7 +567,7 @@
   }
 
   async function deleteStaff(empId){
-    const s = staff.find(x => String(x.id) === String(empId));
+    const s = findStaff(empId);
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
     if (!confirm(t('ConfirmDeleteStaff', s.full_name, s.id))) return;
     try {
@@ -447,6 +576,12 @@
         headers: { 'RequestVerificationToken': antiForgeryToken() }
       });
       if (res.status === 404){ showToast(t('Error'), t('StaffNotFound'), 'error'); await indexData(); return; }
+      if (res.status === 409){
+        // e.g. attendance is on record: the server says to set the employee Inactive instead
+        const json = await res.json().catch(() => null);
+        showToast(t('Error'), (json && json.error) || t('CouldNotDelete'), 'error');
+        return;
+      }
       if (!res.ok){ showToast(t('Error'), `${t('CouldNotDelete')} (${res.status})`, 'error'); return; }
       showToast(t('Success'), t('StaffDeleted'), 'success');
       await indexData();
@@ -458,7 +593,7 @@
 
   function currentFilters(){
     const val = id => { const el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
-    return { q: val('staffSearch'), departmentId: val('staffFilterDepartment'), status: val('staffFilterStatus') };
+    return { q: val('staffSearch'), employeeTypeId: val('staffFilterEmployeeType'), departmentId: val('staffFilterDepartment'), status: val('staffFilterStatus') };
   }
 
   function buildQueryString(params){
@@ -473,33 +608,43 @@
       if (!res.ok) { console.warn('StaffModule.indexData: server returned', res.status); return false; }
       const json = await res.json();
       if (seq !== loadSeq) return true;   // a newer request is in flight; let it render
-      depts = (json.depts || []).map(d => ({ id: d.id, name: d.name, count: d.count || 0, color: d.color || '#2558a8' }));
-      shifts = (json.shifts || []).map(s => ({ id: s.id, name: s.name }));
+      employeeTypes = (json.employeeTypes || []).map(x => ({ id: x.id, name: x.name, count: x.count || 0 }));
       leaveTypes = json.leaveTypes || [];
+      depts = (json.depts || []).map(d => ({ id: d.id, name: d.name, count: d.count || 0, color: d.color || '#2558a8' }));
+      agencies = (json.agencies || []).map(a => ({ id: a.id, name: a.name }));
+      shifts = (json.shifts || []).map(s => ({ id: s.id, name: s.name }));
+      designations = (json.designations || []).map(d => ({ id: d.id, name: d.name || '', employee_type_id: d.employeeTypeId || '', salary: d.salary }));
       staff = (json.staff || []).map(s => ({
         id: s.employeeId,
         full_name: s.fullName || '',
+        employee_type_id: s.employeeTypeId || '',
+        employee_type_name: s.employeeTypeName || '',
         department_id: s.departmentId || '',
         department_name: s.departmentName || '',
-        employee_type: s.employeeType || '',
-        designation: s.designation || '',
-        monthly_salary: s.monthlySalary,
+        designation_id: s.designationId || '',
+        designation_name: s.designationName || '',
+        agency_id: s.agencyId || '',
+        agency_name: s.agencyName || '',
         mobile: s.mobile || '',
-        email: s.email || null,
         aadhaar_masked: s.aadhaarMasked || null,
-        date_of_birth: s.dateOfBirth || '',
-        gender: s.gender || 'Female',
+        gender: s.gender || '',
+        shift_id: s.shiftId || '',
+        shift_name: s.shiftName || '',
+        stall_number: s.stallNumber,
+        status: s.status || 'ACTIVE',
+        remarks: s.remarks || '',
         join_date: s.joinDate || '',
-        shift: s.shift || '',
-        status: s.status || 'ACTIVE'
+        monthly_salary: s.monthlySalary,
+        has_photo: !!s.hasPhoto
       }));
       renderStats(json.stats);
       renderTable();
       renderDeptCards();
-      populateDeptAndShifts();
+      populateSelects();
       try{
         if (window.IMSBCharts && typeof window.IMSBCharts.StaffDeptChart === 'function'){
-          window.IMSBCharts.StaffDeptChart('staffDeptChart', depts.map(d=>d.name), depts.map(d=>d.count || 0));
+          const used = depts.filter(d => d.count > 0);
+          window.IMSBCharts.StaffDeptChart('staffDeptChart', used.map(d=>d.name), used.map(d=>d.count));
         }
       } catch(e){ console.warn('Failed to render staff dept chart', e); }
       return true;
@@ -542,13 +687,16 @@
     form.addEventListener('submit', submitCreateOrUpdate);
     form.addEventListener('input', () => { formDirty = true; });
     form.addEventListener('change', () => { formDirty = true; });
-    document.getElementById('staffDOB').addEventListener('change', () => liveCheck(['date_of_birth']));
+    document.getElementById('staffPhotoPick').addEventListener('click', () => document.getElementById('staffPhoto').click());
+    document.getElementById('staffPhoto').addEventListener('change', onPhotoChosen);
+    document.getElementById('staffPhotoRemove').addEventListener('click', onPhotoRemove);
     document.getElementById('staffModalClose').addEventListener('click', tryClose);
     document.getElementById('staffCancelBtn').addEventListener('click', e => { e.preventDefault(); tryClose(); });
     document.getElementById('staffExportBtn')?.addEventListener('click', e => { e.preventDefault(); exportData(); });
 
     const reload = () => indexData();
     document.getElementById('staffSearch')?.addEventListener('input', debounce(reload, 300));
+    document.getElementById('staffFilterEmployeeType')?.addEventListener('change', reload);
     document.getElementById('staffFilterDepartment')?.addEventListener('change', reload);
     document.getElementById('staffFilterStatus')?.addEventListener('change', reload);
 

@@ -1,19 +1,21 @@
+using IMSB.Backend;
 using IMSB.Backend.Mappers;
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using System.Text;
 using static IMSB.Common.CommonHelpers;
 
 namespace IMSB.Admin.Controllers
 {
+    /// <summary>
+    /// The Staff page: employees in SERP.tbl_Employee. EmpTypeID comes from SERP.tbl_EMP_Types, Desig from SERP.tbl_Designation (the designation and its salary), DepartmentID from dbo.departments
+    /// (the staff category), ShiftID from dbo.Shift and AgencyID from SERP.tbl_ArtisansTypeAgency.
+    /// </summary>
     [Authorize(Roles = "Staff,Admin")]
     public class StaffController : Controller
     {
-        private const int ContractExpiryWindowDays = 30;
-
         private readonly IStaffInterface _staff;
         private readonly ILeavesInterface _leaves;
         private readonly IStringLocalizer _L;
@@ -28,193 +30,104 @@ namespace IMSB.Admin.Controllers
 
         public async Task<IActionResult> Index([FromQuery] bool register = false)
         {
-            var staffEntities = await _staff.AllAsync();
+            var employees = await _staff.AllAsync();
 
             // Dashboard counts
-            var stats = ComputeStats(staffEntities);
+            var stats = StaffValidation.ComputeStats(employees);
             ViewBag.TotalStaff = stats.Total;
             ViewBag.ActiveStaff = stats.Active;
-            ViewBag.OnLeave = stats.OnLeave;
+            ViewBag.InactiveStaff = stats.Inactive;
             ViewBag.Departments = stats.Departments;
-            ViewBag.ContractExpiring = stats.ContractExpiring;
+            ViewBag.AgencyStaff = stats.AgencyStaff;
             ViewBag.RegisterOnLoad = register;
 
-            return View(staffEntities);
+            return View(employees);
         }
 
-        internal record StaffStats(int Total, int Active, int OnLeave, int Departments, int ContractExpiring);
-
-        private static StaffStats ComputeStats(List<Staff> all)
-        {
-            var today = DateTime.Today;
-            var soon = today.AddDays(ContractExpiryWindowDays);
-            return new(
-                all.Count,
-                all.Count(x => string.Equals(x.Status, "ACTIVE", StringComparison.OrdinalIgnoreCase)),
-                all.Count(x => string.Equals(x.Status, "ON_LEAVE", StringComparison.OrdinalIgnoreCase)),
-                all.Select(x => x.DepartmentId).Distinct().Count(),
-                all.Count(x => x.ContractEndDate >= today && x.ContractEndDate <= soon));
-        }
-
-        // Returns JSON used by client-side initialization (depts, shifts, staff list)
+        /// <summary>JSON used by staff.js: employee types, departments, agencies, shifts, the filtered staff list and the totals.</summary>
         [HttpGet]
-        public async Task<IActionResult> IndexData([FromQuery] string? q, [FromQuery] string? departmentId, [FromQuery] string? status)
-        {
-            // all staff for the totals; the list itself is filtered
-            var allStaff = await _staff.AllAsync();
-            var departments = await _staff.DepartmentsAsync();
-            var shifts = await _staff.ShiftsAsync();
-            var filtered = await _staff.FilterAsync(q, departmentId, status);
+        public async Task<IActionResult> IndexData([FromQuery] string? q, [FromQuery] string? departmentId, [FromQuery] string? status,
+            [FromQuery] string? employeeTypeId = null) =>
+            Ok(await StaffValidation.ListPayloadAsync(_staff, q, departmentId, status, employeeTypeId, includeSalary: IsAdmin));
 
-            var perDept = allStaff.GroupBy(s => s.DepartmentId).ToDictionary(g => g.Key, g => g.Count());
-            var deptNames = departments.ToDictionary(d => d.Id, d => d.Name);
-
-            return Ok(new
-            {
-                depts = departments.Select(d => new DepartmentItem(d.Id.ToString(), d.Name, perDept.GetValueOrDefault(d.Id), "#2558a8")),
-                shifts = shifts.Select(s => s.ToOption()),
-                leaveTypes = await _staff.LeaveTypesAsync(),
-                staff = filtered.Select(s => s.ToListItem(deptNames, User.IsInRole("Admin"))),
-                stats = ComputeStats(allStaff)
-            });
-        }
-
-        // Quota, taken and balance per leave type this year, shown when editing a staff member
+        /// <summary>This year's leave quotas of one employee (leave_entitlements) with the days taken and left, shown when editing.</summary>
         [HttpGet]
-        public async Task<IActionResult> LeaveQuotas(string id)
+        public async Task<IActionResult> LeaveQuotas(int id)
         {
             if (await _staff.FindAsync(id) == null) return NotFound();
-            return Ok(new { rows = await _leaves.BalancesAsync(DateTime.Today.Year, id) });
+            return Ok(await StaffValidation.LeaveQuotasPayloadAsync(_leaves, id));
         }
+
+        /// <summary>The employee's photo (tbl_Employee.ImageBase64) as an image; 404 when there is none.</summary>
+        [HttpGet]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> Photo(int id) =>
+            await StaffValidation.PhotoFileAsync(_staff, id) is { } photo ? File(photo.Bytes, photo.ContentType) : NotFound();
+
+        private bool IsAdmin => User.IsInRole("Admin");
 
         [HttpGet]
-        public async Task<IActionResult> Export([FromQuery] string? q, [FromQuery] string? departmentId, [FromQuery] string? status)
-        {
-            var staff = await _staff.FilterAsync(q, departmentId, status);
-            var depts = await _staff.DepartmentNamesAsync();
-
-            var rows = new List<string?[]>
-            {
-                new string?[] { "EmployeeId", "FullName", "StaffCategory", "Designation", "Mobile", "Email", "DateOfBirth", "Gender", "JoinDate", "Shift", "Status" }
-            };
-            foreach (var s in staff.Select(s => s.ToListItem(depts)))
-            {
-                rows.Add(new string?[] { s.EmployeeId, s.FullName, s.DepartmentName, s.Designation, s.Mobile, s.Email, s.DateOfBirth, s.Gender,
-                    s.JoinDate, s.Shift, s.Status });
-            }
-            return ExportExcel($"staff_{DateTime.UtcNow:yyyyMMddHHmmss}.xls", rows);
-        }
+        public async Task<IActionResult> Export([FromQuery] string? q, [FromQuery] string? departmentId, [FromQuery] string? status,
+            [FromQuery] string? employeeTypeId = null) =>
+            ExportExcel($"staff_{DateTime.UtcNow:yyyyMMddHHmmss}.xls", await StaffValidation.ExportRowsAsync(_staff, q, departmentId, status, employeeTypeId));
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromBody] CreateStaffDto? dto)
         {
             if (dto == null) return BadRequest();
-            var errors = await ValidateStaffAsync(dto, null, null, null);
+            var errors = await ValidateAsync(dto, null);
             if (errors.Count > 0) return BadRequest(new { errors });
 
-            var entity = new Staff
-            {
-                // next number after the highest existing one, in the EMP001 format used by existing records
-                EmployeeId = NextCode(await _staff.EmployeeIdsAsync(), "EMP", 3),
-                Status = "ACTIVE",
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = User.Identity?.Name
-            };
-            dto.ApplyTo(entity);
-            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
-            await _staff.AddAsync(entity, dto.LeaveQuotas);
+            var entity = new Employee { IsActive = 1, CreateOn = DateTime.Now };
+            dto.ApplyFormTo(entity);
+            await _staff.AddAsync(entity, dto.LeaveQuotas, dto.ToDesignationInput(includeSalary: IsAdmin));
 
-            return Ok(new { employeeId = entity.EmployeeId });
+            return Ok(new { employeeId = entity.EmpId });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateStaffDto? dto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateStaffDto? dto)
         {
             if (dto == null) return BadRequest();
             var entity = await _staff.FindAsync(id);
             if (entity == null) return NotFound();
 
-            var errors = await ValidateStaffAsync(dto, entity.Id, entity.Shift, entity.Mobile);
+            var errors = await ValidateAsync(dto, entity);
             if (errors.Count > 0) return BadRequest(new { errors });
 
-            dto.ApplyTo(entity);
-            if (User.IsInRole("Admin")) entity.MonthlySalary = dto.MonthlySalary;
-            if (!string.IsNullOrWhiteSpace(dto.Status)) entity.Status = dto.Status.Trim().ToUpperInvariant();
-            entity.UpdatedAt = DateTime.UtcNow;
-            entity.UpdatedBy = User.Identity?.Name;
-            await _staff.UpdateAsync(entity);
+            dto.ApplyFormTo(entity);
+            StaffValidation.ApplyStatus(dto, entity);
+            entity.ModifiedOn = DateTime.Now;
+            await _staff.UpdateAsync(entity, dto.ToDesignationInput(includeSalary: IsAdmin));
 
-            // after the staff save, so the quotas take a changed department as their category
+            // the quotas are the Leaves page's leave_entitlements; only the listed types change
             if (dto.LeaveQuotas is { Count: > 0 })
             {
-                var saved = await _leaves.SaveQuotasAsync(entity.Id, dto.LeaveQuotas);
+                var saved = await _leaves.SaveQuotasAsync(entity.EmpId, dto.LeaveQuotas);
                 if (saved.ErrorKey != null)
                     return BadRequest(new { errors = new Dictionary<string, string> { ["leave_quotas"] = _L[saved.ErrorKey] } });
             }
 
-            return Ok(new { employeeId = entity.EmployeeId });
+            return Ok(new { employeeId = entity.EmpId });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             var entity = await _staff.FindAsync(id);
             if (entity == null) return NotFound();
 
-            await _staff.RemoveAsync(entity);
+            if (!await _staff.RemoveAsync(entity)) return Conflict(new { error = _L["StaffDeleteInUse"].Value });
             return Ok(new { employeeId = id });
         }
 
-        // Errors are keyed by the snake_case field names the staff form uses for its err_* elements
-        private async Task<Dictionary<string, string>> ValidateStaffAsync(CreateStaffDto dto, int? existingId, string? currentShift, string? currentMobile)
+        private async Task<Dictionary<string, string>> ValidateAsync(CreateStaffDto dto, Employee? existing)
         {
             if (!ModelState.IsValid) return ModelStateErrors(ModelState);
-            var errors = new Dictionary<string, string>();
-
-            var today = DateTime.Today;
-            if (!TryParseDate(dto.DateOfBirth, out var dob)) errors["date_of_birth"] = _L["ValDobInvalid"];
-            else if (dob > today) errors["date_of_birth"] = _L["ValDobFuture"];
-            else if (dob.AddYears(18) > today) errors["date_of_birth"] = _L["ValMinAge"];
-
-            if (!TryParseDate(dto.JoinDate, out var join)) errors["join_date"] = _L["ValJoinInvalid"];
-            else if (join > today) errors["join_date"] = _L["ValJoinFuture"];
-            else if (!errors.ContainsKey("date_of_birth") && join < dob.AddYears(18)) errors["join_date"] = _L["ValJoinAfterDob"];
-
-            if (!int.TryParse(dto.DepartmentId, out var deptId) || !await _staff.DepartmentExistsAsync(deptId))
-                errors["department_id"] = _L["ValDepartment"];
-
-            // an unchanged shift is accepted so records holding older values (e.g. "Night") can still be edited
-            var shiftUnchanged = currentShift != null && string.Equals(currentShift, dto.Shift, StringComparison.OrdinalIgnoreCase);
-            if (!shiftUnchanged && await _staff.AnyShiftsAsync() && !await _staff.ShiftExistsAsync(dto.Shift))
-                errors["shift"] = _L["ValShift"];
-
-            // an unchanged number is accepted so records saved under the older 9-12 digit rule can still be edited
-            var mobile = MobileNumbers.Normalize(dto.Mobile);
-            if (mobile != currentMobile && !MobileNumbers.IsValid(mobile)) errors["mobile"] = _L["ValMobile"];
-            else if (await _staff.MobileExistsAsync(mobile, existingId))
-                errors["mobile"] = _L["ValMobileExists"];
-
-            if (string.IsNullOrWhiteSpace(dto.Aadhaar))
-            {
-                // existing staff may have none on record, so it is only demanded when registering
-                if (existingId == null) errors["aadhaar"] = _L["ValAadhaar"];
-            }
-            else if (!Aadhaar.IsValid(dto.Aadhaar)) errors["aadhaar"] = _L["ValAadhaar"];
-            else if (await _staff.AadhaarExistsAsync(Aadhaar.Hash(dto.Aadhaar), existingId)) errors["aadhaar"] = _L["ValAadhaarExists"];
-
-            var email = dto.Email?.Trim().ToLower();
-            if (!string.IsNullOrEmpty(email) && await _staff.EmailExistsAsync(email, existingId))
-                errors["email"] = _L["ValEmailExists"];
-
-            if (!await _staff.LeaveQuotasValidAsync(dto.LeaveQuotas, allowRemoval: existingId != null))
-                errors["leave_quotas"] = _L["ValLeaveQuotas"];
-            else if (existingId != null && await _leaves.LeaveQuotaProblemAsync(existingId.Value, dto.LeaveQuotas) is { } problem)
-                errors["leave_quotas"] = $"{problem.LeaveType}: {_L[problem.ErrorKey]}";
-
-            return errors;
+            return await StaffValidation.ValidateAsync(_staff, dto, existing, _L, _leaves);
         }
     }
 }
