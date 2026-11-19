@@ -74,7 +74,8 @@
             <summary>
             Staff attendance: a day's sheet (saved in bulk), department-wise figures, history with edit / delete of single
             records, and the monthly calendar. Dates are yyyy-MM-dd, months yyyy-MM, times HH:mm.
-            The employees are SERP.tbl_Employee rows: employeeId is the EMP_ID as text (e.g. "501"); the department is their
+            The employees are SERP.tbl_Employee rows: employeeId is their employee code (tbl_Employee.EmployeeId, e.g. "EMP001");
+            a sheet entry may also name them by EMP_ID ("501"), as before employee codes existed. The department is their
             Staff Category (dbo.departments) and the designation comes from tbl_Designation.
             </summary>
         </member>
@@ -159,7 +160,7 @@
         <member name="T:IMSB.Api.Controllers.LeavesController">
             <summary>
             Leave management for the current year: entitlements per employee, leave taken, and balances.
-            Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId the same as text, and the staff category is
+            Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId their employee code ("EMP001"; an EMP_ID number is also accepted where one is looked up), and the staff category is
             their dbo.departments name. The Staff page's Annual Quota writes the same entitlements.
             </summary>
         </member>
@@ -199,7 +200,7 @@
         <member name="T:IMSB.Api.Controllers.PayrollController">
             <summary>
             Monthly pay bill: basic pay prorated by paid attendance days, plus allowances and overtime, less deductions.
-            Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId the same as text, and the monthly salary is the
+            Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId their employee code ("EMP001"; an EMP_ID number is also accepted where one is looked up), and the monthly salary is the
             BaseSalary of the employee's tbl_Designation row.
             </summary>
         </member>
@@ -274,6 +275,8 @@
             Staff / HR: the directory with its figures, and register / edit / delete. Employees are kept in SERP.tbl_Employee;
             EmpTypeID comes from SERP.tbl_EMP_Types, Desig from SERP.tbl_Designation (the designation and its salary), DepartmentID from dbo.departments (the staff category), ShiftID from dbo.Shift and
             AgencyID from SERP.tbl_ArtisansTypeAgency.
+            employeeId is the EMP_ID (used in the URLs); employeeCode is tbl_Employee.EmployeeId, "EMP001", given on create and never
+            changed (the attendance, leave and payroll endpoints show the same code as their employeeId).
             </summary>
         </member>
         <member name="M:IMSB.Api.Controllers.StaffController.List(System.String,System.String,System.String,System.String)">

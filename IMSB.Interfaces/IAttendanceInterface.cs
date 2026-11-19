@@ -23,7 +23,10 @@ namespace IMSB.Interfaces
         /// <summary>Staff employed by the end of the period, including inactive staff marked during it.</summary>
         Task<List<Staff>> MonthlyStaffAsync(DateTime from, DateTime to);
 
-        /// <summary>Tracked staff by employee id.</summary>
+        /// <summary>
+        /// Tracked staff by employee id: their employee code ("EMP001") or EMP_ID number ("501"); match each entry back with
+        /// <see cref="EmployeeIds.Finder"/>.
+        /// </summary>
         Task<List<Staff>> StaffByEmployeeIdsAsync(List<string> employeeIds);
 
         /// <summary>Tracked records of the day for the given staff, by staff id.</summary>

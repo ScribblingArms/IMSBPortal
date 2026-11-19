@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,45 +72,41 @@ builder.Services.AddAuthentication("IMSB.Cookie")
         options.EventsType = typeof(SessionCookieEvents);
     });
 
-// Supported cultures
+// Supported cultures (Resources/SharedResource.<culture>.resx)
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[]
+    var supportedCultures = new List<CultureInfo>
     {
-        new CultureInfo("en-US"),
-        new CultureInfo("ta-IN"),
-        new CultureInfo("te-IN"),
-        new CultureInfo("hi-IN")
-
-
+        new("en-US"),
+        new("ta-IN"),
+        new("te-IN"),
+        new("hi-IN")
     };
-
     options.DefaultRequestCulture = new RequestCulture("en-US");
-
-    options.SupportedCultures = supportedCultures.ToList();
-
-    options.SupportedUICultures = supportedCultures.ToList();
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
 });
 
 var app = builder.Build();
 
-// Bring the database schema up to date (IMSB.Dto/Migrations) before anything reads or writes it
+// Bring the database schema up to date (IMSB.Dto/Migrations) before anything reads or writes it. Only a relational
+// database has migrations: the tests' in-memory database (WebApplicationFactory<Program>) is created without them.
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<IMSBContext>();
-
-    try
+    var database = scope.ServiceProvider.GetRequiredService<IMSBContext>().Database;
+    if (database.IsRelational())
     {
-        if (context.Database.IsRelational())
-            await context.Database.MigrateAsync();
-
-        var canConnect = await context.Database.CanConnectAsync();
-        Console.WriteLine($"Database connection successful: {canConnect}");
-    }
-    catch (Exception ex)
-    {
-        Console.Error.WriteLine(ex.ToString());
-        throw;
+        try
+        {
+            await database.MigrateAsync();
+            Console.WriteLine("Database schema is up to date.");
+        }
+        catch (Exception ex)
+        {
+            // on IIS this reaches the stdout log (web.config stdoutLogEnabled), the first place to look after a 500.30
+            Console.Error.WriteLine(ex.ToString());
+            throw;
+        }
     }
 }
 
@@ -152,13 +147,8 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-// Localization MUST be before MVC endpoints
-var locOptions =
-    app.Services
-        .GetRequiredService<IOptions<RequestLocalizationOptions>>()
-        .Value;
-
-app.UseRequestLocalization(locOptions);
+// Localization MUST be before MVC endpoints (uses the RequestLocalizationOptions configured above)
+app.UseRequestLocalization();
 
 app.UseRouting();
 

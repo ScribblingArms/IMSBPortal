@@ -6086,5 +6086,3 @@ K:\ScribblingArms\IMSBPortal\IMSB.Admin.Tests\bin\Debug\net8.0\en-US\IMSB.Api.re
 K:\ScribblingArms\IMSBPortal\IMSB.Admin.Tests\bin\Debug\net8.0\hi-IN\IMSB.Api.resources.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Admin.Tests\bin\Debug\net8.0\ta-IN\IMSB.Api.resources.dll
 K:\ScribblingArms\IMSBPortal\IMSB.Admin.Tests\bin\Debug\net8.0\te-IN\IMSB.Api.resources.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Admin.Tests\bin\Debug\net8.0\hi\IMSB.Admin.resources.dll
-K:\ScribblingArms\IMSBPortal\IMSB.Admin.Tests\bin\Debug\net8.0\te\IMSB.Admin.resources.dll

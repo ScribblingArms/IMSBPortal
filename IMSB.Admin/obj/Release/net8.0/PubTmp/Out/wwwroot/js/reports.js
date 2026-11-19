@@ -346,7 +346,11 @@
   }
 
   // ── Wiring ────────────────────────────────────────────────────
-  function loadAll(){ loadOverview(); loadStalls(); }
+  // the Artisan Performance page shares the month / category filters but has no KPIs, charts or stall table
+  function loadAll(){
+    if ($('kpiTitle')) loadOverview();
+    if ($('stallReportBody')) loadStalls();
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     if (typeof Chart !== 'undefined') Chart.defaults.font.family = "'Poppins', sans-serif";

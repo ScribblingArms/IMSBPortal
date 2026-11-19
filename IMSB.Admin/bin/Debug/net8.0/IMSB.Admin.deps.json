@@ -22,6 +22,12 @@
           "IMSB.Admin.dll": {}
         },
         "resources": {
+          "hi/IMSB.Admin.resources.dll": {
+            "locale": "hi"
+          },
+          "te/IMSB.Admin.resources.dll": {
+            "locale": "te"
+          },
           "en-US/IMSB.Admin.resources.dll": {
             "locale": "en-US"
           },

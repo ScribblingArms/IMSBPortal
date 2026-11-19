@@ -241,12 +241,16 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
         // create
         var create = await client.SendAsync(Post("/Staff/Create", token, TestHelpers.ValidCreateDto(mobile: "9000005551")));
         Assert.Equal(HttpStatusCode.OK, create.StatusCode);
-        var id = (await create.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("employeeId").GetInt32();
+        var created = await create.Content.ReadFromJsonAsync<JsonElement>();
+        var id = created.GetProperty("employeeId").GetInt32();
+        var code = created.GetProperty("employeeCode").GetString()!;   // "EMP001", ... (the factory is shared, so the number varies)
+        Assert.Matches("^EMP[0-9]{3,}$", code);
 
-        // listed
+        // listed, under the same code
         var list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?q=9000005551");
         var row = Assert.Single(list.GetProperty("staff").EnumerateArray());
         Assert.Equal(id, row.GetProperty("employeeId").GetInt32());
+        Assert.Equal(code, row.GetProperty("employeeCode").GetString());
         Assert.Equal("Sales", row.GetProperty("departmentName").GetString());
         Assert.Equal("Agency A", row.GetProperty("agencyName").GetString());
 
@@ -259,19 +263,24 @@ public class StaffIntegrationTests : IClassFixture<StaffAppFactory>
         var upd = TestHelpers.ToUpdate(TestHelpers.ValidCreateDto(mobile: "9000005551"), "INACTIVE", "Moved out");
         upd.DepartmentId = TestHelpers.AdminDept.ToString();
         upd.AgencyId = TestHelpers.AgencyB.ToString();
-        Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Staff/Update/{id}", token, upd))).StatusCode);
-        list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?status=INACTIVE&q=9000005551");
+        var updated = await client.SendAsync(Post($"/Staff/Update/{id}", token, upd));
+        Assert.Equal(HttpStatusCode.OK, updated.StatusCode);
+        Assert.Equal(code, (await updated.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("employeeCode").GetString());   // kept
+        list = await client.GetFromJsonAsync<JsonElement>($"/Staff/IndexData?status=INACTIVE&q={code}");   // found by code
         row = Assert.Single(list.GetProperty("staff").EnumerateArray());
+        Assert.Equal(code, row.GetProperty("employeeCode").GetString());
         Assert.Equal("Admin", row.GetProperty("departmentName").GetString());
         Assert.Equal("Agency B", row.GetProperty("agencyName").GetString());
         Assert.Equal("Moved out", row.GetProperty("remarks").GetString());
 
         // csv export includes it
         var csv = ExcelExportTestHelpers.CsvText(await client.GetStringAsync("/Staff/Export?q=9000005551"));
-        Assert.Contains($"{id},Meena Kumari,Office,Admin,Sales Executive,Agency B,9000005551,Female,Morning (8AM-4PM),,2020-01-15,INACTIVE", csv);
+        Assert.Contains($"{code},Meena Kumari,Office,Admin,Sales Executive,Agency B,9000005551,Female,Morning (8AM-4PM),,2020-01-15,INACTIVE", csv);
 
         // delete
-        Assert.Equal(HttpStatusCode.OK, (await client.SendAsync(Post($"/Staff/Delete/{id}", token))).StatusCode);
+        var deleted = await client.SendAsync(Post($"/Staff/Delete/{id}", token));
+        Assert.Equal(HttpStatusCode.OK, deleted.StatusCode);
+        Assert.Equal(code, (await deleted.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("employeeCode").GetString());
         list = await client.GetFromJsonAsync<JsonElement>("/Staff/IndexData?q=9000005551");
         Assert.Empty(list.GetProperty("staff").EnumerateArray());
         Assert.Equal(HttpStatusCode.NotFound, (await client.SendAsync(Post($"/Staff/Delete/{id}", token))).StatusCode);

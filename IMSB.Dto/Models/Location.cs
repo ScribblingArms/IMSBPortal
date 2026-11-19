@@ -17,22 +17,6 @@ namespace IMSB.Dto.Models
         public string Name { get; set; } = string.Empty;
     }
 
-    /// <summary>A mandal within a district (seeded from <see cref="TelanganaLocations"/>).</summary>
-    [Table("Mandals")]
-    public class Mandal
-    {
-        [Key]
-        [Column("Id")]
-        public int Id { get; set; }
-
-        [Column("DistrictId")]
-        public int DistrictId { get; set; }
-
-        public District? District { get; set; }
-
-        [Required]
-        [Column("Name")]
-        [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
-    }
+    // The Mandals table (and its Mandal entity) was dropped by the RemoveMandalsAddEmployeeId migration: the stall
+    // application keeps the mandal as text (SHGDetails.Mandal, ShgMandalAsText migration), so nothing read it any more.
 }

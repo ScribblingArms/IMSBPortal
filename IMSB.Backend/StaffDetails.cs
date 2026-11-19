@@ -1,6 +1,7 @@
 using IMSB.Dto.Models;
 using IMSB.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace IMSB.Backend
 {
@@ -24,7 +25,7 @@ namespace IMSB.Backend
         /// </summary>
         private static IQueryable<Employee> WithoutPhotos(IQueryable<Employee> query) => query.Select(e => new Employee
         {
-            EmpId = e.EmpId, EmpName = e.EmpName, Aadhar = e.Aadhar, Mobile = e.Mobile, EmpTypeId = e.EmpTypeId, DesigId = e.DesigId,
+            EmpId = e.EmpId, EmployeeId = e.EmployeeId, EmpName = e.EmpName, Aadhar = e.Aadhar, Mobile = e.Mobile, EmpTypeId = e.EmpTypeId, DesigId = e.DesigId,
             ShiftId = e.ShiftId, IsActive = e.IsActive, CreateOn = e.CreateOn, ModifiedOn = e.ModifiedOn, ImagePath = e.ImagePath,
             Gender = e.Gender, StallNum = e.StallNum, AgencyId = e.AgencyId, Remarks = e.Remarks, JoinDate = e.JoinDate,
             DepartmentId = e.DepartmentId, HasPhoto = e.ImageBase64 != null && e.ImageBase64 != ""
@@ -38,6 +39,7 @@ namespace IMSB.Backend
                 var idTerm = int.TryParse(term, out var id) ? id : (int?)null;
                 query = query.Where(e => (e.EmpName != null && e.EmpName.ToLower().Contains(term))
                     || (e.Mobile != null && e.Mobile.Contains(term))
+                    || (e.EmployeeId != null && e.EmployeeId.ToLower().Contains(term))
                     || e.EmpId == idTerm);
             }
             if (!string.IsNullOrWhiteSpace(employeeTypeId) && int.TryParse(employeeTypeId, out var typeId))
@@ -89,6 +91,8 @@ namespace IMSB.Backend
         public Task AddAsync(Employee employee, IReadOnlyCollection<LeaveQuotaDto>? quotas = null, DesignationInput? designation = null) =>
             InTransactionAsync(async () =>
             {
+                // the employee code is given here, once; an id the caller set is ignored
+                employee.EmployeeId = await NextEmployeeIdAsync();
                 // saved first: the designation row and the quotas need the new EMP_ID
                 _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
@@ -100,9 +104,39 @@ namespace IMSB.Backend
         public Task UpdateAsync(Employee employee, DesignationInput? designation = null) =>
             InTransactionAsync(async () =>
             {
+                // the code never changes; an employee saved before codes existed gets one now
+                if (string.IsNullOrWhiteSpace(employee.EmployeeId)) employee.EmployeeId = await NextEmployeeIdAsync();
                 await ApplyDesignationAsync(employee, designation);
                 await _context.SaveChangesAsync();
             });
+
+        /// <summary>
+        /// The next employee code ("EMP001", ...). SQL Server: the next number of the sequence SERP.EmployeeIdSeq, which the
+        /// trigger SERP.SetEmployeeId also takes from, so codes are never repeated, even after a delete. Other providers
+        /// (the in-memory test database): one more than the highest code on record.
+        /// </summary>
+        private async Task<string> NextEmployeeIdAsync()
+        {
+            if (_context.Database.IsRelational())
+            {
+                // a plain command: EF's SqlQueryRaw wraps its SQL in a subquery, where SQL Server refuses NEXT VALUE FOR
+                await _context.Database.OpenConnectionAsync();
+                try
+                {
+                    await using var command = _context.Database.GetDbConnection().CreateCommand();
+                    command.CommandText = $"SELECT CAST(NEXT VALUE FOR [{EmployeeIds.SequenceSchema}].[{EmployeeIds.SequenceName}] AS bigint);";
+                    command.Transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+                    return EmployeeIds.Format(Convert.ToInt64(await command.ExecuteScalarAsync()));
+                }
+                finally
+                {
+                    await _context.Database.CloseConnectionAsync();
+                }
+            }
+            var codes = await _context.Employees.Where(e => e.EmployeeId != null).Select(e => e.EmployeeId).ToListAsync();
+            var tracked = _context.ChangeTracker.Entries<Employee>().Select(e => e.Entity.EmployeeId);   // added, not saved yet
+            return EmployeeIds.Next(codes.Concat(tracked));
+        }
 
         /// <summary>
         /// Writes the designation to the employee's own tbl_Designation row (EmpId = EMP_ID), adding one when they have none:

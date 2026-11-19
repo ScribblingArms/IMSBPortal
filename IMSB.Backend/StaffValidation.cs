@@ -194,7 +194,7 @@ namespace IMSB.Backend
         /// <summary>No salary or Aadhaar: exports get passed around.</summary>
         public static string?[] ExportRow(StaffListItem s) => new[]
         {
-            s.EmployeeId.ToString(), s.FullName, s.EmployeeTypeName, s.DepartmentName, s.DesignationName, s.AgencyName, s.Mobile, s.Gender,
+            s.EmployeeCode ?? s.EmployeeId.ToString(), s.FullName, s.EmployeeTypeName, s.DepartmentName, s.DesignationName, s.AgencyName, s.Mobile, s.Gender,
             s.ShiftName, s.StallNumber?.ToString(), s.JoinDate, s.Status
         };
 

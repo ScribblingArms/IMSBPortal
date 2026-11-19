@@ -83,7 +83,7 @@ namespace IMSB.Admin.Controllers
             dto.ApplyFormTo(entity);
             await _staff.AddAsync(entity, dto.LeaveQuotas, dto.ToDesignationInput(includeSalary: IsAdmin));
 
-            return Ok(new { employeeId = entity.EmpId });
+            return Ok(new { employeeId = entity.EmpId, employeeCode = entity.EmployeeId });
         }
 
         [HttpPost]
@@ -110,7 +110,7 @@ namespace IMSB.Admin.Controllers
                     return BadRequest(new { errors = new Dictionary<string, string> { ["leave_quotas"] = _L[saved.ErrorKey] } });
             }
 
-            return Ok(new { employeeId = entity.EmpId });
+            return Ok(new { employeeId = entity.EmpId, employeeCode = entity.EmployeeId });
         }
 
         [HttpPost]
@@ -121,7 +121,7 @@ namespace IMSB.Admin.Controllers
             if (entity == null) return NotFound();
 
             if (!await _staff.RemoveAsync(entity)) return Conflict(new { error = _L["StaffDeleteInUse"].Value });
-            return Ok(new { employeeId = id });
+            return Ok(new { employeeId = id, employeeCode = entity.EmployeeId });
         }
 
         private async Task<Dictionary<string, string>> ValidateAsync(CreateStaffDto dto, Employee? existing)

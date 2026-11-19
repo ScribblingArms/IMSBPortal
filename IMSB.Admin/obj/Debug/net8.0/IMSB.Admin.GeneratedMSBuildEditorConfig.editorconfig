@@ -20,42 +20,6 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXEhvbWVcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/Home/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXEhvbWVcUHJpdmFjeS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/Home/StallApply.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXEhvbWVcU3RhbGxBcHBseS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/Home/StallApplyForm.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXEhvbWVcU3RhbGxBcHBseUZvcm0uY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/Shared/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXFNoYXJlZFxFcnJvci5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXFNoYXJlZFxfTGF5b3V0LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXFNoYXJlZFxfVmFsaWRhdGlvblNjcmlwdHNQYXJ0aWFsLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXF9WaWV3SW1wb3J0cy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[K:/ScribblingArms/IMSBPortal/IMSB.Admin/Areas/Portal/Views/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUG9ydGFsXFZpZXdzXF9WaWV3U3RhcnQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [K:/ScribblingArms/IMSBPortal/IMSB.Admin/Views/Account/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

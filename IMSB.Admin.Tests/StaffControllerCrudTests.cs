@@ -31,9 +31,10 @@ public class StaffControllerCreateTests
         Assert.Equal(1, saved.IsActive);
         Assert.NotNull(saved.CreateOn);
         Assert.Null(saved.ModifiedOn);
-        // the other pages see the employee through the Staff view, under the EMP_ID
+        // the other pages see the employee through the Staff view, under their employee code
+        Assert.Equal("EMP001", saved.EmployeeId);
         var viewed = Assert.Single(ctx.Staff.AsNoTracking());
-        Assert.Equal((saved.EmpId, saved.EmpId.ToString(), "Meena Kumari", "Sales Executive", "Sales", "ACTIVE"),
+        Assert.Equal((saved.EmpId, "EMP001", "Meena Kumari", "Sales Executive", "Sales", "ACTIVE"),
             (viewed.Id, viewed.EmployeeId, viewed.FullName, viewed.Designation, viewed.StaffCategory, viewed.Status));
     }
 

@@ -53,7 +53,7 @@ public class EmployeesApiTests
 
         var row = Assert.Single(TestHelpers.OkJson(await Attendance(ctx).Data(null, null)).GetProperty("rows").EnumerateArray());
 
-        Assert.Equal(id.ToString(), row.GetProperty("employeeId").GetString());
+        Assert.Equal("EMP001", row.GetProperty("employeeId").GetString());   // the employee code
         Assert.Equal("Meena Kumari", row.GetProperty("name").GetString());
         Assert.Equal("Sales", row.GetProperty("departmentName").GetString());
         Assert.Equal("Clerk", row.GetProperty("designation").GetString());
@@ -88,11 +88,59 @@ public class EmployeesApiTests
         var sheet = new AttendanceSheetDto
         {
             Date = DateTime.Today.ToString("yyyy-MM-dd"),
-            Entries = new() { new AttendanceEntryDto { EmployeeId = "EMP001", Status = "PRESENT", InTime = "08:00" } }   // an old staff code
+            Entries = new() { new AttendanceEntryDto { EmployeeId = "EMP999", Status = "PRESENT", InTime = "08:00" } }   // a code nobody has
         };
 
         Assert.True(TestHelpers.Errors(await Attendance(ctx).Save(sheet)).ContainsKey("entries_0_employee_id"));
         Assert.Empty(ctx.AttendanceRecords);
+    }
+
+    [Theory]
+    [InlineData("EMP001")]
+    [InlineData("emp001")]
+    public async Task Attendance_is_saved_against_the_employee_code(string code)
+    {
+        var (ctx, id) = Registered();
+        using var _ = ctx;
+        var sheet = new AttendanceSheetDto
+        {
+            Date = DateTime.Today.ToString("yyyy-MM-dd"),
+            Entries = new() { new AttendanceEntryDto { EmployeeId = code, Status = "PRESENT", InTime = "08:00", OutTime = "16:00" } }
+        };
+
+        Assert.Equal(1, TestHelpers.OkJson(await Attendance(ctx).Save(sheet)).GetProperty("created").GetInt32());
+        Assert.Equal(id, (await ctx.AttendanceRecords.SingleAsync()).StaffId);
+    }
+
+    [Fact]
+    public async Task The_code_and_the_emp_id_of_one_person_in_one_sheet_are_a_duplicate()
+    {
+        var (ctx, id) = Registered();
+        using var _ = ctx;
+        var sheet = new AttendanceSheetDto
+        {
+            Date = DateTime.Today.ToString("yyyy-MM-dd"),
+            Entries = new()
+            {
+                new AttendanceEntryDto { EmployeeId = "EMP001", Status = "PRESENT", InTime = "08:00" },
+                new AttendanceEntryDto { EmployeeId = id.ToString(), Status = "PRESENT", InTime = "08:00" }
+            }
+        };
+
+        Assert.True(TestHelpers.Errors(await Attendance(ctx).Save(sheet)).ContainsKey("entries_1_employee_id"));
+        Assert.Empty(ctx.AttendanceRecords);
+    }
+
+    [Fact]
+    public async Task Leave_balances_can_be_filtered_by_the_employee_code()
+    {
+        var (ctx, _) = Registered();
+        using var __ = ctx;
+
+        var row = Assert.Single(TestHelpers.OkJson(await Leaves(ctx).Balances("EMP001", null)).GetProperty("rows").EnumerateArray());
+
+        Assert.Equal("EMP001", row.GetProperty("employeeId").GetString());
+        Assert.Empty(TestHelpers.OkJson(await Leaves(ctx).Balances("EMP002", null)).GetProperty("rows").EnumerateArray());
     }
 
     // ── api/leaves ────────────────────────────────────────────────
@@ -105,7 +153,7 @@ public class EmployeesApiTests
 
         var row = Assert.Single(TestHelpers.OkJson(await Leaves(ctx).Balances(id.ToString(), null)).GetProperty("rows").EnumerateArray());
 
-        Assert.Equal(id.ToString(), row.GetProperty("employeeId").GetString());
+        Assert.Equal("EMP001", row.GetProperty("employeeId").GetString());   // the employee code
         Assert.Equal("Casual", row.GetProperty("leaveType").GetString());
         Assert.Equal(12m, row.GetProperty("entitlement").GetDecimal());
     }
@@ -121,7 +169,7 @@ public class EmployeesApiTests
         Assert.IsType<OkObjectResult>(await Leaves(ctx).Record(form));
 
         var entry = Assert.Single(TestHelpers.OkJson(await Leaves(ctx).Entries()).GetProperty("entries").EnumerateArray());
-        Assert.Equal(id.ToString(), entry.GetProperty("employeeId").GetString());
+        Assert.Equal("EMP001", entry.GetProperty("employeeId").GetString());
         Assert.Equal("Meena Kumari", entry.GetProperty("staffName").GetString());
     }
 
@@ -152,7 +200,7 @@ public class EmployeesApiTests
 
         var row = Assert.Single(json.GetProperty("rows").EnumerateArray());
         Assert.Equal(id, row.GetProperty("staffId").GetInt32());
-        Assert.Equal(id.ToString(), row.GetProperty("employeeId").GetString());
+        Assert.Equal("EMP001", row.GetProperty("employeeId").GetString());   // the employee code
         Assert.Equal("Clerk", row.GetProperty("designation").GetString());
         Assert.Equal(31000m, row.GetProperty("monthlySalary").GetDecimal());
     }
@@ -167,7 +215,7 @@ public class EmployeesApiTests
         Assert.IsType<OkObjectResult>(await Payroll(ctx).Generate(dto));
 
         var saved = await ctx.PayBillEntries.SingleAsync();
-        Assert.Equal((id, id.ToString(), 31000m), (saved.StaffId, saved.EmployeeId, saved.MonthlySalary));
+        Assert.Equal((id, "EMP001", 31000m), (saved.StaffId, saved.EmployeeId, saved.MonthlySalary));
     }
 
     // ── api/otassignments ─────────────────────────────────────────

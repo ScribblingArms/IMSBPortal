@@ -71,12 +71,15 @@
   }
 
   const findStaff = id => staff.find(x => String(x.id) === String(id));
+  // the employee code people see ("EMP001", tbl_Employee.EmployeeId); the EMP_ID only for a record that has none.
+  // s.id (the EMP_ID) stays what the Staff URLs and buttons use.
+  const displayId = s => s.code || String(s.id);
 
   function viewStaff(empId){
     const s = findStaff(empId);
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
     const fields = [
-      ['EmployeeID', s.id],
+      ['EmployeeID', displayId(s)],
       ['FullName', s.full_name],
       ['Department', s.department_name],
       ['Designation', s.designation_name],
@@ -108,7 +111,7 @@
     if (!staffBody) return;
     const rows = staff.map(s => `
       <tr>
-        <td><code style="font-size:.7rem">${esc(s.id)}</code></td>
+        <td><code style="font-size:.7rem">${esc(displayId(s))}</code></td>
         <td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--primary-xlight);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--primary)">${esc((s.full_name||'').split(' ').map(x=>x[0]||'').join('').slice(0,2))}</div><strong>${esc(s.full_name)}</strong></div></td>
         <td>${esc(s.employee_type_name || '—')}</td>
         <td>${esc(s.department_name || '—')}</td>
@@ -371,11 +374,25 @@
     sel.value = value || 'Female';
   }
 
-  // the number is never sent back: registering needs one, editing keeps the one on record unless a new one is typed
+  // The full number is never sent to the page. Registering needs one. Editing shows the number on record masked
+  // (XXXX-XXXX-1234) in the box: focusing it clears the box to type a new number, leaving it empty puts the masked number
+  // back, and the masked number left as it is keeps the one on record (getFormValues sends no Aadhaar then).
   function prepareAadhaar(s){
-    document.getElementById('staffAadhaar').value = '';
+    const input = document.getElementById('staffAadhaar');
+    const masked = s && s.aadhaar_masked ? s.aadhaar_masked : '';
+    input.dataset.masked = masked;
+    input.value = masked;
+    input.onfocus = () => { if (input.dataset.masked && input.value === input.dataset.masked) input.value = ''; };
+    input.onblur = () => { if (input.dataset.masked && !input.value.trim()) input.value = input.dataset.masked; };
     document.getElementById('staffAadhaarReq').style.display = s ? 'none' : '';
-    document.getElementById('staffAadhaarHint').textContent = s && s.aadhaar_masked ? t('AadhaarKeepHint', s.aadhaar_masked) : t('AadhaarMaskedHint');
+    document.getElementById('staffAadhaarHint').textContent = t('AadhaarMaskedHint');
+  }
+
+  /** The Aadhaar typed, or null to keep the one on record (box empty, or still showing the masked number). */
+  function typedAadhaar(){
+    const input = document.getElementById('staffAadhaar');
+    const value = (input.value || '').trim();
+    return !value || (input.dataset.masked && value === input.dataset.masked) ? null : value;
   }
 
   function openCreate(){
@@ -427,7 +444,7 @@
     populateSelects();
     prepareAadhaar(s);
     document.getElementById('staffInternalId').value = s.id;
-    document.getElementById('staffEmployeeId').value = s.id;
+    document.getElementById('staffEmployeeId').value = displayId(s);
     document.getElementById('staffFullName').value = s.full_name || '';
     document.getElementById('staffMobile').value = s.mobile || '';
     setGender(s.gender);
@@ -487,7 +504,7 @@
       id: v('staffInternalId'),
       full_name: v('staffFullName'),
       mobile: v('staffMobile'),
-      aadhaar: v('staffAadhaar') || null,
+      aadhaar: typedAadhaar(),
       gender: v('staffGender'),
       employee_type_id: v('staffEmployeeType'),
       department_id: v('staffDepartment'),
@@ -569,7 +586,7 @@
   async function deleteStaff(empId){
     const s = findStaff(empId);
     if (!s){ showToast(t('Error'), t('StaffNotFound'), 'error'); return; }
-    if (!confirm(t('ConfirmDeleteStaff', s.full_name, s.id))) return;
+    if (!confirm(t('ConfirmDeleteStaff', s.full_name, displayId(s)))) return;
     try {
       const res = await fetch('/Staff/Delete/' + encodeURIComponent(empId), {
         method: 'POST',
@@ -616,6 +633,7 @@
       designations = (json.designations || []).map(d => ({ id: d.id, name: d.name || '', employee_type_id: d.employeeTypeId || '', salary: d.salary }));
       staff = (json.staff || []).map(s => ({
         id: s.employeeId,
+        code: s.employeeCode || '',
         full_name: s.fullName || '',
         employee_type_id: s.employeeTypeId || '',
         employee_type_name: s.employeeTypeName || '',

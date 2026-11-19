@@ -12,6 +12,8 @@ namespace IMSB.Api.Controllers
     /// Staff / HR: the directory with its figures, and register / edit / delete. Employees are kept in SERP.tbl_Employee;
     /// EmpTypeID comes from SERP.tbl_EMP_Types, Desig from SERP.tbl_Designation (the designation and its salary), DepartmentID from dbo.departments (the staff category), ShiftID from dbo.Shift and
     /// AgencyID from SERP.tbl_ArtisansTypeAgency.
+    /// employeeId is the EMP_ID (used in the URLs); employeeCode is tbl_Employee.EmployeeId, "EMP001", given on create and never
+    /// changed (the attendance, leave and payroll endpoints show the same code as their employeeId).
     /// </summary>
     [Authorize(Roles = "Staff,Admin")]
     public class StaffController : ApiControllerBase
@@ -71,7 +73,7 @@ namespace IMSB.Api.Controllers
             var entity = new Employee { IsActive = 1, CreateOn = DateTime.Now };
             dto.ApplyFormTo(entity);
             await _staff.AddAsync(entity, dto.LeaveQuotas, dto.ToDesignationInput(includeSalary: IsAdmin));
-            return Ok(new { employeeId = entity.EmpId });
+            return Ok(new { employeeId = entity.EmpId, employeeCode = entity.EmployeeId });
         }
 
         /// <summary>PUT api/staff/{id}</summary>
@@ -94,7 +96,7 @@ namespace IMSB.Api.Controllers
                 var saved = await _leaves.SaveQuotasAsync(entity.EmpId, dto.LeaveQuotas);
                 if (saved.ErrorKey != null) return Invalid(new Dictionary<string, string> { ["leave_quotas"] = L[saved.ErrorKey] });
             }
-            return Ok(new { employeeId = entity.EmpId });
+            return Ok(new { employeeId = entity.EmpId, employeeCode = entity.EmployeeId });
         }
 
         /// <summary>DELETE api/staff/{id}: 409 when the database refuses (attendance on record).</summary>
@@ -104,7 +106,7 @@ namespace IMSB.Api.Controllers
             var entity = await _staff.FindAsync(id);
             if (entity == null) return NotFound();
             if (!await _staff.RemoveAsync(entity)) return Conflict(new { error = L["StaffDeleteInUse"].Value });
-            return Ok(new { employeeId = id });
+            return Ok(new { employeeId = id, employeeCode = entity.EmployeeId });
         }
     }
 }

@@ -48,7 +48,12 @@ namespace IMSB.Backend
         {
             var staffQuery = _context.Staff.AsNoTracking();
             if (!string.IsNullOrWhiteSpace(employeeId))
-                staffQuery = staffQuery.Where(person => person.EmployeeId == employeeId);
+            {
+                // the employee code ("EMP001"), or the EMP_ID number ("501") as callers sent it before codes existed
+                var code = employeeId.Trim();
+                var number = EmployeeIds.EmpIdNumber(code);
+                staffQuery = staffQuery.Where(person => person.EmployeeId == code || person.Id == number);
+            }
             var categories = await StaffCategoryNamesAsync();
             string CategoryOf(Staff person) => categories.GetValueOrDefault(person.DepartmentId) ?? string.Empty;
             var staff = (await staffQuery.ToListAsync())

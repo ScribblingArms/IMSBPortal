@@ -16,6 +16,15 @@ namespace IMSB.Dto.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EmpId { get; set; }
 
+        /// <summary>
+        /// The employee's code, "EMP001", "EMP002", ... (<see cref="EmployeeIds"/>). Given once when the employee is added
+        /// (by the Staff page, or the database for rows the SERP app adds) and never changed or reused. Added to tbl_Employee by
+        /// the RemoveMandalsAddEmployeeId migration; dbo.vw_StaffEmployees shows it as Staff.EmployeeId.
+        /// </summary>
+        [Column("EmployeeId")]
+        [MaxLength(EmployeeIds.MaxLength)]
+        public string? EmployeeId { get; set; }
+
         [Column("EMP_Name")]
         [MaxLength(100)]
         public string? EmpName { get; set; }
@@ -109,6 +118,69 @@ namespace IMSB.Dto.Models
 
         [NotMapped]
         public string? MaskedAadhaar => string.IsNullOrEmpty(Aadhar) || Aadhar.Length < 4 ? null : "XXXX-XXXX-" + Aadhar[^4..];
+    }
+
+    /// <summary>
+    /// Employee codes (tbl_Employee.EmployeeId): "EMP" and a number of at least 3 digits, "EMP001" ... "EMP999", "EMP1000".
+    /// On SQL Server the number comes from the sequence SERP.EmployeeIdSeq (also used by the trigger SERP.SetEmployeeId for
+    /// rows the SERP app adds), so a deleted employee's code is never handed out again.
+    /// </summary>
+    public static class EmployeeIds
+    {
+        public const string Prefix = "EMP";
+        public const int MaxLength = 20;
+        public const string SequenceName = "EmployeeIdSeq";
+        public const string SequenceSchema = "SERP";
+
+        /// <summary>5 → "EMP005", 1234 → "EMP1234".</summary>
+        public static string Format(long number)
+        {
+            if (number < 1) throw new ArgumentOutOfRangeException(nameof(number), number, "Employee numbers start at 1.");
+            return Prefix + number.ToString("000", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>"EMP012" → 12 (case-insensitive); null for anything that is not an employee code.</summary>
+        public static long? Number(string? code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return null;
+            var s = code.Trim();
+            if (s.Length <= Prefix.Length || !s.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase)) return null;
+            var digits = s[Prefix.Length..];
+            return digits.All(char.IsAsciiDigit)
+                && long.TryParse(digits, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var n) && n > 0
+                ? n : null;
+        }
+
+        /// <summary>The code after the highest one in <paramref name="existing"/> ("EMP001" when there is none).</summary>
+        public static string Next(IEnumerable<string?> existing) =>
+            Format((existing.Select(Number).Max() ?? 0) + 1);
+
+        /// <summary>"501" → 501: an id given as the plain EMP_ID number (as the API took before employee codes); null otherwise.</summary>
+        public static int? EmpIdNumber(string? id) =>
+            int.TryParse(id?.Trim(), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var n) && n > 0 ? n : null;
+
+        /// <summary>
+        /// Looks people up by the id a caller gives: their employee code ("EMP001", any case) or their EMP_ID ("501"), so
+        /// callers that still send the number keep working. The two forms cannot be confused (a code starts with EMP).
+        /// Built once per request: each lookup is a dictionary hit, not a scan of <paramref name="people"/>.
+        /// </summary>
+        public static Func<string?, Staff?> Finder(IEnumerable<Staff> people)
+        {
+            var byCode = new Dictionary<string, Staff>(StringComparer.OrdinalIgnoreCase);
+            var byEmpId = new Dictionary<int, Staff>();
+            foreach (var person in people)
+            {
+                if (!string.IsNullOrEmpty(person.EmployeeId)) byCode.TryAdd(person.EmployeeId, person);
+                byEmpId.TryAdd(person.Id, person);
+            }
+            return id =>
+            {
+                var value = id?.Trim();
+                if (string.IsNullOrEmpty(value)) return null;
+                if (byCode.TryGetValue(value, out var person)) return person;
+                return EmpIdNumber(value) is int number && byEmpId.TryGetValue(number, out person) ? person : null;
+            };
+        }
     }
 
     /// <summary>The employee photo saved in tbl_Employee.ImageBase64: plain base64 of a JPEG or PNG.</summary>

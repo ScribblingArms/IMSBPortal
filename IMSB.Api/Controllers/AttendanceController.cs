@@ -10,7 +10,8 @@ namespace IMSB.Api.Controllers
     /// <summary>
     /// Staff attendance: a day's sheet (saved in bulk), department-wise figures, history with edit / delete of single
     /// records, and the monthly calendar. Dates are yyyy-MM-dd, months yyyy-MM, times HH:mm.
-    /// The employees are SERP.tbl_Employee rows: employeeId is the EMP_ID as text (e.g. "501"); the department is their
+    /// The employees are SERP.tbl_Employee rows: employeeId is their employee code (tbl_Employee.EmployeeId, e.g. "EMP001");
+    /// a sheet entry may also name them by EMP_ID ("501"), as before employee codes existed. The department is their
     /// Staff Category (dbo.departments) and the designation comes from tbl_Designation.
     /// </summary>
     [Authorize(Roles = "Staff,Admin")]
@@ -86,18 +87,19 @@ namespace IMSB.Api.Controllers
             if (entries.Count > MaxEntriesPerSave) { errors["entries"] = L["ValTooManyEntries", MaxEntriesPerSave]; return Invalid(errors); }
 
             var ids = entries.Select(e => e.EmployeeId?.Trim().ToUpperInvariant() ?? "").Where(id => id != "").Distinct().ToList();
-            var staff = (await _attendance.StaffByEmployeeIdsAsync(ids)).ToDictionary(s => s.EmployeeId, StringComparer.OrdinalIgnoreCase);
+            // an entry names the person by employee code ("EMP001") or EMP_ID ("501")
+            var findStaff = EmployeeIds.Finder(await _attendance.StaffByEmployeeIdsAsync(ids));
             var shifts = await _attendance.ShiftNamesAsync();
 
             var lines = new List<(Staff Staff, string Status, TimeSpan? In, TimeSpan? Out, string? Remarks)>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var seen = new HashSet<int>();   // by person: "EMP001" and "501" for the same one are a duplicate
             for (int i = 0; i < entries.Count; i++)
             {
                 var e = entries[i];
                 var prefix = $"entries_{i}_";
                 var id = e.EmployeeId?.Trim() ?? "";
-                if (!staff.TryGetValue(id, out var s)) { errors.TryAdd(prefix + "employee_id", L["ValStaffNotFound"]); continue; }
-                if (!seen.Add(id)) { errors.TryAdd(prefix + "employee_id", L["ValDuplicateStaff"]); continue; }
+                if (findStaff(id) is not { } s) { errors.TryAdd(prefix + "employee_id", L["ValStaffNotFound"]); continue; }
+                if (!seen.Add(s.Id)) { errors.TryAdd(prefix + "employee_id", L["ValDuplicateStaff"]); continue; }
                 if (day != DateTime.MinValue && s.JoinDate.Date > day) { errors.TryAdd(prefix + "employee_id", L["ValBeforeJoining"]); continue; }
 
                 var (status, inTime, outTime) = ValidateEntry(e.Status, e.InTime, e.OutTime, prefix, errors);

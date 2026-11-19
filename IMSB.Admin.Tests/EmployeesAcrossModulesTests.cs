@@ -37,7 +37,7 @@ public class EmployeesAcrossModulesTests
         var row = Assert.Single(await new Attendance(ctx).SheetAsync(DateTime.Today));
 
         Assert.Equal(id, row.Staff.Id);
-        Assert.Equal(id.ToString(), row.Staff.EmployeeId);
+        Assert.Equal("EMP001", row.Staff.EmployeeId);   // the employee code
         Assert.Equal("Meena Kumari", row.Staff.FullName);
         Assert.Equal("Sales", row.DepartmentName);
         Assert.Equal("Clerk", row.Staff.Designation);
@@ -75,7 +75,7 @@ public class EmployeesAcrossModulesTests
 
         var option = Assert.Single(await new Leaves(ctx).ActiveStaffAsync());
 
-        Assert.Equal((id, id.ToString(), "Meena Kumari", "Sales"), (option.Id, option.EmployeeId, option.FullName, option.StaffCategory));
+        Assert.Equal((id, "EMP001", "Meena Kumari", "Sales"), (option.Id, option.EmployeeId, option.FullName, option.StaffCategory));
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class EmployeesAcrossModulesTests
 
         var row = Assert.Single(await new Payroll(ctx).RowsAsync(new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)));
 
-        Assert.Equal((id, id.ToString(), "Meena Kumari", "Sales", "Clerk", 30000m),
+        Assert.Equal((id, "EMP001", "Meena Kumari", "Sales", "Clerk", 30000m),
             (row.StaffId, row.EmployeeId, row.EmployeeName, row.Department, row.Designation, row.MonthlySalary));
     }
 

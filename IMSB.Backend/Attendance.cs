@@ -54,8 +54,12 @@ namespace IMSB.Backend
                 .ToListAsync();
         }
 
-        public Task<List<Staff>> StaffByEmployeeIdsAsync(List<string> employeeIds) =>
-            _context.Staff.Where(s => employeeIds.Contains(s.EmployeeId)).ToListAsync();
+        public Task<List<Staff>> StaffByEmployeeIdsAsync(List<string> employeeIds)
+        {
+            // employee codes ("EMP001"), or the EMP_ID numbers callers sent before codes existed ("501")
+            var numbers = employeeIds.Select(EmployeeIds.EmpIdNumber).OfType<int>().ToList();
+            return _context.Staff.Where(s => employeeIds.Contains(s.EmployeeId) || numbers.Contains(s.Id)).ToListAsync();
+        }
 
         public Task<Dictionary<int, AttendanceRecord>> RecordsOnAsync(DateTime day, List<int> staffIds) =>
             _context.AttendanceRecords.Where(r => r.AttendanceDate == day && staffIds.Contains(r.StaffId)).ToDictionaryAsync(r => r.StaffId);

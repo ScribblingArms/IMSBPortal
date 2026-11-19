@@ -9,7 +9,7 @@ namespace IMSB.Api.Controllers
 {
     /// <summary>
     /// Leave management for the current year: entitlements per employee, leave taken, and balances.
-    /// Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId the same as text, and the staff category is
+    /// Employees are SERP.tbl_Employee rows: staffId is the EMP_ID, employeeId their employee code ("EMP001"; an EMP_ID number is also accepted where one is looked up), and the staff category is
     /// their dbo.departments name. The Staff page's Annual Quota writes the same entitlements.
     /// </summary>
     [Authorize(Roles = "Admin,Staff")]

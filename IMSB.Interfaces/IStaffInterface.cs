@@ -41,7 +41,7 @@ namespace IMSB.Interfaces
         Task<List<Employee>> AllAsync();
 
         /// <summary>
-        /// Filtered employees, newest first. q matches name, mobile or employee id; status is ACTIVE or INACTIVE;
+        /// Filtered employees, newest first. q matches name, mobile, employee code (part of "EMP001") or EMP_ID; status is ACTIVE or INACTIVE;
         /// employeeTypeId and departmentId are ids (anything else is ignored).
         /// </summary>
         Task<List<Employee>> FilterAsync(string? q, string? departmentId, string? status, string? employeeTypeId = null);
@@ -73,13 +73,15 @@ namespace IMSB.Interfaces
 
         /// <summary>
         /// Saves a new employee with this year's leave quotas (leave_entitlements; null days are skipped). A designation,
-        /// when given, gets the employee's own tbl_Designation row, which becomes tbl_Employee.Desig.
+        /// when given, gets the employee's own tbl_Designation row, which becomes tbl_Employee.Desig. The employee gets the
+        /// next employee code (tbl_Employee.EmployeeId, "EMP001", ...; see <see cref="EmployeeIds"/>).
         /// </summary>
         Task AddAsync(Employee employee, IReadOnlyCollection<LeaveQuotaDto>? quotas = null, DesignationInput? designation = null);
 
         /// <summary>
         /// Saves the changes made to a tracked employee. A designation, when given, is written to the employee's own
         /// tbl_Designation row (added if they have none yet); null keeps the one on record. Quotas are saved through ILeavesInterface.
+        /// The employee code is kept; an employee without one (saved before codes existed) is given the next one.
         /// </summary>
         Task UpdateAsync(Employee employee, DesignationInput? designation = null);
 

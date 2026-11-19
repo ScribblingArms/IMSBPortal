@@ -74,7 +74,8 @@ internal sealed class StaffViewTestContext : IMSBContext
         return new Staff
         {
             Id = e.EmpId,
-            EmployeeId = e.EmpId.ToString(),
+            // the employee code ("EMP001"); the EMP_ID as text for a row without one (RemoveMandalsAddEmployeeId)
+            EmployeeId = e.EmployeeId ?? e.EmpId.ToString(),
             FullName = e.EmpName ?? "",
             Mobile = e.Mobile ?? "",
             Email = null,

@@ -33,7 +33,6 @@ public class IMSBContext : DbContext
     public DbSet<PayBillEntry> PayBillEntries { get; set; }
     public DbSet<ShgDetail> ShgDetails { get; set; }
     public DbSet<District> Districts { get; set; }
-    public DbSet<Mandal> Mandals { get; set; }
 
     // SERP tables (created by the AddGmcDbObjects migration's scripts, not by EF): the Staff page's data
     public DbSet<Employee> Employees { get; set; }
@@ -265,13 +264,6 @@ public class IMSBContext : DbContext
         {
             b.HasIndex(d => d.Name).IsUnique();
             b.HasData(TelanganaLocations.Districts.Select(d => new District { Id = d.Id, Name = d.Name }));
-        });
-
-        modelBuilder.Entity<Mandal>(b =>
-        {
-            b.HasIndex(m => new { m.DistrictId, m.Name }).IsUnique();
-            b.HasOne(m => m.District).WithMany().HasForeignKey(m => m.DistrictId).OnDelete(DeleteBehavior.Restrict);
-            b.HasData(TelanganaLocations.Mandals.Select(m => new Mandal { Id = m.Id, DistrictId = m.DistrictId, Name = m.Name }));
         });
 
         modelBuilder.Entity<ShgDetail>(b =>

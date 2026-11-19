@@ -326,7 +326,7 @@ public class StaffDesignationTests
 
         var lines = ExcelExportTestHelpers.CsvText(file).Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
         Assert.Equal("EmployeeId,FullName,EmployeeType,Department,Designation,Agency,Mobile,Gender,Shift,StallNumber,JoinDate,Status", lines[0]);
-        Assert.StartsWith($"{id},Meena Kumari,Office,Sales,Clerk,Agency A,", lines[1]);
+        Assert.StartsWith("EMP001,Meena Kumari,Office,Sales,Clerk,Agency A,", lines[1]);   // the employee code
         Assert.DoesNotContain("20000", lines[1]);
     }
 

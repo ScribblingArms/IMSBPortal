@@ -218,7 +218,7 @@
   }
 
   function selectStaff(){
-    const option = staff.find(s => s.id === $('otStaff').value);
+    const option = staff.find(s => String(s.id) === $('otStaff').value);
     currentShift = option ? { staffName: option.fullName, shiftName: option.shiftName, shiftStart: option.shiftStart, shiftEnd: option.shiftEnd } : null;
     renderShift();
     // start the OT where the shift ends, unless a time is already entered
@@ -327,7 +327,7 @@
     });
     $('otBody').addEventListener('click', e => {
       const btn = e.target.closest('[data-act]');
-      const row = btn && rows.find(r => r.id === btn.dataset.id);
+      const row = btn && rows.find(r => String(r.id) === btn.dataset.id);
       if (!row) return;
       if (btn.dataset.act === 'view') view(row);
       else if (btn.dataset.act === 'edit' && !isLocked(row)) openForm(row);

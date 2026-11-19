@@ -157,19 +157,19 @@ namespace IMSB.Admin.Controllers
             if (entries.Count > MaxEntriesPerSave) { errors["entries"] = string.Format(_L["ValTooManyEntries"], MaxEntriesPerSave); return BadRequest(new { errors }); }
 
             var ids = entries.Select(e => e.EmployeeId?.Trim().ToUpperInvariant() ?? "").Where(id => id != "").Distinct().ToList();
-            var staff = (await _attendance.StaffByEmployeeIdsAsync(ids))
-                .ToDictionary(s => s.EmployeeId, StringComparer.OrdinalIgnoreCase);
+            // an entry names the person by employee code ("EMP001") or EMP_ID ("501")
+            var findStaff = EmployeeIds.Finder(await _attendance.StaffByEmployeeIdsAsync(ids));
             var shifts = await _attendance.ShiftNamesAsync();
 
             var lines = new List<(Staff Staff, string Status, TimeSpan? In, TimeSpan? Out, string? Remarks)>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var seen = new HashSet<int>();   // by person: "EMP001" and "501" for the same one are a duplicate
             for (int i = 0; i < entries.Count; i++)
             {
                 var e = entries[i];
                 var prefix = $"entries_{i}_";
                 var id = e.EmployeeId?.Trim() ?? "";
-                if (!staff.TryGetValue(id, out var s)) { errors.TryAdd(prefix + "employee_id", _L["ValStaffNotFound"]); continue; }
-                if (!seen.Add(id)) { errors.TryAdd(prefix + "employee_id", _L["ValDuplicateStaff"]); continue; }
+                if (findStaff(id) is not { } s) { errors.TryAdd(prefix + "employee_id", _L["ValStaffNotFound"]); continue; }
+                if (!seen.Add(s.Id)) { errors.TryAdd(prefix + "employee_id", _L["ValDuplicateStaff"]); continue; }
                 if (day != DateTime.MinValue && s.JoinDate.Date > day) { errors.TryAdd(prefix + "employee_id", _L["ValBeforeJoining"]); continue; }
 
                 var (status, inTime, outTime) = ValidateEntry(e.Status, e.InTime, e.OutTime, prefix, errors);

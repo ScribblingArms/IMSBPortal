@@ -5,6 +5,8 @@ namespace IMSB.Backend.Mappers
 {
     /// <summary>One row of the Staff directory (SERP.tbl_Employee). The Aadhaar number itself is never included.</summary>
     /// <remarks>
+    /// EmployeeId is the EMP_ID (the number the Staff URLs use); EmployeeCode is tbl_Employee.EmployeeId, "EMP001", the code
+    /// shown to people (the other pages show the same code as Staff.EmployeeId).
     /// DepartmentId/Name is the Staff Category (dbo.departments, tbl_Employee.DepartmentID); DesignationId/Name the designation
     /// (SERP.tbl_Designation, tbl_Employee.Desig). MonthlySalary is the designation's salary (tbl_Designation.BaseSalary), null unless
     /// the caller is an admin. The photo itself is served by Staff/Photo/{id} when HasPhoto.
@@ -13,7 +15,7 @@ namespace IMSB.Backend.Mappers
         string? DepartmentId, string DepartmentName, string? AgencyId, string? AgencyName, string Mobile, string Gender,
         string? ShiftId, string? ShiftName, int? StallNumber, string Status, string? AadhaarMasked, string? Remarks,
         string? JoinDate = null, decimal? MonthlySalary = null, bool HasPhoto = false,
-        string? DesignationId = null, string? DesignationName = null);
+        string? DesignationId = null, string? DesignationName = null, string? EmployeeCode = null);
 
     /// <summary>One leave type's quota for the year (leave_entitlements), with the days taken and left, as the Staff form shows it.</summary>
     public record LeaveQuotaItem(string LeaveType, decimal AnnualQuota, decimal Taken, decimal Balance);
@@ -41,7 +43,7 @@ namespace IMSB.Backend.Mappers
                 e.DepartmentId?.ToString(), lookups.DepartmentName(e.DepartmentId) ?? "", e.AgencyId?.ToString(), lookups.AgencyName(e.AgencyId),
                 e.Mobile ?? "", e.Gender ?? "", e.ShiftId?.ToString(), lookups.ShiftName(e.ShiftId), e.StallNum, e.Status, e.MaskedAadhaar, e.Remarks,
                 e.JoinDate?.ToString("yyyy-MM-dd"), includeSalary ? designation?.BaseSalary : null, e.HasPhoto,
-                e.DesigId?.ToString(), designation?.Name);
+                e.DesigId?.ToString(), designation?.Name, e.EmployeeId);
         }
 
         public static LeaveQuotaItem ToQuotaItem(this LeaveBalanceRow b) => new(b.LeaveType, b.Entitlement, b.Taken, b.Balance);

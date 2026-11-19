@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IMSB.Admin")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute(" ")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5391e28bd0f867e05a0b47227bf55bf48eac3847")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4c38dce89b71ed274f9acc323cdfd948c9bce30d")]
 [assembly: System.Reflection.AssemblyProductAttribute("IMSB.Admin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IMSB.Admin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
